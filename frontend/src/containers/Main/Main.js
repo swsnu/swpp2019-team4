@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect, NavLink } from 'react-router-dom';
 import * as actionCreators from '../../store/actions/index';
-import TimetableView from '../../components/TimetableView/TimetableView';
+import TimetableView from '../../components/TimeTableView/TimeTableView';
 import MainPageFriendListView from '../../components/MainPageFriendListView/MainPageFriendListView';
 
 class Main extends Component {
