@@ -2,15 +2,20 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect, NavLink } from 'react-router-dom';
 import * as actionCreators from '../../store/actions/index';
-import TimetableView from '../../components/TimeTableView/TimeTableView';
+import TimeTableView from '../../components/TimeTableView/TimeTableView';
 import MainPageFriendListView from '../../components/MainPageFriendListView/MainPageFriendListView';
 
 class Main extends Component {
     state = {
         
     }
-
     render() {
+        var friend=[
+            {name:"정재윤",inclass: false, timeleft:"2147483647"},
+            {name:"구준서",inclass: false, timeleft:"2147483647"},
+            {name:"김영찬",inclass: true, timeleft:"2147483647"},
+            {name:"김현수",inclass: false, timeleft:"2147483647"},
+        ]
         return (
             <div className='Main'>
                 <NavLink to='/main'>
@@ -29,8 +34,8 @@ class Main extends Component {
                     <button id='logout-button'>LOGOUT</button>
                 </NavLink>
                 <br/>
-                <TimetableView id='timetable-table'/>
-                <MainPageFriendListView id='friend-list'/>
+                <TimeTableView id='timetable-table'/>
+                <MainPageFriendListView id='friend-list' friends={friend}/>
             </div>
         );
     }
