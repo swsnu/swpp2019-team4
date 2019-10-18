@@ -1,0 +1,23 @@
+import React from 'react';
+import Main from './Main';
+import {shallow,mount} from 'enzyme';
+import { Redirect, NavLink, BrowserRouter } from 'react-router-dom';
+//import { getMockStore } from '../mocks';
+//const store=getMockStore({});
+it('Main page render test', () => {
+    const component=mount(<BrowserRouter><Main/></BrowserRouter>);
+    const assabutton=component.find('#assa-logo-button');
+    const timetablebutton=component.find('#timetable-management-button');
+    const friendbutton = component.find('#friend-button');
+    const informationbutton = component.find('#personal-information-button');
+    const logoutbutton = component.find('#logout-button');
+    const timetable = component.find('#timetable-table');
+    const friendlist = component.find('#friend-list');
+    expect(assabutton.length).toBe(1);
+    expect(timetablebutton.length).toBe(1);
+    expect(friendbutton.length).toBe(1);
+    expect(informationbutton.length).toBe(1);
+    expect(logoutbutton.length).toBe(1);
+    expect(timetable.length).toBe(1);
+    expect(friendlist.length).toBe(1);
+});

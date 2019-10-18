@@ -19,7 +19,7 @@ class Main extends Component {
         return (
             <div className='Main'>
                 <NavLink to='/main'>
-                    <button id='timetable-management-button'>ASSA</button>
+                    <button id='assa-logo-button'>ASSA</button>
                 </NavLink>
                 <NavLink to=''>
                     <button id='timetable-management-button'>TIMETABLE</button>
@@ -40,5 +40,5 @@ class Main extends Component {
         );
     }
 };
-
-export default connect(null, null)(Main);
+export default Main;
+//export default connect(null, null)(Main);
