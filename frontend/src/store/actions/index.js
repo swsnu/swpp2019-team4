@@ -4,5 +4,6 @@ axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN';
 
 export{
-    postSignin
+    postSignin,
+    getUser,
 } from './user';

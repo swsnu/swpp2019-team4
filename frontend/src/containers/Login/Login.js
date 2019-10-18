@@ -9,23 +9,28 @@ class Login extends Component {
         password: '',
     }
 
+    componentDidMount(){
+        this.props.onGetUser();
+    }
+
     handleLogin(){
         this.props.onLogin(this.state.email, this.state.password)
             .then(() => {
-                if(!this.props.storedLogin) {
+                if(!this.props.storedUser.is_authenticated) {
                     alert('이메일 또는 비밀번호가 잘못되었습니다.');
                 }
-            });
+            })
+            .catch(() => {});
     }
 
     render() {
-        let redirect = null;
-        if(this.props.storedLogin) {
-            redirect = <Redirect to='/main'/>
+        if(this.props.storedUser.is_authenticated) {
+            return (
+                <Redirect to='/main'/>
+            );
         }
         return (
             <div className='Login'>
-                {redirect}
                 <input type='text' id='email-input' value={this.state.email} placeholder='Email'
                     onChange={(event) => this.setState({email: event.target.value})}/>
                 <input type='password' id='pw-input' value={this.state.pasword} placeholder='Password'
@@ -38,7 +43,7 @@ class Login extends Component {
 
 const mapStateToProps = state => {
     return {
-        storedLogin: state.user.logged_in,
+        storedUser: state.user.user,
     }
 };
 
@@ -46,6 +51,8 @@ const mapDispatchToProps = dispatch => {
     return {
         onLogin: (email, password) =>
             dispatch(actionCreators.postSignin(email, password)),
+        onGetUser: () =>
+            dispatch(actionCreators.getUser()),
     }
 };
 

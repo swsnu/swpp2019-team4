@@ -22,6 +22,18 @@ def signin(request):
     else:
         return HttpResponseNotAllowed(['POST'])
 
+def user(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            user = {'email': request.user.email, 'username': request.user.username, 
+                'grade': request.user.grade, 'department': request.user.department,
+                'is_authenticated': True}
+            return JsonResponse(user)
+        else:
+            return HttpResponse(status=401)
+    else:
+        return HttpResponseNotAllowed(['GET'])
+
 @ensure_csrf_cookie
 def token(request):
     if request.method == 'GET':
