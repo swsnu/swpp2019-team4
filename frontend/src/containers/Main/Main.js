@@ -11,10 +11,10 @@ class Main extends Component {
     }
     render() {
         var friend=[
-            {name:"정재윤",inclass: false, timeleft:"2147483647"},
-            {name:"구준서",inclass: false, timeleft:"2147483647"},
-            {name:"김영찬",inclass: true, timeleft:"2147483647"},
-            {name:"김현수",inclass: false, timeleft:"2147483647"},
+            {id: 1, name: "정재윤", inclass: false, timeleft: "2147483647"},
+            {id: 2, name: "구준서", inclass: false, timeleft: "2147483647"},
+            {id: 3, name: "김영찬", inclass: true, timeleft: "2147483647"},
+            {id: 4, name: "김현수", inclass: false, timeleft: "2147483647"},
         ]
         return (
             <div className='Main'>
