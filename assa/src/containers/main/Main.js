@@ -1,6 +1,6 @@
-import React, { Component } from './node_modules/react';
-import { connect } from './node_modules/react-redux';
-import { Redirect, NavLink } from './node_modules/react-router-dom';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Redirect, NavLink } from 'react-router-dom';
 import * as actionCreators from '../../store/actions/index';
 import TimetableView from '../../components/TimetableView/TimetableView';
 import MainPageFriendListView from '../../components/MainPageFriendListView/MainPageFriendListView';
