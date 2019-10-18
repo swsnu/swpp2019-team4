@@ -1,1 +1,2 @@
-export const POST_SIGNIN = "POST_SIGNIN";
+export const GET_AUTH = "GET_AUTH";
+export const GET_USER = "GET_USER";

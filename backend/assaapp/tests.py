@@ -46,6 +46,32 @@ class AssaTestCase(TestCase):
             content_type='application/json')
         self.assertEqual(response.status_code, 204)
 
+    def test_put_signout(self):
+        response = self.put('/api/signout/', json.dumps({}), content_type='application/json')
+        self.assertEqual(response.status_code, 405)
+    
+    def test_get_signout(self):
+        response = self.get('/api/signout/')
+        self.assertEqual(response.status_code, 401)
+        response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
+            content_type='application/json')
+        response = self.get('/api/signout/')
+        self.assertEqual(response.status_code, 204)
+
     def test_get_signin(self):
         response = self.get('/api/signin/')
         self.assertEqual(response.status_code, 405)
+
+    def test_delete_user(self):
+        response = self.delete('/api/user/')
+        self.assertEqual(response.status_code, 405)
+
+    def test_get_user(self):
+        response = self.get('/api/user/')
+        self.assertEqual(response.status_code, 401)
+        response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
+            content_type='application/json')
+        response = self.get('/api/user/')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('cubec', response.content.decode())
+        self.assertIn('grade', response.content.decode())

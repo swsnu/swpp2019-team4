@@ -11,13 +11,13 @@ import { history } from '../../store/store'
 import * as actionCreators from '../../store/actions/user';
 
 const stubState = {
-    logged_in: false
+    user: {is_authenticated: false}
 };
 
 const mockStore = getMockStore(stubState);
 
 describe('<Login />', () => {
-    let login, spyPostSignin;
+    let login, spyPostSignin, spyGetUser;
 
     beforeEach(() => {
         login = (
@@ -31,14 +31,15 @@ describe('<Login />', () => {
         );
         spyPostSignin = jest.spyOn(actionCreators, 'postSignin')
             .mockImplementation((email, password) => { return dispatch => {
-                    console.log(email + ' ' + password);
                     if(email === 'cubec@snu.ac.kr' && password === 'cubec') {
                         return Promise.resolve({status: 204});
                     } else {
                         return Promise.reject({status: 401});
                     }
-                } 
-            });
+            } 
+        });
+        spyGetUser = jest.spyOn(actionCreators, 'getUser')
+            .mockImplementation(() => { return dispatch => {}});
     });
 
     afterEach(() => { jest.clearAllMocks() });
@@ -56,9 +57,10 @@ describe('<Login />', () => {
         const spyAlert = jest.spyOn(window, 'alert')
             .mockImplementation(() => {});
         component.find('#email-input').simulate('change', {target: {value: email}});
-        component.find('#pw-input').simulate('change', {target: {value: password}});     
+        component.find('#pw-input').simulate('change', {target: {value: password}});
         component.find('#login-button').simulate('click');
-        const result = await spyPostSignin.mock.results[0].value().then(() => {return true}).catch(() => {return false});
+        const result = await spyPostSignin.mock.results[0].value()
+            .then(() => true).catch(() => false);
         expect(result).toBe(true);
     });
 
@@ -71,13 +73,14 @@ describe('<Login />', () => {
         component.find('#email-input').simulate('change', {target: {value: email}});
         component.find('#pw-input').simulate('change', {target: {value: password}});     
         component.find('#login-button').simulate('click');
-        const result = await spyPostSignin.mock.results[0].value().then(() => {return true}).catch(() => {return false});
+        const result = await spyPostSignin.mock.results[0].value()
+            .then(() => true).catch(() => false);
         expect(result).toBe(false);
     });
 
     it('should redirect to /main when logged_in is true', () => {
         const stubInitialState = {
-            logged_in: true
+            user: {is_authenticated: true}
         };
         const mockInitialStore = getMockStore(stubInitialState);
         const component = mount(
