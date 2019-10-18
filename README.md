@@ -36,4 +36,4 @@ at root repository, type the following commands
 
 * cd backend
 * coverage run --source='./assaapp' manage.py test && coverage report (statement coverage)
-* coverage run --branch --source = './assaapp' manage.py test && coverage report (branch coverage)
+* coverage run --branch --source='./assaapp' manage.py test && coverage report (branch coverage)
