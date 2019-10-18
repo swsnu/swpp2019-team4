@@ -2,7 +2,7 @@
 
 ## environments
 
-Yarn 1.19.0 or above
+Yarn 1.17.3 or above
 Python 3.6.8
 pip3 9.0.1
 
