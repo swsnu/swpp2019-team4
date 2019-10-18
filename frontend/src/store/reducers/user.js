@@ -1,11 +1,13 @@
 import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
-    users: []
+    logged_in: false,
 };
 
 const reducer = (state = initialState, action) => {
-    switch(action.types){
+    switch(action.type){
+        case actionTypes.POST_SIGNIN:
+            return {...state, logged_in: action.logged_in};
         default:
             return {...state};
     }
