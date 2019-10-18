@@ -38,7 +38,9 @@ const TimeTableView=(props)=>{//TODO: props.timetable
         <div className='Timetableview'>
             <table id="timetable" border="1" bordercolor="red" width ="800" height="500">
                 <caption>TIMETABLE</caption>
-                {tablehtml}
+                <tbody>
+                    {tablehtml}
+                </tbody>
             </table>
         </div>
     );
