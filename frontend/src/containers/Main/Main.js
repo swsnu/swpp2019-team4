@@ -11,15 +11,15 @@ class Main extends Component {
     }
     render() {
         var friend=[
-            {name:"정재윤",inclass: false, timeleft:"2147483647"},
-            {name:"구준서",inclass: false, timeleft:"2147483647"},
-            {name:"김영찬",inclass: true, timeleft:"2147483647"},
-            {name:"김현수",inclass: false, timeleft:"2147483647"},
+            {id: 1, name: "정재윤", inclass: false, timeleft: "2147483647"},
+            {id: 2, name: "구준서", inclass: false, timeleft: "2147483647"},
+            {id: 3, name: "김영찬", inclass: true, timeleft: "2147483647"},
+            {id: 4, name: "김현수", inclass: false, timeleft: "2147483647"},
         ]
         return (
             <div className='Main'>
                 <NavLink to='/main'>
-                    <button id='timetable-management-button'>ASSA</button>
+                    <button id='assa-logo-button'>ASSA</button>
                 </NavLink>
                 <NavLink to=''>
                     <button id='timetable-management-button'>TIMETABLE</button>
@@ -40,5 +40,5 @@ class Main extends Component {
         );
     }
 };
-
-export default connect(null, null)(Main);
+export default Main;
+//export default connect(null, null)(Main);
