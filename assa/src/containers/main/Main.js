@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Redirect, NavLink } from 'react-router-dom';
+import React, { Component } from './node_modules/react';
+import { connect } from './node_modules/react-redux';
+import { Redirect, NavLink } from './node_modules/react-router-dom';
 import * as actionCreators from '../../store/actions/index';
-import Timetableview from '../timetableview/Timetableview';
+import TimetableView from '../../components/TimetableView/TimetableView';
+import MainPageFriendListView from '../../components/MainPageFriendListView/MainPageFriendListView';
 
 class Main extends Component {
     state = {
@@ -24,8 +25,12 @@ class Main extends Component {
                 <NavLink to=''>
                     <button id='personal-information-button'>INFORMATION</button>
                 </NavLink>
+                <NavLink to='/login'>
+                    <button id='logout-button'>LOGOUT</button>
+                </NavLink>
                 <br/>
-                <Timetableview id='timetable-table'/>
+                <TimetableView id='timetable-table'/>
+                <MainPageFriendListView id='friend-list'/>
             </div>
         );
     }

@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import React, { Component } from './node_modules/react';
+import { connect } from './node_modules/react-redux';
+import { Redirect } from './node_modules/react-router-dom';
 import * as actionCreators from '../../store/actions/index';
 
 class Login extends Component {
