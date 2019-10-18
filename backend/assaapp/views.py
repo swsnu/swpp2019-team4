@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse, HttpResponseBadRequest
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import ensure_csrf_cookie
 from json import JSONDecodeError
 import json
@@ -21,6 +21,16 @@ def signin(request):
             return HttpResponse(status=401)
     else:
         return HttpResponseNotAllowed(['POST'])
+
+def signout(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            logout(request)
+            return HttpResponse(status=204)
+        else:
+            return HttpResponse(status=401)
+    else:
+        return HttpResponseNotAllowed(['GET'])
 
 def user(request):
     if request.method == 'GET':

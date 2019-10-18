@@ -9,7 +9,21 @@ class Main extends Component {
     state = {
         
     }
+
+    componentDidMount(){
+        this.props.onGetUser();
+    }
+
+    handleLogout() {
+        this.props.onLogout();
+    }
+
     render() {
+        if(!this.props.storedUser.is_authenticated) {
+            return (
+                <Redirect to='/login'/>
+            );
+        }
         var friend=[
             {id: 1, name: "정재윤", inclass: false, timeleft: "2147483647"},
             {id: 2, name: "구준서", inclass: false, timeleft: "2147483647"},
@@ -30,9 +44,7 @@ class Main extends Component {
                 <NavLink to=''>
                     <button id='personal-information-button'>INFORMATION</button>
                 </NavLink>
-                <NavLink to='/login'>
-                    <button id='logout-button'>LOGOUT</button>
-                </NavLink>
+                <button id='logout-button' onClick={() => this.handleLogout()}>LOGOUT</button>
                 <br/>
                 <TimeTableView id='timetable-table'/>
                 <MainPageFriendListView id='friend-list' friends={friend}/>
@@ -40,5 +52,20 @@ class Main extends Component {
         );
     }
 };
-export default Main;
-//export default connect(null, null)(Main);
+
+const mapStateToProps = state => {
+    return {
+        storedUser: state.user.user,
+    }
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onGetUser: () =>
+            dispatch(actionCreators.getUser()),
+        onLogout: () =>
+            dispatch(actionCreators.getSignout()),
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Main);

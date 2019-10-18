@@ -16,3 +16,11 @@ export const getUser = () => {
             .catch(res => dispatch({type: actionTypes.GET_AUTH, is_authenticated: false}))
     }
 };
+
+export const getSignout = () => {
+    return dispatch => {
+        return axios.get('/api/signout/')
+            .then(res => dispatch({type: actionTypes.GET_AUTH, is_authenticated: false}))
+            .catch(() => {});
+    }
+};
