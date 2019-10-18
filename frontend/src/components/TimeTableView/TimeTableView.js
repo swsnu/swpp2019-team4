@@ -33,7 +33,7 @@ const TimeTableView=(props)=>{//TODO: props.timetable
     ["20:00","","","","","",""],
     ["20:30","","","","","",""],];
     //TODO: fill tablestring
-    var tablehtml=tablestring.map(row=><tr><th width="100">{row[0]}</th><td width="100">{row[1]}</td><td width="100">{row[2]}</td><td width="100">{row[3]}</td><td width="100">{row[4]}</td><td width="100">{row[5]}</td><td width="100">{row[6]}</td></tr>)
+    var tablehtml=tablestring.map(row=><tr key={row[0]}><th width="100">{row[0]}</th><td width="100">{row[1]}</td><td width="100">{row[2]}</td><td width="100">{row[3]}</td><td width="100">{row[4]}</td><td width="100">{row[5]}</td><td width="100">{row[6]}</td></tr>)
     return (
         <div className='Timetableview'>
             <table id="timetable" border="1" bordercolor="red" width ="800" height="500">
