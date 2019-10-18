@@ -26,11 +26,11 @@ class Login extends Component {
         return (
             <div className='Login'>
                 {redirect}
-                <input type='text' id='email-input' value={this.state.email} placeholder='ID'
+                <input type='text' id='email-input' value={this.state.email} placeholder='Email'
                     onChange={(event) => this.setState({email: event.target.value})}/>
                 <input type='password' id='pw-input' value={this.state.pasword} placeholder='Password'
                     onChange={(event) => this.setState({password: event.target.value})}/>
-                <button id='login-button' onClick={() => this.handleLogin()}>Login</button>
+                <button id='login-button' onClick={() => this.handleLogin()}>로그인</button>
             </div>
         );
     }
