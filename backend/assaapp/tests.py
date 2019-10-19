@@ -53,6 +53,21 @@ class AssaTestCase(TestCase):
         else:
             self.fail('Did not see ValueError')
 
+    def test_post_signup(self):
+        content = {'email': 'paden', 'password': 'paden', 'username': 'KYC', 'grade': '3'}
+        response = self.post('/api/signup/', json.dumps({}), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        response = self.post('/api/signup/', json.dumps(content), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(User.objects.get(email='paden').grade, 3)
+        # test for same email
+        response = self.post('/api/signup/', json.dumps(content), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_get_signup(self):
+        response = self.get('/api/signup/')
+        self.assertEqual(response.status_code, 405)
+
     def test_post_signin(self):
         response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'Password': 'cubec2'}),
             content_type='application/json')

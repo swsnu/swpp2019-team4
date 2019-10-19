@@ -1,3 +1,4 @@
+from django.db.utils import IntegrityError
 from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse, HttpResponseBadRequest
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
@@ -5,6 +6,25 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from assaapp.models import User, Timetable
 from json import JSONDecodeError
 import json
+
+def signup(request):
+    if request.method == 'POST':
+        try:
+            req_data = json.loads(request.body.decode())
+            email = req_data['email']
+            password = req_data['password']
+            username = req_data['username']
+            str_detail = ['grade', 'department']
+            req_detail = {}
+            for detail in str_detail:
+                if detail in req_data:
+                    req_detail[detail] = req_data[detail]
+            User.objects.create_user(email=email, password=password, username=username, **req_detail)
+        except (KeyError, JSONDecodeError, IntegrityError) as e:
+            return HttpResponseBadRequest()
+        return HttpResponse(status=201)
+    else:
+        return HttpResponseNotAllowed(['POST'])
 
 def signin(request):
     if request.method == 'POST':
