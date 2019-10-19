@@ -1,11 +1,14 @@
 from django.test import TestCase, Client
-from assaapp.models import User
+from assaapp.models import User, Timetable
 import json
     
 class AssaTestCase(TestCase):
     def setUp(self):
         self.client = Client(enforce_csrf_checks=True)
-        user = User.objects.create_user(email='cubec', password='cubec', username='Jung Jaeyun')
+        user1 = User.objects.create_superuser(email='cubec', password='cubec', username='Jung Jaeyun')
+        user2 = User.objects.create_user(email='khsoo@gmail.com', password='khsoo', username='Kim Hyunsoo')
+        timetable1 = Timetable.objects.create(title='21', user=user1)
+        timetable2 = Timetable.objects.create(title='22', user=user1)
 
     def get(self, *args, **kwargs):
         return self.client.get(*args, **kwargs)
@@ -34,7 +37,22 @@ class AssaTestCase(TestCase):
         response = self.post_nocsrf('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
             content_type='application/json')
         self.assertEqual(response.status_code, 403)
+
+    def test_superuser(self):
+        user = User.objects.get(id=1)
+        self.assertEqual(str(user), 'cubec')
+        self.assertEqual(user.is_staff, True)
+        self.assertEqual(user.has_perm([]), True)
+        self.assertEqual(user.has_module_perms([]), True)
     
+    def test_user(self):
+        try:
+            User.objects.create_user(email=None, password='1234', username='1234')
+        except ValueError:
+            pass
+        else:
+            self.fail('Did not see ValueError')
+
     def test_post_signin(self):
         response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'Password': 'cubec2'}),
             content_type='application/json')
@@ -75,3 +93,20 @@ class AssaTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('cubec', response.content.decode())
         self.assertIn('grade', response.content.decode())
+
+    def test_timetable(self):
+        timetable = Timetable.objects.get(id=1)
+        self.assertEqual(str(timetable), '21')
+
+    def test_get_timetable(self):
+        response = self.get('/api/timetable/')
+        self.assertEqual(response.status_code, 401)
+        response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
+            content_type='application/json')
+        response = self.get('/api/timetable/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(2, len(json.loads(response.content.decode())))
+
+    def test_delete_timetable(self):
+        response = self.delete('/api/timetable/')
+        self.assertEqual(response.status_code, 405)
