@@ -14,17 +14,11 @@ class Login extends Component {
     }
 
     handleLogin(){
-        this.props.onLogin(this.state.email, this.state.password)
-            .then(() => {
-                if(!this.props.storedUser.is_authenticated) {
-                    alert('이메일 또는 비밀번호가 잘못되었습니다.');
-                }
-            })
-            .catch(() => {});
+        this.props.onLogin(this.state.email, this.state.password);
     }
 
     render() {
-        if(this.props.storedUser.is_authenticated) {
+        if(this.props.storedUser.is_authenticated == true) {
             return (
                 <Redirect to='/main'/>
             );

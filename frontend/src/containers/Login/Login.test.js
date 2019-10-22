@@ -14,28 +14,31 @@ const stubState = {
     user: {is_authenticated: false}
 };
 
-const mockStore = getMockStore(stubState);
+const stubStateTrue = {
+    user: {is_authenticated: true}
+};
+
+function login(stubState) {
+    const mockStore = getMockStore(stubState);
+    return (
+        <Provider store={mockStore}>
+            <ConnectedRouter history={history}>
+                <Switch>
+                    <Route path='/' exact component={Login} />
+                    <Route path='/main' exact render={() => <div className='Main'/>} />
+                </Switch>
+            </ConnectedRouter>
+        </Provider>
+    );
+};
 
 describe('<Login />', () => {
-    let login, spyPostSignin, spyGetUser;
+    let spyPostSignin, spyGetUser;
 
     beforeEach(() => {
-        login = (
-            <Provider store={mockStore}>
-                <ConnectedRouter history={history}>
-                    <Switch>
-                        <Route path='/' exact component={Login} />
-                    </Switch>
-                </ConnectedRouter>
-            </Provider>
-        );
         spyPostSignin = jest.spyOn(actionCreators, 'postSignin')
             .mockImplementation((email, password) => { return dispatch => {
-                    if(email === 'cubec@snu.ac.kr' && password === 'cubec') {
-                        return Promise.resolve({status: 204});
-                    } else {
-                        return Promise.reject({status: 401});
-                    }
+                return Promise.resolve(null);
             } 
         });
         spyGetUser = jest.spyOn(actionCreators, 'getUser')
@@ -45,54 +48,23 @@ describe('<Login />', () => {
     afterEach(() => { jest.clearAllMocks() });
 
     it('should render login', () => {
-        const component = mount(login);
+        const component = mount(login(stubState));
         const wrapper = component.find('.Login');
         expect(wrapper.length).toBe(1);
     });
 
-    it('should flag as logged_in when fill appropiate email and pw', async () => {
+    it('should call postsignin when fill inappropriate email and pw', async () => {
         const email = 'cubec@snu.ac.kr';
         const password = 'cubec';
-        const component = mount(login);
-        const spyAlert = jest.spyOn(window, 'alert')
-            .mockImplementation(() => {});
+        const component = mount(login(stubState));
         component.find('#email-input').simulate('change', {target: {value: email}});
         component.find('#pw-input').simulate('change', {target: {value: password}});
-        component.find('#login-button').simulate('click');
-        const result = await spyPostSignin.mock.results[0].value()
-            .then(() => true).catch(() => false);
-        expect(result).toBe(true);
-    });
-
-    it('should flag as not logged_in when fill inappropriate email and pw', async () => {
-        const email = 'cubec@snu.ac.kr';
-        const password = 'cubec1';
-        const component = mount(login);
-        const spyAlert = jest.spyOn(window, 'alert')
-            .mockImplementation(() => {});
-        component.find('#email-input').simulate('change', {target: {value: email}});
-        component.find('#pw-input').simulate('change', {target: {value: password}});     
-        component.find('#login-button').simulate('click');
-        const result = await spyPostSignin.mock.results[0].value()
-            .then(() => true).catch(() => false);
-        expect(result).toBe(false);
+        await component.find('#login-button').simulate('click');
+        expect(spyPostSignin).toBeCalledTimes(1);
     });
 
     it('should redirect to /main when logged_in is true', () => {
-        const stubInitialState = {
-            user: {is_authenticated: true}
-        };
-        const mockInitialStore = getMockStore(stubInitialState);
-        const component = mount(
-            <Provider store={mockInitialStore}>
-                <ConnectedRouter history={history}>
-                    <Switch>
-                        <Route path='/' exact component={Login} />
-                        <Route path='/main' exact render={() => <div className='Main'/>}/>
-                    </Switch>
-                </ConnectedRouter>
-            </Provider>
-        );
+        const component = mount(login(stubStateTrue));
         expect(component.find('.Main').length).toBe(1);
     });
 });

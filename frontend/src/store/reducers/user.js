@@ -2,7 +2,7 @@ import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
     user: {
-        is_authenticated: false,
+        is_authenticated: null,
     },
 };
 

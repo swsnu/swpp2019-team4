@@ -13,21 +13,28 @@ const stubState = {
     user: {is_authenticated: true}
 };
 
-const mockStore = getMockStore(stubState);
+const stubStateFalse = {
+    user: {is_authenticated: false}
+};
+
+function window(stubState) {
+    const mockStore = getMockStore(stubState);
+    return (
+        <Provider store={mockStore}>
+            <ConnectedRouter history={history}>
+                <Switch>
+                    <Route path='/' exact component={Main} />
+                    <Route path='/login' exact render={() => <div className='Login'/>} />
+                </Switch>
+            </ConnectedRouter>
+        </Provider>
+    );
+};
 
 describe('<Main />', () => {
-    let main, spyGetUser, spyGetSignout;
-
+    let spyGetUser, spyGetSignout;
+    
     beforeEach(() => {
-        main = (
-            <Provider store={mockStore}>
-                <ConnectedRouter history={history}>
-                    <Switch>
-                        <Route path='/' exact component={Main} />
-                    </Switch>
-                </ConnectedRouter>
-            </Provider>
-        );
         spyGetUser = jest.spyOn(actionCreators, 'getUser')
             .mockImplementation(() => { return dispatch => {}});
         spyGetSignout = jest.spyOn(actionCreators, 'getSignout')
@@ -37,7 +44,7 @@ describe('<Main />', () => {
     afterEach(() => { jest.clearAllMocks() });
 
     it('Main page render test', () => {
-        const component = mount(main);
+        const component = mount(window(stubState));
         const assabutton=component.find('#assa-logo-button');
         const timetablebutton=component.find('#timetable-management-button');
         const friendbutton = component.find('#friend-button');
@@ -52,5 +59,16 @@ describe('<Main />', () => {
         expect(logoutbutton.length).toBe(1);
         expect(timetable.length).toBe(1);
         expect(friendlist.length).toBe(1);
+    });
+
+    it('should call signout when pressed logout button', () => {
+        const component = mount(window(stubState));
+        component.find('#logout-button').simulate('click');
+        expect(spyGetSignout).toBeCalledTimes(1);
+    });
+
+    it('should redirect to login when is_authenticated is false', () => {
+        const component = mount(window(stubStateFalse));
+        expect(component.find('.Login').length).toBe(1);
     });
 });
