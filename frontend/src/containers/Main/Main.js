@@ -19,7 +19,7 @@ class Main extends Component {
     }
 
     render() {
-        if(!this.props.storedUser.is_authenticated) {
+        if(this.props.storedUser.is_authenticated == false) {
             return (
                 <Redirect to='/login'/>
             );

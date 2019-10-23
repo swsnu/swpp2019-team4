@@ -5,7 +5,10 @@ export const postSignin = (email, password) => {
     return dispatch => {
         return axios.post('/api/signin/', {email: email, password: password})
             .then(res => dispatch({type: actionTypes.GET_AUTH, is_authenticated: true}))
-            .catch(res => dispatch({type: actionTypes.GET_AUTH, is_authenticated: false}))
+            .catch(res => {
+                dispatch({type: actionTypes.GET_AUTH, is_authenticated: false});
+                alert('이메일 또는 비밀번호가 잘못되었습니다.');
+            });
     }
 };
 
