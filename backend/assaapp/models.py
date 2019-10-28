@@ -67,7 +67,7 @@ class Course(models.Model):
     semester = models.IntegerField()
     title = models.CharField(max_length=64)
     professor = models.CharField(max_length=64)
-    color = models.CharField(max_length=10) // #FFFFFF
+    color = models.CharField(max_length=10)
     credit = models.IntegerField()
     classification = models.CharField(max_length=64)
     course_number = models.CharField(max_length=64)
