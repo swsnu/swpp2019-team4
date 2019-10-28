@@ -57,6 +57,7 @@ class User(AbstractBaseUser):
 
 class Timetable(models.Model):
     title = models.CharField(max_length=64)
+    semester = models.IntegerField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -76,3 +77,10 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
+class Timetable_Course(models.Model):
+    timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+class Course_Time(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    period = models.IntegerField()
