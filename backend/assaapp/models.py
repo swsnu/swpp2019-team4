@@ -57,7 +57,7 @@ class User(AbstractBaseUser):
 
 class Timetable(models.Model):
     title = models.CharField(max_length=64)
-    semester = models.IntegerField()
+    semester = models.IntegerField(default = 0)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
