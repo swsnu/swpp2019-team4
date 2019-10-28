@@ -61,3 +61,18 @@ class Timetable(models.Model):
 
     def __str__(self):
         return self.title
+
+class Course(models.Model):
+    semester = models.IntegerField()
+    title = models.CharField(max_length=64)
+    professor = models.CharField(max_length=64)
+    color = models.CharField(max_length=10) // #FFFFFF
+    credit = models.IntegerField()
+    classification = models.CharField(max_length=64)
+    course_number = models.CharField(max_length=64)
+    lecture_number = models.IntegerField()
+    remark = models.TextField()
+
+    def __str__(self):
+        return self.title
+
