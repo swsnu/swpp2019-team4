@@ -64,15 +64,26 @@ class Timetable(models.Model):
         return self.title
 
 class Course(models.Model):
-    semester = models.IntegerField()
-    title = models.CharField(max_length=64)
-    professor = models.CharField(max_length=64)
-    color = models.CharField(max_length=10)
-    credit = models.IntegerField()
-    classification = models.CharField(max_length=64)
-    course_number = models.CharField(max_length=64)
-    lecture_number = models.IntegerField()
-    remark = models.TextField()
+    semester = models.CharField(max_length=8, default="")
+    classification = models.CharField(max_length=8, default="")
+    college = models.CharField(max_length=16, default="")
+    department = models.CharField(max_length=32, default="")
+    degree_program = models.CharField(max_length=16, default="")
+    academic_year = models.IntegerField(default=0)
+    course_number = models.CharField(max_length=8, default="")
+    lecture_number = models.CharField(max_length=8, default="")
+    title = models.CharField(max_length=256, default="")
+    subtitle = models.CharField(max_length=256, default="")
+    credit = models.IntegerField(default=0)
+    lecture_credit = models.IntegerField(default=0)
+    lab_credit = models.IntegerField(default=0)
+    lecture_type = models.CharField(max_length=32, default="")
+    location = models.CharField(max_length=32, default="")
+    professor = models.CharField(max_length=16, default="")
+    quota = models.CharField(max_length=16, default="")
+    remark = models.TextField(default="")
+    language = models.CharField(max_length=16, default="")
+    status = models.CharField(max_length=16, default="")
 
     def __str__(self):
         return self.title
@@ -83,4 +94,6 @@ class Timetable_Course(models.Model):
 
 class Course_Time(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    period = models.IntegerField()
+    weekday = models.IntegerField(default=0)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
