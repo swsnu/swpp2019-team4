@@ -88,11 +88,12 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
-class Timetable_Course(models.Model):
+class TimetableCourse(models.Model):
     timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
+    color = models.CharField(max_length=8, default="#FFFFFF")
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
-class Course_Time(models.Model):
+class CourseTime(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     weekday = models.IntegerField(default=0)
     start_time = models.TimeField()
