@@ -89,7 +89,7 @@ class Course(models.Model):
         return self.title
 
 class TimetableCourse(models.Model):
-    timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
+    timetable = models.ManyToManyField('Course', related_name='timetables')
     color = models.CharField(max_length=8, default="#FFFFFF")
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
