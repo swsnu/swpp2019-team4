@@ -1,5 +1,5 @@
 from django.db.utils import IntegrityError
-from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseNotFound, JsonResponse, HttpResponseBadRequest
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -66,15 +66,54 @@ def user(request):
         return HttpResponseNotAllowed(['GET'])
 
 def timetable(request):
-    if request.method == 'GET':
-        if request.user.is_authenticated:
+    if request.user.is_authenticated:
+        if request.method == 'GET':
             timetables = [timetable for timetable in Timetable.objects.filter(user__id=request.user.id).values()]
             return JsonResponse(timetables, safe=False)
+        if request.method == 'POST':
+            try:
+                req_data = json.loads(request.body.decode())
+                timetable_title = req_data['title']
+                timetable_semester = req_data['semester']
+                timetable = Timetable(title=timetable_title, semester=timetable_semester, user=request.user)
+                timetable.save()
+                return HttpResponse(status=201)
+            except (KeyError, JSONDecodeError) as e:
+                return HttpResponseBadRequest()
         else:
-            return HttpResponse(status=401)
+            return HttpResponseNotAllowed(['GET', 'POST'])
     else:
-        return HttpResponseNotAllowed(['GET'])
+        return HttpResponse(status=403)
 
+def timetable_id(request, timetable_id):
+    if request.user.is_authenticated:
+        if request.method == 'GET':
+            timetable_list = [timetable for timetable in Timetable.objects.all().values() if timetable['id'] == timetable_id]
+            if len(timetable_list) == 0:
+                return HttpResponseNotFound()
+            else:
+                return JsonResponse(timetable_list[0], safe=False)
+        if request.method == 'PUT':
+            try:
+                body = request.body.decode()
+                timetable_title = json.load(body)['title']
+                timetable_semester = json.load(body)['semester']
+                timetable_list = [timetable for timetable in Timetable.objects.all().values() if timetable['id'] == timetable_id]
+                if len(timetable_list) == 0:
+                    return HttpResponseNotFound()
+                timetable = Timetable.objects.get(pk=article_id)
+                if timetable.user == request.user
+                    timetable.title = timetable_title
+                    timetable.semester = timetable_semester
+                    timetable.save()
+                    return JsonResponse(model_to_dict(timetable), status=200)
+                else:
+                    return HttpResponse(status=403)
+            except (KeyError, JSONDecodeError) as e:
+                return HttpResponseBadRequest()
+    else:
+        return HttpResponse(status=403)
+            
 @ensure_csrf_cookie
 def token(request):
     if request.method == 'GET':
