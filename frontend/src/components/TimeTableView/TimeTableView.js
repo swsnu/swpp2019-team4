@@ -1,7 +1,7 @@
 import React from 'react';
 import './TimeTableView.css';
 /*
- * INPUT: props.timetable parsed as [{"week_day": 0, "start_time": 660, "end_time": 750, "course_name": "NAME OF EACH COURSE", "color": "#FFFFFF"}, {}, ...]
+ * INPUT: props.courses parsed as [{"week_day": 0, "start_time": 660, "end_time": 750, "course_name": "NAME OF EACH COURSE", "color": "#FFFFFF"}, {}, ...]
  * week_day is 0~5 integer. Monday is 0, Tuesday is 1, ... Saturday is 5
  * start_time, end_time are 660~1230 integer. This value is hour*60+minute (8:00~20:30). start_time must be divided by 30
  * color is 6 hexadigit number.
