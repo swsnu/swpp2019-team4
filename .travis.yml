@@ -15,6 +15,5 @@ matrix:
     - yarn install
     script:
     - ./node_modules/.bin/eslint src
-    - yarn test --coverage -watchAll=false
+    - yarn test --coverage --watchAll=false
     - sonar-scanner
-    
