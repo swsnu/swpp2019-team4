@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse, Http
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.core.mail import EmailMessage
 from assaapp.models import User, Timetable
 from json import JSONDecodeError
 import json
@@ -20,6 +21,9 @@ def signup(request):
                 if detail in req_data:
                     req_detail[detail] = req_data[detail]
             User.objects.create_user(email=email, password=password, username=username, **req_detail)
+            content = 'Hi, {}.'.format(username)
+            email = EmailMessage('Confirm your email from ASSA', content, to=[email])
+            email.send()
         except (KeyError, JSONDecodeError, IntegrityError) as e:
             return HttpResponseBadRequest()
         return HttpResponse(status=201)
