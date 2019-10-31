@@ -153,7 +153,40 @@ def timetable_id(request, timetable_id):
             return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
     else:
         return HttpResponse(status=401)
-            
+def timetable_id_course(request, timetable_id):
+    if request.is_authenticated:
+        if request.method == 'GET':
+            timetable_list = [timetable for timetable in Timetable.objects.all().values() if timetable['id'] == timetable_id]
+            if len(timetable_list) == 0:
+                return HttpResponseNotFound()
+            timetable = Timetable.objects.get(pk=timetable_id)
+            return JsonResponse(model_to_dict(timetable.courses), status=200)
+        else:
+            return HttpResponseNotAllowed(['GET'])
+    else:
+        return HttpResponse(status=401)
+def course(request):
+    if request.is_authenticated:
+        if request.method == 'GET':
+            course_list = [course for course in Course.objects.all().values()]
+            return JsonResponse(course_list, safe=False)
+        else:
+            return HttpResponseNotAllowed(['GET'])
+    else:
+        return HttpResponse(status=401)
+
+def course_id(request, course_id):
+    if request.is_authenticated:
+        if request.method == 'GET':
+            course_list = [course for course in Course.objects.all().values() if course['id'] == course_id]
+            if len(course_list) == 0:
+                return HttpResponseNotFound()
+            course = Course.objects.get(pk=course_id)
+            return JsonResponse(model_to_dict(course), status=200)
+        else:
+            return HttpResponseNotAllowed(['GET'])
+    else:
+        return HttpResponse(status=401)
 @ensure_csrf_cookie
 def token(request):
     if request.method == 'GET':
