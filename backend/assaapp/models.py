@@ -92,7 +92,7 @@ class Timetable(models.Model):
 class CourseColor(models.Model):
     timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    color = models.CharField(max_length=8, default = '#FFFFFF')
+    color = models.CharField(max_length=8, default = 'default')
 
     def __str__(self):
         return self.color
