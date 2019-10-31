@@ -1,69 +1,46 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Redirect, NavLink } from 'react-router-dom';
-import * as actionCreators from '../../store/actions/index';
+import React from 'react';
+import './TimeTableView.css';
 /*
- * INPUT: props.timetable parsed as [{"week_day": 0, "start_time_index": 0, "end_time_index": 3, "course_name": "NAME OF EACH COURSE"}, {}, ...]
+ * INPUT: props.timetable parsed as [{"week_day": 0, "start_time": 660, "end_time": 750, "course_name": "NAME OF EACH COURSE", "color": "#FFFFFF"}, {}, ...]
  * week_day is 0~5 integer. Monday is 0, Tuesday is 1, ... Saturday is 5
- * start_time_index, end_time_index are 16~41 integer. 8:00 is 16, 8:30 is 17, ... 20:30 is 41.
- * If the course time is 8:30~9:30, start_time_index is 17, end_time_index is 19
+ * start_time, end_time are 660~1230 integer. This value is hour*60+minute (8:00~20:30). start_time must be divided by 30
+ * color is 6 hexadigit number.
 */
 const TimeTableView=(props)=>{
-    var tablestring=[
-    ["    ","M","T","W","T","F","S"],
-    ["8:00"," "," "," "," "," "," "],
-    ["8:00"," "," "," "," "," "," "],
-    ["9:00"," "," "," "," "," "," "],
-    ["9:00"," "," "," "," "," "," "],
-    ["10:00"," "," "," "," "," "," "],
-    ["10:00"," "," "," "," "," "," "],
-    ["11:00"," "," "," "," "," "," "],
-    ["11:00"," "," "," "," "," "," "],
-    ["12:00"," "," "," "," "," "," "],
-    ["12:00"," "," "," "," "," "," "],
-    ["13:00"," "," "," "," "," "," "],
-    ["13:00"," "," "," "," "," "," "],
-    ["14:00"," "," "," "," "," "," "],
-    ["14:00"," "," "," "," "," "," "],
-    ["15:00"," "," "," "," "," "," "],
-    ["15:00"," "," "," "," "," "," "],
-    ["16:00"," "," "," "," "," "," "],
-    ["16:00"," "," "," "," "," "," "],
-    ["17:00"," "," "," "," "," "," "],
-    ["17:00"," "," "," "," "," "," "],
-    ["18:00"," "," "," "," "," "," "],
-    ["18:00"," "," "," "," "," "," "],
-    ["19:00"," "," "," "," "," "," "],
-    ["19:00"," "," "," "," "," "," "],
-    ["20:00"," "," "," "," "," "," "],
-    ["20:00"," "," "," "," "," "," "],];
-    for(let i=0; i<props.courses.length; i++){
-        var day=props.courses[i]["week_day"]+1;
-        for(let j=props.courses[i]["start_time_index"]-15;j<props.courses[i]["end_time_index"]-15;j++){
-            tablestring[j][day]=props.courses[i]["course_name"];
-        }
-    }
+    var table_header_string=["","M","T","W","T","F","S"];
+    var courses_list=[[],[],[],[],[],[]];
     var tablehtml=[];
-    var heightunit=20;
+    var tablehtml_ith=[];
+    var heightunit=24;
     var widthunit=100;
-    for(let i=0;i<tablestring.length;i++){
-        var tablehtml_ith=[];
-        for(let j=0;j<tablestring[i].length;j++){
-            if(i>1&&tablestring[i][j]==tablestring[i-1][j])continue;
-            var sametext_length=1;
-            for(var k=i+1;k<tablestring.length;k++){
-                if(tablestring[i][j]===tablestring[k][j])sametext_length++;
-                else break;
-            }
-            if(i!=0||j!=0)tablehtml_ith.push(<td key={1000*i+j} height={heightunit*sametext_length} width={widthunit} rowSpan={sametext_length}>{tablestring[i][j]}</td>)
-            else tablehtml_ith.push(<th key={1000*i+j} height={heightunit*sametext_length} width={widthunit} rowSpan={sametext_length}>{tablestring[i][j]}</th>)
+    for(let i=0;i<26;i++){
+        for(let j=0;j<6;j++){
+            courses_list[j].push([]);
         }
-        tablehtml.push(<tr key={i}>{tablehtml_ith}</tr>);
     }
-    //tablestring.map(row=><tr key={row[0]}><th width="100">{row[0]}</th><td width="100">{row[1]}</td><td width="100">{row[2]}</td><td width="100">{row[3]}</td><td width="100">{row[4]}</td><td width="100">{row[5]}</td><td width="100">{row[6]}</td></tr>)
+    for(let i=0; i<props.courses.length; i++){
+        courses_list[props.courses[i]["week_day"]][props.courses[i]["start_time"]/30-16].push({"name":props.courses[i]["course_name"],"length":props.courses[i]["end_time"]-props.courses[i]["start_time"],"color":props.courses[i]["color"]});
+    }
+    for(let i=0;i<6;i++){
+        tablehtml_ith.push(<th key={i} height={heightunit} width={widthunit}>{table_header_string[i]}</th>)
+    }
+    tablehtml.push(<tr key={0}>{tablehtml_ith}</tr>);
+    for(let i=0;i<26;i++){
+        tablehtml_ith=[];
+        if(i%2==0)tablehtml_ith.push(<td key={1000000*i} height={2*heightunit} width={widthunit} rowSpan={2}>{(i/2+8)+":00"}</td>)
+        for(let j=0;j<5;j++){
+            if(courses_list[j][i].length==0){
+                tablehtml_ith.push(<td key={1000*i+j} height={heightunit} width={widthunit}/>)
+            }
+            else{
+                tablehtml_ith.push(<td key={1000*i+j} height={heightunit} width={widthunit}><div className="square" style={{height: (heightunit*courses_list[j][i][0]["length"]/30)*1.1+"px", width: widthunit+"px", backgroundColor: courses_list[j][i][0]["color"]}}>{courses_list[j][i][0]["name"]}</div></td>)
+            }
+        }
+        tablehtml.push(<tr key={i+1}>{tablehtml_ith}</tr>);
+    }
     return (
         <div className='Timetableview'>
-            <table id="timetable" border="1" bordercolor="black" width ="800" height="500">
+            <table id="timetable" border="1" bordercolor="black" style={{alignItem:"top"}}>
                 <caption>TIMETABLE</caption>
                 <tbody>
                     {tablehtml}
