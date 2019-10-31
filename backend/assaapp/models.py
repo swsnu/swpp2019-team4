@@ -5,16 +5,20 @@ class UserManager(BaseUserManager):
     def create_user(self, email, username, password=None, grade=1, department=''):
         if not email:
             raise ValueError('User must have an email address')
-        
+
         user = self.model(
             email=self.normalize_email(email),
             username=username,
             grade=grade,
-            department=department,
+            department=department
         )
 
         user.set_password(password)
         user.save(using=self._db)
+
+        timetable_main = Timetable.objects.create(title='My timetable', user=user)
+        user.timetable_main = timetable_main
+        user.save()
         return user
     
     def create_superuser(self, email, username, password, grade=1, department=''):
@@ -37,6 +41,9 @@ class User(AbstractBaseUser):
     department = models.CharField(max_length=64)
     is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
+    timetable_main = models.OneToOneField('Timetable', null=True, blank=True, related_name='user_main', on_delete=models.PROTECT)
+    friends = models.ManyToManyField('self', symmetrical=True)
+    friends_request = models.ManyToManyField('self', symmetrical=False)
 
     objects = UserManager()
     
