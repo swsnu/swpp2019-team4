@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.mail import EmailMessage
+from djang.forms.models import model_to_dict
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from assaapp.models import User, Timetable
@@ -128,7 +129,7 @@ def timetable_id(request, timetable_id):
                 timetable_list = [timetable for timetable in Timetable.objects.all().values() if timetable['id'] == timetable_id]
                 if len(timetable_list) == 0:
                     return HttpResponseNotFound()
-                timetable = Timetable.objects.get(pk=article_id)
+                timetable = Timetable.objects.get(pk=timetable_id)
                 if timetable.user == request.user
                     timetable.title = timetable_title
                     timetable.semester = timetable_semester
@@ -138,8 +139,20 @@ def timetable_id(request, timetable_id):
                     return HttpResponse(status=403)
             except (KeyError, JSONDecodeError) as e:
                 return HttpResponseBadRequest()
+        if request.method == 'DELETE':
+            timetable_list = [timetable for timetable in Timetable.objects.all().values() if timetable['id'] == timetable_id]
+            if len(timetable_list) == 0:
+                return HttpResponseNotFound()
+            timetable = Timetable.objects.get(pk=timetable_id)
+            if timetable.user == request.user
+                timetable.delete()
+                return HttpResponse(status=200)
+            else:
+                return HttpResponse(status=403)
+        else:
+            return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
     else:
-        return HttpResponse(status=403)
+        return HttpResponse(status=401)
             
 @ensure_csrf_cookie
 def token(request):
