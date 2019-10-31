@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Redirect, NavLink } from 'react-router-dom';
 import * as actionCreators from '../../store/actions/index';
 
 class Login extends Component {
@@ -30,6 +30,9 @@ class Login extends Component {
                 <input type='password' id='pw-input' value={this.state.pasword} placeholder='Password'
                     onChange={(event) => this.setState({password: event.target.value})}/>
                 <button id='login-button' onClick={() => this.handleLogin()}>로그인</button>
+                <NavLink to='/signup'>
+                    <button id='to-signup-button'>회원가입</button>
+                </NavLink>
             </div>
         );
     }

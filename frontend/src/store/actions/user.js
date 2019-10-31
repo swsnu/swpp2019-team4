@@ -1,6 +1,12 @@
 import * as actionTypes from './actionTypes';
 import axios from 'axios';
 
+export const postSignup = (email, password, username, department, grade) => {
+    return dispatch => {
+        return axios.post('/api/signup', {email: email, password: password, username: username, department: department, grade: grade});
+    }
+}
+
 export const postSignin = (email, password) => {
     return dispatch => {
         return axios.post('/api/signin/', {email: email, password: password})
