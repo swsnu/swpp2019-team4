@@ -4,6 +4,7 @@ import { Redirect, NavLink } from 'react-router-dom';
 import * as actionCreators from '../../store/actions/index';
 import TimeTableView from '../../components/TimeTableView/TimeTableView';
 import MainPageFriendListView from '../../components/MainPageFriendListView/MainPageFriendListView';
+import TopBar from '../../components/TopBar/TopBar'
 
 class Main extends Component {
     state = {
@@ -30,23 +31,28 @@ class Main extends Component {
             {id: 3, name: "김영찬", inclass: true, timeleft: "2147483647"},
             {id: 4, name: "김현수", inclass: false, timeleft: "2147483647"},
         ]
+        var courses=[
+            {"day_index": 0, "start_time_index": 22, "end_time_index": 25, "course_name": "자료구조"},
+            {"day_index": 2, "start_time_index": 22, "end_time_index": 25, "course_name": "자료구조"},
+            {"day_index": 4, "start_time_index": 28, "end_time_index": 32, "course_name": "자료구조"},
+            {"day_index": 0, "start_time_index": 28, "end_time_index": 31, "course_name": "전기전자회로"},
+            {"day_index": 2, "start_time_index": 28, "end_time_index": 31, "course_name": "전기전자회로"},
+            {"day_index": 0, "start_time_index": 31, "end_time_index": 34, "course_name": "컴퓨터구조"},
+            {"day_index": 2, "start_time_index": 31, "end_time_index": 34, "course_name": "컴퓨터구조"},
+            {"day_index": 1, "start_time_index": 31, "end_time_index": 33, "course_name": "프로그래밍의원리"},
+            {"day_index": 3, "start_time_index": 31, "end_time_index": 33, "course_name": "프로그래밍의원리"},
+            {"day_index": 3, "start_time_index": 37, "end_time_index": 41, "course_name": "프로그래밍의원리"},
+            {"day_index": 2, "start_time_index": 26, "end_time_index": 28, "course_name": "컴공세미나"},
+            {"day_index": 0, "start_time_index": 34, "end_time_index": 37, "course_name": "소프트웨어 개발의 원리와 실습"},
+            {"day_index": 2, "start_time_index": 34, "end_time_index": 37, "course_name": "소프트웨어 개발의 원리와 실습"},
+            {"day_index": 3, "start_time_index": 37, "end_time_index": 41, "course_name": "소프트웨어 개발의 원리와 실습"},
+        ]
         return (
             <div className='Main'>
-                <NavLink to='/main'>
-                    <button id='assa-logo-button'>ASSA</button>
-                </NavLink>
-                <NavLink to=''>
-                    <button id='timetable-management-button'>TIMETABLE</button>
-                </NavLink>
-                <NavLink to=''>
-                    <button id='friend-button'>FRIEND</button>
-                </NavLink>
-                <NavLink to=''>
-                    <button id='personal-information-button'>INFORMATION</button>
-                </NavLink>
+                <TopBar id='topbar'/>
                 <button id='logout-button' onClick={() => this.handleLogout()}>LOGOUT</button>
                 <br/>
-                <TimeTableView id='timetable-table'/>
+                <TimeTableView id='timetable-table' courses={courses}/>
                 <MainPageFriendListView id='friend-list' friends={friend}/>
             </div>
         );
