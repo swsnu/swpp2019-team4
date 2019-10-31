@@ -26,6 +26,7 @@ class UserManager(BaseUserManager):
             department=department,
         )
         user.is_admin = True
+        user.is_active = True
         user.save(using=self._db)
         return user
 
@@ -34,7 +35,7 @@ class User(AbstractBaseUser):
     username = models.CharField(max_length=32)
     grade = models.IntegerField()
     department = models.CharField(max_length=64)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
 
     objects = UserManager()

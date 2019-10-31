@@ -1,5 +1,8 @@
 from django.test import TestCase, Client
 from assaapp.models import User, Timetable
+from assaapp.tokens import account_activation_token
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_text
 import json
     
 class AssaTestCase(TestCase):
@@ -124,4 +127,20 @@ class AssaTestCase(TestCase):
 
     def test_delete_timetable(self):
         response = self.delete('/api/timetable/')
+        self.assertEqual(response.status_code, 405)
+
+    def test_get_verify(self):
+        user = User.objects.create_user(email='1207koo@gmail.com', password='koo', username='KOO')
+        uidb64 = urlsafe_base64_encode(force_bytes(user.id))
+        token = account_activation_token.make_token(user)
+        response = self.get('/api/verify/{}/0000000-0000000/'.format(uidb64))
+        self.assertEqual(response.status_code, 404)
+        response = self.get('/api/verify/0/{}/'.format(token))
+        self.assertEqual(response.status_code, 404)
+        response = self.get('/api/verify/{}/{}/'.format(uidb64, token))
+        self.assertEqual(response.status_code, 204)
+    
+    def test_delete_verify(self):
+        user = User.objects.create_user(email='1207koo@gmail.com', password='koo', username='KOO')
+        response = self.delete('/api/verify/0/0000000-0000000/')
         self.assertEqual(response.status_code, 405)
