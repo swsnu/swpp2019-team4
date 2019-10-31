@@ -24,19 +24,19 @@ const TimeTableView=(props)=>{
     for(let i=0;i<6;i++){
         tablehtml_ith.push(<th key={i} height={heightunit} width={widthunit}>{table_header_string[i]}</th>)
     }
-    tablehtml.push(<tr key={0}>{tablehtml_ith}</tr>);
+    tablehtml.push(<tr key={-1}>{tablehtml_ith}</tr>);
     for(let i=0;i<26;i++){
         tablehtml_ith=[];
-        if(i%2==0)tablehtml_ith.push(<td key={1000000*i} height={2*heightunit} width={widthunit} rowSpan={2}>{(i/2+8)+":00"}</td>)
+        if(i%2==0)tablehtml_ith.push(<td key={1000*i+1000} height={2*heightunit} width={widthunit} rowSpan={2}>{(i/2+8)+":00"}</td>)
         for(let j=0;j<5;j++){
             if(courses_list[j][i].length==0){
-                tablehtml_ith.push(<td key={1000*i+j} height={heightunit} width={widthunit}/>)
+                tablehtml_ith.push(<td key={1000*i+j+1001} height={heightunit} width={widthunit}/>)
             }
             else{
                 tablehtml_ith.push(<td key={1000*i+j} height={heightunit} width={widthunit}><div className="square" style={{height: (heightunit*courses_list[j][i][0]["length"]/30)*1.1+"px", width: widthunit+"px", backgroundColor: courses_list[j][i][0]["color"]}}>{courses_list[j][i][0]["name"]}</div></td>)
             }
         }
-        tablehtml.push(<tr key={i+1}>{tablehtml_ith}</tr>);
+        tablehtml.push(<tr key={-i-2}>{tablehtml_ith}</tr>);
     }
     return (
         <div className='Timetableview'>
