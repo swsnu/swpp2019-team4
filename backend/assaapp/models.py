@@ -83,12 +83,19 @@ class Course(models.Model):
 class Timetable(models.Model):
     title = models.CharField(max_length=64)
     semester = models.IntegerField(default = 0)
-    courses = models.ManyToManyField(Course, related_name = 'timetables')
+    courses = models.ManyToManyField(Course, related_name = 'timetables', through = 'CourseColor')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
 
     def __str__(self):
         return self.title
+class CourseColor(models.Model):
+    timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    color = models.CharField(max_length=8, default = '#FFFFFF')
 
+    def __str__(self):
+        return self.color
 
 class CourseTime(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
