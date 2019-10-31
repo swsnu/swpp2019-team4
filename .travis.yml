@@ -24,8 +24,8 @@ matrix:
     cache:
       pip: true
     python:
-    - '3.7'
-    dist: trusty
+    - '3.6.8'
+    dist: xenial
     addons:
       sonarcloud:
         organization: "swsnu"
