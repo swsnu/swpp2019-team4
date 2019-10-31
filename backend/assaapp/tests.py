@@ -113,8 +113,8 @@ class AssaTestCase(TestCase):
         self.assertIn('grade', response.content.decode())
 
     def test_timetable(self):
-        timetable = Timetable.objects.get(id=1)
-        self.assertEqual(str(timetable), '21')
+        timetable = Timetable.objects.get(id=2)
+        self.assertEqual(str(timetable), 'My timetable')
 
     def test_get_timetable(self):
         response = self.get('/api/timetable/')
@@ -123,7 +123,7 @@ class AssaTestCase(TestCase):
             content_type='application/json')
         response = self.get('/api/timetable/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(2, len(json.loads(response.content.decode())))
+        self.assertEqual(3, len(json.loads(response.content.decode())))
 
     def test_delete_timetable(self):
         response = self.delete('/api/timetable/')
