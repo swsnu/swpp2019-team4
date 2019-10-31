@@ -11,6 +11,6 @@ urlpatterns = [
     path('timetable/', views.timetable),
     path('timetable/<int:timetable_id>/', views.timetable_id, name='timetable_id'),
     path('timetable/<int:timetable_id>/course/', views.timetable_id_course, name='timetable_id_course'),
-    path('course/', views.timetable_id, name='course'),
-    path('course/<int:course_id>/', views.timetable_id, name='course_id')
+    path('course/', views.course, name='course'),
+    path('course/<int:course_id>/', views.course_id, name='course_id')
 ]
