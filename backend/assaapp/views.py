@@ -1,5 +1,5 @@
 from django.db.utils import IntegrityError
-from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseNotFound
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -47,9 +47,9 @@ def verify(request, uidb64, token):
         if user is not None and account_activation_token.check_token(user, token):
             user.is_active = True
             user.save()
-            return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+            return HttpResponse(status=204)
         else:
-            return HttpResponse('Activation link is invalid!')
+            return HttpResponseNotFound()
     else:
         return HttpResponseNotAllowed(['GET'])
 
