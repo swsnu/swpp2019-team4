@@ -55,14 +55,6 @@ class User(AbstractBaseUser):
     def is_staff(self):
         return self.is_admin
 
-class Timetable(models.Model):
-    title = models.CharField(max_length=64)
-    semester = models.IntegerField(default = 0)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.title
-
 class Course(models.Model):
     semester = models.CharField(max_length=8, default="")
     classification = models.CharField(max_length=8, default="")
@@ -88,10 +80,15 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
-class TimetableCourse(models.Model):
-    timetable = models.ManyToManyField('Course', related_name='timetables')
-    color = models.CharField(max_length=8, default="#FFFFFF")
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+class Timetable(models.Model):
+    title = models.CharField(max_length=64)
+    semester = models.IntegerField(default = 0)
+    courses = models.ManyToManyField(Course, related_name = 'timetables')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title
+
 
 class CourseTime(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
