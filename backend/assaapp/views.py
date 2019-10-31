@@ -1,10 +1,14 @@
 from django.db.utils import IntegrityError
-from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseNotFound
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.core.mail import EmailMessage
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from assaapp.models import User, Timetable
 from json import JSONDecodeError
+from .tokens import account_activation_token
 import json
 
 def signup(request):
@@ -19,12 +23,35 @@ def signup(request):
             for detail in str_detail:
                 if detail in req_data:
                     req_detail[detail] = req_data[detail]
-            User.objects.create_user(email=email, password=password, username=username, **req_detail)
+            user = User.objects.create_user(email=email, password=password, username=username, **req_detail)
+            content = 'Hi, {}.\nhttp://localhost:8000/api/verify/{}/{}\n'.format(
+                username,
+                urlsafe_base64_encode(force_bytes(user.id)),
+                account_activation_token.make_token(user)
+            )
+            email = EmailMessage('Confirm your email from ASSA', content, to=[email])
+            email.send()
         except (KeyError, JSONDecodeError, IntegrityError) as e:
             return HttpResponseBadRequest()
         return HttpResponse(status=201)
     else:
         return HttpResponseNotAllowed(['POST'])
+
+def verify(request, uidb64, token):
+    if request.method == 'GET':
+        try:
+            uid = force_text(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(id=uid)
+        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        if user is not None and account_activation_token.check_token(user, token):
+            user.is_active = True
+            user.save()
+            return HttpResponse(status=204)
+        else:
+            return HttpResponseNotFound()
+    else:
+        return HttpResponseNotAllowed(['GET'])
 
 def signin(request):
     if request.method == 'POST':
