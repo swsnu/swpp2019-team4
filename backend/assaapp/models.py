@@ -56,43 +56,43 @@ class User(AbstractBaseUser):
         return self.is_admin
 
 class Course(models.Model):
-    semester = models.CharField(max_length=8, default="default")
-    classification = models.CharField(max_length=8, default="default")
-    college = models.CharField(max_length=32, default="default")
-    department = models.CharField(max_length=128, default="default")
-    degree_program = models.CharField(max_length=32, default="default")
+    semester = models.CharField(max_length=8, default='default')
+    classification = models.CharField(max_length=8, default='default')
+    college = models.CharField(max_length=32, default='default')
+    department = models.CharField(max_length=128, default='default')
+    degree_program = models.CharField(max_length=32, default='default')
     academic_year = models.IntegerField(default=-1)
-    course_number = models.CharField(max_length=16, default="default")
-    lecture_number = models.CharField(max_length=8, default="default")
-    title = models.CharField(max_length=128, default="default")
-    subtitle = models.CharField(max_length=128, default="default")
+    course_number = models.CharField(max_length=16, default='default')
+    lecture_number = models.CharField(max_length=8, default='default')
+    title = models.CharField(max_length=128, default='default')
+    subtitle = models.CharField(max_length=128, default='default')
     credit = models.IntegerField(default=-1)
     lecture_credit = models.IntegerField(default=-1)
     lab_credit = models.IntegerField(default=-1)
-    lecture_type = models.CharField(max_length=64, default="default")
-    location = models.CharField(max_length=128, default="default")
-    professor = models.CharField(max_length=64, default="default")
-    quota = models.CharField(max_length=16, default="default")
-    remark = models.TextField(default="default")
-    language = models.CharField(max_length=16, default="default")
-    status = models.CharField(max_length=8, default="default")
+    lecture_type = models.CharField(max_length=64, default='default')
+    location = models.CharField(max_length=128, default='default')
+    professor = models.CharField(max_length=64, default='default')
+    quota = models.CharField(max_length=16, default='default')
+    remark = models.TextField(default='default')
+    language = models.CharField(max_length=16, default='default')
+    status = models.CharField(max_length=8, default='default')
 
     def __str__(self):
         return self.title
 
 class Timetable(models.Model):
     title = models.CharField(max_length=64)
-    semester = models.IntegerField(default = 0)
-    courses = models.ManyToManyField(Course, related_name = 'timetables', through = 'CourseColor')
+    semester = models.IntegerField(default=0)
+    courses = models.ManyToManyField(Course, related_name='timetables', through='CourseColor')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
-
     def __str__(self):
         return self.title
+
 class CourseColor(models.Model):
     timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    color = models.CharField(max_length=8, default = 'default')
+    color = models.CharField(max_length=8, default='default')
 
     def __str__(self):
         return self.color
