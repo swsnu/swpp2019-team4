@@ -1,5 +1,8 @@
 from django.test import TestCase, Client
 from assaapp.models import User, Timetable
+from assaapp.tokens import account_activation_token
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_text
 import json
     
 class AssaTestCase(TestCase):
@@ -110,8 +113,8 @@ class AssaTestCase(TestCase):
         self.assertIn('grade', response.content.decode())
 
     def test_timetable(self):
-        timetable = Timetable.objects.get(id=1)
-        self.assertEqual(str(timetable), '21')
+        timetable = Timetable.objects.get(id=2)
+        self.assertEqual(str(timetable), 'My timetable')
 
     def test_get_timetable(self):
         response = self.get('/api/timetable/')
@@ -120,8 +123,24 @@ class AssaTestCase(TestCase):
             content_type='application/json')
         response = self.get('/api/timetable/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(2, len(json.loads(response.content.decode())))
+        self.assertEqual(3, len(json.loads(response.content.decode())))
 
     def test_delete_timetable(self):
         response = self.delete('/api/timetable/')
+        self.assertEqual(response.status_code, 405)
+
+    def test_get_verify(self):
+        user = User.objects.create_user(email='1207koo@gmail.com', password='koo', username='KOO')
+        uidb64 = urlsafe_base64_encode(force_bytes(user.id))
+        token = account_activation_token.make_token(user)
+        response = self.get('/api/verify/{}/0000000-0000000/'.format(uidb64))
+        self.assertEqual(response.status_code, 404)
+        response = self.get('/api/verify/0/{}/'.format(token))
+        self.assertEqual(response.status_code, 404)
+        response = self.get('/api/verify/{}/{}/'.format(uidb64, token))
+        self.assertEqual(response.status_code, 204)
+    
+    def test_delete_verify(self):
+        user = User.objects.create_user(email='1207koo@gmail.com', password='koo', username='KOO')
+        response = self.delete('/api/verify/0/0000000-0000000/')
         self.assertEqual(response.status_code, 405)

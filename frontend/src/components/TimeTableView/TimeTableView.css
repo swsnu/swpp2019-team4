@@ -1,0 +1,16 @@
+table {
+    border: 3px solid #444444;
+    border-collapse: collapse;
+}
+
+th {
+    border: 2px;
+}
+
+td {
+    vertical-align: top;
+}
+
+.square{
+    position: absolute;
+}
