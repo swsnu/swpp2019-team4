@@ -6,11 +6,6 @@ matrix:
     node_js:
     - '10'
     dist: trusty
-    addons:
-      sonarcloud:
-        organization: "swsnu"
-        token:
-          secure: "gigbG2vS5Zbd+Ev/cfRuEUhQp9ulN+VdSwOxdPECmUQ/sEoYEsH7lw+iKfYPrZrZC80FNMPNi4qy2emjFo8zutSyHhlxeEK3PGiQCCLB/HZahb0pk8PMo1FtSgI8bMbLHphGWPEiQse5G8LyHs+SFJha8QXkpCFxPAOH3HxOVDBKSGtY6eBrEexhRgFrhiV3H1PnDtWeDc95anTvjpKTqEfPuKjHTUw7/Dl0T6HHaOyFIy4SmaJ8Q3di5KyZOAPI/md4Of9AY2pEEQy/X/gFWtJtf1IT7vkQua4uhD83iYu32RovCFMR0nqv4kPov4L9X9rKTbIe+4iM7OkM+ae/MxXyCjfRXZonzxT8U7IjoN8A/bcz/AV96FAeG2Ga6rOHyDo7yUNJDLG3kVJ79XPRVTstNSs7F+TMVQBour1uAJFt8WJvHgPcQY1ig/JB7HH7pVF1xMmZZ2+jXG8dsSzNJZ6MObN+zl1XX4ZuKuWWeYu2DGWF9L4uzxJ5dTr09BCMAgXiLDSvMHWvmySa7tRKLUtcljGfa4ugHBeb5vPR+fP7IUaa0y+2p2pWtum9J/5GhVJ+jrfQBYcz6KjJac4px9WUgOt5nL4Pf8h70YgycD+hZHtkyp3EUDdknWaDB26ShjEQFa/OCBpMtWeXGRRdPwC+/XV1Z2gMACUtbDDaMKI="
     before_install:
     - cd frontend
     install:
@@ -25,11 +20,6 @@ matrix:
     python:
     - '3.6.8'
     dist: xenial
-    addons:
-      sonarcloud:
-        organization: "swsnu"
-        token:
-          secure: "gigbG2vS5Zbd+Ev/cfRuEUhQp9ulN+VdSwOxdPECmUQ/sEoYEsH7lw+iKfYPrZrZC80FNMPNi4qy2emjFo8zutSyHhlxeEK3PGiQCCLB/HZahb0pk8PMo1FtSgI8bMbLHphGWPEiQse5G8LyHs+SFJha8QXkpCFxPAOH3HxOVDBKSGtY6eBrEexhRgFrhiV3H1PnDtWeDc95anTvjpKTqEfPuKjHTUw7/Dl0T6HHaOyFIy4SmaJ8Q3di5KyZOAPI/md4Of9AY2pEEQy/X/gFWtJtf1IT7vkQua4uhD83iYu32RovCFMR0nqv4kPov4L9X9rKTbIe+4iM7OkM+ae/MxXyCjfRXZonzxT8U7IjoN8A/bcz/AV96FAeG2Ga6rOHyDo7yUNJDLG3kVJ79XPRVTstNSs7F+TMVQBour1uAJFt8WJvHgPcQY1ig/JB7HH7pVF1xMmZZ2+jXG8dsSzNJZ6MObN+zl1XX4ZuKuWWeYu2DGWF9L4uzxJ5dTr09BCMAgXiLDSvMHWvmySa7tRKLUtcljGfa4ugHBeb5vPR+fP7IUaa0y+2p2pWtum9J/5GhVJ+jrfQBYcz6KjJac4px9WUgOt5nL4Pf8h70YgycD+hZHtkyp3EUDdknWaDB26ShjEQFa/OCBpMtWeXGRRdPwC+/XV1Z2gMACUtbDDaMKI="
     services:
     - sqlite3
     before_install:
@@ -40,4 +30,11 @@ matrix:
     - pylint **/*.py --load-plugins pylint_django
     - coverage run --source='.' manage.py test
     - coverage xml
+
+  - addons:
+      sonarcloud:
+        organization: "swsnu"
+        token:
+          secure: "gigbG2vS5Zbd+Ev/cfRuEUhQp9ulN+VdSwOxdPECmUQ/sEoYEsH7lw+iKfYPrZrZC80FNMPNi4qy2emjFo8zutSyHhlxeEK3PGiQCCLB/HZahb0pk8PMo1FtSgI8bMbLHphGWPEiQse5G8LyHs+SFJha8QXkpCFxPAOH3HxOVDBKSGtY6eBrEexhRgFrhiV3H1PnDtWeDc95anTvjpKTqEfPuKjHTUw7/Dl0T6HHaOyFIy4SmaJ8Q3di5KyZOAPI/md4Of9AY2pEEQy/X/gFWtJtf1IT7vkQua4uhD83iYu32RovCFMR0nqv4kPov4L9X9rKTbIe+4iM7OkM+ae/MxXyCjfRXZonzxT8U7IjoN8A/bcz/AV96FAeG2Ga6rOHyDo7yUNJDLG3kVJ79XPRVTstNSs7F+TMVQBour1uAJFt8WJvHgPcQY1ig/JB7HH7pVF1xMmZZ2+jXG8dsSzNJZ6MObN+zl1XX4ZuKuWWeYu2DGWF9L4uzxJ5dTr09BCMAgXiLDSvMHWvmySa7tRKLUtcljGfa4ugHBeb5vPR+fP7IUaa0y+2p2pWtum9J/5GhVJ+jrfQBYcz6KjJac4px9WUgOt5nL4Pf8h70YgycD+hZHtkyp3EUDdknWaDB26ShjEQFa/OCBpMtWeXGRRdPwC+/XV1Z2gMACUtbDDaMKI="
+    script:
     - sonar-scanner
