@@ -71,6 +71,7 @@ class Signup extends Component {
                 <p className='violation-notice'>{grade_notice}</p>
                 <br/>
                 <button id='to-login-button'
+                        disabled={this.props.emailSending}
                         onClick={() => this.goToLogin()}>뒤로가기</button>
                 <button id='confirm-signup-button' 
                         disabled={this.props.emailSending || !(email_valid && password_valid && password_confirm_valid && username_valid && department_valid && grade_valid)}
