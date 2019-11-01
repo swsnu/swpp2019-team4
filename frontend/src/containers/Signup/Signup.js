@@ -16,10 +16,12 @@ class Signup extends Component {
     }
     
     componentDidMount(){
+        this.props.onSetSendStatus(false);
         this.props.onGetUser();
     }
 
     handleSignup (email, password, username, department, grade) {
+        this.props.onSetSendStatus(true);
         this.props.onPostSignup(email, password, username, department, grade);
     }
 
@@ -71,7 +73,7 @@ class Signup extends Component {
                 <button id='to-login-button'
                         onClick={() => this.goToLogin()}>뒤로가기</button>
                 <button id='confirm-signup-button' 
-                        disabled={!(email_valid && password_valid && password_confirm_valid && username_valid && department_valid && grade_valid)}
+                        disabled={this.props.emailSending || !(email_valid && password_valid && password_confirm_valid && username_valid && department_valid && grade_valid)}
                         onClick={() => this.handleSignup(this.state.email,
                                                          this.state.password,
                                                          this.state.username,
@@ -87,6 +89,7 @@ class Signup extends Component {
 const mapStateToProps = state => {
     return {
         storedUser: state.user.user,
+        emailSending: state.user.email_sending
     }
 };
 
@@ -96,6 +99,8 @@ const mapDispatchToProps = dispatch => {
             dispatch(actionCreators.getUser()),
         onPostSignup: (email, password, username, department, grade) =>
             dispatch(actionCreators.postSignup(email, password, username, department, grade)),
+        onSetSendStatus: (status) =>
+            dispatch(actionCreators.setSendStatus(status))
     }
 };
 
