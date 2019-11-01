@@ -91,7 +91,7 @@ class Course(models.Model):
 
 class Timetable(models.Model):
     title = models.CharField(max_length=64)
-    semester = models.IntegerField(default=0)
+    semester = models.CharField(max_length=8, default="")
     courses = models.ManyToManyField(Course, related_name='timetables', through='CourseColor')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
