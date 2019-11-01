@@ -1,6 +1,7 @@
 matrix:
   include:
-  - language: node_js
+  - stage: "UnitTest"
+    language: node_js
     cache:
       yarn: true
     node_js:
@@ -31,7 +32,8 @@ matrix:
     - coverage run --source='.' manage.py test
     - coverage xml
 
-  - dist: trusty
+  - stage: "SonarCloud"
+    dist: trusty
     addons:
       sonarcloud:
         organization: "swsnu"
