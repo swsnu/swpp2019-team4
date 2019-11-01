@@ -12,7 +12,7 @@ class AssaTestCase(TestCase):
         self.client = Client(enforce_csrf_checks=True)
         user1 = User.objects.create_superuser(email='cubec@gmail.com', password='cubec', username='Jung Jaeyun')
         user2 = User.objects.create_user(email='khsoo@gmail.com', password='khsoo', username='Kim Hyunsoo')
-        user3 = User.objects.create_superuser(email='young', password='young', username='Kim Youngchan')
+        user3 = User.objects.create_superuser(email='young@naver.com', password='young', username='Kim Youngchan')
         timetable1 = Timetable.objects.create(title='21', user=user1)
         timetable2 = Timetable.objects.create(title='22', user=user1)
         course1 = Course.objects.create(
@@ -142,7 +142,7 @@ class AssaTestCase(TestCase):
         self.assertEqual(str(timetable), 'My timetable')
 
     def test_timetable_not_allowed(self):
-        response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
+        response = self.post('/api/signin/', json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
             content_type='application/json')
         response = self.put('/api/timetable/')
         self.assertEqual(response.status_code, 405)
@@ -161,7 +161,7 @@ class AssaTestCase(TestCase):
     def test_post_timetable(self):
         response = self.post('/api/timetable/')
         self.assertEqual(response.status_code, 401)
-        response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
+        response = self.post('/api/signin/', json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
             content_type='application/json')
         response = self.post('/api/timetable/', json.dumps({}),
             content_type='application/json')
@@ -173,7 +173,7 @@ class AssaTestCase(TestCase):
         self.assertEqual(4, len(json.loads(response.content.decode())))
 
     def test_timetable_id_not_allowed(self):
-        response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
+        response = self.post('/api/signin/', json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
             content_type='application/json')
         response = self.post('/api/timetable/1/')
         self.assertEqual(response.status_code, 405)
@@ -181,7 +181,7 @@ class AssaTestCase(TestCase):
     def test_get_timetable_id(self):
         response = self.get('/api/timetable/1/')
         self.assertEqual(response.status_code, 401)
-        response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
+        response = self.post('/api/signin/', json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
             content_type='application/json')
         response = self.get('/api/timetable/1/')
         self.assertEqual(response.status_code, 200)
@@ -192,7 +192,7 @@ class AssaTestCase(TestCase):
     def test_put_timetable_id(self):
         response = self.put('/api/timetable/1/')
         self.assertEqual(response.status_code, 401)
-        response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
+        response = self.post('/api/signin/', json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
             content_type='application/json')
         response = self.put('/api/timetable/1/', json.dumps({}),
             content_type='application/json')
@@ -205,7 +205,7 @@ class AssaTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_put_timetable_id_diff_user(self):
-        response = self.post('/api/signin/', json.dumps({'email': 'young', 'password': 'young'}),
+        response = self.post('/api/signin/', json.dumps({'email': 'young@naver.com', 'password': 'young'}),
             content_type='application/json')
         response = self.put('/api/timetable/1/', json.dumps({'title':'youngchan1', 'semester':'2019-s'}),
             content_type='application/json')
@@ -214,7 +214,7 @@ class AssaTestCase(TestCase):
     def test_delete_timetable_id(self):
         response = self.delete('/api/timetable/1/')
         self.assertEqual(response.status_code, 401)
-        response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
+        response = self.post('/api/signin/', json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
             content_type='application/json')
         try:
             response = self.delete('/api/timetable/1/')
@@ -230,13 +230,13 @@ class AssaTestCase(TestCase):
         self.assertEqual(2, len(json.loads(response.content.decode())))
 
     def test_delete_timetable_id_diff_user(self):
-        response = self.post('/api/signin/', json.dumps({'email': 'young', 'password': 'young'}),
+        response = self.post('/api/signin/', json.dumps({'email': 'young@naver.com', 'password': 'young'}),
             content_type='application/json')
         response = self.delete('/api/timetable/1/')
         self.assertEqual(response.status_code, 403)
 
     def test_timetable_id_course_not_allowed(self):
-        response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
+        response = self.post('/api/signin/', json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
             content_type='application/json')
         response = self.put('/api/timetable/1/course/')
         self.assertEqual(response.status_code, 405)
@@ -246,7 +246,7 @@ class AssaTestCase(TestCase):
     def test_get_timetable_id_course(self):
         response = self.get('/api/timetable/1/course/')
         self.assertEqual(response.status_code, 401)
-        response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
+        response = self.post('/api/signin/', json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
             content_type='application/json')
         response = self.get('/api/timetable/101/course/')
         self.assertEqual(response.status_code, 404)
@@ -257,7 +257,7 @@ class AssaTestCase(TestCase):
     def test_post_timetable_id_course(self):
         response = self.post('/api/timetable/1/course/')
         self.assertEqual(response.status_code, 401)
-        response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
+        response = self.post('/api/signin/', json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
             content_type='application/json')
         response = self.post('/api/timetable/1/course/', json.dumps({}),
             content_type='application/json')
@@ -275,7 +275,7 @@ class AssaTestCase(TestCase):
         self.assertEqual(1, len(json.loads(response.content.decode())))
 
     def test_course_not_allowed(self):
-        response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
+        response = self.post('/api/signin/', json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
             content_type='application/json')
         response = self.put('/api/course/')
         self.assertEqual(response.status_code, 405)
@@ -285,7 +285,7 @@ class AssaTestCase(TestCase):
     def test_get_course(self):
         response = self.get('/api/course/')
         self.assertEqual(response.status_code, 401)
-        response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
+        response = self.post('/api/signin/', json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
             content_type='application/json')
         response = self.get('/api/course/')
         self.assertEqual(response.status_code, 200)
@@ -294,7 +294,7 @@ class AssaTestCase(TestCase):
     def test_post_course(self):
         response = self.post('/api/course/')
         self.assertEqual(response.status_code, 401)
-        response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
+        response = self.post('/api/signin/', json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
             content_type='application/json')
         response = self.post('/api/course/', json.dumps({}), content_type='application/json')
         self.assertEqual(response.status_code, 400)
@@ -310,7 +310,7 @@ class AssaTestCase(TestCase):
         self.assertEqual(2, len(json.loads(response.content.decode())))
 
     def test_course_id_not_allowed(self):
-        response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
+        response = self.post('/api/signin/', json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
             content_type='application/json')
         response = self.post('/api/course/1/')
         self.assertEqual(response.status_code, 405)
@@ -318,7 +318,7 @@ class AssaTestCase(TestCase):
     def test_get_course_id(self):
         response = self.get('/api/course/1/')
         self.assertEqual(response.status_code, 401)
-        response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
+        response = self.post('/api/signin/', json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
             content_type='application/json')
         response = self.get('/api/course/101/')
         self.assertEqual(response.status_code, 404)
@@ -334,7 +334,7 @@ class AssaTestCase(TestCase):
     def test_put_course_id(self):
         response = self.put('/api/course/1/')
         self.assertEqual(response.status_code, 401)
-        response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
+        response = self.post('/api/signin/', json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
             content_type='application/json')
         response = self.put('/api/course/101/', json.dumps({}), content_type='application/json')
         self.assertEqual(response.status_code, 404)
@@ -359,7 +359,7 @@ class AssaTestCase(TestCase):
     def test_delete_course_id(self):
         response = self.delete('/api/course/1/')
         self.assertEqual(response.status_code, 401)
-        response = self.post('/api/signin/', json.dumps({'email': 'cubec', 'password': 'cubec'}),
+        response = self.post('/api/signin/', json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
             content_type='application/json')
         response = self.delete('/api/course/101/')
         self.assertEqual(response.status_code, 404)
