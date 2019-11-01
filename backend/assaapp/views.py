@@ -151,11 +151,12 @@ def timetable(request):
 def timetable_id(request, timetable_id):
     if request.user.is_authenticated:
         if request.method == 'GET':
-            timetable_list = [timetable for timetable in Timetable.objects.all().values() if timetable['id'] == timetable_id]
-            if len(timetable_list) == 0:
+            try:
+                timetable = model_to_dict(Timetable.objects.get(id=timetable_id))
+            except (Timetable.DoesNotExist) as e:
                 return HttpResponseNotFound()
             else:
-                return JsonResponse(timetable_list[0], safe=False)
+                return JsonResponse(timetable)
         if request.method == 'PUT':
             try:
                 body = request.body.decode()

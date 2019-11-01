@@ -185,7 +185,7 @@ class AssaTestCase(TestCase):
             content_type='application/json')
         response = self.get('/api/timetable/1/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content.decode(), '{"id": 1, "title": "My timetable", "semester": "", "user_id": 1}')
+        self.assertEqual(response.content.decode(), '{"id": 1, "title": "My timetable", "semester": "", "user": 1, "courses": []}')
         response = self.get('/api/timetable/101/')
         self.assertEqual(response.status_code, 404)
 
