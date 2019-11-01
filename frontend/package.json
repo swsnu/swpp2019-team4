@@ -45,6 +45,9 @@
       "src/**/*.{js,jsx}",
       "!src/index.js",
       "!src/serviceWorker.js"
+    ],
+    "coverageReporters": [
+      "cobertura"
     ]
   },
   "devDependencies": {

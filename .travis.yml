@@ -32,7 +32,8 @@ matrix:
     - cd ..
     - cd backend
     - pylint **/*.py --load-plugins pylint_django
-    - coverage run --source='.' manage.py test
+    - coverage run --branch --source='.' manage.py test
     - coverage xml
     - cd ..
+    - python merge-xml.py
     - sonar-scanner

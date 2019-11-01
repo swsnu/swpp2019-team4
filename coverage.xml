@@ -1,0 +1,1172 @@
+<?xml version='1.0' encoding='utf-8'?>
+<coverage branch-rate="0.9438202247191011" branches-covered="84" branches-valid="89" complexity="0" line-rate="0.964221824686941" lines-covered="539" lines-valid="559" timestamp="1572623182641" version="0.1">
+  <sources>
+    <source>/home/cubec/swpp2019-team4</source>
+  </sources>
+  <packages>
+    <package branch-rate="1" line-rate="1" name="src">
+      <classes>
+        <class branch-rate="1" filename="frontend/src/App.js" line-rate="1" name="App.js">
+          <methods>
+            <method hits="1" name="App" signature="()V">
+              <lines>
+                <line hits="1" number="9" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line branch="false" hits="1" number="10" />
+          </lines>
+        </class>
+      </classes>
+    </package>
+    <package branch-rate="1" line-rate="1" name="src.components.MainPageFriendListView">
+      <classes>
+        <class branch-rate="1" filename="frontend/src/components/MainPageFriendListView/MainPageFriendListView.js" line-rate="1" name="MainPageFriendListView.js">
+          <methods>
+            <method hits="2" name="(anonymous_0)" signature="()V">
+              <lines>
+                <line hits="2" number="3" />
+              </lines>
+            </method>
+            <method hits="8" name="(anonymous_1)" signature="()V">
+              <lines>
+                <line hits="8" number="4" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line branch="false" hits="2" number="3" />
+            <line branch="true" condition-coverage="100% (2/2)" hits="8" number="4" />
+            <line branch="false" hits="2" number="5" />
+          </lines>
+        </class>
+      </classes>
+    </package>
+    <package branch-rate="1" line-rate="1" name="src.components.TimeTableView">
+      <classes>
+        <class branch-rate="1" filename="frontend/src/components/TimeTableView/TimeTableView.js" line-rate="1" name="TimeTableView.js">
+          <methods>
+            <method hits="3" name="(anonymous_0)" signature="()V">
+              <lines>
+                <line hits="3" number="9" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line branch="false" hits="3" number="9" />
+            <line branch="false" hits="3" number="10" />
+            <line branch="false" hits="3" number="11" />
+            <line branch="false" hits="3" number="12" />
+            <line branch="false" hits="3" number="13" />
+            <line branch="false" hits="3" number="14" />
+            <line branch="false" hits="3" number="15" />
+            <line branch="false" hits="3" number="16" />
+            <line branch="false" hits="78" number="17" />
+            <line branch="false" hits="468" number="18" />
+            <line branch="false" hits="3" number="21" />
+            <line branch="false" hits="34" number="22" />
+            <line branch="false" hits="3" number="24" />
+            <line branch="false" hits="18" number="25" />
+            <line branch="false" hits="3" number="27" />
+            <line branch="false" hits="3" number="28" />
+            <line branch="false" hits="78" number="29" />
+            <line branch="true" condition-coverage="100% (2/2)" hits="78" number="30" />
+            <line branch="false" hits="78" number="31" />
+            <line branch="true" condition-coverage="100% (2/2)" hits="390" number="32" />
+            <line branch="false" hits="356" number="33" />
+            <line branch="false" hits="34" number="36" />
+            <line branch="false" hits="78" number="39" />
+            <line branch="false" hits="3" number="41" />
+          </lines>
+        </class>
+      </classes>
+    </package>
+    <package branch-rate="1" line-rate="1" name="src.components.TopBar">
+      <classes>
+        <class branch-rate="1" filename="frontend/src/components/TopBar/TopBar.js" line-rate="1" name="TopBar.js">
+          <methods>
+            <method hits="3" name="(anonymous_0)" signature="()V">
+              <lines>
+                <line hits="3" number="4" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line branch="false" hits="3" number="4" />
+            <line branch="false" hits="3" number="5" />
+          </lines>
+        </class>
+      </classes>
+    </package>
+    <package branch-rate="1" line-rate="1" name="src.containers.Login">
+      <classes>
+        <class branch-rate="1" filename="frontend/src/containers/Login/Login.js" line-rate="1" name="Login.js">
+          <methods>
+            <method hits="4" name="(anonymous_0)" signature="()V">
+              <lines>
+                <line hits="4" number="12" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_1)" signature="()V">
+              <lines>
+                <line hits="1" number="16" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_2)" signature="()V">
+              <lines>
+                <line hits="1" number="20" />
+              </lines>
+            </method>
+            <method hits="6" name="(anonymous_3)" signature="()V">
+              <lines>
+                <line hits="6" number="24" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_4)" signature="()V">
+              <lines>
+                <line hits="1" number="33" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_5)" signature="()V">
+              <lines>
+                <line hits="1" number="35" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_6)" signature="()V">
+              <lines>
+                <line hits="1" number="36" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_7)" signature="()V">
+              <lines>
+                <line hits="1" number="37" />
+              </lines>
+            </method>
+            <method hits="6" name="(anonymous_8)" signature="()V">
+              <lines>
+                <line hits="6" number="43" />
+              </lines>
+            </method>
+            <method hits="4" name="(anonymous_9)" signature="()V">
+              <lines>
+                <line hits="4" number="49" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_10)" signature="()V">
+              <lines>
+                <line hits="1" number="51" />
+              </lines>
+            </method>
+            <method hits="4" name="(anonymous_11)" signature="()V">
+              <lines>
+                <line hits="4" number="53" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line branch="false" hits="4" number="7" />
+            <line branch="false" hits="4" number="13" />
+            <line branch="false" hits="1" number="17" />
+            <line branch="false" hits="1" number="21" />
+            <line branch="true" condition-coverage="100% (2/2)" hits="6" number="25" />
+            <line branch="false" hits="1" number="26" />
+            <line branch="false" hits="5" number="30" />
+            <line branch="false" hits="1" number="33" />
+            <line branch="false" hits="1" number="35" />
+            <line branch="false" hits="1" number="36" />
+            <line branch="false" hits="1" number="37" />
+            <line branch="false" hits="2" number="43" />
+            <line branch="false" hits="6" number="44" />
+            <line branch="false" hits="2" number="49" />
+            <line branch="false" hits="4" number="50" />
+            <line branch="false" hits="1" number="52" />
+            <line branch="false" hits="4" number="54" />
+          </lines>
+        </class>
+      </classes>
+    </package>
+    <package branch-rate="1" line-rate="1" name="src.containers.Main">
+      <classes>
+        <class branch-rate="1" filename="frontend/src/containers/Main/Main.js" line-rate="1" name="Main.js">
+          <methods>
+            <method hits="3" name="(anonymous_0)" signature="()V">
+              <lines>
+                <line hits="3" number="14" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_1)" signature="()V">
+              <lines>
+                <line hits="1" number="18" />
+              </lines>
+            </method>
+            <method hits="3" name="(anonymous_2)" signature="()V">
+              <lines>
+                <line hits="3" number="22" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_3)" signature="()V">
+              <lines>
+                <line hits="1" number="53" />
+              </lines>
+            </method>
+            <method hits="4" name="(anonymous_4)" signature="()V">
+              <lines>
+                <line hits="4" number="62" />
+              </lines>
+            </method>
+            <method hits="3" name="(anonymous_5)" signature="()V">
+              <lines>
+                <line hits="3" number="68" />
+              </lines>
+            </method>
+            <method hits="3" name="(anonymous_6)" signature="()V">
+              <lines>
+                <line hits="3" number="70" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_7)" signature="()V">
+              <lines>
+                <line hits="1" number="72" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line branch="false" hits="3" number="10" />
+            <line branch="false" hits="3" number="15" />
+            <line branch="false" hits="1" number="19" />
+            <line branch="true" condition-coverage="100% (2/2)" hits="3" number="23" />
+            <line branch="false" hits="1" number="24" />
+            <line branch="false" hits="2" number="28" />
+            <line branch="false" hits="2" number="34" />
+            <line branch="false" hits="2" number="50" />
+            <line branch="false" hits="1" number="53" />
+            <line branch="false" hits="2" number="62" />
+            <line branch="false" hits="4" number="63" />
+            <line branch="false" hits="2" number="68" />
+            <line branch="false" hits="3" number="69" />
+            <line branch="false" hits="3" number="71" />
+            <line branch="false" hits="1" number="73" />
+          </lines>
+        </class>
+      </classes>
+    </package>
+    <package branch-rate="1" line-rate="1" name="src.containers.Signup">
+      <classes>
+        <class branch-rate="1" filename="frontend/src/containers/Signup/Signup.js" line-rate="1" name="Signup.js">
+          <methods>
+            <method hits="5" name="(anonymous_0)" signature="()V">
+              <lines>
+                <line hits="5" number="18" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_1)" signature="()V">
+              <lines>
+                <line hits="1" number="23" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_2)" signature="()V">
+              <lines>
+                <line hits="1" number="28" />
+              </lines>
+            </method>
+            <method hits="13" name="(anonymous_3)" signature="()V">
+              <lines>
+                <line hits="13" number="32" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_4)" signature="()V">
+              <lines>
+                <line hits="1" number="55" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_5)" signature="()V">
+              <lines>
+                <line hits="1" number="58" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_6)" signature="()V">
+              <lines>
+                <line hits="1" number="61" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_7)" signature="()V">
+              <lines>
+                <line hits="1" number="64" />
+              </lines>
+            </method>
+            <method hits="2" name="(anonymous_8)" signature="()V">
+              <lines>
+                <line hits="2" number="67" />
+              </lines>
+            </method>
+            <method hits="2" name="(anonymous_9)" signature="()V">
+              <lines>
+                <line hits="2" number="70" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_10)" signature="()V">
+              <lines>
+                <line hits="1" number="75" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_11)" signature="()V">
+              <lines>
+                <line hits="1" number="78" />
+              </lines>
+            </method>
+            <method hits="7" name="(anonymous_12)" signature="()V">
+              <lines>
+                <line hits="7" number="90" />
+              </lines>
+            </method>
+            <method hits="5" name="(anonymous_13)" signature="()V">
+              <lines>
+                <line hits="5" number="97" />
+              </lines>
+            </method>
+            <method hits="5" name="(anonymous_14)" signature="()V">
+              <lines>
+                <line hits="5" number="99" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_15)" signature="()V">
+              <lines>
+                <line hits="1" number="101" />
+              </lines>
+            </method>
+            <method hits="6" name="(anonymous_16)" signature="()V">
+              <lines>
+                <line hits="6" number="103" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line branch="false" hits="5" number="9" />
+            <line branch="false" hits="5" number="19" />
+            <line branch="false" hits="5" number="20" />
+            <line branch="false" hits="1" number="24" />
+            <line branch="false" hits="1" number="25" />
+            <line branch="false" hits="1" number="29" />
+            <line branch="true" condition-coverage="100% (2/2)" hits="13" number="33" />
+            <line branch="false" hits="1" number="34" />
+            <line branch="false" hits="12" number="38" />
+            <line branch="true" condition-coverage="100% (2/2)" hits="12" number="39" />
+            <line branch="false" hits="12" number="40" />
+            <line branch="true" condition-coverage="100% (2/2)" hits="12" number="41" />
+            <line branch="false" hits="12" number="42" />
+            <line branch="true" condition-coverage="100% (2/2)" hits="12" number="43" />
+            <line branch="true" condition-coverage="100% (2/2)" hits="12" number="45" />
+            <line branch="true" condition-coverage="100% (2/2)" hits="12" number="46" />
+            <line branch="true" condition-coverage="100% (2/2)" hits="12" number="47" />
+            <line branch="true" condition-coverage="100% (2/2)" hits="12" number="48" />
+            <line branch="true" condition-coverage="100% (2/2)" hits="12" number="49" />
+            <line branch="true" condition-coverage="100% (2/2)" hits="12" number="50" />
+            <line branch="false" hits="12" number="51" />
+            <line branch="false" hits="1" number="55" />
+            <line branch="false" hits="1" number="58" />
+            <line branch="false" hits="1" number="61" />
+            <line branch="false" hits="1" number="64" />
+            <line branch="false" hits="2" number="67" />
+            <line branch="false" hits="2" number="70" />
+            <line branch="false" hits="1" number="75" />
+            <line branch="false" hits="1" number="78" />
+            <line branch="false" hits="2" number="90" />
+            <line branch="false" hits="7" number="91" />
+            <line branch="false" hits="2" number="97" />
+            <line branch="false" hits="5" number="98" />
+            <line branch="false" hits="5" number="100" />
+            <line branch="false" hits="1" number="102" />
+            <line branch="false" hits="6" number="104" />
+          </lines>
+        </class>
+      </classes>
+    </package>
+    <package branch-rate="1" line-rate="1" name="src.containers.Verify">
+      <classes>
+        <class branch-rate="1" filename="frontend/src/containers/Verify/Verify.js" line-rate="1" name="Verify.js">
+          <methods>
+            <method hits="2" name="(anonymous_0)" signature="()V">
+              <lines>
+                <line hits="2" number="7" />
+              </lines>
+            </method>
+            <method hits="2" name="(anonymous_1)" signature="()V">
+              <lines>
+                <line hits="2" number="11" />
+              </lines>
+            </method>
+            <method hits="4" name="(anonymous_2)" signature="()V">
+              <lines>
+                <line hits="4" number="24" />
+              </lines>
+            </method>
+            <method hits="2" name="(anonymous_3)" signature="()V">
+              <lines>
+                <line hits="2" number="30" />
+              </lines>
+            </method>
+            <method hits="2" name="(anonymous_4)" signature="()V">
+              <lines>
+                <line hits="2" number="32" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_5)" signature="()V">
+              <lines>
+                <line hits="1" number="34" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line branch="false" hits="2" number="8" />
+            <line branch="true" condition-coverage="100% (2/2)" hits="2" number="12" />
+            <line branch="false" hits="1" number="13" />
+            <line branch="false" hits="1" number="17" />
+            <line branch="false" hits="1" number="18" />
+            <line branch="false" hits="2" number="24" />
+            <line branch="false" hits="4" number="25" />
+            <line branch="false" hits="2" number="30" />
+            <line branch="false" hits="2" number="31" />
+            <line branch="false" hits="2" number="33" />
+            <line branch="false" hits="1" number="35" />
+          </lines>
+        </class>
+      </classes>
+    </package>
+    <package branch-rate="1" line-rate="1" name="src.store">
+      <classes>
+        <class branch-rate="1" filename="frontend/src/store/store.js" line-rate="1" name="store.js">
+          <methods>
+            <method hits="20" name="(anonymous_0)" signature="()V">
+              <lines>
+                <line hits="20" number="13" />
+              </lines>
+            </method>
+            <method hits="20" name="(anonymous_1)" signature="()V">
+              <lines>
+                <line hits="20" number="14" />
+              </lines>
+            </method>
+            <method hits="70" name="(anonymous_2)" signature="()V">
+              <lines>
+                <line hits="70" number="15" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line branch="false" hits="6" number="7" />
+            <line branch="false" hits="6" number="8" />
+            <line branch="false" hits="6" number="13" />
+            <line branch="false" hits="20" number="14" />
+            <line branch="false" hits="20" number="15" />
+            <line branch="false" hits="70" number="17" />
+            <line branch="false" hits="70" number="19" />
+            <line branch="false" hits="6" number="23" />
+            <line branch="true" condition-coverage="100% (2/2)" hits="6" number="25" />
+            <line branch="false" hits="6" number="26" />
+          </lines>
+        </class>
+      </classes>
+    </package>
+    <package branch-rate="1" line-rate="1" name="src.store.actions">
+      <classes>
+        <class branch-rate="1" filename="frontend/src/store/actions/actionTypes.js" line-rate="1" name="actionTypes.js">
+          <methods>
+          </methods>
+          <lines>
+            <line branch="false" hits="6" number="1" />
+            <line branch="false" hits="6" number="2" />
+            <line branch="false" hits="6" number="3" />
+          </lines>
+        </class>
+        <class branch-rate="1" filename="frontend/src/store/actions/index.js" line-rate="1" name="index.js">
+          <methods>
+          </methods>
+          <lines>
+            <line branch="false" hits="6" number="3" />
+            <line branch="false" hits="6" number="4" />
+          </lines>
+        </class>
+        <class branch-rate="1" filename="frontend/src/store/actions/user.js" line-rate="1" name="user.js">
+          <methods>
+            <method hits="8" name="(anonymous_0)" signature="()V">
+              <lines>
+                <line hits="8" number="4" />
+              </lines>
+            </method>
+            <method hits="8" name="(anonymous_1)" signature="()V">
+              <lines>
+                <line hits="8" number="5" />
+              </lines>
+            </method>
+            <method hits="2" name="(anonymous_2)" signature="()V">
+              <lines>
+                <line hits="2" number="10" />
+              </lines>
+            </method>
+            <method hits="2" name="(anonymous_3)" signature="()V">
+              <lines>
+                <line hits="2" number="11" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_4)" signature="()V">
+              <lines>
+                <line hits="1" number="13" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_5)" signature="()V">
+              <lines>
+                <line hits="1" number="17" />
+              </lines>
+            </method>
+            <method hits="2" name="(anonymous_6)" signature="()V">
+              <lines>
+                <line hits="2" number="24" />
+              </lines>
+            </method>
+            <method hits="2" name="(anonymous_7)" signature="()V">
+              <lines>
+                <line hits="2" number="25" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_8)" signature="()V">
+              <lines>
+                <line hits="1" number="27" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_9)" signature="()V">
+              <lines>
+                <line hits="1" number="28" />
+              </lines>
+            </method>
+            <method hits="2" name="(anonymous_10)" signature="()V">
+              <lines>
+                <line hits="2" number="35" />
+              </lines>
+            </method>
+            <method hits="2" name="(anonymous_11)" signature="()V">
+              <lines>
+                <line hits="2" number="36" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_12)" signature="()V">
+              <lines>
+                <line hits="1" number="38" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_13)" signature="()V">
+              <lines>
+                <line hits="1" number="39" />
+              </lines>
+            </method>
+            <method hits="2" name="(anonymous_14)" signature="()V">
+              <lines>
+                <line hits="2" number="43" />
+              </lines>
+            </method>
+            <method hits="2" name="(anonymous_15)" signature="()V">
+              <lines>
+                <line hits="2" number="44" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_16)" signature="()V">
+              <lines>
+                <line hits="1" number="46" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_17)" signature="()V">
+              <lines>
+                <line hits="1" number="47" />
+              </lines>
+            </method>
+            <method hits="2" name="(anonymous_18)" signature="()V">
+              <lines>
+                <line hits="2" number="51" />
+              </lines>
+            </method>
+            <method hits="2" name="(anonymous_19)" signature="()V">
+              <lines>
+                <line hits="2" number="52" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_20)" signature="()V">
+              <lines>
+                <line hits="1" number="54" />
+              </lines>
+            </method>
+            <method hits="1" name="(anonymous_21)" signature="()V">
+              <lines>
+                <line hits="1" number="55" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line branch="false" hits="6" number="4" />
+            <line branch="false" hits="8" number="5" />
+            <line branch="false" hits="8" number="6" />
+            <line branch="false" hits="6" number="10" />
+            <line branch="false" hits="2" number="11" />
+            <line branch="false" hits="2" number="12" />
+            <line branch="false" hits="1" number="14" />
+            <line branch="false" hits="1" number="15" />
+            <line branch="false" hits="1" number="18" />
+            <line branch="false" hits="1" number="19" />
+            <line branch="false" hits="6" number="24" />
+            <line branch="false" hits="2" number="25" />
+            <line branch="false" hits="2" number="26" />
+            <line branch="false" hits="1" number="27" />
+            <line branch="false" hits="1" number="29" />
+            <line branch="false" hits="1" number="30" />
+            <line branch="false" hits="6" number="35" />
+            <line branch="false" hits="2" number="36" />
+            <line branch="false" hits="2" number="37" />
+            <line branch="false" hits="1" number="38" />
+            <line branch="false" hits="1" number="39" />
+            <line branch="false" hits="6" number="43" />
+            <line branch="false" hits="2" number="44" />
+            <line branch="false" hits="2" number="45" />
+            <line branch="false" hits="1" number="46" />
+            <line branch="false" hits="6" number="51" />
+            <line branch="false" hits="2" number="52" />
+            <line branch="false" hits="2" number="53" />
+            <line branch="false" hits="1" number="54" />
+            <line branch="false" hits="1" number="55" />
+          </lines>
+        </class>
+      </classes>
+    </package>
+    <package branch-rate="1" line-rate="1" name="src.store.reducers">
+      <classes>
+        <class branch-rate="1" filename="frontend/src/store/reducers/user.js" line-rate="1" name="user.js">
+          <methods>
+            <method hits="25" name="(anonymous_0)" signature="()V">
+              <lines>
+                <line hits="25" number="10" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line branch="false" hits="6" number="3" />
+            <line branch="true" condition-coverage="100% (1/1)" hits="6" number="10" />
+            <line branch="true" condition-coverage="100% (4/4)" hits="25" number="11" />
+            <line branch="false" hits="4" number="13" />
+            <line branch="false" hits="1" number="15" />
+            <line branch="false" hits="2" number="17" />
+            <line branch="false" hits="18" number="19" />
+          </lines>
+        </class>
+      </classes>
+    </package>
+    <package branch-rate="1" line-rate="1" name="src.test-utils">
+      <classes>
+        <class branch-rate="1" filename="frontend/src/test-utils/mocks.js" line-rate="1" name="mocks.js">
+          <methods>
+            <method hits="14" name="(anonymous_0)" signature="()V">
+              <lines>
+                <line hits="14" number="7" />
+              </lines>
+            </method>
+            <method hits="69" name="(anonymous_1)" signature="()V">
+              <lines>
+                <line hits="69" number="7" />
+              </lines>
+            </method>
+            <method hits="14" name="(anonymous_2)" signature="()V">
+              <lines>
+                <line hits="14" number="16" />
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line branch="false" hits="4" number="6" />
+            <line branch="true" condition-coverage="100% (1/1)" hits="14" number="7" />
+            <line branch="true" condition-coverage="100% (1/1)" hits="69" number="8" />
+            <line branch="false" hits="69" number="10" />
+            <line branch="false" hits="69" number="12" />
+            <line branch="false" hits="4" number="16" />
+            <line branch="false" hits="14" number="17" />
+            <line branch="false" hits="14" number="18" />
+            <line branch="true" condition-coverage="100% (2/2)" hits="14" number="22" />
+            <line branch="false" hits="14" number="23" />
+            <line branch="false" hits="14" number="25" />
+          </lines>
+        </class>
+      </classes>
+    </package>
+  <package branch-rate="0.5" complexity="0" line-rate="0.8333" name=".">
+			<classes>
+				<class branch-rate="0.5" complexity="0" filename="backend/manage.py" line-rate="0.8333" name="manage.py">
+					<methods />
+					<lines>
+						<line hits="1" number="2" />
+						<line hits="1" number="3" />
+						<line hits="1" number="4" />
+						<line hits="1" number="7" />
+						<line hits="1" number="8" />
+						<line hits="1" number="9" />
+						<line hits="1" number="10" />
+						<line hits="0" number="11" />
+						<line hits="0" number="12" />
+						<line hits="1" number="17" />
+						<line branch="true" condition-coverage="50% (1/2)" hits="1" missing-branches="exit" number="20" />
+						<line hits="1" number="21" />
+					</lines>
+				</class>
+			</classes>
+		</package>
+		<package branch-rate="1" complexity="0" line-rate="0.875" name="assa">
+			<classes>
+				<class branch-rate="1" complexity="0" filename="backend/assa/__init__.py" line-rate="1" name="__init__.py">
+					<methods />
+					<lines />
+				</class>
+				<class branch-rate="1" complexity="0" filename="backend/assa/settings.py" line-rate="1" name="settings.py">
+					<methods />
+					<lines>
+						<line hits="1" number="13" />
+						<line hits="1" number="16" />
+						<line hits="1" number="23" />
+						<line hits="1" number="26" />
+						<line hits="1" number="28" />
+						<line hits="1" number="33" />
+						<line hits="1" number="43" />
+						<line hits="1" number="53" />
+						<line hits="1" number="55" />
+						<line hits="1" number="71" />
+						<line hits="1" number="77" />
+						<line hits="1" number="88" />
+						<line hits="1" number="107" />
+						<line hits="1" number="109" />
+						<line hits="1" number="111" />
+						<line hits="1" number="113" />
+						<line hits="1" number="115" />
+						<line hits="1" number="121" />
+						<line hits="1" number="123" />
+						<line hits="1" number="125" />
+						<line hits="1" number="126" />
+						<line hits="1" number="127" />
+						<line hits="1" number="128" />
+						<line hits="1" number="129" />
+						<line hits="1" number="130" />
+					</lines>
+				</class>
+				<class branch-rate="1" complexity="0" filename="backend/assa/urls.py" line-rate="1" name="urls.py">
+					<methods />
+					<lines>
+						<line hits="1" number="16" />
+						<line hits="1" number="17" />
+						<line hits="1" number="19" />
+					</lines>
+				</class>
+				<class branch-rate="1" complexity="0" filename="backend/assa/wsgi.py" line-rate="0" name="wsgi.py">
+					<methods />
+					<lines>
+						<line hits="0" number="10" />
+						<line hits="0" number="12" />
+						<line hits="0" number="14" />
+						<line hits="0" number="16" />
+					</lines>
+				</class>
+			</classes>
+		</package>
+		<package branch-rate="0.8889" complexity="0" line-rate="0.9583" name="assaapp">
+			<classes>
+				<class branch-rate="1" complexity="0" filename="backend/assaapp/__init__.py" line-rate="1" name="__init__.py">
+					<methods />
+					<lines />
+				</class>
+				<class branch-rate="0" complexity="0" filename="backend/assaapp/admin.py" line-rate="0.7442" name="admin.py">
+					<methods />
+					<lines>
+						<line hits="1" number="1" />
+						<line hits="1" number="2" />
+						<line hits="1" number="3" />
+						<line hits="1" number="4" />
+						<line hits="1" number="5" />
+						<line hits="1" number="7" />
+						<line hits="1" number="9" />
+						<line hits="1" number="10" />
+						<line hits="1" number="11" />
+						<line hits="1" number="13" />
+						<line hits="1" number="14" />
+						<line hits="1" number="15" />
+						<line hits="1" number="17" />
+						<line hits="0" number="18" />
+						<line hits="0" number="19" />
+						<line branch="true" condition-coverage="0% (0/2)" hits="0" missing-branches="21,22" number="20" />
+						<line hits="0" number="21" />
+						<line hits="0" number="22" />
+						<line hits="1" number="24" />
+						<line hits="0" number="25" />
+						<line hits="0" number="26" />
+						<line branch="true" condition-coverage="0% (0/2)" hits="0" missing-branches="28,29" number="27" />
+						<line hits="0" number="28" />
+						<line hits="0" number="29" />
+						<line hits="1" number="31" />
+						<line hits="1" number="32" />
+						<line hits="1" number="34" />
+						<line hits="1" number="35" />
+						<line hits="1" number="36" />
+						<line hits="1" number="38" />
+						<line hits="0" number="39" />
+						<line hits="1" number="42" />
+						<line hits="1" number="43" />
+						<line hits="1" number="44" />
+						<line hits="1" number="46" />
+						<line hits="1" number="47" />
+						<line hits="1" number="48" />
+						<line hits="1" number="53" />
+						<line hits="1" number="59" />
+						<line hits="1" number="60" />
+						<line hits="1" number="61" />
+						<line hits="1" number="64" />
+						<line hits="1" number="65" />
+					</lines>
+				</class>
+				<class branch-rate="1" complexity="0" filename="backend/assaapp/apps.py" line-rate="1" name="apps.py">
+					<methods />
+					<lines>
+						<line hits="1" number="1" />
+						<line hits="1" number="4" />
+						<line hits="1" number="5" />
+					</lines>
+				</class>
+				<class branch-rate="1" complexity="0" filename="backend/assaapp/models.py" line-rate="0.9756" name="models.py">
+					<methods />
+					<lines>
+						<line hits="1" number="1" />
+						<line hits="1" number="2" />
+						<line hits="1" number="3" />
+						<line hits="1" number="5" />
+						<line hits="1" number="6" />
+						<line branch="true" condition-coverage="100% (2/2)" hits="1" number="7" />
+						<line hits="1" number="8" />
+						<line hits="1" number="10" />
+						<line hits="1" number="17" />
+						<line hits="1" number="18" />
+						<line hits="1" number="20" />
+						<line hits="1" number="21" />
+						<line hits="1" number="22" />
+						<line hits="1" number="23" />
+						<line hits="1" number="25" />
+						<line hits="1" number="26" />
+						<line hits="1" number="33" />
+						<line hits="1" number="34" />
+						<line hits="1" number="35" />
+						<line hits="1" number="36" />
+						<line hits="1" number="38" />
+						<line hits="1" number="39" />
+						<line hits="1" number="40" />
+						<line hits="1" number="41" />
+						<line hits="1" number="42" />
+						<line hits="1" number="43" />
+						<line hits="1" number="44" />
+						<line hits="1" number="45" />
+						<line hits="1" number="46" />
+						<line hits="1" number="47" />
+						<line hits="1" number="49" />
+						<line hits="1" number="51" />
+						<line hits="1" number="52" />
+						<line hits="1" number="54" />
+						<line hits="1" number="55" />
+						<line hits="1" number="57" />
+						<line hits="1" number="58" />
+						<line hits="1" number="60" />
+						<line hits="1" number="61" />
+						<line hits="1" number="63" />
+						<line hits="1" number="65" />
+						<line hits="1" number="67" />
+						<line hits="1" number="68" />
+						<line hits="1" number="69" />
+						<line hits="1" number="70" />
+						<line hits="1" number="71" />
+						<line hits="1" number="72" />
+						<line hits="1" number="73" />
+						<line hits="1" number="74" />
+						<line hits="1" number="75" />
+						<line hits="1" number="76" />
+						<line hits="1" number="77" />
+						<line hits="1" number="78" />
+						<line hits="1" number="79" />
+						<line hits="1" number="80" />
+						<line hits="1" number="81" />
+						<line hits="1" number="82" />
+						<line hits="1" number="83" />
+						<line hits="1" number="84" />
+						<line hits="1" number="85" />
+						<line hits="1" number="86" />
+						<line hits="1" number="87" />
+						<line hits="1" number="89" />
+						<line hits="0" number="90" />
+						<line hits="1" number="92" />
+						<line hits="1" number="93" />
+						<line hits="1" number="94" />
+						<line hits="1" number="95" />
+						<line hits="1" number="96" />
+						<line hits="1" number="98" />
+						<line hits="1" number="99" />
+						<line hits="1" number="101" />
+						<line hits="1" number="102" />
+						<line hits="1" number="103" />
+						<line hits="1" number="104" />
+						<line hits="1" number="106" />
+						<line hits="0" number="107" />
+						<line hits="1" number="109" />
+						<line hits="1" number="110" />
+						<line hits="1" number="111" />
+						<line hits="1" number="112" />
+						<line hits="1" number="113" />
+					</lines>
+				</class>
+				<class branch-rate="1" complexity="0" filename="backend/assaapp/tests.py" line-rate="0.9913" name="tests.py">
+					<methods />
+					<lines>
+						<line hits="1" number="1" />
+						<line hits="1" number="2" />
+						<line hits="1" number="3" />
+						<line hits="1" number="4" />
+						<line hits="1" number="5" />
+						<line hits="1" number="6" />
+						<line hits="1" number="8" />
+						<line hits="1" number="9" />
+						<line hits="1" number="10" />
+						<line hits="1" number="11" />
+						<line hits="1" number="12" />
+						<line hits="1" number="13" />
+						<line hits="1" number="14" />
+						<line hits="1" number="16" />
+						<line hits="1" number="17" />
+						<line hits="1" number="19" />
+						<line hits="1" number="20" />
+						<line hits="1" number="21" />
+						<line hits="1" number="22" />
+						<line hits="1" number="24" />
+						<line hits="1" number="25" />
+						<line hits="1" number="27" />
+						<line hits="1" number="28" />
+						<line hits="1" number="29" />
+						<line hits="1" number="30" />
+						<line hits="1" number="32" />
+						<line hits="1" number="33" />
+						<line hits="1" number="34" />
+						<line hits="1" number="35" />
+						<line hits="1" number="37" />
+						<line hits="1" number="38" />
+						<line hits="1" number="39" />
+						<line hits="1" number="40" />
+						<line hits="1" number="42" />
+						<line hits="1" number="44" />
+						<line hits="1" number="45" />
+						<line hits="1" number="46" />
+						<line hits="1" number="47" />
+						<line hits="1" number="48" />
+						<line hits="1" number="49" />
+						<line hits="1" number="51" />
+						<line hits="1" number="52" />
+						<line hits="1" number="53" />
+						<line hits="1" number="54" />
+						<line hits="1" number="55" />
+						<line hits="0" number="57" />
+						<line hits="1" number="59" />
+						<line hits="1" number="60" />
+						<line hits="1" number="61" />
+						<line hits="1" number="62" />
+						<line hits="1" number="63" />
+						<line hits="1" number="64" />
+						<line hits="1" number="65" />
+						<line hits="1" number="67" />
+						<line hits="1" number="68" />
+						<line hits="1" number="70" />
+						<line hits="1" number="71" />
+						<line hits="1" number="72" />
+						<line hits="1" number="74" />
+						<line hits="1" number="75" />
+						<line hits="1" number="77" />
+						<line hits="1" number="78" />
+						<line hits="1" number="80" />
+						<line hits="1" number="81" />
+						<line hits="1" number="83" />
+						<line hits="1" number="85" />
+						<line hits="1" number="86" />
+						<line hits="1" number="87" />
+						<line hits="1" number="89" />
+						<line hits="1" number="90" />
+						<line hits="1" number="91" />
+						<line hits="1" number="92" />
+						<line hits="1" number="94" />
+						<line hits="1" number="95" />
+						<line hits="1" number="97" />
+						<line hits="1" number="98" />
+						<line hits="1" number="99" />
+						<line hits="1" number="101" />
+						<line hits="1" number="102" />
+						<line hits="1" number="103" />
+						<line hits="1" number="105" />
+						<line hits="1" number="106" />
+						<line hits="1" number="107" />
+						<line hits="1" number="108" />
+						<line hits="1" number="110" />
+						<line hits="1" number="111" />
+						<line hits="1" number="112" />
+						<line hits="1" number="113" />
+						<line hits="1" number="115" />
+						<line hits="1" number="116" />
+						<line hits="1" number="117" />
+						<line hits="1" number="119" />
+						<line hits="1" number="120" />
+						<line hits="1" number="121" />
+						<line hits="1" number="122" />
+						<line hits="1" number="124" />
+						<line hits="1" number="125" />
+						<line hits="1" number="126" />
+						<line hits="1" number="128" />
+						<line hits="1" number="129" />
+						<line hits="1" number="130" />
+						<line hits="1" number="132" />
+						<line hits="1" number="133" />
+						<line hits="1" number="134" />
+						<line hits="1" number="135" />
+						<line hits="1" number="136" />
+						<line hits="1" number="137" />
+						<line hits="1" number="138" />
+						<line hits="1" number="139" />
+						<line hits="1" number="140" />
+						<line hits="1" number="141" />
+						<line hits="1" number="143" />
+						<line hits="1" number="144" />
+						<line hits="1" number="145" />
+						<line hits="1" number="146" />
+					</lines>
+				</class>
+				<class branch-rate="1" complexity="0" filename="backend/assaapp/tokens.py" line-rate="1" name="tokens.py">
+					<methods />
+					<lines>
+						<line hits="1" number="1" />
+						<line hits="1" number="2" />
+						<line hits="1" number="4" />
+						<line hits="1" number="5" />
+						<line hits="1" number="6" />
+						<line hits="1" number="11" />
+					</lines>
+				</class>
+				<class branch-rate="1" complexity="0" filename="backend/assaapp/urls.py" line-rate="1" name="urls.py">
+					<methods />
+					<lines>
+						<line hits="1" number="1" />
+						<line hits="1" number="2" />
+						<line hits="1" number="4" />
+					</lines>
+				</class>
+				<class branch-rate="1" complexity="0" filename="backend/assaapp/views.py" line-rate="1" name="views.py">
+					<methods />
+					<lines>
+						<line hits="1" number="1" />
+						<line hits="1" number="2" />
+						<line hits="1" number="3" />
+						<line hits="1" number="4" />
+						<line hits="1" number="5" />
+						<line hits="1" number="6" />
+						<line hits="1" number="7" />
+						<line hits="1" number="8" />
+						<line hits="1" number="9" />
+						<line hits="1" number="10" />
+						<line hits="1" number="11" />
+						<line hits="1" number="12" />
+						<line hits="1" number="14" />
+						<line branch="true" condition-coverage="100% (2/2)" hits="1" number="15" />
+						<line hits="1" number="16" />
+						<line hits="1" number="17" />
+						<line hits="1" number="18" />
+						<line hits="1" number="19" />
+						<line hits="1" number="20" />
+						<line hits="1" number="21" />
+						<line hits="1" number="22" />
+						<line branch="true" condition-coverage="100% (2/2)" hits="1" number="23" />
+						<line branch="true" condition-coverage="100% (2/2)" hits="1" number="24" />
+						<line hits="1" number="25" />
+						<line hits="1" number="26" />
+						<line hits="1" number="27" />
+						<line hits="1" number="32" />
+						<line hits="1" number="33" />
+						<line hits="1" number="34" />
+						<line hits="1" number="35" />
+						<line hits="1" number="36" />
+						<line hits="1" number="38" />
+						<line hits="1" number="40" />
+						<line branch="true" condition-coverage="100% (2/2)" hits="1" number="41" />
+						<line hits="1" number="42" />
+						<line hits="1" number="43" />
+						<line hits="1" number="44" />
+						<line hits="1" number="45" />
+						<line hits="1" number="46" />
+						<line branch="true" condition-coverage="100% (2/2)" hits="1" number="47" />
+						<line hits="1" number="48" />
+						<line hits="1" number="49" />
+						<line hits="1" number="50" />
+						<line hits="1" number="52" />
+						<line hits="1" number="54" />
+						<line hits="1" number="56" />
+						<line branch="true" condition-coverage="100% (2/2)" hits="1" number="57" />
+						<line hits="1" number="58" />
+						<line hits="1" number="59" />
+						<line hits="1" number="60" />
+						<line hits="1" number="61" />
+						<line hits="1" number="62" />
+						<line hits="1" number="63" />
+						<line hits="1" number="64" />
+						<line branch="true" condition-coverage="100% (2/2)" hits="1" number="65" />
+						<line hits="1" number="66" />
+						<line hits="1" number="67" />
+						<line hits="1" number="69" />
+						<line hits="1" number="71" />
+						<line hits="1" number="73" />
+						<line branch="true" condition-coverage="100% (2/2)" hits="1" number="74" />
+						<line branch="true" condition-coverage="100% (2/2)" hits="1" number="75" />
+						<line hits="1" number="76" />
+						<line hits="1" number="77" />
+						<line hits="1" number="79" />
+						<line hits="1" number="81" />
+						<line hits="1" number="83" />
+						<line branch="true" condition-coverage="100% (2/2)" hits="1" number="84" />
+						<line branch="true" condition-coverage="100% (2/2)" hits="1" number="85" />
+						<line hits="1" number="86" />
+						<line hits="1" number="89" />
+						<line hits="1" number="91" />
+						<line hits="1" number="93" />
+						<line hits="1" number="95" />
+						<line branch="true" condition-coverage="100% (2/2)" hits="1" number="96" />
+						<line branch="true" condition-coverage="100% (2/2)" hits="1" number="97" />
+						<line branch="true" condition-coverage="100% (2/2)" hits="1" number="98" />
+						<line hits="1" number="99" />
+						<line hits="1" number="101" />
+						<line hits="1" number="103" />
+						<line hits="1" number="105" />
+						<line branch="true" condition-coverage="100% (2/2)" hits="1" number="107" />
+						<line hits="1" number="108" />
+						<line hits="1" number="110" />
+					</lines>
+				</class>
+			</classes>
+		</package>
+		<package branch-rate="1" complexity="0" line-rate="1" name="assaapp.migrations">
+			<classes>
+				<class branch-rate="1" complexity="0" filename="backend/assaapp/migrations/0001_initial.py" line-rate="1" name="0001_initial.py">
+					<methods />
+					<lines>
+						<line hits="1" number="3" />
+						<line hits="1" number="4" />
+						<line hits="1" number="5" />
+						<line hits="1" number="8" />
+						<line hits="1" number="10" />
+						<line hits="1" number="12" />
+						<line hits="1" number="15" />
+					</lines>
+				</class>
+				<class branch-rate="1" complexity="0" filename="backend/assaapp/migrations/__init__.py" line-rate="1" name="__init__.py">
+					<methods />
+					<lines />
+				</class>
+			</classes>
+		</package>
+	</packages>
+</coverage>
