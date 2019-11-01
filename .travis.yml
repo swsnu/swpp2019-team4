@@ -31,7 +31,8 @@ matrix:
     - coverage run --source='.' manage.py test
     - coverage xml
 
-  - addons:
+  - dist: trusty
+    addons:
       sonarcloud:
         organization: "swsnu"
         token:
