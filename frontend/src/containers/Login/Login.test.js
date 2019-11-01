@@ -1,8 +1,8 @@
 import React from 'react'
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
 import Login from './Login';
-import { Route, Redirect, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import { getMockStore } from '../../test-utils/mocks';
 import { ConnectedRouter } from 'connected-react-router';

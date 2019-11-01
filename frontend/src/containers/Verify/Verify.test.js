@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Route, Redirect, Switch } from 'react-router-dom';
-import { shallow, mount} from 'enzyme';
+import { Route, Switch } from 'react-router-dom';
+import { mount } from 'enzyme';
 import { getMockStore } from '../../test-utils/mocks';
 import { ConnectedRouter } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
