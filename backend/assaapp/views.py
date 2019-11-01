@@ -11,6 +11,7 @@ from assaapp.models import User, Timetable, Course
 from json import JSONDecodeError
 from .tokens import account_activation_token
 import json
+import logging
 
 def make_course(req_data, course):
     course_semester = req_data['semester']
@@ -179,7 +180,7 @@ def timetable(request):
         else:
             return HttpResponseNotAllowed(['GET', 'POST'])
     else:
-        return HttpResponse(status=403)
+        return HttpResponse(status=401)
 
 def timetable_id(request, timetable_id):
     if request.user.is_authenticated:
@@ -212,7 +213,7 @@ def timetable_id(request, timetable_id):
             if len(timetable_list) == 0:
                 return HttpResponseNotFound()
             timetable = Timetable.objects.get(pk=timetable_id)
-            if timetable.user == request.user:
+            if timetable.user.id == request.user.id:
                 timetable.delete()
                 return HttpResponse(status=200)
             else:
@@ -221,6 +222,7 @@ def timetable_id(request, timetable_id):
             return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
     else:
         return HttpResponse(status=401)
+
 def timetable_id_course(request, timetable_id):
     if request.user.is_authenticated:
         if request.method == 'GET':
