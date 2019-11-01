@@ -1,12 +1,12 @@
 import React from 'react'
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
 import Login from './Login';
-import { Route, Redirect, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import { getMockStore } from '../../test-utils/mocks';
 import { ConnectedRouter } from 'connected-react-router';
-import { history } from '../../store/store'
+import { createBrowserHistory } from 'history';
 
 import * as actionCreators from '../../store/actions/user';
 
@@ -22,9 +22,10 @@ function login(stubState) {
     const mockStore = getMockStore(stubState);
     return (
         <Provider store={mockStore}>
-            <ConnectedRouter history={history}>
+            <ConnectedRouter history={createBrowserHistory()}>
                 <Switch>
                     <Route path='/' exact component={Login} />
+                    <Route path='/signup' exact component={() => <div className='Signup'/>} />
                     <Route path='/main' exact render={() => <div className='Main'/>} />
                 </Switch>
             </ConnectedRouter>
@@ -66,5 +67,11 @@ describe('<Login />', () => {
     it('should redirect to /main when logged_in is true', () => {
         const component = mount(login(stubStateTrue));
         expect(component.find('.Main').length).toBe(1);
+    });
+
+    it('should redirect to /signup when to-signup-button is clicked', () => {
+        const component = mount(login(stubState));
+        component.find('#to-signup-button').simulate('click');
+        expect(component.find('.Signup').length).toBe(1);
     });
 });
