@@ -4,7 +4,7 @@ import { Route, Redirect, Switch } from 'react-router-dom';
 import { shallow, mount} from 'enzyme';
 import { getMockStore } from '../../test-utils/mocks';
 import { ConnectedRouter } from 'connected-react-router';
-import { history } from '../../store/store'
+import { createBrowserHistory } from 'history';
 import Main from './Main';
 
 import * as actionCreators from '../../store/actions/user';
@@ -21,7 +21,7 @@ function window(stubState) {
     const mockStore = getMockStore(stubState);
     return (
         <Provider store={mockStore}>
-            <ConnectedRouter history={history}>
+            <ConnectedRouter history={createBrowserHistory()}>
                 <Switch>
                     <Route path='/' exact component={Main} />
                     <Route path='/login' exact render={() => <div className='Login'/>} />

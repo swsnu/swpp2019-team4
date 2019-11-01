@@ -23,6 +23,10 @@ class Signup extends Component {
         this.props.onPostSignup(email, password, username, department, grade);
     }
 
+    goToLogin () {
+        this.props.history.replace('/login');
+    }
+
     render() {
         if(this.props.storedUser.is_authenticated == true) {
             return (
@@ -64,9 +68,8 @@ class Signup extends Component {
                                 onChange={(event) => this.setState({grade: event.target.value})}/> <br/>
                 <p className='violation-notice'>{grade_notice}</p>
                 <br/>
-                <NavLink to='/login'>
-                    <button id='to-login-button'>뒤로가기</button>
-                </NavLink>
+                <button id='to-login-button'
+                        onClick={() => this.goToLogin()}>뒤로가기</button>
                 <button id='confirm-signup-button' 
                         disabled={!(email_valid && password_valid && password_confirm_valid && username_valid && department_valid && grade_valid)}
                         onClick={() => this.handleSignup(this.state.email,

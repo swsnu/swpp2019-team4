@@ -14,7 +14,6 @@ class Verify extends Component {
                 <Redirect to='/main'/>
             );
         }
-        console.log(this.props.match.params.uid + " " + this.props.match.params.token);
         this.props.onGetVerify(this.props.match.params.uid, this.props.match.params.token);
         return (
             <Redirect to='/login/'/>
