@@ -4,12 +4,8 @@ import axios from 'axios';
 export const postSignup = (email, password, username, department, grade) => {
     return dispatch => {
         return axios.post('/api/signup/', {email: email, password: password, username: username, department: department, grade: grade})
-            .then(res => {
-                alert('입력한 이메일로 확인 메일을 발송합니다. 이메일 확인 절차를 마치면 계정이 생성됩니다.');
-            })
-            .catch(res => {
-                alert('메일을 발송하지 못했습니다. 이메일을 다시 한 번 확인해 주시기 바랍니다.')
-            });
+            .then(res => alert('입력한 이메일로 확인 메일을 발송했습니다. 이메일 확인 절차를 마치면 계정이 생성됩니다.'))
+            .catch(res => alert('메일을 발송하지 못했습니다. 이메일을 다시 한 번 확인해 주시기 바랍니다.'));
     }
 }
 
@@ -39,3 +35,11 @@ export const getSignout = () => {
             .catch(() => {});
     }
 };
+
+export const getVerify = (uid, token) => {
+    return dispatch => {
+        return axios.get('/api/verify/'+uid+'/'+token+'/')
+            .then(res => alert('이메일 확인이 완료되었습니다.'))
+            .catch(res => alert('부적절한 요청입니다.'));
+    }
+}

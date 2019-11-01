@@ -8,4 +8,5 @@ export{
     postSignin,
     getUser,
     getSignout,
+    getVerify,
 } from './user';
