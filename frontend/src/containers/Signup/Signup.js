@@ -19,8 +19,8 @@ class Signup extends Component {
         this.props.onGetUser();
     }
 
-    handleSignup (valid, email, password, username, department, grade) {
-        if(valid) this.props.
+    handleSignup (email, password, username, department, grade) {
+        this.props.onPostSignup(email, password, username, department, grade);
     }
 
     render() {
@@ -68,12 +68,14 @@ class Signup extends Component {
                     <button id='to-login-button'>뒤로가기</button>
                 </NavLink>
                 <button id='confirm-signup-button' 
-                        onClick={() => this.handleSignup(email_valid && password_valid && password_confirm_valid && username_valid && department_valid && grade_valid,
-                                                         this.state.email,
+                        disabled={!(email_valid && password_valid && password_confirm_valid && username_valid && department_valid && grade_valid)}
+                        onClick={() => this.handleSignup(this.state.email,
                                                          this.state.password,
                                                          this.state.username,
                                                          this.state.department,
                                                          this.state.grade)}>가입하기</button>
+                <br/>
+                가입하기 버튼을 누르면 입력한 이메일로 확인 메일이 발송됩니다.
             </div>  
         )
     }
