@@ -1,4 +1,4 @@
-# swpp2019-team4
+# swpp2019-team4 [![Build Status](https://travis-ci.org/swsnu/swpp2019-team4.svg?branch=master)](https://travis-ci.org/swsnu/swpp2019-team4) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=swsnu_swpp2019-team4&metric=alert_status)](https://sonarcloud.io/dashboard?id=swsnu_swpp2019-team4)
 
 ## environments
 
