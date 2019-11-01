@@ -20,10 +20,12 @@ matrix:
     install:
     - cd frontend
     - npm install yarn
+    - npm install coveralls
     - yarn install
     - cd ..
     - cd backend
     - pip install -r requirements.txt
+    - pip install coveralls
     - cd ..
     script:
     - cd frontend
@@ -36,3 +38,13 @@ matrix:
     - coverage xml
     - cd ..
     - sonar-scanner
+    after_success:
+    - cat frontend/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+    - cd backend
+    - coveralls
+    - cd ..
+    after_failure:
+    - cat frontend/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+    - cd backend
+    - coveralls
+    - cd ..
