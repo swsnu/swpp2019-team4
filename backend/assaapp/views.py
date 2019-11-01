@@ -60,14 +60,14 @@ def signup(request):
                 if detail in req_data:
                     req_detail[detail] = req_data[detail]
             user = User.objects.create_user(email=email, password=password, username=username, **req_detail)
-            content = 'Hi, {}.\nhttp://localhost:8000/api/verify/{}/{}\n'.format(
+            content = 'Hi, {}.\nhttp://localhost:3000/verify/{}/{}\n'.format(
                 username,
                 urlsafe_base64_encode(force_bytes(user.id)),
                 account_activation_token.make_token(user)
             )
-            email = EmailMessage('Confirm your email from ASSA', content, to=[email])
+            email = EmailMessage('Confirm your email for ASSA', content, to=[email])
             email.send()
-        except (KeyError, JSONDecodeError, IntegrityError) as e:
+        except (KeyError, ValueError, JSONDecodeError, IntegrityError) as e:
             return HttpResponseBadRequest()
         return HttpResponse(status=201)
     else:

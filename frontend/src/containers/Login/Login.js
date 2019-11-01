@@ -16,6 +16,10 @@ class Login extends Component {
     handleLogin(){
         this.props.onLogin(this.state.email, this.state.password);
     }
+    
+    goToSignup() {
+        this.props.history.replace('/signup');
+    }
 
     render() {
         if(this.props.storedUser.is_authenticated == true) {
@@ -30,6 +34,7 @@ class Login extends Component {
                 <input type='password' id='pw-input' value={this.state.pasword} placeholder='Password'
                     onChange={(event) => this.setState({password: event.target.value})}/>
                 <button id='login-button' onClick={() => this.handleLogin()}>로그인</button>
+                <button id='to-signup-button' onClick={() => this.goToSignup()}>회원가입</button>
             </div>
         );
     }
