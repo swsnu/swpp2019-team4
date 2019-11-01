@@ -12,7 +12,7 @@ const rootReducer = combineReducers({
   router: connectRouter(history),
 });
 
-const logger = (store) => (next) => (action) => {
+const logger = () => (next) => (action) => {
   // console.log('[Middleware] Dispatching', action);
   const result = next(action);
   // console.log('[Middleware] Next State', store.getState());

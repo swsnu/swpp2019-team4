@@ -7,35 +7,37 @@ import './TimeTableView.css';
  * color is 6 hexadigit number.
 */
 const TimeTableView = (props) => {
-  const table_header_string = ['', 'M', 'T', 'W', 'T', 'F', 'S'];
-  const courses_list = [[], [], [], [], [], []];
+  const tableHeaderString = ['', 'M', 'T', 'W', 'T', 'F', 'S'];
+  const coursesList = [[], [], [], [], [], []];
   const tablehtml = [];
-  let tablehtml_ith = [];
+  let tablehtmlIth = [];
   const heightunit = 24;
   const widthunit = 100;
   for (let i = 0; i < 26; i++) {
     for (let j = 0; j < 6; j++) {
-      courses_list[j].push([]);
+      coursesList[j].push([]);
     }
   }
   for (let i = 0; i < props.courses.length; i++) {
-    courses_list[props.courses[i].week_day][props.courses[i].start_time / 30 - 16].push({ name: props.courses[i].course_name, length: props.courses[i].end_time - props.courses[i].start_time, color: props.courses[i].color });
+    coursesList[props.courses[i].week_day][props.courses[i].start_time / 30 - 16].push(
+      { name: props.courses[i].course_name, length: props.courses[i].end_time - props.courses[i].start_time, color: props.courses[i].color },
+    );
   }
   for (let i = 0; i < 6; i++) {
-    tablehtml_ith.push(<th key={i} height={heightunit} width={widthunit}>{table_header_string[i]}</th>);
+    tablehtmlIth.push(<th key={i} height={heightunit} width={widthunit}>{tableHeaderString[i]}</th>);
   }
-  tablehtml.push(<tr key={-1}>{tablehtml_ith}</tr>);
+  tablehtml.push(<tr key={-1}>{tablehtmlIth}</tr>);
   for (let i = 0; i < 26; i++) {
-    tablehtml_ith = [];
-    if (i % 2 == 0)tablehtml_ith.push(<td key={1000 * i + 1000} height={2 * heightunit} width={widthunit} rowSpan={2}>{`${i / 2 + 8}:00`}</td>);
+    tablehtmlIth = [];
+    if (i % 2 == 0)tablehtmlIth.push(<td key={1000 * i + 1000} height={2 * heightunit} width={widthunit} rowSpan={2}>{`${i / 2 + 8}:00`}</td>);
     for (let j = 0; j < 5; j++) {
-      if (courses_list[j][i].length == 0) {
-        tablehtml_ith.push(<td key={1000 * i + j + 1001} height={heightunit} width={widthunit} />);
+      if (coursesList[j][i].length == 0) {
+        tablehtmlIth.push(<td key={1000 * i + j + 1001} height={heightunit} width={widthunit} />);
       } else {
-        tablehtml_ith.push(<td key={1000 * i + j} height={heightunit} width={widthunit}><div className="square" style={{ height: `${(heightunit * courses_list[j][i][0].length / 30) * 1.1}px`, width: `${widthunit}px`, backgroundColor: courses_list[j][i][0].color }}>{courses_list[j][i][0].name}</div></td>);
+        tablehtmlIth.push(<td key={1000 * i + j} height={heightunit} width={widthunit}><div className="square" style={{ height: `${(heightunit * coursesList[j][i][0].length / 30) * 1.1}px`, width: `${widthunit}px`, backgroundColor: coursesList[j][i][0].color }}>{coursesList[j][i][0].name}</div></td>);
       }
     }
-    tablehtml.push(<tr key={-i - 2}>{tablehtml_ith}</tr>);
+    tablehtml.push(<tr key={-i - 2}>{tablehtmlIth}</tr>);
   }
   return (
     <div className="Timetableview">

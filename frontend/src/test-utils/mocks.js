@@ -15,7 +15,7 @@ const getMockUserReducer = jest.fn(
   },
 );
 
-export const getMockStore = (initialState) => {
+const getMockStore = (initialState) => {
   const mockUserReducer = getMockUserReducer(initialState);
   const rootReducer = combineReducers({
     user: mockUserReducer,
@@ -26,3 +26,5 @@ export const getMockStore = (initialState) => {
     composeEnhancers(applyMiddleware(...middlewares)));
   return mockStore;
 };
+
+export default getMockStore;
