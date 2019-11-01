@@ -24,11 +24,7 @@ def signup(request):
                 if detail in req_data:
                     req_detail[detail] = req_data[detail]
             user = User.objects.create_user(email=email, password=password, username=username, **req_detail)
-<<<<<<< HEAD
             content = 'Hi, {}.\nhttp://localhost:3000/verify/{}/{}\n'.format(
-=======
-            content = 'Hi, {}! To complete the signup, confirm your email address by clicking this link: \nhttp://localhost:8000/api/verify/{}/{}'.format(
->>>>>>> master
                 username,
                 urlsafe_base64_encode(force_bytes(user.id)),
                 account_activation_token.make_token(user)
