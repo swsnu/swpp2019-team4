@@ -39,7 +39,7 @@ def make_course(req_data, course):
     req_detail = {}
     for detail in str_detail:
         req_detail[detail] = req_data[detail]
-
+        
     if course == None:
         course = Course(**req_detail)
         return course
@@ -133,7 +133,7 @@ def timetable(request):
         if request.method == 'GET':
             timetables = [timetable for timetable in Timetable.objects.filter(user__id=request.user.id).values()]
             return JsonResponse(timetables, safe=False)
-        if request.method == 'POST':
+        elif request.method == 'POST':
             try:
                 req_data = json.loads(request.body.decode())
                 timetable_title = req_data['title']
@@ -157,7 +157,7 @@ def timetable_id(request, timetable_id):
                 return HttpResponseNotFound()
             else:
                 return JsonResponse(timetable)
-        if request.method == 'PUT':
+        elif request.method == 'PUT':
             try:
                 body = request.body.decode()
                 timetable_title = json.loads(body)['title']
@@ -175,7 +175,9 @@ def timetable_id(request, timetable_id):
                     return HttpResponseNotFound()
             except (KeyError, JSONDecodeError) as e:
                 return HttpResponseBadRequest()
-        if request.method == 'DELETE':
+        elif request.method == 'DELETE':
+            if timetable_id == request.user.timetable_main.id:
+                return HttpResponseBadRequest()
             try:
                 timetable = Timetable.objects.get(id=timetable_id)
                 if timetable.user == request.user:
@@ -199,7 +201,7 @@ def timetable_id_course(request, timetable_id):
                 return JsonResponse(courses, status=200, safe=False)
             except (Timetable.DoesNotExist) as e:
                 return HttpResponseNotFound()
-        if request.method == 'POST':
+        elif request.method == 'POST':
             try:
                 body = request.body.decode()
                 course_id = json.loads(body)['course_id']
@@ -214,7 +216,7 @@ def timetable_id_course(request, timetable_id):
             except (KeyError, JSONDecodeError) as e:
                 return HttpResponseBadRequest()
         else:
-            return HttpResponseNotAllowed(['GET'],['POST'])
+            return HttpResponseNotAllowed(['GET', 'POST'])
     else:
         return HttpResponse(status=401)
 
@@ -223,14 +225,6 @@ def course(request):
         if request.method == 'GET':
             course_list = [course for course in Course.objects.all().values()]
             return JsonResponse(course_list, safe=False)
-        if request.method == 'POST':
-            try:
-                req_data = json.loads(request.body.decode())
-                course = make_course(req_data, None)
-                course.save()
-                return HttpResponse(status=201)
-            except (KeyError, JSONDecodeError) as e:
-                return HttpResponseBadRequest()
         else:
             return HttpResponseNotAllowed(['GET'])
     else:
@@ -242,25 +236,6 @@ def course_id(request, course_id):
             try:
                 course = Course.objects.get(pk=course_id)
                 return JsonResponse(model_to_dict(course), status=200)
-            except (Course.DoesNotExist) as e:
-                return HttpResponseNotFound()
-        if request.method == 'PUT':
-            try:
-                req_data = json.loads(request.body.decode())
-                course = Course.objects.get(pk=course_id)
-                try:
-                    course = make_course(req_data, course)
-                    course.save()
-                    return JsonResponse(model_to_dict(course),status=200)    
-                except (KeyError, JSONDecodeError) as e:
-                    return HttpResponseBadRequest()
-            except (Course.DoesNotExist) as e:
-                return HttpResponseNotFound()
-        if request.method == 'DELETE':
-            try:
-                course = Course.objects.get(pk=course_id)
-                course.delete()
-                return HttpResponse(status=200)
             except (Course.DoesNotExist) as e:
                 return HttpResponseNotFound()
         else:
