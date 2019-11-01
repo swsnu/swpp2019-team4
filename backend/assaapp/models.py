@@ -1,10 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+import re
 
 class UserManager(BaseUserManager):
     def create_user(self, email, username, password=None, grade=1, department=''):
-        if not email:
-            raise ValueError('User must have an email address')
+        if re.compile('^[^@\s]+@[^.@\s]+[.][^@\s]+$').match(email) is None:
+            raise ValueError('User must have an valid email address')
 
         user = self.model(
             email=self.normalize_email(email),

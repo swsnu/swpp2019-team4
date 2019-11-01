@@ -31,7 +31,7 @@ def signup(request):
             )
             email = EmailMessage('Confirm your email for ASSA', content, to=[email])
             email.send()
-        except (KeyError, JSONDecodeError, IntegrityError) as e:
+        except (KeyError, ValueError, JSONDecodeError, IntegrityError) as e:
             return HttpResponseBadRequest()
         return HttpResponse(status=201)
     else:
