@@ -48,6 +48,36 @@ class CobeturaXML:
 
     def save(self, path):
         self.tree.write(path, encoding='utf-8', xml_declaration=True)
+    
+    def translate_generic(self):
+        root = ET.Element('coverage')
+        root.attrib['version'] = '1'
+        self.translate_generic_file(self.package, root)
+        return ET.ElementTree(root)
+
+    def translate_generic_file(self, node, coverage):
+        if 'filename' in node.attrib:
+            file = ET.Element('file')
+            file.attrib['path'] = node.attrib['filename']
+            coverage.append(file)
+            for child in node:
+                self.translate_generic_line(child, file)
+        else:
+            for child in node:
+                self.translate_generic_file(child, coverage)
+    
+    def translate_generic_line(self, node, file):
+        if node.tag == 'line':
+            line = ET.Element('lineToCover')
+            line.attrib['lineNumber'] = node.attrib['number']
+            if node.attrib['hits'] == '0':
+                line.attrib['covered'] = 'false'
+            else:
+                line.attrib['covered'] = 'true'
+            file.append(line)
+        else:
+            for child in node:
+                self.translate_generic_line(child, file)
 
 if __name__ == '__main__':
     xml_frontend = CobeturaXML(PATH_FRONTEND)
@@ -55,4 +85,6 @@ if __name__ == '__main__':
     xml_frontend.upstream()
     xml_backend.upstream()
     xml_frontend.merge(xml_backend)
-    xml_frontend.save('coverage.xml')
+    tree = xml_frontend.translate_generic()
+    tree.write('coverage.xml', encoding='utf-8')
+    #xml_frontend.save('coverage.xml')
