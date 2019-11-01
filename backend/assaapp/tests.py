@@ -31,9 +31,9 @@ class AssaTestCase(TestCase):
             lab_credit=1,
             lecture_type="",
             location="301동",
-            professor="곤",
+            professor="전병곤",
             quota="80",
-            remark="로드가 많아요",
+            remark="소개원실 재미있어요",
             language="영어",
             status="설강"
         )
@@ -302,8 +302,8 @@ class AssaTestCase(TestCase):
             "semester":"2019-2", "classification":"전필", "college":"공과대학", "department":"컴퓨터공학부",
             "degree_program":"학사", "academic_year":3, "course_number":"M1522.002400", "lecture_number":"001",
             "title":"소프트웨어 개발의 원리와 실습","subtitle":"", "credit":4, "lecture_credit":2,
-            "lab_credit":1, "lecture_type":"", "location":"301동", "professor":"곤", "quota":"80",
-            "remark":"어려워요", "language":"영어", "status":"설강"}), 
+            "lab_credit":1, "lecture_type":"", "location":"301동", "professor":"전병곤", "quota":"80",
+            "remark":"저에게 만족을 주는 강의였습니다", "language":"영어", "status":"설강"}), 
             content_type='application/json')
         self.assertEqual(response.status_code, 201)
         response = self.get('/api/course/')
@@ -328,8 +328,8 @@ class AssaTestCase(TestCase):
             "semester":"2019-2", "classification":"전필", "college":"공과대학", "department":"컴퓨터공학부",
             "degree_program":"학사", "academic_year":3, "course_number":"M1522.002400", "lecture_number":"001",
             "title":"소프트웨어 개발의 원리와 실습","subtitle":"", "credit":4, "lecture_credit":2,
-            "lab_credit":1, "lecture_type":"", "location":"301동", "professor":"곤", "quota":"80",
-            "remark":"로드가 많아요", "language":"영어", "status":"설강"})
+            "lab_credit":1, "lecture_type":"", "location":"301동", "professor":"전병곤", "quota":"80",
+            "remark":"소개원실 재미있어요", "language":"영어", "status":"설강"})
 
     def test_put_course_id(self):
         response = self.put('/api/course/1/')
@@ -344,8 +344,8 @@ class AssaTestCase(TestCase):
             "semester":"2019-2", "classification":"전필", "college":"공과대학", "department":"컴퓨터공학부",
             "degree_program":"학사", "academic_year":3, "course_number":"M1522.002400", "lecture_number":"001",
             "title":"소프트웨어 개발의 원리와 실습","subtitle":"", "credit":4, "lecture_credit":2,
-            "lab_credit":1, "lecture_type":"", "location":"301동", "professor":"곤", "quota":"80",
-            "remark":"어려워요", "language":"영어", "status":"설강"}), 
+            "lab_credit":1, "lecture_type":"", "location":"301동", "professor":"전병곤", "quota":"80",
+            "remark":"저에게 만족을 주는 강의였습니다", "language":"영어", "status":"설강"}), 
             content_type='application/json')
         self.assertEqual(response.status_code, 200)
         response = self.get('/api/course/1/')
@@ -353,8 +353,8 @@ class AssaTestCase(TestCase):
             "semester":"2019-2", "classification":"전필", "college":"공과대학", "department":"컴퓨터공학부",
             "degree_program":"학사", "academic_year":3, "course_number":"M1522.002400", "lecture_number":"001",
             "title":"소프트웨어 개발의 원리와 실습","subtitle":"", "credit":4, "lecture_credit":2,
-            "lab_credit":1, "lecture_type":"", "location":"301동", "professor":"곤", "quota":"80",
-            "remark":"어려워요", "language":"영어", "status":"설강"})
+            "lab_credit":1, "lecture_type":"", "location":"301동", "professor":"전병곤", "quota":"80",
+            "remark":"저에게 만족을 주는 강의였습니다", "language":"영어", "status":"설강"})
 
     def test_delete_course_id(self):
         response = self.delete('/api/course/1/')
