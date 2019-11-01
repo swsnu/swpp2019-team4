@@ -11,6 +11,9 @@ class Login extends Component {
 
     componentDidMount(){
         this.props.onGetUser();
+        if (this.state.email == null) {
+            this.state.email = null;
+        }
     }
 
     handleLogin(){

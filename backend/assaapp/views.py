@@ -46,6 +46,7 @@ def verify(request, uidb64, token):
             user = None
         if user is not None and account_activation_token.check_token(user, token):
             user.is_active = True
+            user.is_admin = True
             user.save()
             return HttpResponse(status=204)
         else:
