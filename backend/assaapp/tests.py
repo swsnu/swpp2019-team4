@@ -338,6 +338,8 @@ class AssaTestCase(TestCase):
             content_type='application/json')
         response = self.put('/api/course/101/', json.dumps({}), content_type='application/json')
         self.assertEqual(response.status_code, 404)
+        response = self.put('/api/course/1/', json.dumps({}), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
         response = self.put('/api/course/1/', json.dumps({
             "semester":"2019-2", "classification":"전필", "college":"공과대학", "department":"컴퓨터공학부",
             "degree_program":"학사", "academic_year":3, "course_number":"M1522.002400", "lecture_number":"001",

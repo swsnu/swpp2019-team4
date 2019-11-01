@@ -162,29 +162,29 @@ def timetable_id(request, timetable_id):
                 body = request.body.decode()
                 timetable_title = json.loads(body)['title']
                 timetable_semester = json.loads(body)['semester']
-                timetable_list = [timetable for timetable in Timetable.objects.all().values() if timetable['id'] == timetable_id]
-                if len(timetable_list) == 0:
+                try:
+                    timetable = Timetable.objects.get(id=timetable_id)
+                    if timetable.user == request.user:
+                        timetable.title = timetable_title
+                        timetable.semester = timetable_semester
+                        timetable.save()
+                        return JsonResponse(model_to_dict(timetable), status=200)
+                    else:
+                        return HttpResponse(status=403)
+                except (Timetable.DoesNotExist) as e:
                     return HttpResponseNotFound()
-                timetable = Timetable.objects.get(pk=timetable_id)
-                if timetable.user == request.user:
-                    timetable.title = timetable_title
-                    timetable.semester = timetable_semester
-                    timetable.save()
-                    return JsonResponse(model_to_dict(timetable), status=200)
-                else:
-                    return HttpResponse(status=403)
             except (KeyError, JSONDecodeError) as e:
                 return HttpResponseBadRequest()
         if request.method == 'DELETE':
-            timetable_list = [timetable for timetable in Timetable.objects.all().values() if timetable['id'] == timetable_id]
-            if len(timetable_list) == 0:
+            try:
+                timetable = Timetable.objects.get(id=timetable_id)
+                if timetable.user == request.user:
+                    timetable.delete()
+                    return HttpResponse(status=200)
+                else:
+                    return HttpResponse(status=403)
+            except (Timetable.DoesNotExist) as e:
                 return HttpResponseNotFound()
-            timetable = Timetable.objects.get(pk=timetable_id)
-            if timetable.user.id == request.user.id:
-                timetable.delete()
-                return HttpResponse(status=200)
-            else:
-                return HttpResponse(status=403)
         else:
             return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
     else:
@@ -193,27 +193,24 @@ def timetable_id(request, timetable_id):
 def timetable_id_course(request, timetable_id):
     if request.user.is_authenticated:
         if request.method == 'GET':
-            timetable_list = [timetable for timetable in Timetable.objects.all().values() if timetable['id'] == timetable_id]
-            if len(timetable_list) == 0:
+            try:
+                timetable = Timetable.objects.get(pk=timetable_id)
+                courses = [course for course in timetable.courses.all().values()]
+                return JsonResponse(courses, status=200, safe=False)
+            except (Timetable.DoesNotExist) as e:
                 return HttpResponseNotFound()
-            timetable = Timetable.objects.get(pk=timetable_id)
-            courses = [course for course in timetable.courses.all().values()]
-            return JsonResponse(courses, status=200, safe=False)
         if request.method == 'POST':
             try:
                 body = request.body.decode()
                 course_id = json.loads(body)['course_id']
-                timetable_list = [timetable for timetable in Timetable.objects.all().values() if timetable['id'] == timetable_id]
-                if len(timetable_list) == 0:
+                try:
+                    timetable = Timetable.objects.get(pk=timetable_id)
+                    course = Course.objects.get(pk=course_id)
+                    timetable.courses.add(course)
+                    timetable.save()
+                    return HttpResponse(status = 200)
+                except (Timetable.DoesNotExist, Course.DoesNotExist) as e:
                     return HttpResponseNotFound()
-                timetable = Timetable.objects.get(pk=timetable_id)
-                course_list = [course for course in Course.objects.all().values() if course['id'] == course_id]
-                if len(course_list) == 0:
-                    return HttpResponseNotFound()
-                course = Course.objects.get(pk=course_id)
-                timetable.courses.add(course)
-                timetable.save()
-                return HttpResponse(status = 200)
             except (KeyError, JSONDecodeError) as e:
                 return HttpResponseBadRequest()
         else:
@@ -242,27 +239,30 @@ def course(request):
 def course_id(request, course_id):
     if request.user.is_authenticated:
         if request.method == 'GET':
-            course_list = [course for course in Course.objects.all().values() if course['id'] == course_id]
-            if len(course_list) == 0:
+            try:
+                course = Course.objects.get(pk=course_id)
+                return JsonResponse(model_to_dict(course), status=200)
+            except (Course.DoesNotExist) as e:
                 return HttpResponseNotFound()
-            course = Course.objects.get(pk=course_id)
-            return JsonResponse(model_to_dict(course), status=200)
         if request.method == 'PUT':
-            req_data = json.loads(request.body.decode())
-            course_list = [course for course in Course.objects.all().values() if course['id'] == course_id]
-            if len(course_list) == 0:
+            try:
+                req_data = json.loads(request.body.decode())
+                course = Course.objects.get(pk=course_id)
+                try:
+                    course = make_course(req_data, course)
+                    course.save()
+                    return JsonResponse(model_to_dict(course),status=200)    
+                except (KeyError, JSONDecodeError) as e:
+                    return HttpResponseBadRequest()
+            except (Course.DoesNotExist) as e:
                 return HttpResponseNotFound()
-            course = Course.objects.get(pk=course_id)
-            course = make_course(req_data, course)
-            course.save()
-            return JsonResponse(model_to_dict(course),status=200)
         if request.method == 'DELETE':
-            course_list = [course for course in Course.objects.all().values() if course['id'] == course_id]
-            if len(course_list) == 0:
+            try:
+                course = Course.objects.get(pk=course_id)
+                course.delete()
+                return HttpResponse(status=200)
+            except (Course.DoesNotExist) as e:
                 return HttpResponseNotFound()
-            course = Course.objects.get(pk=course_id)
-            course.delete()
-            return HttpResponse(status=200)
         else:
             return HttpResponseNotAllowed(['GET'])
     else:
