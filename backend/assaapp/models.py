@@ -4,7 +4,7 @@ import re
 
 class UserManager(BaseUserManager):
     def create_user(self, email, username, password=None, grade=1, department=''):
-        if re.compile('^[^@\s]+@[^.@\s]+[.][^@\s]+$').match(email) is None:
+        if email is None or re.compile('^[^@\s]+@[^.@\s]+[.][^@\s]+$').match(email) is None:
             raise ValueError('User must have an valid email address')
 
         user = self.model(
