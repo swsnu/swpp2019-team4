@@ -20,10 +20,13 @@ matrix:
     install:
     - cd frontend
     - npm install yarn
+    - npm install coveralls
     - yarn install
+    - gem install coveralls-lcov
     - cd ..
     - cd backend
     - pip install -r requirements.txt
+    - pip install coveralls
     - cd ..
     script:
     - cd frontend
@@ -36,3 +39,17 @@ matrix:
     - coverage xml
     - cd ..
     - sonar-scanner
+    after_success:
+    - cd frontend
+    - coveralls-lcov -v -n coverage/lcov.info > coverage.json
+    - cd ..
+    - cd backend
+    - coveralls --merge=../frontend/coverage.json
+    - cd ..
+    after_failure:
+    - cd frontend
+    - coveralls-lcov -v -n coverage/lcov.info > coverage.json
+    - cd ..
+    - cd backend
+    - coveralls --merge=../frontend/coverage.json
+    - cd ..
