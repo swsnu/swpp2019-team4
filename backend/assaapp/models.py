@@ -55,10 +55,10 @@ class User(AbstractBaseUser):
     def __str__(self):
         return self.email
 
-    def has_perm(self, perm, obj=None):
+    def has_perm(self, *unused_args, **unused_kwargs):
         return True
-    
-    def has_module_perms(self, app_label):
+
+    def has_module_perms(self, *unused_args):
         return True
 
     @property
