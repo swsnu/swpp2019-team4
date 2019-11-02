@@ -1,23 +1,21 @@
 from django.test import TestCase, Client
 from assaapp.models import User, Timetable, Course
-from assaapp.views import make_course
 from assaapp.tokens import account_activation_token
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_text
-from django.db.models import ProtectedError
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
 from django.forms.models import model_to_dict
 import json
-import logging
-    
+
 class AssaTestCase(TestCase):
     def setUp(self):
         self.client = Client(enforce_csrf_checks=True)
-        user1 = User.objects.create_superuser(email='cubec@gmail.com', password='cubec', username='Jung Jaeyun')
-        user2 = User.objects.create_user(email='khsoo@gmail.com', password='khsoo', username='Kim Hyunsoo')
-        user3 = User.objects.create_superuser(email='young@naver.com', password='young', username='Kim Youngchan')
-        timetable1 = Timetable.objects.create(title='21', user=user1)
-        timetable2 = Timetable.objects.create(title='22', user=user1)
-        course1 = Course.objects.create(
+        user_set = []
+        user_set.append(User.objects.create_superuser(email='cubec@gmail.com', password='cubec', username='Jung Jaeyun'))
+        user_set.append(User.objects.create_user(email='khsoo@gmail.com', password='khsoo', username='Kim Hyunsoo'))
+        user_set.append(User.objects.create_superuser(email='young@naver.com', password='young', username='Kim Youngchan'))
+        Timetable.objects.create(title='21', user=user_set[0])
+        Timetable.objects.create(title='22', user=user_set[0])
+        Course.objects.create(
             semester="2019-2",
             classification="전필",
             college="공과대학",
@@ -39,6 +37,40 @@ class AssaTestCase(TestCase):
             language="영어",
             status="설강"
         )
+
+    def make_course(self, req_data, course):
+        str_detail = [
+            'semester',
+            'classification',
+            'college',
+            'department',
+            'degree_program',
+            'academic_year',
+            'course_number',
+            'lecture_number',
+            'title',
+            'subtitle',
+            'credit',
+            'lecture_credit',
+            'lab_credit',
+            'lecture_type',
+            'location',
+            'professor',
+            'quota',
+            'remark',
+            'language',
+            'status'
+        ]
+        req_detail = {}
+        for detail in str_detail:
+            req_detail[detail] = req_data[detail]
+            
+        if course == None:
+            course = Course(**req_detail)
+            return course
+        else:
+            Course.objects.filter(id=course.id).update(**req_detail)
+            return Course.objects.get(id=course.id)
 
     def get(self, *args, **kwargs):
         return self.client.get(*args, **kwargs)
@@ -72,8 +104,6 @@ class AssaTestCase(TestCase):
         user = User.objects.get(id=1)
         self.assertEqual(str(user), 'cubec@gmail.com')
         self.assertEqual(user.is_staff, True)
-        self.assertEqual(user.has_perm([]), True)
-        self.assertEqual(user.has_module_perms([]), True)
     
     def test_user(self):
         try:
@@ -318,10 +348,10 @@ class AssaTestCase(TestCase):
             "title":"소프트웨어 개발의 원리와 실습","subtitle":"", "credit":4, "lecture_credit":2,
             "lab_credit":1, "lecture_type":"", "location":"301동", "professor":"전병곤", "quota":"80",
             "remark":"소개원실 재미있어요", "language":"영어", "status":"설강"}
-        course = make_course(req_data, None)
+        course = self.make_course(req_data, None)
         course.save()
         self.assertEqual(model_to_dict(course), req_data)
-        course = make_course(req_data, course)
+        course = self.make_course(req_data, course)
         self.assertEqual(model_to_dict(course), req_data)
 
     def test_get_verify(self):
@@ -336,6 +366,6 @@ class AssaTestCase(TestCase):
         self.assertEqual(response.status_code, 204)
     
     def test_delete_verify(self):
-        user = User.objects.create_user(email='1207koo@gmail.com', password='koo', username='KOO')
+        User.objects.create_user(email='1207koo@gmail.com', password='koo', username='KOO')
         response = self.delete('/api/verify/0/0000000-0000000/')
         self.assertEqual(response.status_code, 405)
