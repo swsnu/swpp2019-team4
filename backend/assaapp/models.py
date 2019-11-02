@@ -1,6 +1,6 @@
+import re
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
-import re
 
 class UserManager(BaseUserManager):
     def create_user(self, email, username, password=None, grade=1, department=''):

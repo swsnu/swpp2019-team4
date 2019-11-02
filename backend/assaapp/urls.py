@@ -6,11 +6,13 @@ urlpatterns = [
     path('signup/', views.api_signup),
     path('signin/', views.api_signin),
     path('signout/', views.api_signout),
-    re_path(r'^verify/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', views.api_verify),
+    re_path(r'^verify/(?P<uidb64>[0-9A-Za-z_\-]+)/'
+            r'(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', views.api_verify),
     path('user/', views.api_user),
     path('timetable/', views.api_timetable),
     path('timetable/<int:timetable_id>/', views.api_timetable_id, name='timetable_id'),
-    path('timetable/<int:timetable_id>/course/', views.api_timetable_id_course, name='timetable_id_course'),
+    path('timetable/<int:timetable_id>/course/',
+         views.api_timetable_id_course, name='timetable_id_course'),
     path('course/', views.api_course, name='course'),
     path('course/<int:course_id>/', views.api_course_id, name='course_id')
 ]
