@@ -1,4 +1,1 @@
-*.test.js
 src/serviceWorker.js
-src/index.js
-src/app.js
