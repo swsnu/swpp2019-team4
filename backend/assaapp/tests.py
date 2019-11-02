@@ -71,9 +71,9 @@ class AssaTestCase(TestCase):
         if course is None:
             course = Course(**req_detail)
             return course
-        else:
-            Course.objects.filter(id=course.id).update(**req_detail)
-            return Course.objects.get(id=course.id)
+
+        Course.objects.filter(id=course.id).update(**req_detail)
+        return Course.objects.get(id=course.id)
 
     def get(self, *args, **kwargs):
         return self.client.get(*args, **kwargs)
