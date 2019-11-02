@@ -34,14 +34,11 @@ function login(stubState) {
 }
 
 describe('<Login />', () => {
-  let spyPostSignin; let
-    spyGetUser;
+  let spyPostSignin;
 
   beforeEach(() => {
     spyPostSignin = jest.spyOn(actionCreators, 'postSignin')
-      .mockImplementation((email, password) => (dispatch) => Promise.resolve(null));
-    spyGetUser = jest.spyOn(actionCreators, 'getUser')
-      .mockImplementation(() => (dispatch) => {});
+      .mockImplementation(() => () => Promise.resolve(null));
   });
 
   afterEach(() => { jest.clearAllMocks(); });

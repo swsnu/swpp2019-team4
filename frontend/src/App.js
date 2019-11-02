@@ -8,8 +8,9 @@ import Verify from './containers/Verify/Verify';
 import './App.css';
 
 function App(props) {
+  const info = props;
   return (
-    <ConnectedRouter history={props.history}>
+    <ConnectedRouter history={info.history}>
       <div className="App">
         <Switch>
           <Route path="/verify/:uid/:token" exact component={Verify} />

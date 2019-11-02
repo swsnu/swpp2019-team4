@@ -32,14 +32,11 @@ function window(stubState) {
 }
 
 describe('<Main />', () => {
-  let spyGetUser; let
-    spyGetSignout;
+  let spyGetSignout;
 
   beforeEach(() => {
-    spyGetUser = jest.spyOn(actionCreators, 'getUser')
-      .mockImplementation(() => (dispatch) => {});
     spyGetSignout = jest.spyOn(actionCreators, 'getSignout')
-      .mockImplementation(() => (dispatch) => {});
+      .mockImplementation(() => () => {});
   });
 
   afterEach(() => { jest.clearAllMocks(); });

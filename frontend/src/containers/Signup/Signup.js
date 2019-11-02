@@ -33,24 +33,24 @@ class Signup extends Component {
   }
 
   render() {
-    if (this.props.storedUser.is_authenticated == true) {
+    if (this.props.storedUser.is_authenticated === true) {
       return (
         <Redirect to="/main" />
       );
     }
-    const email_valid = (/^[^@\s]+@[^.@\s]+[.][^@\s]+$/.exec(this.state.email) == this.state.email);
-    const password_valid = (this.state.password.length >= 8 && this.state.password.length <= 32);
-    const password_confirm_valid = (this.state.password === this.state.password_confirm);
-    const username_valid = (this.state.username.length >= 1 && this.state.username.length <= 16);
-    const department_valid = (this.state.department === '컴퓨터공학부');
-    const grade_valid = (1 * this.state.grade >= 1 && 1 * this.state.grade <= 99);
+    const emailValid = (/^[^@\s]+@[^.@\s]+[.][^@\s]+$/.exec(this.state.email) == this.state.email);
+    const passwordValid = (this.state.password.length >= 8 && this.state.password.length <= 32);
+    const passwordConfirmValid = (this.state.password === this.state.password_confirm);
+    const usernameValid = (this.state.username.length >= 1 && this.state.username.length <= 16);
+    const departmentValid = (this.state.department === '컴퓨터공학부');
+    const gradeValid = (1 * this.state.grade >= 1 && 1 * this.state.grade <= 99);
 
-    const email_notice = (email_valid ? '' : '이메일 형식이 올바르지 않습니다.');
-    const password_notice = (password_valid ? '' : '비밀번호는 8자 이상 32자 이하로 구성되어야 합니다.');
-    const password_confirm_notice = (password_confirm_valid ? '' : '비밀번호와 비밀번호 확인은 같은 값을 가져야 합니다.');
-    const username_notice = (username_valid ? '' : '이름은 1자 이상 32자 이하로 구성되어야 합니다.');
-    const department_notice = (department_valid ? '' : '존재하는 학과를 입력해야 합니다.');
-    const grade_notice = (grade_valid ? '' : '학년은 1 이상 99 이하의 정수여야 합니다.');
+    const emailNotice = (emailValid ? '' : '이메일 형식이 올바르지 않습니다.');
+    const passwordNotice = (passwordValid ? '' : '비밀번호는 8자 이상 32자 이하로 구성되어야 합니다.');
+    const passwordConfirmNotice = (passwordConfirmValid ? '' : '비밀번호와 비밀번호 확인은 같은 값을 가져야 합니다.');
+    const usernameNotice = (usernameValid ? '' : '이름은 1자 이상 32자 이하로 구성되어야 합니다.');
+    const departmentNotice = (departmentValid ? '' : '존재하는 학과를 입력해야 합니다.');
+    const gradeNotice = (gradeValid ? '' : '학년은 1 이상 99 이하의 정수여야 합니다.');
     return (
       <div className="Signup">
         <h2>Welcome to ASSA!</h2>
@@ -64,7 +64,7 @@ class Signup extends Component {
         />
         {' '}
         <br />
-        <p className="violation-notice">{email_notice}</p>
+        <p className="violation-notice">{emailNotice}</p>
                 비밀번호:
         {' '}
         <input
@@ -75,7 +75,7 @@ class Signup extends Component {
         />
         {' '}
         <br />
-        <p className="violation-notice">{password_notice}</p>
+        <p className="violation-notice">{passwordNotice}</p>
                 비밀번호 확인:
         {' '}
         <input
@@ -86,7 +86,7 @@ class Signup extends Component {
         />
         {' '}
         <br />
-        <p className="violation-notice">{password_confirm_notice}</p>
+        <p className="violation-notice">{passwordConfirmNotice}</p>
                 이름:
         {' '}
         <input
@@ -97,7 +97,7 @@ class Signup extends Component {
         />
         {' '}
         <br />
-        <p className="violation-notice">{username_notice}</p>
+        <p className="violation-notice">{usernameNotice}</p>
                 학과:
         {' '}
         <input
@@ -108,7 +108,7 @@ class Signup extends Component {
         />
         {' '}
         <br />
-        <p className="violation-notice">{department_notice}</p>
+        <p className="violation-notice">{departmentNotice}</p>
                 학년:
         {' '}
         <input
@@ -119,7 +119,7 @@ class Signup extends Component {
         />
         {' '}
         <br />
-        <p className="violation-notice">{grade_notice}</p>
+        <p className="violation-notice">{gradeNotice}</p>
         <br />
         <button
           id="to-login-button"
@@ -130,7 +130,7 @@ class Signup extends Component {
         </button>
         <button
           id="confirm-signup-button"
-          disabled={this.props.emailSending || !(email_valid && password_valid && password_confirm_valid && username_valid && department_valid && grade_valid)}
+          disabled={this.props.emailSending || !(emailValid && passwordValid && passwordConfirmValid && usernameValid && departmentValid && gradeValid)}
           onClick={() => this.handleSignup(this.state.email,
             this.state.password,
             this.state.username,

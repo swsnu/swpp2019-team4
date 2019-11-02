@@ -33,14 +33,7 @@ function verify(stubState) {
 }
 
 describe('verification test', () => {
-  let spyGetUser; let
-    spyGetVerify;
-
   beforeEach(() => {
-    spyGetUser = jest.spyOn(actionCreators, 'getUser')
-      .mockImplementation(() => (dispatch) => {});
-    spyGetVerify = jest.spyOn(actionCreators, 'getVerify')
-      .mockImplementation(() => (dispatch) => {});
   });
 
   afterEach(() => jest.clearAllMocks());
