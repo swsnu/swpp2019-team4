@@ -108,6 +108,8 @@ class AssaTestCase(TestCase):
         user = User.objects.get(id=1)
         self.assertEqual(str(user), 'cubec@gmail.com')
         self.assertEqual(user.is_staff, True)
+        self.assertEqual(user.has_perm('a'), True)
+        self.assertEqual(user.has_module_perms('b'), True)
 
     def test_user(self):
         try:
