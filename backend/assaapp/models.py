@@ -1,10 +1,10 @@
+import re
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
-import re
 
 class UserManager(BaseUserManager):
     def create_user(self, email, username, password=None, grade=1, department=''):
-        if email is None or re.compile('^[^@\s]+@[^.@\s]+[.][^@\s]+$').match(email) is None:
+        if email is None or re.compile(r'^[^@\s]+@[^.@\s]+[.][^@\s]+$').match(email) is None:
             raise ValueError('User must have an valid email address')
 
         user = self.model(
@@ -21,7 +21,7 @@ class UserManager(BaseUserManager):
         user.timetable_main = timetable_main
         user.save()
         return user
-    
+
     def create_superuser(self, email, username, password, grade=1, department=''):
         user = self.create_user(
             email,
@@ -42,22 +42,23 @@ class User(AbstractBaseUser):
     department = models.CharField(max_length=64)
     is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
-    timetable_main = models.OneToOneField('Timetable', null=True, blank=True, related_name='user_main', on_delete=models.PROTECT)
+    timetable_main = models.OneToOneField('Timetable', null=True, blank=True,
+                                          related_name='user_main', on_delete=models.SET_NULL)
     friends = models.ManyToManyField('self', symmetrical=True)
     friends_request = models.ManyToManyField('self', symmetrical=False)
 
     objects = UserManager()
-    
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
     def __str__(self):
         return self.email
 
-    def has_perm(self, perm, obj=None):
+    def has_perm(self, *unused_args, **unused_kwargs):
         return True
-    
-    def has_module_perms(self, app_label):
+
+    def has_module_perms(self, *unused_args):
         return True
 
     @property
@@ -94,7 +95,7 @@ class Timetable(models.Model):
     semester = models.CharField(max_length=8, default="")
     courses = models.ManyToManyField(Course, related_name='timetables', through='CourseColor')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    
+
     def __str__(self):
         return self.title
 
