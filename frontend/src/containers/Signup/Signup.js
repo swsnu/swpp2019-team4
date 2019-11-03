@@ -126,7 +126,7 @@ class Signup extends Component {
         <button
           type="button"
           id="to-login-button"
-          disabled={this.props.emailSending}
+          disabled={this.props.email_sending}
           onClick={() => this.goToLogin()}
         >
 뒤로가기
@@ -135,7 +135,7 @@ class Signup extends Component {
           type="button"
           id="confirm-signup-button"
           disabled={
-            this.props.emailSending
+            this.props.email_sending
             || !(emailValid && passwordValid && passwordConfirmValid && usernameValid && departmentValid && gradeValid)
           }
           onClick={() => this.handleSignup(this.state.email,
@@ -163,11 +163,11 @@ Signup.propTypes = {
   storedUser: PropTypes.shape({
     is_authenticated: PropTypes.bool,
   }).isRequired,
-  emailSending: PropTypes.bool.isRequired,
+  email_sending: PropTypes.bool.isRequired,
 };
 const mapStateToProps = (state) => ({
   storedUser: state.user.user,
-  emailSending: state.user.email_sending,
+  email_sending: state.user.email_sending,
 });
 
 const mapDispatchToProps = (dispatch) => ({

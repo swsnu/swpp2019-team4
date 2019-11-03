@@ -22,16 +22,14 @@ const TimeTableView = (props) => {
       coursesList[j].push([]);
     }
   }
-  if (props.courses) {
-    for (let i = 0; i < props.courses.length; i += 1) {
-      coursesList[props.courses[i].week_day][props.courses[i].start_time / 30 - 16].push(
-        {
-          name: props.courses[i].course_name,
-          length: props.courses[i].end_time - props.courses[i].start_time,
-          color: props.courses[i].color,
-        },
-      );
-    }
+  for (let i = 0; i < props.courses.length; i += 1) {
+    coursesList[props.courses[i].week_day][props.courses[i].start_time / 30 - 16].push(
+      {
+        name: props.courses[i].course_name,
+        length: props.courses[i].end_time - props.courses[i].start_time,
+        color: props.courses[i].color,
+      },
+    );
   }
   for (let i = 0; i < 6; i += 1) {
     tablehtmlIth.push(<th key={i} height={heightunit} width={widthunit}>{tableHeaderString[i]}</th>);

@@ -11,10 +11,12 @@ import * as actionCreators from '../../store/actions/user';
 
 const stubState = {
   user: { is_authenticated: false },
+  email_sending: false,
 };
 
 const stubStateTrue = {
   user: { is_authenticated: true },
+  email_sending: false,
 };
 
 function signup(state) {

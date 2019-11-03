@@ -21,7 +21,7 @@ function verify(state) {
     <Provider store={mockStore}>
       <ConnectedRouter history={createBrowserHistory()}>
         <Switch>
-          <Route path="/" exact component={Verify} />
+          <Route path="/" exact render={() => <Verify match={{ params: { uid: '', token: '' } }} />} />
           <Route path="/login" exact render={() => <div className="Login" />} />
           <Route path="/main" exact render={() => <div className="Main" />} />
         </Switch>
