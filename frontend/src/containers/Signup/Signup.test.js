@@ -17,8 +17,8 @@ const stubStateTrue = {
   user: { is_authenticated: true },
 };
 
-function signup(stubState) {
-  const mockStore = getMockStore(stubState);
+function signup(state) {
+  const mockStore = getMockStore(state);
   return (
     <Provider store={mockStore}>
       <ConnectedRouter history={createBrowserHistory()}>

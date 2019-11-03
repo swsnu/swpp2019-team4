@@ -39,7 +39,18 @@ const TimeTableView = (props) => {
   tablehtml.push(<tr key={-1}>{tablehtmlIth}</tr>);
   for (let i = 0; i < 26; i += 1) {
     tablehtmlIth = [];
-    if (i % 2 === 0)tablehtmlIth.push(<td key={1000 * i + 1000} height={2 * heightunit} width={widthunit} rowSpan={2}>{`${i / 2 + 8}:00`}</td>);
+    if (i % 2 === 0) {
+      tablehtmlIth.push(
+        <td
+          key={1000 * i + 1000}
+          height={2 * heightunit}
+          width={widthunit}
+          rowSpan={2}
+        >
+          {`${i / 2 + 8}:00`}
+        </td>,
+      );
+    }
     for (let j = 0; j < 5; j += 1) {
       if (coursesList[j][i].length === 0) {
         tablehtmlIth.push(<td key={1000 * i + j + 1001} height={heightunit} width={widthunit} />);

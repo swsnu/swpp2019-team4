@@ -39,7 +39,7 @@ class Signup extends Component {
         <Redirect to="/main" />
       );
     }
-    const emailValid = (/^[^@\s]+@[^.@\s]+[.][^@\s]+$/.exec(this.state.email) == this.state.email);
+    const emailValid = (/^[^@\s]+@[^.@\s]+[.][^@\s]+$/.exec(this.state.email) === this.state.email);
     const passwordValid = (this.state.password.length >= 8 && this.state.password.length <= 32);
     const passwordConfirmValid = (this.state.password === this.state.password_confirm);
     const usernameValid = (this.state.username.length >= 1 && this.state.username.length <= 16);
@@ -133,7 +133,10 @@ class Signup extends Component {
         <button
           type="button"
           id="confirm-signup-button"
-          disabled={this.props.emailSending || !(emailValid && passwordValid && passwordConfirmValid && usernameValid && departmentValid && gradeValid)}
+          disabled={
+            this.props.emailSending
+            || !(emailValid && passwordValid && passwordConfirmValid && usernameValid && departmentValid && gradeValid)
+          }
           onClick={() => this.handleSignup(this.state.email,
             this.state.password,
             this.state.username,
