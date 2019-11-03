@@ -88,15 +88,14 @@ const TimeTableView = (props) => {
 };
 
 TimeTableView.propTypes = {
-  courses: PropTypes.arrayOf({
-    length: PropTypes.number.isRequired,
-    course: PropTypes.shape({
-      week_day: PropTypes.number.isRequired,
+  courses: PropTypes.arrayOf(
+    PropTypes.shape({
       start_time: PropTypes.number.isRequired,
       end_time: PropTypes.number.isRequired,
+      week_day: PropTypes.number.isRequired,
       course_name: PropTypes.string.isRequired,
       color: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
+    }),
+  ).isRequired,
 };
 export default TimeTableView;

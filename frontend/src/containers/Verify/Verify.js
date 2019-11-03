@@ -10,7 +10,7 @@ class Verify extends Component {
   }
 
   render() {
-    if (this.props.storedUser.is_authenticated == true) {
+    if (this.props.storedUser.is_authenticated === true) {
       return (
         <Redirect to="/main" />
       );

@@ -39,7 +39,8 @@ class Signup extends Component {
         <Redirect to="/main" />
       );
     }
-    const emailValid = (/^[^@\s]+@[^.@\s]+[.][^@\s]+$/.exec(this.state.email) === this.state.email);
+    const regexValid = /^[^@\s]+@[^.@\s]+[.][^@\s]+$/.exec(this.state.email);
+    const emailValid = (regexValid !== null);
     const passwordValid = (this.state.password.length >= 8 && this.state.password.length <= 32);
     const passwordConfirmValid = (this.state.password === this.state.password_confirm);
     const usernameValid = (this.state.username.length >= 1 && this.state.username.length <= 16);
