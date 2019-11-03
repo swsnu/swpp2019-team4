@@ -61,7 +61,7 @@ const TimeTableView = (props) => {
               className="square"
               style={
               {
-                height: `${(heightunit * coursesList[j][i][0].length / 30) * 1.1}px`,
+                height: `${((heightunit * coursesList[j][i][0].length) / 30) * 1.1}px`,
                 width: `${widthunit}px`,
                 backgroundColor: coursesList[j][i][0].color,
               }

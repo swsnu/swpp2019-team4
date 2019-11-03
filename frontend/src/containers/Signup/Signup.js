@@ -171,7 +171,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
-  onPostSignup: (email, password, username, department, grade) => dispatch(actionCreators.postSignup(email, password, username, department, grade)),
+  onPostSignup: (email, password, username, department, grade) => dispatch(
+    actionCreators.postSignup(email, password, username, department, grade),
+  ),
   onSetSendStatus: (status) => dispatch(actionCreators.setSendStatus(status)),
 });
 

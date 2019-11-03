@@ -8,7 +8,7 @@ describe('user action test', () => {
   afterEach(() => { jest.clearAllMocks(); });
 
   it('should call postSignup', (done) => {
-    axios.post = jest.fn(() => new Promise((resolve, reject) => {
+    axios.post = jest.fn(() => new Promise(({ resolve }) => {
       resolve({ status: 201, data: null });
     }));
     const spyAlert = jest.spyOn(window, 'alert')
@@ -22,7 +22,7 @@ describe('user action test', () => {
   });
 
   it('should run .catch when signup failed', (done) => {
-    axios.post = jest.fn(() => new Promise((resolve, reject) => {
+    axios.post = jest.fn(() => new Promise(({ reject }) => {
       reject({ status: 401, data: null });
     }));
     const spyAlert = jest.spyOn(window, 'alert')
@@ -37,7 +37,7 @@ describe('user action test', () => {
   });
 
   it('should call postSignin', (done) => {
-    axios.post = jest.fn(() => new Promise((resolve, reject) => {
+    axios.post = jest.fn(() => new Promise(({ resolve }) => {
       resolve({ status: 200, data: null });
     }));
     store.dispatch(actionCreators.postSignin())
@@ -48,7 +48,7 @@ describe('user action test', () => {
   });
 
   it('should call alert when signin failed', (done) => {
-    axios.post = jest.fn(() => new Promise((resolve, reject) => {
+    axios.post = jest.fn(() => new Promise(({ reject }) => {
       reject({ status: 401, data: null });
     }));
     const spyAlert = jest.spyOn(window, 'alert')
@@ -62,7 +62,7 @@ describe('user action test', () => {
   });
 
   it('should call getSignout', (done) => {
-    axios.get = jest.fn(() => new Promise((resolve, reject) => {
+    axios.get = jest.fn(() => new Promise(({ resolve }) => {
       resolve({ status: 200, data: null });
     }));
     store.dispatch(actionCreators.getSignout())
@@ -73,7 +73,7 @@ describe('user action test', () => {
   });
 
   it('should call getSignout that can be failed', (done) => {
-    axios.get = jest.fn(() => new Promise((resolve, reject) => {
+    axios.get = jest.fn(() => new Promise(({ reject }) => {
       reject({ status: 401, data: null });
     }));
     store.dispatch(actionCreators.getSignout())
@@ -84,7 +84,7 @@ describe('user action test', () => {
   });
 
   it('should call getUser', (done) => {
-    axios.get = jest.fn(() => new Promise((resolve, reject) => {
+    axios.get = jest.fn(() => new Promise(({ resolve }) => {
       resolve({ status: 200, data: null });
     }));
     store.dispatch(actionCreators.getUser())
@@ -95,7 +95,7 @@ describe('user action test', () => {
   });
 
   it('should call getUser that can be failed', (done) => {
-    axios.get = jest.fn(() => new Promise((resolve, reject) => {
+    axios.get = jest.fn(() => new Promise(({ reject }) => {
       reject({ status: 401, data: null });
     }));
     store.dispatch(actionCreators.getUser())
@@ -106,7 +106,7 @@ describe('user action test', () => {
   });
 
   it('should call getVerify', (done) => {
-    axios.get = jest.fn(() => new Promise((resolve, reject) => {
+    axios.get = jest.fn(() => new Promise(({ resolve }) => {
       resolve({ status: 204, data: null });
     }));
     const spyAlert = jest.spyOn(window, 'alert')
@@ -120,7 +120,7 @@ describe('user action test', () => {
   });
 
   it('should run .catch when signup failed', (done) => {
-    axios.get = jest.fn(() => new Promise((resolve, reject) => {
+    axios.get = jest.fn(() => new Promise(({ reject }) => {
       reject({ status: 401, data: null });
     }));
     const spyAlert = jest.spyOn(window, 'alert')
