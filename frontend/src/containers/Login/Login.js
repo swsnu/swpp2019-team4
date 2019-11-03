@@ -46,8 +46,8 @@ class Login extends Component {
           placeholder="Password"
           onChange={(event) => this.setState({ password: event.target.value })}
         />
-        <button id="login-button" onClick={() => this.handleLogin()}>로그인</button>
-        <button id="to-signup-button" onClick={() => this.goToSignup()}>회원가입</button>
+        <button type="button" id="login-button" onClick={() => this.handleLogin()}>로그인</button>
+        <button type="button" id="to-signup-button" onClick={() => this.goToSignup()}>회원가입</button>
       </div>
     );
   }

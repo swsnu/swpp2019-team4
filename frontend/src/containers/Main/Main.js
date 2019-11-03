@@ -87,7 +87,7 @@ class Main extends Component {
     return (
       <div className="Main">
         <TopBar id="topbar" />
-        <button id="logout-button" onClick={() => this.handleLogout()}>LOGOUT</button>
+        <button type="button" id="logout-button" onClick={() => this.handleLogout()}>LOGOUT</button>
         <br />
         <TimeTableView id="timetable-table" courses={courses} />
         <MainPageFriendListView id="friend-list" friends={friend} />
