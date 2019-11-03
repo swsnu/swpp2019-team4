@@ -23,6 +23,7 @@ module.exports = {
   ],
   rules: {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-    "max-len": ["error", { "ignoreComments": true }, {"code" : 120}]
+    "max-len": ["error", { "ignoreComments": true, "code" : 120}],
+    "react/destructuring-assignment": ["off"]
   }
 };
