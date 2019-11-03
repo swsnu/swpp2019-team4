@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import * as actionCreators from '../../store/actions/index';
 
 class Login extends Component {
@@ -52,6 +53,17 @@ class Login extends Component {
     );
   }
 }
+
+Login.propTypes = {
+  onGetUser: PropTypes.func.isRequired,
+  onLogin: PropTypes.func.isRequired,
+  history: PropTypes.shape({
+    replace: PropTypes.func.isRequired,
+  }).isRequired,
+  storedUser: PropTypes.shape({
+    is_authenticated: PropTypes.bool.isRequired,
+  }).isRequired,
+};
 
 const mapStateToProps = (state) => ({
   storedUser: state.user.user,

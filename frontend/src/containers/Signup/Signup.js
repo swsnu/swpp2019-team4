@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import * as actionCreators from '../../store/actions/index';
 
 import './Signup.css';
@@ -148,6 +149,18 @@ class Signup extends Component {
   }
 }
 
+Signup.propTypes = {
+  onSetSendStatus: PropTypes.func.isRequired,
+  onGetUser: PropTypes.func.isRequired,
+  onPostSignup: PropTypes.func.isRequired,
+  history: PropTypes.shape({
+    replace: PropTypes.func.isRequired,
+  }).isRequired,
+  storedUser: PropTypes.shape({
+    is_authenticated: PropTypes.bool,
+  }).isRequired,
+  emailSending: PropTypes.bool.isRequired,
+};
 const mapStateToProps = (state) => ({
   storedUser: state.user.user,
   emailSending: state.user.email_sending,

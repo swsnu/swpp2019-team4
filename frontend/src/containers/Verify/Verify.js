@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import * as actionCreators from '../../store/actions/index';
 
 class Verify extends Component {
@@ -20,6 +21,20 @@ class Verify extends Component {
     );
   }
 }
+
+Verify.propTypes = {
+  onGetUser: PropTypes.func.isRequired,
+  onGetVerify: PropTypes.func.isRequired,
+  storedUser: PropTypes.shape({
+    is_authenticated: PropTypes.bool.isRequired,
+  }).isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      uid: PropTypes.string.isRequired,
+      token: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+};
 
 const mapStateToProps = (state) => ({
   storedUser: state.user.user,

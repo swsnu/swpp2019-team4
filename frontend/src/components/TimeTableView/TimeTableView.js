@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './TimeTableView.css';
 /*
  * INPUT: props.courses parsed as below
@@ -75,5 +76,16 @@ const TimeTableView = (props) => {
   );
 };
 
-
+TimeTableView.propTypes = {
+  courses: PropTypes.arrayOf({
+    length: PropTypes.number.isRequired,
+    course: PropTypes.shape({
+      week_day: PropTypes.number.isRequired,
+      start_time: PropTypes.number.isRequired,
+      end_time: PropTypes.number.isRequired,
+      course_name: PropTypes.string.isRequired,
+      color: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+};
 export default TimeTableView;

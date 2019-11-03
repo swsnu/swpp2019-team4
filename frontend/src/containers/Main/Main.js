@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import * as actionCreators from '../../store/actions/index';
 import TimeTableView from '../../components/TimeTableView/TimeTableView';
 import MainPageFriendListView from '../../components/MainPageFriendListView/MainPageFriendListView';
@@ -96,6 +97,13 @@ class Main extends Component {
   }
 }
 
+Main.propTypes = {
+  onGetUser: PropTypes.func.isRequired,
+  onLogout: PropTypes.func.isRequired,
+  storedUser: PropTypes.shape({
+    is_authenticated: PropTypes.bool.isRequired,
+  }).isRequired,
+};
 const mapStateToProps = (state) => ({
   storedUser: state.user.user,
 });
