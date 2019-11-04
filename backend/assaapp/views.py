@@ -112,7 +112,7 @@ def api_timetable_id(request, timetable_id):
                 timetable = model_to_dict(Timetable.objects.get(id=timetable_id))
             except Timetable.DoesNotExist:
                 return JsonResponse([], status=404, safe=False)
-            courses_color = [course for 
+            courses_color = [course for
                              course in CourseColor.objects.filter(timetable=timetable_id)]
             courses_data = []
             for course_data in courses_color:
