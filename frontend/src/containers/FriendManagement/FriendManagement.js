@@ -34,6 +34,8 @@ class FriendManagement extends Component {
 
 FriendManagement.propTypes = {
   onClose: PropTypes.func.isRequired,
+  onGetFriend: PropTypes.func.isRequired,
+  storedFriend: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = (state) => ({

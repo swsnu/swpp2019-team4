@@ -37,5 +37,5 @@ export const getVerify = (uid, token) => () => axios.get(`/api/verify/${uid}/${t
   .catch(() => alert('부적절한 요청입니다.'));
 
 export const getFriend = () => (dispatch) => axios.get('/api/user/friend/')
-  .then((res) => dispatch({ type: actionTypes.GET_FRIEND, friend: res.data}))
+  .then((res) => dispatch({ type: actionTypes.GET_FRIEND, friend: res.data }))
   .catch(() => {});
