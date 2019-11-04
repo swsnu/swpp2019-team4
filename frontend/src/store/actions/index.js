@@ -10,4 +10,5 @@ export {
   getUser,
   getSignout,
   getVerify,
+  getFriend,
 } from './user';

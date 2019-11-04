@@ -13,15 +13,19 @@ class FriendManagement extends Component {
   }
 
   componentDidMount() {
-
+    this.props.onGetFriend();
   }
 
   render() {
+    const friends = this.props.storedFriend.map((friend) => (
+      <div key={friend.username}>{friend.username}</div>
+    ));
     return (
       <div className="FriendManagement">
         <div className="FriendManagementIn">
           <div>HELLO, WORLD!</div>
           <button type="button" onClick={this.props.onClose}>CLOSE</button>
+          {friends}
         </div>
       </div>
     );
@@ -33,11 +37,12 @@ FriendManagement.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  storedUser: state.user.user,
+  storedFriend: state.user.friend,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
+  onGetFriend: () => dispatch(actionCreators.getFriend()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FriendManagement);

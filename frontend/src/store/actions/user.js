@@ -35,3 +35,7 @@ export const getSignout = () => (dispatch) => axios.get('/api/signout/')
 export const getVerify = (uid, token) => () => axios.get(`/api/verify/${uid}/${token}/`)
   .then(() => alert('이메일 확인이 완료되었습니다.'))
   .catch(() => alert('부적절한 요청입니다.'));
+
+export const getFriend = () => (dispatch) => axios.get('/api/user/friend/')
+  .then((res) => dispatch({ type: actionTypes.GET_FRIEND, friend: res.data}))
+  .catch(() => {});
