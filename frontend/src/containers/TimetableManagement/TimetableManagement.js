@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import { Redirect, NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import * as actionCreators from '../../store/actions/index';
-import TimeTableView from '../../components/TimeTableView/TimeTableView';
+import TimetableView from '../../components/TimetableView/TimetableView';
 import TopBar from '../../components/TopBar/TopBar';
 
-class Timetable extends Component {
+class TimetableManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -46,7 +46,7 @@ class Timetable extends Component {
           <li><button type="button">전기전자회로</button></li>
           <li><button type="button">인터넷 보안과 프라이버시</button></li>
         </ol>
-        <TimeTableView id="timetable-table" height={24} width={80} courses={courses} />
+        <TimetableView id="timetable-table" height={24} width={80} courses={courses} />
         <ol>
           <li><button type="button">Timetable1</button></li>
           <li><button type="button">Timetable2</button></li>
@@ -62,7 +62,7 @@ class Timetable extends Component {
   }
 }
 
-Timetable.propTypes = {
+TimetableManagement.propTypes = {
   onGetUser: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
   storedUser: PropTypes.shape({
@@ -78,4 +78,4 @@ const mapDispatchToProps = (dispatch) => ({
   onLogout: () => dispatch(actionCreators.getSignout()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Timetable);
+export default connect(mapStateToProps, mapDispatchToProps)(TimetableManagement);
