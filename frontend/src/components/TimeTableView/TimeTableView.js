@@ -57,17 +57,21 @@ const TimeTableView = (props) => {
           <td key={1000 * i + j} height={heightunit} width={widthunit}>
             {
               coursesList[j][i].map(
-                course=><div className="square"
-                  style={
+                (course) => (
+                  <div
+                    className="square"
+                    key={1}
+                    style={
                     {
                       height: `${((heightunit * course.length) / 30) * 1.1}px`,
                       width: `${widthunit}px`,
                       backgroundColor: course.color,
                     }
                   }
-                >
-                {course.name}
-                </div>
+                  >
+                    {course.name}
+                  </div>
+                ),
               )
             }
           </td>,
@@ -98,5 +102,7 @@ TimeTableView.propTypes = {
       color: PropTypes.string.isRequired,
     }),
   ).isRequired,
+  height: PropTypes.number.isRequired,
+  width: PropTypes.number.isRequired,
 };
 export default TimeTableView;
