@@ -28,7 +28,7 @@ class Timetable extends Component {
     }
     const courses = [];
     return (
-      <div className="Timetable">
+      <div className="Manage">
         <TopBar id="topbar" />
         <button type="button" id="logout-button" onClick={() => this.handleLogout()}>LOGOUT</button>
         <select id="semester-select">
