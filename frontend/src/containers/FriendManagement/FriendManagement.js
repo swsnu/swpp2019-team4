@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import './FriendManagement.css';
+import FriendView from '../../components/FriendView/FriendView';
 import * as actionCreators from '../../store/actions/index';
 
 class FriendManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      
     };
   }
 
@@ -18,7 +19,7 @@ class FriendManagement extends Component {
 
   render() {
     const friends = this.props.storedFriend.map((friend) => (
-      <div key={friend.username}>{friend.username}</div>
+      <FriendView key={friend.username} username={friend.username}/>
     ));
     return (
       <div className="FriendManagement">
