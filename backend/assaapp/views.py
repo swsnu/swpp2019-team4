@@ -87,7 +87,7 @@ def api_user(request):
 def api_user_friend(request):
     if request.user.is_authenticated:
         if request.method == 'GET':
-            friends = [{'username': friend['username']}
+            friends = [{'id': friend['id'], 'username': friend['username']}
                        for friend in request.user.friends.all().values()]
             return JsonResponse(friends, safe=False)
         return HttpResponseNotAllowed(['GET'])

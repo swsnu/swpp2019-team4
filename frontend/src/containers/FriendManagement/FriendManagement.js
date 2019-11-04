@@ -19,7 +19,7 @@ class FriendManagement extends Component {
 
   render() {
     const friends = this.props.storedFriend.map((friend) => (
-      <FriendView key={friend.username} username={friend.username}/>
+      <FriendView key={friend.id} username={friend.username}/>
     ));
     return (
       <div className="FriendManagement">
