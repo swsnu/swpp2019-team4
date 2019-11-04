@@ -7,6 +7,7 @@ import './TimeTableView.css';
  * week_day is 0~5 integer. Monday is 0, Tuesday is 1, ... Saturday is 5
  * start_time, end_time are 660~1230 integer. This value is hour*60+minute (8:00~20:30). start_time must be divided by 30
  * color is 6 hexadigit number.
+ * height is constant value, and width is max width percent value
 */
 
 
@@ -15,8 +16,8 @@ const TimeTableView = (props) => {
   const coursesList = [[], [], [], [], [], []];
   const tablehtml = [];
   let tablehtmlIth = [];
-  const heightunit = 24;
-  const widthunit = 100;
+  const heightunit = props.height;
+  const widthunit = '14%';
   for (let i = 0; i < 26; i += 1) {
     for (let j = 0; j < 6; j += 1) {
       coursesList[j].push([]);
@@ -31,7 +32,7 @@ const TimeTableView = (props) => {
       },
     );
   }
-  for (let i = 0; i < 6; i += 1) {
+  for (let i = 0; i < 7; i += 1) {
     tablehtmlIth.push(<th key={i} height={heightunit} width={widthunit}>{tableHeaderString[i]}</th>);
   }
   tablehtml.push(<tr key={-1}>{tablehtmlIth}</tr>);
@@ -49,24 +50,31 @@ const TimeTableView = (props) => {
         </td>,
       );
     }
-    for (let j = 0; j < 5; j += 1) {
+    for (let j = 0; j < 6; j += 1) {
       if (coursesList[j][i].length === 0) {
         tablehtmlIth.push(<td key={1000 * i + j + 1001} height={heightunit} width={widthunit} />);
       } else {
         tablehtmlIth.push(
           <td key={1000 * i + j} height={heightunit} width={widthunit}>
-            <div
-              className="square"
-              style={
-              {
-                height: `${((heightunit * coursesList[j][i][0].length) / 30) * 1.1}px`,
-                width: `${widthunit}px`,
-                backgroundColor: coursesList[j][i][0].color,
-              }
+            {
+              coursesList[j][i].map(
+                (course) => (
+                  <div
+                    className="square"
+                    key={1}
+                    style={
+                    {
+                      height: `${((heightunit * course.length) / 30) * 1.1}px`,
+                      width: `${(14 * props.width) / 100}%`,
+                      backgroundColor: course.color,
+                    }
+                  }
+                  >
+                    {course.name}
+                  </div>
+                ),
+              )
             }
-            >
-              {coursesList[j][i][0].name}
-            </div>
           </td>,
         );
       }
@@ -75,7 +83,7 @@ const TimeTableView = (props) => {
   }
   return (
     <div className="Timetableview">
-      <table id="timetable" border="1" bordercolor="black" style={{ alignItem: 'top' }}>
+      <table id="timetable" border="1" bordercolor="black" style={{ alignItem: 'center', width: '100%' }}>
         <caption>TIMETABLE</caption>
         <tbody>
           {tablehtml}
@@ -95,5 +103,7 @@ TimeTableView.propTypes = {
       color: PropTypes.string.isRequired,
     }),
   ).isRequired,
+  height: PropTypes.number.isRequired,
+  width: PropTypes.number.isRequired,
 };
 export default TimeTableView;
