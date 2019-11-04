@@ -4,6 +4,9 @@ const initialState = {
   user: {
     is_authenticated: null,
   },
+  friends: {
+
+  },
   email_sending: null,
 };
 

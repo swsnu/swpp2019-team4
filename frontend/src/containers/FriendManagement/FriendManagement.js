@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import './FriendManagement.css';
-// import * as actionCreators from '../../store/actions/index';
+import * as actionCreators from '../../store/actions/index';
 
 class FriendManagement extends Component {
   constructor(props) {
@@ -33,9 +33,11 @@ FriendManagement.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
+  storedUser: state.user.user,
 });
 
 const mapDispatchToProps = (dispatch) => ({
+  onGetUser: () => dispatch(actionCreators.getUser()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FriendManagement);

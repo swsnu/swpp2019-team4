@@ -16,6 +16,11 @@ class AssaTestCase(TestCase):
             email='khsoo@gmail.com', password='khsoo', username='Kim Hyunsoo'))
         user_set.append(User.objects.create_superuser(
             email='young@naver.com', password='young', username='Kim Youngchan'))
+
+        # friend relationship
+        user_set[0].friends.add(user_set[1])
+        user_set[0].friends.add(user_set[2])
+
         Timetable.objects.create(title='21', user=user_set[0])
         Timetable.objects.create(title='22', user=user_set[0])
         Course.objects.create(
@@ -166,6 +171,9 @@ class AssaTestCase(TestCase):
         self.assertEqual(response.status_code, 405)
 
     def test_delete_user(self):
+        response = self.post('/api/signin/',
+                             json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
+                             content_type='application/json')
         response = self.delete('/api/user/')
         self.assertEqual(response.status_code, 405)
 
@@ -179,6 +187,23 @@ class AssaTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('cubec', response.content.decode())
         self.assertIn('grade', response.content.decode())
+
+    def test_get_user_friend(self):
+        response = self.get('/api/user/friend/')
+        self.assertEqual(response.status_code, 401)
+        response = self.post('/api/signin/',
+                             json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
+                             content_type='application/json')
+        response = self.get('/api/user/friend/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(json.loads(response.content.decode())), 2)
+
+    def test_delete_user_friend(self):
+        response = self.post('/api/signin/',
+                             json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
+                             content_type='application/json')
+        response = self.delete('/api/user/friend/')
+        self.assertEqual(response.status_code, 405)
 
     def test_timetable(self):
         timetable = Timetable.objects.get(id=2)

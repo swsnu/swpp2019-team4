@@ -104,7 +104,9 @@ class Main extends Component {
           <TimetableView id="timetable-table" height={24} width={80} courses={courses} />
         </div>
         <div className="Content-right">
-          <button type="button" id="friend-request" onClick={() => this.toggleFriendManagement()}>MANAGE FRIENDS</button>
+          <button type="button" id="friend-request" onClick={() => this.toggleFriendManagement()}>
+            MANAGE FRIENDS
+          </button>
           <MainPageFriendListView id="friend-list" friends={friend} />
         </div>
         {this.state.showFriendManagement

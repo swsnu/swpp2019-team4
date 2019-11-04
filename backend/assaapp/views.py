@@ -76,14 +76,22 @@ def api_signout(request):
     return HttpResponseNotAllowed(['GET'])
 
 def api_user(request):
-    if request.method == 'GET':
-        if request.user.is_authenticated:
+    if request.user.is_authenticated:
+        if request.method == 'GET':
             user = {'email': request.user.email, 'username': request.user.username,
-                    'grade': request.user.grade, 'department': request.user.department,
-                    'is_authenticated': True}
+                    'grade': request.user.grade, 'department': request.user.department}
             return JsonResponse(user)
-        return HttpResponse(status=401)
-    return HttpResponseNotAllowed(['GET'])
+        return HttpResponseNotAllowed(['GET'])
+    return HttpResponse(status=401)
+
+def api_user_friend(request):
+    if request.user.is_authenticated:
+        if request.method == 'GET':
+            friends = [{'username': friend['username']}
+                       for friend in request.user.friends.all().values()]
+            return JsonResponse(friends, safe=False)
+        return HttpResponseNotAllowed(['GET'])
+    return HttpResponse(status=401)
 
 def api_timetable(request):
     if request.user.is_authenticated:
