@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect, NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import * as actionCreators from '../../store/actions/index';
-import TimeTableView from '../../components/TimeTableView/TimeTableView';
+import TimetableView from '../../components/TimetableView/TimetableView';
 import TopBar from '../../components/TopBar/TopBar';
 
 class Timetable extends Component {

@@ -1,9 +1,9 @@
 import { mount } from 'enzyme';
 import React from 'react';
-import TimeTableView from './TimeTableView';
+import TimetableView from './TimetableView';
 
-describe('<TimeTableView />', () => {
-  it('TimeTableView render test', () => {
+describe('<TimetableView />', () => {
+  it('TimetableView render test', () => {
     const courses = [
       {
         week_day: 0, start_time: 660, end_time: 750, course_name: 'DS', color: '#FFFFFF',
@@ -24,7 +24,7 @@ describe('<TimeTableView />', () => {
         week_day: 4, start_time: 840, end_time: 960, course_name: 'DS', color: '#FFFFFF',
       },
     ];
-    const component = mount(<TimeTableView courses={courses} height={24} width={80} />);
+    const component = mount(<TimetableView courses={courses} height={24} width={80} />);
     const datastructure = component.find('#timetable');
     expect(datastructure.length).toBe(1);
   });

@@ -3,8 +3,8 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import TopBar from './TopBar';
 
-describe('<TimeTableView />', () => {
-  it('TimeTableView render test', () => {
+describe('<TimetableView />', () => {
+  it('TimetableView render test', () => {
     const component = mount(<BrowserRouter><TopBar /></BrowserRouter>);
     const assabutton = component.find('#assa-logo-button');
     const timetablebutton = component.find('#timetable-management-button');
