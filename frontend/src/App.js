@@ -5,6 +5,7 @@ import Login from './containers/Login/Login';
 import Signup from './containers/Signup/Signup';
 import Main from './containers/Main/Main';
 import Verify from './containers/Verify/Verify';
+import TimetableManagement from './containers/TimetableManagement/TimetableManagement';
 import './App.css';
 
 function App(props) {
@@ -17,6 +18,7 @@ function App(props) {
           <Route path="/login" exact component={Login} />
           <Route path="/signup" exact component={Signup} />
           <Route path="/main" exact component={Main} />
+          <Route path="/manage" exact component={TimetableManagement} />
           <Redirect from="/" to="/login" />
         </Switch>
       </div>
