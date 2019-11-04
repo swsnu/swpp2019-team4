@@ -112,7 +112,8 @@ def api_timetable_id(request, timetable_id):
                 timetable = model_to_dict(Timetable.objects.get(id=timetable_id))
             except Timetable.DoesNotExist:
                 return JsonResponse([], status=404, safe=False)
-            courses_color = [course for course in CourseColor.objects.filter(timetable=timetable_id)]
+            courses_color = [course for 
+                             course in CourseColor.objects.filter(timetable=timetable_id)]
             courses_data = []
             for course_data in courses_color:
                 for course_time in CourseTime.objects.filter(course=course_data.course):
@@ -121,9 +122,9 @@ def api_timetable_id(request, timetable_id):
                             'name': course_data.course.title,
                             'weekday': course_time.weekday,
                             'start_time': course_time.start_time.hour*60
-                                            +course_time.start_time.minute,
+                                          +course_time.start_time.minute,
                             'end_time': course_time.end_time.hour*60
-                                            +course_time.end_time.minute,
+                                        +course_time.end_time.minute,
                             'color': course_data.color
                         }
                     )
