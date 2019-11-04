@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './TimeTableView.css';
+import './TimetableView.css';
 /*
  * INPUT: props.courses parsed as below
  * [{"week_day": 0, "start_time": 660, "end_time": 750, "course_name": "NAME OF EACH COURSE", "color": "#FFFFFF"}, {}, ...]
@@ -11,7 +11,7 @@ import './TimeTableView.css';
 */
 
 
-const TimeTableView = (props) => {
+const TimetableView = (props) => {
   const tableHeaderString = ['', 'M', 'T', 'W', 'T', 'F', 'S'];
   const coursesList = [[], [], [], [], [], []];
   const tablehtml = [];
@@ -82,7 +82,7 @@ const TimeTableView = (props) => {
     tablehtml.push(<tr key={-i - 2}>{tablehtmlIth}</tr>);
   }
   return (
-    <div className="Timetableview">
+    <div className="TimetableView">
       <table id="timetable" border="1" bordercolor="black" style={{ alignItem: 'center', width: '100%' }}>
         <caption>TIMETABLE</caption>
         <tbody>
@@ -93,7 +93,7 @@ const TimeTableView = (props) => {
   );
 };
 
-TimeTableView.propTypes = {
+TimetableView.propTypes = {
   courses: PropTypes.arrayOf(
     PropTypes.shape({
       start_time: PropTypes.number.isRequired,
@@ -106,4 +106,4 @@ TimeTableView.propTypes = {
   height: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
 };
-export default TimeTableView;
+export default TimetableView;

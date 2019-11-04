@@ -1,6 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
-import TimeTableView from './TimeTableView';
+import TimeTableView from './TimetableView';
 
 describe('<TimeTableView />', () => {
   it('TimeTableView render test', () => {
