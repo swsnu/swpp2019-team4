@@ -22,7 +22,7 @@ function timetableManagement(state) {
     <Provider store={mockStore}>
       <ConnectedRouter history={createBrowserHistory()}>
         <Switch>
-          <Route path="/" exact component={TimetableManagement} />
+          <Route path="/" exact render={() => <TimetableManagement courses={[]} height={24} width={80} />} />
           <Route path="/login" exact render={() => <div className="Login" />} />
           <Route path="/main" exact render={() => <div className="Main" />} />
         </Switch>

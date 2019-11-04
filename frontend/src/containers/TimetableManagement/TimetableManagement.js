@@ -46,7 +46,7 @@ class Timetable extends Component {
           <li><button type="button">전기전자회로</button></li>
           <li><button type="button">인터넷 보안과 프라이버시</button></li>
         </ol>
-        <TimeTableView id="timetable-table" courses={courses} />
+        <TimeTableView id="timetable-table" height={24} width={80} courses={courses} />
         <ol>
           <li><button type="button">Timetable1</button></li>
           <li><button type="button">Timetable2</button></li>
