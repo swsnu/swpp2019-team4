@@ -42,16 +42,18 @@ class Timetable extends Component {
           <input id="courses" type="text" />
         </label>
         <ol>
-          <li>소프트웨어 개발의 원리와 실습</li>
-          <li>전기전자회로</li>
-          <li>인터넷 보안과 프라이버시</li>
+          <li><button type="button">소프트웨어 개발의 원리와 실습</button></li>
+          <li><button type="button">전기전자회로</button></li>
+          <li><button type="button">인터넷 보안과 프라이버시</button></li>
         </ol>
         <TimeTableView id="timetable-table" courses={courses} />
         <ol>
-          <li>Timetable1</li>
-          <li>Timetable2</li>
-          <li>Timetable3</li>
+          <li><button type="button">Timetable1</button></li>
+          <li><button type="button">Timetable2</button></li>
+          <li><button type="button">Timetable3</button></li>
         </ol>
+        <button type="button" id="delete-button">DELETE</button>
+        <button type="button" id="create-button">CREATE</button>
         <NavLink to="/timetable/recommend">
           <button type="button" id="timetable-recommend-button">RECOMMEND</button>
         </NavLink>
