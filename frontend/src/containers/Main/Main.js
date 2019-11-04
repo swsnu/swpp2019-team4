@@ -6,6 +6,7 @@ import * as actionCreators from '../../store/actions/index';
 import TimeTableView from '../../components/TimeTableView/TimeTableView';
 import MainPageFriendListView from '../../components/MainPageFriendListView/MainPageFriendListView';
 import TopBar from '../../components/TopBar/TopBar';
+import './Main.css';
 
 class Main extends Component {
   constructor(props) {
@@ -90,8 +91,12 @@ class Main extends Component {
         <TopBar id="topbar" />
         <button type="button" id="logout-button" onClick={() => this.handleLogout()}>LOGOUT</button>
         <br />
-        <TimeTableView id="timetable-table" courses={courses} />
-        <MainPageFriendListView id="friend-list" friends={friend} />
+        <div className="Content-left">
+          <TimeTableView id="timetable-table" height={24} width={80} courses={courses} />
+        </div>
+        <div className="Content-right">
+          <MainPageFriendListView id="friend-list" friends={friend} />
+        </div>
       </div>
     );
   }

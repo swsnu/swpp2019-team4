@@ -9,7 +9,7 @@ from django.core.mail import EmailMessage
 from django.forms.models import model_to_dict
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from assaapp.models import User, Timetable, Course
+from assaapp.models import User, Timetable, Course, CourseColor, CourseTime
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
 
 def api_signup(request):
@@ -111,8 +111,24 @@ def api_timetable_id(request, timetable_id):
             try:
                 timetable = model_to_dict(Timetable.objects.get(id=timetable_id))
             except Timetable.DoesNotExist:
-                return HttpResponseNotFound()
-            return JsonResponse(timetable)
+                return JsonResponse([], status=404, safe=False)
+            courses_color = [course for
+                             course in CourseColor.objects.filter(timetable=timetable_id)]
+            courses_data = []
+            for course_data in courses_color:
+                for course_time in CourseTime.objects.filter(course=course_data.course):
+                    courses_data.append(
+                        {
+                            'name': course_data.course.title,
+                            'weekday': course_time.weekday,
+                            'start_time': course_time.start_time.hour*60
+                                          +course_time.start_time.minute,
+                            'end_time': course_time.end_time.hour*60
+                                        +course_time.end_time.minute,
+                            'color': course_data.color
+                        }
+                    )
+            return JsonResponse(courses_data, safe=False)
         if request.method == 'PUT':
             try:
                 body = request.body.decode()

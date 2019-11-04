@@ -1,0 +1,8 @@
+.Content-left{
+    float: left;
+    width: 80%;
+}
+.Content-right{
+    float: right;
+    width: 20%;
+}
