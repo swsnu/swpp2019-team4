@@ -92,7 +92,7 @@ class Main extends Component {
         <button type="button" id="logout-button" onClick={() => this.handleLogout()}>LOGOUT</button>
         <br />
         <div className="Content-left">
-          <TimeTableView id="timetable-table" height={24} width={200} courses={courses} />
+          <TimeTableView id="timetable-table" height={24} width={80} courses={courses} />
         </div>
         <div className="Content-right">
           <MainPageFriendListView id="friend-list" friends={friend} />
