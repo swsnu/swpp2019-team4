@@ -15,8 +15,8 @@ const TimeTableView = (props) => {
   const coursesList = [[], [], [], [], [], []];
   const tablehtml = [];
   let tablehtmlIth = [];
-  const heightunit = 24;
-  const widthunit = 100;
+  const heightunit = props.height;
+  const widthunit = props.width;
   for (let i = 0; i < 26; i += 1) {
     for (let j = 0; j < 6; j += 1) {
       coursesList[j].push([]);
@@ -55,18 +55,21 @@ const TimeTableView = (props) => {
       } else {
         tablehtmlIth.push(
           <td key={1000 * i + j} height={heightunit} width={widthunit}>
-            <div
-              className="square"
-              style={
-              {
-                height: `${((heightunit * coursesList[j][i][0].length) / 30) * 1.1}px`,
-                width: `${widthunit}px`,
-                backgroundColor: coursesList[j][i][0].color,
-              }
+            {
+              coursesList[j][i].map(
+                course=><div className="square"
+                  style={
+                    {
+                      height: `${((heightunit * course.length) / 30) * 1.1}px`,
+                      width: `${widthunit}px`,
+                      backgroundColor: course.color,
+                    }
+                  }
+                >
+                {course.name}
+                </div>
+              )
             }
-            >
-              {coursesList[j][i][0].name}
-            </div>
           </td>,
         );
       }
