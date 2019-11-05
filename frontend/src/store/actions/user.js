@@ -1,15 +1,9 @@
 import axios from 'axios';
 import * as actionTypes from './actionTypes';
 
-export const setSendStatus = (status) => (dispatch) => {
-  dispatch({ type: actionTypes.SET_SEND_STATUS, email_sending: status });
-};
-
 export const postSignup = (email, password, username, department, grade) => (dispatch) => axios.post('/api/signup/', {
   email, password, username, department, grade,
-})
-  .then(() => dispatch(setSendStatus(2)))
-  .catch(() => dispatch(setSendStatus(3)));
+});
 
 export const postSignin = (email, password) => (dispatch) => axios.post('/api/signin/', { email, password })
   .then(() => dispatch({ type: actionTypes.GET_AUTH, is_authenticated: true }))
