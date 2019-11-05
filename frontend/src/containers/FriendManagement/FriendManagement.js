@@ -58,7 +58,7 @@ class FriendManagement extends Component {
       <div key={friend.id}>
         <span>{friend.username}</span>
         <span>
-          <button id="email-input" type="button" onClick={() => this.props.onDeleteFriend(friend.id)}>
+          <button id="friend-delete" type="button" onClick={() => this.props.onDeleteFriend(friend.id)}>
             X
           </button>
         </span>
@@ -169,7 +169,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  onGetUser: () => dispatch(actionCreators.getUser()),
   onGetFriend: () => dispatch(actionCreators.getFriend()),
   onPostSearch: (email) => dispatch(actionCreators.postUserSearch(email)),
   onReceiveFriend: (id) => dispatch(actionCreators.receiveFriend(id)),
