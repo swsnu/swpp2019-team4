@@ -64,6 +64,18 @@ class User(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
+    
+    def data_large(self):
+        return {'id': self.id, 'email': self.email, 'username': self.username,
+                'grade': self.grade, 'department': self.department, 
+                'timetable_main': self.timetable_main.id}
+    
+    def data_medium(self):
+        return {'id': self.id, 'email': self.email, 'username': self.username, 
+                'timetable_main': self.timetable_main.id}
+
+    def data_small(self):
+        return {'id': self.id, 'email': self.email, 'username': self.username}
 
 class Course(models.Model):
     semester = models.CharField(max_length=8, default='default')

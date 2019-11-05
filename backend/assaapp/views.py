@@ -78,17 +78,15 @@ def api_signout(request):
 def api_user(request):
     if request.user.is_authenticated:
         if request.method == 'GET':
-            user = {'email': request.user.email, 'username': request.user.username,
-                    'grade': request.user.grade, 'department': request.user.department}
-            return JsonResponse(user)
+            return JsonResponse(request.user.data_large())
         return HttpResponseNotAllowed(['GET'])
     return HttpResponse(status=401)
 
 def api_user_friend(request):
     if request.user.is_authenticated:
         if request.method == 'GET':
-            friends = [{'id': friend['id'], 'username': friend['username']}
-                       for friend in request.user.friends.all().values()]
+            friends = [friend.data_medium() for friend
+                       in request.user.friends.all()]
             return JsonResponse(friends, safe=False)
         return HttpResponseNotAllowed(['GET'])
     return HttpResponse(status=401)
@@ -109,9 +107,10 @@ def api_user_friend_id(request, user_id):
                 request.user.friends.add(friend)
             except User.DoesNotExist:
                 friend.friends_request.add(request.user)
-            return HttpResponse(status=204)
+                return JsonResponse(friend.data_medium())
+            return JsonResponse(friend.data_small())
         if request.method == 'DELETE':
-            # Simply, remove all connections between two users.
+            # Simply put, remove all connections between two users.
             # If a user got friend request from (user_id),
             # this request is considered as a friend disapproval.
             # If a user is a friend of (user_id)

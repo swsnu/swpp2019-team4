@@ -5,6 +5,8 @@ const initialState = {
     is_authenticated: null,
   },
   friend: [],
+  friend_send: [],
+  friend_recieve: [],
   search: {
     is_exist: false,
     id: 0,
@@ -26,6 +28,11 @@ const reducer = (state = initialState, action) => {
       return { ...state, friend: action.friend };
     case actionTypes.GET_USER_SEARCH:
       return { ...state, search: action.search };
+    case actionTypes.SEND_FRIEND:
+    case actionTypes.SEND_FRIEND_UNDO:
+    case actionTypes.RECIEVE_FRIEND:
+    case actionTypes.RECIEVE_FRIEND_UNDO:
+    case actionTypes.DELETE_FRIEND:
     default:
       return { ...state };
   }

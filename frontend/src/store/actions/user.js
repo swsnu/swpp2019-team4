@@ -42,4 +42,8 @@ export const getFriend = () => (dispatch) => axios.get('/api/user/friend/')
 
 export const postUserSearch = (email) => (dispatch) => axios.post('/api/user/search/', { email })
   .then((res) => dispatch({ type: actionTypes.GET_USER_SEARCH, search: { ...res.data, is_exist: true } }))
-  .catch(() => dispatch({ type: actionTypes.GET_USER_SEARCH, search: { is_exist: false } }));
+  .catch(() => dispatch({ type: actionTypes.GET_USER_SEARCH, search: { id: 0, username: '', is_exist: false } }));
+
+export const deleteFriend = (id) => (dispatch) => axios.delete('/api/user/friend/' + id)
+  .then(() => dispatch({ type: actionTypes.DELETE_FRIEND, user_id: id }))
+  .catch(() => {});
