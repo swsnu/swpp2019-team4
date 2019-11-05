@@ -87,9 +87,9 @@ def api_user_friend(request):
         if request.method == 'GET':
             friend = [user.data_medium() for user in request.user.friends.all()]
             friend_receive = [user.data_small() for user in request.user.friends_request.all()]
-            friend_send = [user.data_small() for user in 
+            friend_send = [user.data_small() for user in
                            User.objects.filter(friends_request__in=[request.user.id])]
-            return JsonResponse({'friend': friend, 'friend_send': friend_send, 
+            return JsonResponse({'friend': friend, 'friend_send': friend_send,
                                  'friend_receive': friend_receive})
         return HttpResponseNotAllowed(['GET'])
     return HttpResponse(status=401)
@@ -142,7 +142,7 @@ def api_user_search(request):
                 email = req_data['email']
                 friend = User.objects.get(email=email)
             except (KeyError, JSONDecodeError, User.DoesNotExist):
-                return HttpResponseNotFound()
+                return HttpResponseNotFound(content='NULL')
             user = request.user
             if user == friend:
                 return HttpResponseBadRequest(content='USER')

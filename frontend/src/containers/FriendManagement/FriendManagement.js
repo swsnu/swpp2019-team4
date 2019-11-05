@@ -9,6 +9,7 @@ class FriendManagement extends Component {
     super(props);
     this.state = {
       email: '',
+      message: '',
     };
   }
 
@@ -16,15 +17,43 @@ class FriendManagement extends Component {
     this.props.onGetFriend();
   }
 
-  componentWillUnmount() {
-    //this.props.onPostSearch('');
-  }
-
   handleSearch() {
-    this.props.onPostSearch(this.state.email);
+    this.props.onPostSearch(this.state.email)
+      .then(() => {
+        let message = '';
+        if (this.props.storedSearch.exist) {
+          switch (this.props.storedSearch.status) {
+            case 'PENDING':
+              message = `${this.props.storedSearch.username} 님에게 친구 신청을 보냈습니다.`;
+              break;
+            case 'FRIEND':
+              message = `${this.props.storedSearch.username} 님과 친구가 되었습니다.`;
+              break;
+            default:
+              message = '';
+          }
+        } else {
+          switch (this.props.storedSearch.status) {
+            case 'NULL':
+            case 'USER':
+              message = '잘못된 이메일 주소입니다.';
+              break;
+            case 'SENT':
+              message = '이미 친구 신청을 보냈습니다.';
+              break;
+            case 'FRIEND':
+              message = '이미 친구인 상태입니다.';
+              break;
+            default:
+              message = '';
+          }
+        }
+        this.setState((prevState) => ({ ...prevState, message }));
+      });
   }
 
   render() {
+    const { message } = this.state;
     const friends = this.props.storedFriend.map((friend) => (
       <div key={friend.id}>
         <span>{friend.username}</span>
@@ -35,11 +64,13 @@ class FriendManagement extends Component {
         </span>
       </div>
     ));
+
     const friendsSend = this.props.storedFriendSend.map((friend) => (
       <div key={friend.id}>
         <span>{friend.username}</span>
       </div>
     ));
+
     const friendsReceive = this.props.storedFriendReceive.map((friend) => (
       <div key={friend.id}>
         <span>{friend.username}</span>
@@ -54,24 +85,30 @@ class FriendManagement extends Component {
         </span>
       </div>
     ));
+
     return (
       <div className="FriendManagement">
         <div className="FriendManagementIn">
-          <div>HELLO, WORLD!</div>
           <span>
-          <input
-            type="text"
-            id="email-input"
-            value={this.state.email}
-            placeholder="Email"
-            onChange={(event) => this.setState({email: event.target.value})}
-          /></span>
+            <input
+              type="text"
+              id="email-input"
+              value={this.state.email}
+              placeholder="Email"
+              onChange={(event) => this.setState({ email: event.target.value, message: '' })}
+            />
+          </span>
+          <div>{message}</div>
           <span>
-          <button
-            id="email-input"
-            type="button"
-            onClick={() => this.handleSearch()}
-          > O </button>
+            <button
+              id="email-input"
+              type="button"
+              onClick={() => this.handleSearch()}
+            >
+              {' '}
+O
+              {' '}
+            </button>
           </span>
           <hr />
           <div>RECEIVE</div>
@@ -101,6 +138,8 @@ FriendManagement.propTypes = {
   storedFriendReceive: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   storedSearch: PropTypes.shape({
     exist: PropTypes.bool.isRequired,
+    status: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
   }).isRequired,
 };
 
