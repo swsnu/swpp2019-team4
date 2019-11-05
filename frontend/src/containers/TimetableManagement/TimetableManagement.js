@@ -29,7 +29,7 @@ class TimetableManagement extends Component {
     const courses = [];
     return (
       <div className="Manage">
-        <TopBar id="topbar" logout={() => this.handleLogout()}/>
+        <TopBar id="topbar" logout={() => this.handleLogout()} />
         <select id="semester-select">
           <option value="2019-1">2019-1</option>
           <option value="2019-s">2019-s</option>
