@@ -7,6 +7,7 @@ import * as actionCreators from '../../store/actions/index';
 class Verify extends Component {
   componentDidMount() {
     this.props.onGetUser();
+    this.props.onGetVerify(this.props.match.params.uid, this.props.match.params.token);
   }
 
   render() {
@@ -15,7 +16,6 @@ class Verify extends Component {
         <Redirect to="/main" />
       );
     }
-    this.props.onGetVerify(this.props.match.params.uid, this.props.match.params.token);
     return (
       <Redirect to="/login/" />
     );

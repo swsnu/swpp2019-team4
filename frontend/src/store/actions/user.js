@@ -8,14 +8,8 @@ export const setSendStatus = (status) => (dispatch) => {
 export const postSignup = (email, password, username, department, grade) => (dispatch) => axios.post('/api/signup/', {
   email, password, username, department, grade,
 })
-  .then(() => {
-    alert('입력한 이메일로 확인 메일을 발송했습니다. 이메일 확인 절차를 마치면 계정이 생성됩니다.');
-    dispatch(setSendStatus(false));
-  })
-  .catch(() => {
-    alert('메일을 발송하지 못했습니다. 이메일을 다시 한 번 확인해 주시기 바랍니다.');
-    dispatch(setSendStatus(false));
-  });
+  .then(() => dispatch(setSendStatus(2)))
+  .catch(() => dispatch(setSendStatus(3)));
 
 export const postSignin = (email, password) => (dispatch) => axios.post('/api/signin/', { email, password })
   .then(() => dispatch({ type: actionTypes.GET_AUTH, is_authenticated: true }))
