@@ -88,8 +88,7 @@ class Main extends Component {
     ];
     return (
       <div className="Main">
-        <TopBar id="topbar" />
-        <button type="button" id="logout-button" onClick={() => this.handleLogout()}>LOGOUT</button>
+        <TopBar id="topbar" logout={() => this.handleLogout()} />
         <br />
         <div className="Content-left">
           <TimetableView id="timetable-table" height={24} width={80} courses={courses} />
