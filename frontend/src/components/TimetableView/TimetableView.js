@@ -61,11 +61,12 @@ const TimetableView = (props) => {
             {
               coursesList[j][i].map(
                 (course) => (
-                  <a href={'http://sugang.snu.ac.kr/sugang/cc/cc101.action?' +
-                  'openSchyy=2019&openShtmFg=U000200002&openDetaShtmFg=' +
-                  'U000300001&sbjtCd=' + course.clanum +
-                  '&ltNo=' + course.lecnum + '&sugangFlag=P'}
-                   target='_blank' rel="noopener noreferrer">
+                  <a 
+                  href={'http://sugang.snu.ac.kr/sugang/cc/cc101.action?'
+                    + 'openSchyy=2019&openShtmFg=U000200002&openDetaShtmFg='
+                    + 'U000300001&sbjtCd=' + course.clanum
+                    + '&ltNo=' + course.lecnum + '&sugangFlag=P'}
+                    target='_blank' rel="noopener noreferrer" key={0}>
                     <div
                       className="square"
                       key={1}
@@ -109,6 +110,8 @@ TimetableView.propTypes = {
       week_day: PropTypes.number.isRequired,
       course_name: PropTypes.string.isRequired,
       color: PropTypes.string.isRequired,
+      lecture_number: PropTypes.string.isRequired,
+      course_number: PropTypes.string.isRequired,
     }),
   ).isRequired,
   height: PropTypes.number.isRequired,
