@@ -5,7 +5,6 @@ import TimetableGenerator from '../TimetableGenerator/TimetableGenerator';
 
 describe('<TimetableView />', () => {
   it('TimetableView render test', () => {
-    const trueobject = true;
     const courses = [
       {
         week_day: 0, start_time: 660, end_time: 750, course_name: 'DS', color: '#FFFFFF',
@@ -32,7 +31,6 @@ describe('<TimetableView />', () => {
         height={24}
         width={80}
         text={false}
-        link={trueobject}
         title=""
       />,
     );
@@ -41,7 +39,6 @@ describe('<TimetableView />', () => {
         courses={courses}
         height={24}
         width={80}
-        text={trueobject}
         link={false}
         title=""
       />,
@@ -52,15 +49,14 @@ describe('<TimetableView />', () => {
     expect(datastructureTF.length).toBe(6);
   });
   it('TimetableView zero render test', () => {
-    const trueobject = true;
     const courses = TimetableGenerator(-1);
+    expect(courses.length).toBe(0);
     const component = mount(
       <TimetableView
         courses={courses}
         height={24}
         width={80}
         text={false}
-        link={trueobject}
         title=""
       />,
     );
