@@ -9,20 +9,22 @@ from assaapp.tokens import ACCOUNT_ACTIVATION_TOKEN
 class AssaTestCase(TestCase):
     def setUp(self):
         self.client = Client(enforce_csrf_checks=True)
-        user_set = []
-        user_set.append(User.objects.create_superuser(
+        self.user_set = []
+        self.user_set.append(User.objects.create_superuser(
             email='cubec@gmail.com', password='cubec', username='Jung Jaeyun'))
-        user_set.append(User.objects.create_user(
+        self.user_set.append(User.objects.create_user(
             email='khsoo@gmail.com', password='khsoo', username='Kim Hyunsoo'))
-        user_set.append(User.objects.create_superuser(
+        self.user_set.append(User.objects.create_superuser(
             email='young@naver.com', password='young', username='Kim Youngchan'))
+        self.user_set.append(User.objects.create_user(
+            email='koo@never.com', password='koo', username='Koo Junseo'))
 
         # friend relationship
-        user_set[0].friends.add(user_set[1])
-        user_set[0].friends.add(user_set[2])
+        self.user_set[0].friends.add(self.user_set[1])
+        self.user_set[2].friends_request.add(self.user_set[0])
 
-        Timetable.objects.create(title='21', user=user_set[0])
-        Timetable.objects.create(title='22', user=user_set[0])
+        Timetable.objects.create(title='21', user=self.user_set[0])
+        Timetable.objects.create(title='22', user=self.user_set[0])
         Course.objects.create(
             semester="2019-2",
             classification="전필",
@@ -196,7 +198,7 @@ class AssaTestCase(TestCase):
                              content_type='application/json')
         response = self.get('/api/user/friend/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(json.loads(response.content.decode())), 2)
+        self.assertEqual(len(json.loads(response.content.decode())), 1)
 
     def test_delete_user_friend(self):
         response = self.post('/api/signin/',
@@ -204,6 +206,29 @@ class AssaTestCase(TestCase):
                              content_type='application/json')
         response = self.delete('/api/user/friend/')
         self.assertEqual(response.status_code, 405)
+
+    def test_delete_user_friend_id(self):
+        response = self.delete('/api/user/friend/2/')
+        self.assertEqual(response.status_code, 401)
+        response = self.post('/api/signin/',
+                             json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
+                             content_type='application/json')
+        response = self.delete('/api/user/friend/2/')
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(self.user_set[1].friends.filter(id=1).count(), 0)
+
+    def test_post_user_friend_id(self):
+        response = self.post('/api/signin/',
+                             json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
+                             content_type='application/json')
+        response = self.post('/api/user/friend/2/')
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(self.user_set[0].friends_request.filter(id=2).count(), 0)
+        self.assertEqual(self.user_set[0].friends.filter(id=2).count(), 1)
+        response = self.post('/api/user/friend/3/')
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(self.user_set[2].friends.filter(id=1).count(), 0)
+        self.assertEqual(self.user_set[2].friends_request.filter(id=1).count(), 1)
 
     def test_timetable(self):
         timetable = Timetable.objects.get(id=2)
@@ -314,7 +339,7 @@ class AssaTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         response = self.delete('/api/timetable/101/')
         self.assertEqual(response.status_code, 404)
-        response = self.delete('/api/timetable/4/')
+        response = self.delete('/api/timetable/5/')
         self.assertEqual(response.status_code, 200)
         response = self.get('/api/timetable/')
         self.assertEqual(2, len(json.loads(response.content.decode())))

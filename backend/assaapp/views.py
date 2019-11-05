@@ -93,6 +93,38 @@ def api_user_friend(request):
         return HttpResponseNotAllowed(['GET'])
     return HttpResponse(status=401)
 
+def api_user_friend_id(request, user_id):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            '''
+            If a user already got friend request from (user_id), 
+            this method is considered as a friend approval.
+            Else, then this method is considered as a friend request
+            '''
+            try:
+                friend = User.objects.get(id=user_id)
+            except User.DoesNotExist:
+                return HttpResponseNotFound()
+            try:
+                request.user.friends_request.get(id=user_id)
+                request.user.friends_request.remove(friend)
+                request.user.friends.add(friend)
+            except User.DoesNotExist:
+                friend.friends_request.add(request.user)
+            return HttpResponse(status=204)
+        if request.method == 'DELETE':
+            '''
+            Just delete a user from the friend list
+            '''
+            try:
+                friend = request.user.friends.get(id=user_id)
+                request.user.friends.remove(friend)
+            except User.DoesNotExist:
+                return HttpResponseNotFound()
+            return HttpResponse(status=204)
+        return HttpResponseNotAllowed(['POST', 'DELETE'])
+    return HttpResponse(status=401)
+
 def api_timetable(request):
     if request.user.is_authenticated:
         if request.method == 'GET':
