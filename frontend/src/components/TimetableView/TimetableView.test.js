@@ -1,6 +1,7 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import TimetableView from './TimetableView';
+import TimetableGenerator from '../TimetableGenerator/TimetableGenerator';
 
 describe('<TimetableView />', () => {
   it('TimetableView render test', () => {
@@ -30,5 +31,11 @@ describe('<TimetableView />', () => {
     expect(datastructureFT.length).toBe(6);
     const datastructureTF = componentTF.find('.square');
     expect(datastructureTF.length).toBe(6);
+  });
+  it('TimetableView zero render test', () => {
+    const courses = TimetableGenerator(-1);
+    const component = mount(<TimetableView courses={courses} height={24} width={80} text={false} link title="" />);
+    const datastructure = component.find('.square');
+    expect(datastructure.length).toBe(0);
   });
 });
