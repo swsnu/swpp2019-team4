@@ -5,6 +5,7 @@ import TimetableGenerator from '../TimetableGenerator/TimetableGenerator';
 
 describe('<TimetableView />', () => {
   it('TimetableView render test', () => {
+    const trueobject = true;
     const courses = [
       {
         week_day: 0, start_time: 660, end_time: 750, course_name: 'DS', color: '#FFFFFF',
@@ -25,16 +26,44 @@ describe('<TimetableView />', () => {
         week_day: 4, start_time: 840, end_time: 960, course_name: 'DS', color: '#FFFFFF',
       },
     ];
-    const componentFT = mount(<TimetableView courses={courses} height={24} width={80} text={false} link={true} title="" />);
-    const componentTF = mount(<TimetableView courses={courses} height={24} width={80} text={true} link={false} title="" />);
+    const componentFT = mount(
+      <TimetableView
+        courses={courses}
+        height={24}
+        width={80}
+        text={false}
+        link={trueobject}
+        title=""
+      />,
+    );
+    const componentTF = mount(
+      <TimetableView
+        courses={courses}
+        height={24}
+        width={80}
+        text={trueobject}
+        link={false}
+        title=""
+      />,
+    );
     const datastructureFT = componentFT.find('.square');
     expect(datastructureFT.length).toBe(6);
     const datastructureTF = componentTF.find('.square');
     expect(datastructureTF.length).toBe(6);
   });
   it('TimetableView zero render test', () => {
+    const trueobject = true;
     const courses = TimetableGenerator(-1);
-    const component = mount(<TimetableView courses={courses} height={24} width={80} text={false} link title="" />);
+    const component = mount(
+      <TimetableView
+        courses={courses}
+        height={24}
+        width={80}
+        text={false}
+        link={trueobject}
+        title=""
+      />,
+    );
     const datastructure = component.find('.square');
     expect(datastructure.length).toBe(0);
   });
