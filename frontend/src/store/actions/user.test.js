@@ -172,8 +172,8 @@ describe('user action test', () => {
   });
 
   it('exist should be set to false when the search failed', (done) => {
-    axios.post = jest.fn(() => new Promise(() => {
-      throw {status: 400, response: { data: ''}};
+    axios.post = jest.fn(() => new Promise((resolve, reject) => {
+      reject({ status: 400, response: { data: '' } });
     }));
     store.dispatch(actionCreators.postUserSearch(''))
       .then(() => {
