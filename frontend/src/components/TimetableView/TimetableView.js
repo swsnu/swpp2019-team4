@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import './TimetableView.css';
 /*
  * INPUT: props.courses parsed as below
- * [{"week_day": 0, "start_time": 660, "end_time": 750, "course_name": "NAME OF EACH COURSE", "color": "#FFFFFF"}, {}, ...]
+ * [{"week_day": 0, "start_time": 660, "end_time": 750, "course_name": "NAME OF EACH COURSE", "color": "#FFFFFF", "course_number": "COU.NUM", "lecture_number": "001"}, {}, ...]
  * week_day is 0~5 integer. Monday is 0, Tuesday is 1, ... Saturday is 5
  * start_time, end_time are 660~1230 integer. This value is hour*60+minute (8:00~20:30). start_time must be divided by 30
  * color is 6 hexadigit number.
@@ -29,6 +29,8 @@ const TimetableView = (props) => {
         name: props.courses[i].course_name,
         length: props.courses[i].end_time - props.courses[i].start_time,
         color: props.courses[i].color,
+        lecnum: props.courses[i].lecture_number,
+        clanum: props.courses[i].course_number,
       },
     );
   }
@@ -59,19 +61,25 @@ const TimetableView = (props) => {
             {
               coursesList[j][i].map(
                 (course) => (
-                  <div
-                    className="square"
-                    key={1}
-                    style={
-                    {
-                      height: `${((heightunit * course.length) / 30) * 1.1}px`,
-                      width: `${(14 * props.width) / 100}%`,
-                      backgroundColor: course.color,
+                  <a href={'http://sugang.snu.ac.kr/sugang/cc/cc101.action?' +
+                  'openSchyy=2019&openShtmFg=U000200002&openDetaShtmFg=' +
+                  'U000300001&sbjtCd=' + course.clanum +
+                  '&ltNo=' + course.lecnum + '&sugangFlag=P'}
+                   target='_blank' rel="noopener noreferrer">
+                    <div
+                      className="square"
+                      key={1}
+                      style={
+                      {
+                        height: `${((heightunit * course.length) / 30) * 1.1}px`,
+                        width: `${(14 * props.width) / 100}%`,
+                        backgroundColor: course.color,
+                      }
                     }
-                  }
-                  >
-                    {course.name}
-                  </div>
+                    >
+                      {course.name}
+                    </div>
+                  </a>
                 ),
               )
             }

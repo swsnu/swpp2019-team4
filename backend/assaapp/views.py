@@ -125,7 +125,9 @@ def api_timetable_id(request, timetable_id):
                                           +course_time.start_time.minute,
                             'end_time': course_time.end_time.hour*60
                                         +course_time.end_time.minute,
-                            'color': course_data.color
+                            'color': course_data.color,
+                            'lecture_number': course_data.course.lecture_number,
+                            'course_number': course_data.course.course_number,
                         }
                     )
             return JsonResponse(courses_data, safe=False)
