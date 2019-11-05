@@ -25,8 +25,8 @@ describe('<TimetableView />', () => {
         week_day: 4, start_time: 840, end_time: 960, course_name: 'DS', color: '#FFFFFF',
       },
     ];
-    const componentFT = mount(<TimetableView courses={courses} height={24} width={80} text={false} link title="" />);
-    const componentTF = mount(<TimetableView courses={courses} height={24} width={80} text link={false} title="" />);
+    const componentFT = mount(<TimetableView courses={courses} height={24} width={80} text={false} link={true} title="" />);
+    const componentTF = mount(<TimetableView courses={courses} height={24} width={80} text={true} link={false} title="" />);
     const datastructureFT = componentFT.find('.square');
     expect(datastructureFT.length).toBe(6);
     const datastructureTF = componentTF.find('.square');
