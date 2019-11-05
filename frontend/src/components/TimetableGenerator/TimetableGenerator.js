@@ -123,7 +123,7 @@ function TimetableGenerator(index) {
         start_time: 1110,
         end_time: 1230,
         course_name: '소프트웨어 개발의 원리와 실습',
-        color: '#FF2312',
+        color: '#00FFFF',
         course_number: 'M1522.002400',
         lecture_number: '001',
       },
