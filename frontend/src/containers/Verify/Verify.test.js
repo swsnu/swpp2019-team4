@@ -7,6 +7,8 @@ import { createBrowserHistory } from 'history';
 import { getMockStore } from '../../test-utils/mocks';
 import Verify from './Verify';
 
+import * as actionCreators from '../../store/actions/user';
+
 const stubState = {
   user: { is_authenticated: false },
 };
@@ -33,8 +35,7 @@ function verify(state, redir) {
 }
 
 describe('verification test', () => {
-  beforeEach(() => {
-  });
+  beforeEach(() => {});
 
   afterEach(() => jest.clearAllMocks());
 
@@ -47,5 +48,17 @@ describe('verification test', () => {
     const component = mount(verify(stubState, '/1/1'));
     component.find('#to-login-button').simulate('click');
     expect(component.find('.Login').length).toBe(1);
+  });
+
+  it('should display correct notice when promise is resolved', () => {
+    jest.spyOn(actionCreators, 'getVerify')
+      .mockImplementation(() => () => (Promise.resolve(null)));
+    mount(verify(stubState, '/1/1'));
+  });
+
+  it('should display correct notice when promise is rejected', () => {
+    jest.spyOn(actionCreators, 'getVerify')
+      .mockImplementation(() => () => (Promise.reject(new Error('verify failed'))));
+    mount(verify(stubState, '/1/1'));
   });
 });
