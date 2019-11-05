@@ -18,7 +18,8 @@ class Verify extends Component {
     this.getParams();
     this.props.onGetUser();
     this.props.onGetVerify(this.state.uid, this.state.token)
-      .then(() => this.setState((prevState) => ({ ...prevState, verify_status: true })));
+      .then(() => this.setState((prevState) => ({ ...prevState, verify_status: true })))
+      .catch(() => this.setState((prevState) => ({ ...prevState, verify_status: false })));
   }
 
   getParams() {
