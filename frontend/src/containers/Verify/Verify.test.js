@@ -13,11 +13,21 @@ const stubStateTrue = {
 
 function verify(state) {
   const mockStore = getMockStore(state);
+  const history = createBrowserHistory();
   return (
     <Provider store={mockStore}>
-      <ConnectedRouter history={createBrowserHistory()}>
+      <ConnectedRouter history={history}>
         <Switch>
-          <Route path="/" exact render={() => <Verify match={{ params: { uid: '', token: '' } }} />} />
+          <Route
+            path="/"
+            exact
+            render={() => (
+              <Verify
+                history={history}
+                match={{ params: { uid: '', token: '' } }}
+              />
+            )}
+          />
           <Route path="/login" exact render={() => <div className="Login" />} />
           <Route path="/main" exact render={() => <div className="Main" />} />
         </Switch>

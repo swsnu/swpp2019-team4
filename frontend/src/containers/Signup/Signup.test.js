@@ -39,7 +39,7 @@ describe('verification test', () => {
 
   beforeEach(() => {
     spyPostSignup = jest.spyOn(actionCreators, 'postSignup')
-      .mockImplementation(() => () => {});
+      .mockImplementation(() => () => Promise.resolve(null));
   });
 
   afterEach(() => jest.clearAllMocks());
