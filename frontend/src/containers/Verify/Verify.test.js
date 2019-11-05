@@ -7,10 +7,6 @@ import { createBrowserHistory } from 'history';
 import { getMockStore } from '../../test-utils/mocks';
 import Verify from './Verify';
 
-const stubState = {
-  user: { is_authenticated: false },
-};
-
 const stubStateTrue = {
   user: { is_authenticated: true },
 };

@@ -8,14 +8,14 @@ class Verify extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      verify_status : false,
+      verify_status: false,
     };
   }
 
   componentDidMount() {
     this.props.onGetUser();
     this.props.onGetVerify(this.props.match.params.uid, this.props.match.params.token)
-      .then(() => this.setState({...this.state, verify_status : true}));
+      .then(() => this.setState((prevState) => ({ ...prevState, verify_status: true })));
   }
 
   goToLogin() {
@@ -28,10 +28,10 @@ class Verify extends Component {
         <Redirect to="/main" />
       );
     }
-    const verify_notice = (this.state.verify_status ? "이메일 확인이 완료되었습니다." : "부적절한 요청입니다.");
+    const verifyNotice = (this.state.verify_status ? '이메일 확인이 완료되었습니다.' : '부적절한 요청입니다.');
     return (
       <div className="Verify">
-        <h3>{verify_notice}</h3>
+        <h3>{verifyNotice}</h3>
         <button
           type="button"
           id="to-login-button"
@@ -47,6 +47,9 @@ class Verify extends Component {
 Verify.propTypes = {
   onGetUser: PropTypes.func.isRequired,
   onGetVerify: PropTypes.func.isRequired,
+  history: PropTypes.shape({
+    replace: PropTypes.func.isRequired,
+  }).isRequired,
   storedUser: PropTypes.shape({
     is_authenticated: PropTypes.bool.isRequired,
   }).isRequired,

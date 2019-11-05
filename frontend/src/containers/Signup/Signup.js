@@ -25,10 +25,10 @@ class Signup extends Component {
   }
 
   handleSignup(email, password, username, department, grade) {
-    this.setState({...this.state, email_sending: 1});
+    this.setState((prevState) => ({ ...prevState, email_sending: 1 }));
     this.props.onPostSignup(email, password, username, department, grade)
-      .then(() => this.setState({...this.state, email_sending: 2}))
-      .catch(() => this.setState({...this.state, email_sending: 3}));
+      .then(() => this.setState((prevState) => ({ ...prevState, email_sending: 2 })))
+      .catch(() => this.setState((prevState) => ({ ...prevState, email_sending: 3 })));
   }
 
   goToLogin() {
@@ -56,10 +56,10 @@ class Signup extends Component {
     const departmentNotice = (departmentValid ? '' : '존재하는 학과를 입력해야 합니다.');
     const gradeNotice = (gradeValid ? '' : '학년은 1 이상 99 이하의 정수여야 합니다.');
 
-    const emailSendNotice = ['가입하기 버튼을 누르면 입력한 이메일로 확인 메일이 발송됩니다.'
-                            ,'이메일 보내는 중...'
-                            ,'입력한 이메일로 확인 메일을 발송했습니다. 이메일 확인 절차를 마치면 계정이 생성됩니다.'
-                            ,'메일을 발송하지 못했습니다. 이메일을 다시 한 번 확인해 주시기 바랍니다.'][this.state.email_sending];
+    const emailSendNotice = ['가입하기 버튼을 누르면 입력한 이메일로 확인 메일이 발송됩니다.',
+      '이메일 보내는 중...',
+      '입력한 이메일로 확인 메일을 발송했습니다. 이메일 확인 절차를 마치면 계정이 생성됩니다.',
+      '메일을 발송하지 못했습니다. 이메일을 다시 한 번 확인해 주시기 바랍니다.'][this.state.email_sending];
     return (
       <div className="Signup">
         <h2>Welcome to ASSA!</h2>
@@ -133,7 +133,7 @@ class Signup extends Component {
         <button
           type="button"
           id="to-login-button"
-          disabled={this.state.email_sending == 1}
+          disabled={this.state.email_sending === 1}
           onClick={() => this.goToLogin()}
         >
 뒤로가기
@@ -142,7 +142,7 @@ class Signup extends Component {
           type="button"
           id="confirm-signup-button"
           disabled={
-            (this.state.email_sending == 1)
+            (this.state.email_sending === 1)
             || !(emailValid && passwordValid && passwordConfirmValid && usernameValid && departmentValid && gradeValid)
           }
           onClick={() => this.handleSignup(this.state.email,
@@ -161,7 +161,6 @@ class Signup extends Component {
 }
 
 Signup.propTypes = {
-  onSetSendStatus: PropTypes.func.isRequired,
   onGetUser: PropTypes.func.isRequired,
   onPostSignup: PropTypes.func.isRequired,
   history: PropTypes.shape({
