@@ -20,6 +20,4 @@ export const getSignout = () => (dispatch) => axios.get('/api/signout/')
   .then(() => dispatch({ type: actionTypes.GET_AUTH, is_authenticated: false }))
   .catch(() => {});
 
-export const getVerify = (uid, token) => () => axios.get(`/api/verify/${uid}/${token}/`)
-  .then(() => alert('이메일 확인이 완료되었습니다.'))
-  .catch(() => alert('부적절한 요청입니다.'));
+export const getVerify = (uid, token) => () => axios.get(`/api/verify/${uid}/${token}/`);

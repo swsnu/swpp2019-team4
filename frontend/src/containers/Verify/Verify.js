@@ -5,9 +5,21 @@ import PropTypes from 'prop-types';
 import * as actionCreators from '../../store/actions/index';
 
 class Verify extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      verify_status : false,
+    };
+  }
+
   componentDidMount() {
     this.props.onGetUser();
-    this.props.onGetVerify(this.props.match.params.uid, this.props.match.params.token);
+    this.props.onGetVerify(this.props.match.params.uid, this.props.match.params.token)
+      .then(() => this.setState({...this.state, verify_status : true}));
+  }
+
+  goToLogin() {
+    this.props.history.replace('/login');
   }
 
   render() {
@@ -16,8 +28,18 @@ class Verify extends Component {
         <Redirect to="/main" />
       );
     }
+    const verify_notice = (this.state.verify_status ? "이메일 확인이 완료되었습니다." : "부적절한 요청입니다.");
     return (
-      <Redirect to="/login/" />
+      <div className="Verify">
+        <h3>{verify_notice}</h3>
+        <button
+          type="button"
+          id="to-login-button"
+          onClick={() => this.goToLogin()}
+        >
+로그인 화면으로 돌아가기
+        </button>
+      </div>
     );
   }
 }

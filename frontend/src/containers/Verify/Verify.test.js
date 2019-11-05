@@ -36,11 +36,6 @@ describe('verification test', () => {
 
   afterEach(() => jest.clearAllMocks());
 
-  it('should redirect to /login when logged_in is false', () => {
-    const component = mount(verify(stubState));
-    expect(component.find('.Login').length).toBe(1);
-  });
-
   it('should redirect to /main when logged_in is true', () => {
     const component = mount(verify(stubStateTrue));
     expect(component.find('.Main').length).toBe(1);
