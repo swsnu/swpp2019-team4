@@ -40,7 +40,7 @@ class Verify extends Component {
     const verifyNotice = (this.state.verify_status ? '이메일 확인이 완료되었습니다.' : '부적절한 요청입니다.');
     return (
       <div className="Verify">
-        <h3>{verifyNotice}</h3>
+        <h3 id="notice">{verifyNotice}</h3>
         <button
           type="button"
           id="to-login-button"
