@@ -9,7 +9,7 @@ class FriendManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      
+      email: '',
     };
   }
 
@@ -17,14 +17,30 @@ class FriendManagement extends Component {
     this.props.onGetFriend();
   }
 
+  onEmailChange(email) {
+    this.setState({ email });
+    this.props.onPostSearch(email);
+  }
+
   render() {
     const friends = this.props.storedFriend.map((friend) => (
-      <FriendView key={friend.id} username={friend.username}/>
+      <FriendView key={friend.id} username={friend.username} />
     ));
     return (
       <div className="FriendManagement">
         <div className="FriendManagementIn">
           <div>HELLO, WORLD!</div>
+          <input
+            type="text"
+            id="email-input"
+            value={this.state.email}
+            placeholder="Email"
+            onChange={(event) => this.onEmailChange(event.target.value)}
+          />
+          {this.props.storedSearch.id
+            ? <div>{`${this.props.storedSearch.id} ${this.props.storedSearch.username}`}</div>
+            : null}
+          <hr />
           <button type="button" onClick={this.props.onClose}>CLOSE</button>
           {friends}
         </div>
@@ -36,16 +52,23 @@ class FriendManagement extends Component {
 FriendManagement.propTypes = {
   onClose: PropTypes.func.isRequired,
   onGetFriend: PropTypes.func.isRequired,
-  storedFriend: PropTypes.array.isRequired,
+  onPostSearch: PropTypes.func.isRequired,
+  storedFriend: PropTypes.arrayOf.isRequired,
+  storedSearch: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    username: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 const mapStateToProps = (state) => ({
   storedFriend: state.user.friend,
+  storedSearch: state.user.search,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onGetFriend: () => dispatch(actionCreators.getFriend()),
+  onPostSearch: (email) => dispatch(actionCreators.postUserSearch(email)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FriendManagement);

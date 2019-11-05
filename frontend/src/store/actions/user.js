@@ -39,3 +39,7 @@ export const getVerify = (uid, token) => () => axios.get(`/api/verify/${uid}/${t
 export const getFriend = () => (dispatch) => axios.get('/api/user/friend/')
   .then((res) => dispatch({ type: actionTypes.GET_FRIEND, friend: res.data }))
   .catch(() => {});
+
+export const postUserSearch = (email) => (dispatch) => axios.post('/api/user/search/', { email })
+  .then((res) => dispatch({ type: actionTypes.GET_USER_SEARCH, search: { ...res.data, is_exist: true } }))
+  .catch(() => dispatch({ type: actionTypes.GET_USER_SEARCH, search: { is_exist: false } }));

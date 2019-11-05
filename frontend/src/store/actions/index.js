@@ -11,4 +11,5 @@ export {
   getSignout,
   getVerify,
   getFriend,
+  postUserSearch,
 } from './user';

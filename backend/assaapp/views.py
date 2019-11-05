@@ -142,7 +142,7 @@ def api_user_search(request):
                     return HttpResponseBadRequest(content='Cannot search itself')
             except (KeyError, JSONDecodeError, User.DoesNotExist):
                 return HttpResponseNotFound(content='Bad email address')
-            user_data = {'id': user.id, 'username': user.username}
+            user_data = {'id': user.id, 'username': user.username, 'email': user.email}
             return JsonResponse(user_data)
         return HttpResponseNotAllowed(['POST'])
     return HttpResponse(status=401)

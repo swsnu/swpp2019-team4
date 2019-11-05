@@ -5,6 +5,12 @@ const initialState = {
     is_authenticated: null,
   },
   friend: [],
+  search: {
+    is_exist: false,
+    id: 0,
+    email: '',
+    username: '',
+  },
   email_sending: null,
 };
 
@@ -18,6 +24,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, email_sending: action.email_sending };
     case actionTypes.GET_FRIEND:
       return { ...state, friend: action.friend };
+    case actionTypes.GET_USER_SEARCH:
+      return { ...state, search: action.search };
     default:
       return { ...state };
   }
