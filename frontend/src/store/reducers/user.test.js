@@ -1,194 +1,170 @@
 import reducer from './user';
 import * as actionTypes from '../actions/actionTypes';
 
-const stubState = {
-};
-
-describe('Blog Reducer', () => {
+describe('Reducer', () => {
+  let stubState;
+  beforeEach(() => {
+    stubState = {
+      user: {
+        is_authenticated: null,
+      },
+      friend: [
+        {
+          id: 1,
+          username: 'KHS',
+          email: 'khsoo@gmail.com',
+        },
+      ],
+      friend_receive: [
+        {
+          id: 2,
+          username: 'KYC',
+          email: 'vionic@gmail.com',
+        },
+      ],
+      friend_send: [
+        {
+          id: 3,
+          username: 'KJS',
+          email: 'koo@gmail.com',
+        },
+        {
+          id: 4,
+          username: 'JJY',
+          email: 'cubec@gmail.com',
+        },
+      ],
+      search: {
+        exist: false,
+        status: '',
+        username: '',
+      },
+      email_sending: null,
+    };
+  });
+  afterEach(() => { jest.clearAllMocks(); });
   it('should return default state', () => {
-    const newState = reducer(undefined, {}); // initialize
-    expect(newState).toEqual({
-      user: [],
-      articles: [],
-      selectedArticle: null,
-      comments: [],
-      selectedComment: null,
-    });
+    const initState = {
+      user: {
+        is_authenticated: null,
+      },
+      friend: [],
+      friend_send: [],
+      friend_receive: [],
+      search: {
+        exist: false,
+        status: '',
+        username: '',
+      },
+      email_sending: null,
+    };
+    const newState = reducer(undefined, {});
+    expect(newState).toEqual(initState);
   });
 
-  it('should login', () => {
-    let newState = reducer(stubState, {
-      type: actionTypes.LOGIN,
-      logged_in: true,
-    });
-    expect(newState).toEqual({
-      ...stubState,
-      user: [{ ...stubState.user[0], logged_in: true }, stubState.user[1], stubState.user[2]],
-    });
-    newState = reducer(newState, {
-      type: actionTypes.LOGIN,
-      logged_in: false,
-    });
-    expect(newState).toEqual(stubState);
-  });
-
-  it('should get user1', () => {
-    const newState = reducer(undefined, {
-      type: actionTypes.GET_USER1,
-      user: stubState.user[0],
-    });
-    expect(newState).toEqual({
-      user: [stubState.user[0]],
-      articles: [],
-      selectedArticle: null,
-      comments: [],
-      selectedComment: null,
-    });
-  });
-
-  it('should get all users', () => {
-    const newState = reducer(undefined, {
-      type: actionTypes.GET_ALL_USERS,
-      user: stubState.user,
-    });
-    expect(newState).toEqual({
-      user: stubState.user,
-      articles: [],
-      selectedArticle: null,
-      comments: [],
-      selectedComment: null,
-    });
-  });
-
-  it('should get all articles', () => {
-    const newState = reducer(undefined, {
-      type: actionTypes.GET_ALL_ARTICLES,
-      articles: stubState.articles,
-    });
-    expect(newState).toEqual({
-      user: [],
-      articles: stubState.articles,
-      selectedArticle: null,
-      comments: [],
-      selectedComment: null,
-    });
-  });
-
-  it('should get only one article', () => {
+  it('should get authentication', () => {
     const newState = reducer(stubState, {
-      type: actionTypes.GET_ARTICLE,
-      article: stubState.articles[0],
+      type: actionTypes.GET_AUTH,
+      is_authenticated: true,
     });
-    expect(newState).toEqual({
-      ...stubState, selectedArticle: stubState.articles[0],
-    });
+    expect(newState.user.is_authenticated).toBe(true);
   });
 
-  it('should create article', () => {
-    const article = {
-      id: 0, author_id: 1, title: '10 React JS Articles', content: 'Hello Guys',
-    };
-    const newState = reducer(undefined, {
-      type: actionTypes.CREATE_ARTICLE,
-      article,
-    });
-    expect(newState).toEqual({
-      user: [],
-      articles: [article],
-      selectedArticle: null,
-      comments: [],
-      selectedComment: null,
-    });
-  });
-
-  it('should edit article', () => {
-    const article1 = {
-      id: 0, author_id: 1, title: '9 React JS Articles', content: 'Hello Guys',
-    };
-    let newState = reducer(stubState, {
-      type: actionTypes.EDIT_ARTICLE,
-      article: article1,
-    });
-    expect(newState).toEqual({ ...stubState, articles: [article1] });
-    const article2 = {
-      id: 3, author_id: 5, title: 'WTWT', content: 'NULL',
-    };
-    newState = reducer(newState, {
-      type: actionTypes.EDIT_ARTICLE,
-      article: article2,
-    });
-    expect(newState).toEqual({ ...stubState, articles: [article1] });
-  });
-
-  it('should delete article', () => {
+  it('should get user', () => {
     const newState = reducer(stubState, {
-      type: actionTypes.DELETE_ARTICLE,
-      id: 0,
+      type: actionTypes.GET_USER,
+      user: { email: 'cubec' },
     });
-    expect(newState).toEqual({ ...stubState, articles: [] });
+    expect(newState.user.email).toBe('cubec');
   });
 
-  it('should get all comments', () => {
-    const newState = reducer(undefined, {
-      type: actionTypes.GET_ALL_COMMENTS,
-      comments: stubState.comments,
-    });
-    expect(newState).toEqual({
-      user: [],
-      articles: [],
-      selectedArticle: null,
-      comments: stubState.comments,
-      selectedComment: null,
-    });
-  });
-
-  it('should create comment', () => {
-    const comment = {
-      author_id: 1,
-      article_id: 0,
-      content: 'Wow!',
-      id: 22,
-    };
-    const newState = reducer(undefined, {
-      type: actionTypes.CREATE_COMMENT,
-      comment,
-    });
-    expect(newState).toEqual({
-      user: [],
-      articles: [],
-      selectedArticle: null,
-      comments: [comment],
-      selectedComment: null,
-    });
-  });
-
-  it('should edit comment', () => {
-    const comment = {
-      author_id: 1,
-      article_id: 0,
-      content: 'WWW',
-      id: 22,
-    };
+  it('should set sending status', () => {
     const newState = reducer(stubState, {
-      type: actionTypes.EDIT_COMMENT,
-      comment,
+      type: actionTypes.SET_SEND_STATUS,
+      email_sending: 1,
     });
-    expect(newState).toEqual({
-      ...stubState,
-      comments:
-      [stubState.comments[0], stubState.comments[1], stubState.comments[2], comment],
-    });
+    expect(newState.email_sending).toBe(1);
   });
 
-  it('should delete comment', () => {
+  it('should get friends', () => {
     const newState = reducer(stubState, {
-      type: actionTypes.DELETE_COMMENT,
-      id: 22,
+      type: actionTypes.GET_FRIEND,
+      user: {
+        friend: '1',
+        friend_send: '2',
+        friend_receive: '3',
+      },
     });
-    expect(newState).toEqual({
-      ...stubState,
-      comments:
-      [stubState.comments[0], stubState.comments[1], stubState.comments[2]],
+    expect(newState.friend).toBe('1');
+  });
+
+  it('should make FRIEND from search', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.GET_USER_SEARCH,
+      exist: true,
+      status: 'FRIEND',
+      user: {
+        id: 2,
+      },
     });
+    expect(newState.friend.length).toBe(2);
+    expect(newState.friend_receive.length).toBe(0);
+  });
+
+  it('should call friend request from search', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.GET_USER_SEARCH,
+      exist: true,
+      user: {
+        id: 5,
+      },
+    });
+    expect(newState.friend_send.length).toBe(3);
+  });
+
+  it('should save status when search fails', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.GET_USER_SEARCH,
+      exist: false,
+      status: 'NULL',
+      user: {
+        id: 5,
+      },
+    });
+    expect(newState.search.status).toBe('NULL');
+  });
+
+  it('should save as a friend when receive succeeded', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.RECEIVE_FRIEND,
+      user: {
+        id: 2,
+      },
+    });
+    expect(newState.friend.length).toBe(2);
+  });
+
+  it('should delete from a friend when delete succeeded', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.DELETE_FRIEND,
+      user_id: 1,
+    });
+    expect(newState.friend.length).toBe(0);
+  });
+
+  it('should delete from a friend_send when cancel succeeded', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.CANCEL_FRIEND,
+      user_id: 3,
+    });
+    expect(newState.friend_send.length).toBe(1);
+  });
+
+  it('should delete from a friend_receive when reject succeeded', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.REJECT_FRIEND,
+      user_id: 2,
+    });
+    expect(newState.friend_receive.length).toBe(0);
   });
 });
