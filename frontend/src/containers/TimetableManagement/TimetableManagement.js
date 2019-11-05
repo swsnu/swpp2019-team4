@@ -6,7 +6,6 @@ import * as actionCreators from '../../store/actions/index';
 import TimetableView from '../../components/TimetableView/TimetableView';
 import TopBar from '../../components/TopBar/TopBar';
 import TimetableRecommend from '../TimetableRecommend/TimetableRecommend';
-import TimetableGenerator from '../../components/TimetableGenerator/TimetableGenerator';
 
 class TimetableManagement extends Component {
   constructor(props) {
@@ -34,7 +33,6 @@ class TimetableManagement extends Component {
         <Redirect to="/login" />
       );
     }
-    const recommendlist = [TimetableGenerator(0), TimetableGenerator(1)];
     const courses = [];
     return (
       <div className="Manage">
@@ -67,7 +65,7 @@ class TimetableManagement extends Component {
           this.state.showPopup
             ? (
               <TimetableRecommend
-                timetable={recommendlist}
+                timetable={[]}
                 closePopup={() => this.statePopup(false)}
               />
             )

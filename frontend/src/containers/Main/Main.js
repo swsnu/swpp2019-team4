@@ -7,7 +7,6 @@ import TimetableView from '../../components/TimetableView/TimetableView';
 import MainPageFriendListView from '../../components/MainPageFriendListView/MainPageFriendListView';
 import TopBar from '../../components/TopBar/TopBar';
 import './Main.css';
-import TimetableGenerator from '../../components/TimetableGenerator/TimetableGenerator';
 
 class Main extends Component {
   constructor(props) {
@@ -43,13 +42,12 @@ class Main extends Component {
         id: 4, name: '김현수', inclass: false, timeleft: '2147483647',
       },
     ];
-    const courses = TimetableGenerator(0);
     return (
       <div className="Main">
         <TopBar id="topbar" logout={() => this.handleLogout()} />
         <br />
         <div className="Content-left">
-          <TimetableView id="timetable-table" height={24} width={80} courses={courses} text link title="TIMETABLE" />
+          <TimetableView id="timetable-table" height={24} width={80} courses={[]} text link title="TIMETABLE" />
         </div>
         <div className="Content-right">
           <MainPageFriendListView id="friend-list" friends={friend} />
