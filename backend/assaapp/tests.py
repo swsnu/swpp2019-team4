@@ -255,6 +255,35 @@ class AssaTestCase(TestCase):
         self.assertEqual(self.user_set[0].friends.filter(id=4).count(), 0)
         self.assertEqual(self.user_set[0].friends_request.filter(id=4).count(), 0)
 
+    def test_put_user_search(self):
+        response = self.post('/api/signin/',
+                             json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
+                             content_type='application/json')
+        response = self.put('/api/user/search/')
+        self.assertEqual(response.status_code, 405)
+
+    def test_post_user_search(self):
+        response = self.post('/api/user/search/',
+                             json.dumps({'email': 'cubec@gmail.com'}),
+                             content_type='application/json')
+        self.assertEqual(response.status_code, 401)
+        response = self.post('/api/signin/',
+                             json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
+                             content_type='application/json')
+        response = self.post('/api/user/search/',
+                             json.dumps({'email': 'cubec@gmail.com'}),
+                             content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        response = self.post('/api/user/search/',
+                             json.dumps({'email': 'khsoo@gmail.com'}),
+                             content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content.decode())['username'], 'Kim Hyunsoo')
+        response = self.post('/api/user/search/',
+                             json.dumps({'email': 'khsoo2@gmail.com'}),
+                             content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+
     def test_timetable(self):
         timetable = Timetable.objects.get(id=2)
         self.assertEqual(str(timetable), 'My timetable')
