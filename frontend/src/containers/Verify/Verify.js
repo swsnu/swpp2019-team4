@@ -15,17 +15,10 @@ class Verify extends Component {
   }
 
   componentDidMount() {
-    this.getParams();
     this.props.onGetUser();
-    this.props.onGetVerify(this.state.uid, this.state.token)
+    this.props.onGetVerify(this.props.match.params.uid, this.props.match.params.token)
       .then(() => this.setState((prevState) => ({ ...prevState, verify_status: true })))
       .catch(() => this.setState((prevState) => ({ ...prevState, verify_status: false })));
-  }
-
-  getParams() {
-    const { uid } = this.props.match.params;
-    const { token } = this.props.match.params;
-    this.setState((prevState) => ({ ...prevState, uid, token }));
   }
 
   goToLogin() {
