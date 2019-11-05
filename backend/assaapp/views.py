@@ -86,11 +86,11 @@ def api_user_friend(request):
     if request.user.is_authenticated:
         if request.method == 'GET':
             friend = [user.data_medium() for user in request.user.friends.all()]
-            friend_recieve = [user.data_small() for user in request.user.friends_request.all()]
+            friend_receive = [user.data_small() for user in request.user.friends_request.all()]
             friend_send = [user.data_small() for user in 
                            User.objects.filter(friends_request__in=[request.user.id])]
             return JsonResponse({'friend': friend, 'friend_send': friend_send, 
-                                 'friend_recieve': friend_recieve})
+                                 'friend_receive': friend_receive})
         return HttpResponseNotAllowed(['GET'])
     return HttpResponse(status=401)
 

@@ -15,14 +15,20 @@ class FriendManagement extends Component {
   componentDidMount() {
     this.props.onGetFriend();
   }
-  
+
   componentWillUnmount() {
-    this.props.onPostSearch('');
+    //this.props.onPostSearch('');
   }
 
-  onEmailChange(email) {
-    this.setState({ email: email });
-    this.props.onPostSearch(email);
+  handleSearch() {
+    this.props.onPostSearch(this.state.email)
+      .then(() => {
+        if(this.props.storedSearch.is_exist){
+          this.props.onSendFriend(this.props.storedSearch.id);
+        } else{
+          alert("Error");
+        }
+      });
   }
 
   render() {
@@ -30,28 +36,27 @@ class FriendManagement extends Component {
       <div key={friend.id}>
         <span>{friend.username}</span>
         <span>
-          <button id="email-input" onClick={() => this.props.onDeleteFriend(friend.id)}>
+          <button id="email-input" type="button" onClick={() => this.props.onDeleteFriend(friend.id)}>
             X
           </button>
         </span>
       </div>
     ));
-    const friends_send = this.props.storedFriendSend.map((friend) => (
+    const friendsSend = this.props.storedFriendSend.map((friend) => (
       <div key={friend.id}>
         <span>{friend.username}</span>
-        <span>
-          <button id="email-input" onClick={() => this.props.onDeleteFriend(friend.id)}>
-            X
-          </button>
-        </span>
       </div>
     ));
-    const friends_receive = this.props.storedFriendReceive.map((friend) => (
+    const friendsReceive = this.props.storedFriendReceive.map((friend) => (
       <div key={friend.id}>
         <span>{friend.username}</span>
         <span>
-          <button id="email-input" onClick={() => this.props.onDeleteFriend(friend.id)}>
-            X
+          <button
+            id="email-input"
+            type="button"
+            onClick={() => this.props.onReceiveFriend(friend.id)}
+          >
+            O
           </button>
         </span>
       </div>
@@ -60,22 +65,27 @@ class FriendManagement extends Component {
       <div className="FriendManagement">
         <div className="FriendManagementIn">
           <div>HELLO, WORLD!</div>
+          <span>
           <input
             type="text"
             id="email-input"
             value={this.state.email}
             placeholder="Email"
-            onChange={(event) => this.onEmailChange(event.target.value)}
-          />
-          {this.props.storedSearch.id
-            ? <div>{`${this.props.storedSearch.id} ${this.props.storedSearch.username}`}</div>
-            : null}
+            onChange={(event) => this.setState({email: event.target.value})}
+          /></span>
+          <span>
+          <button
+            id="email-input"
+            type="button"
+            onClick={() => this.handleSearch()}
+          > O </button>
+          </span>
           <hr />
           <div>RECEIVE</div>
-          {friends_receive}
+          {friendsReceive}
           <hr />
           <div>SEND</div>
-          {friends_send}
+          {friendsSend}
           <hr />
           <div>FRIENDS</div>
           {friends}
@@ -90,10 +100,15 @@ class FriendManagement extends Component {
 FriendManagement.propTypes = {
   onClose: PropTypes.func.isRequired,
   onGetFriend: PropTypes.func.isRequired,
+  onSendFriend: PropTypes.func.isRequired,
+  onReceiveFriend: PropTypes.func.isRequired,
   onDeleteFriend: PropTypes.func.isRequired,
   onPostSearch: PropTypes.func.isRequired,
   storedFriend: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  storedFriendSend: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  storedFriendReceive: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   storedSearch: PropTypes.shape({
+    is_exist: PropTypes.bool.isRequired,
     id: PropTypes.number.isRequired,
     username: PropTypes.string.isRequired,
   }).isRequired,
@@ -102,7 +117,7 @@ FriendManagement.propTypes = {
 const mapStateToProps = (state) => ({
   storedFriend: state.user.friend,
   storedFriendSend: state.user.friend_send,
-  storedFriendReceive: state.user.friend_recieve,
+  storedFriendReceive: state.user.friend_receive,
   storedSearch: state.user.search,
 });
 
@@ -110,6 +125,8 @@ const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onGetFriend: () => dispatch(actionCreators.getFriend()),
   onPostSearch: (email) => dispatch(actionCreators.postUserSearch(email)),
+  onSendFriend: (id) => dispatch(actionCreators.sendFriend(id)),
+  onReceiveFriend: (id) => dispatch(actionCreators.receiveFriend(id)),
   onDeleteFriend: (id) => dispatch(actionCreators.deleteFriend(id)),
 });
 

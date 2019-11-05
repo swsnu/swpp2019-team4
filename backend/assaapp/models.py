@@ -69,7 +69,7 @@ class User(AbstractBaseUser):
         return {'id': self.id, 'email': self.email, 'username': self.username,
                 'grade': self.grade, 'department': self.department, 
                 'timetable_main': self.timetable_main.id}
-    
+
     def data_medium(self):
         return {'id': self.id, 'email': self.email, 'username': self.username, 
                 'timetable_main': self.timetable_main.id}
