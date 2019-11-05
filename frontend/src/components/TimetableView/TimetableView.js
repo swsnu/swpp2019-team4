@@ -78,6 +78,7 @@ const TimetableView = (props) => {
                         height: `${((heightunit * course.length) / 30) * 1.1}px`,
                         width: `${(14 * props.width) / 100}%`,
                         backgroundColor: course.color,
+                        color: 'black',
                       }
                     }
                     >
