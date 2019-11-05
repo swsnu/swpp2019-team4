@@ -1,6 +1,9 @@
 import axios from 'axios';
 import * as actionCreators from './index';
 import store from '../store';
+import reducer from '../reducers/user';
+
+jest.mock('../reducers/user', () => jest.fn((state, action) => action));
 
 describe('user action test', () => {
   beforeEach(() => {});
@@ -152,6 +155,134 @@ describe('user action test', () => {
     store.dispatch(actionCreators.getFriend())
       .then(() => {
         expect(axios.get).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  it('exist should set to true when the search succeeded', (done) => {
+    axios.post = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 200, data: { user: 'x', status: 'y' } });
+    }));
+    store.dispatch(actionCreators.postUserSearch(''))
+      .then(() => {
+        expect(axios.post).toHaveBeenCalledTimes(1);
+        expect(reducer.mock.results[0].value.exist).toBe(true);
+        done();
+      });
+  });
+
+  it('exist should be set to false when the search failed', (done) => {
+    axios.post = jest.fn(() => new Promise(() => {
+      throw {status: 400, response: { data: ''}};
+    }));
+    store.dispatch(actionCreators.postUserSearch(''))
+      .then(() => {
+        expect(axios.post).toHaveBeenCalledTimes(1);
+        expect(reducer.mock.results[0].value.exist).toBe(false);
+        done();
+      });
+  });
+
+  it('user_id should be set when friend delete succeeded', (done) => {
+    const id = 10;
+    axios.delete = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 200, response: {} });
+    }));
+    store.dispatch(actionCreators.deleteFriend(id))
+      .then(() => {
+        expect(axios.delete).toHaveBeenCalledTimes(1);
+        expect(reducer.mock.results[0].value.user_id).toBe(id);
+        done();
+      });
+  });
+
+  it('do nothing when friend delete failed', (done) => {
+    const id = 10;
+    axios.delete = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.deleteFriend(id))
+      .then(() => {
+        expect(axios.delete).toHaveBeenCalledTimes(1);
+        expect(reducer).toHaveBeenCalledTimes(0);
+        done();
+      });
+  });
+
+  it('user_id should be set when friend reject succeeded', (done) => {
+    const id = 10;
+    axios.delete = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 200, response: {} });
+    }));
+    store.dispatch(actionCreators.rejectFriend(id))
+      .then(() => {
+        expect(axios.delete).toHaveBeenCalledTimes(1);
+        expect(reducer.mock.results[0].value.user_id).toBe(id);
+        done();
+      });
+  });
+
+  it('do nothing when friend reject failed', (done) => {
+    const id = 10;
+    axios.delete = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.rejectFriend(id))
+      .then(() => {
+        expect(axios.delete).toHaveBeenCalledTimes(1);
+        expect(reducer).toHaveBeenCalledTimes(0);
+        done();
+      });
+  });
+
+  it('user_id should be set when friend cancel succeeded', (done) => {
+    const id = 10;
+    axios.delete = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 200, response: {} });
+    }));
+    store.dispatch(actionCreators.cancelFriend(id))
+      .then(() => {
+        expect(axios.delete).toHaveBeenCalledTimes(1);
+        expect(reducer.mock.results[0].value.user_id).toBe(id);
+        done();
+      });
+  });
+
+  it('do nothing when friend cancel failed', (done) => {
+    const id = 10;
+    axios.delete = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.cancelFriend(id))
+      .then(() => {
+        expect(axios.delete).toHaveBeenCalledTimes(1);
+        expect(reducer).toHaveBeenCalledTimes(0);
+        done();
+      });
+  });
+
+  it('user should be set when friend receive succeeded', (done) => {
+    const data = '123';
+    axios.post = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 200, data });
+    }));
+    store.dispatch(actionCreators.receiveFriend(10))
+      .then(() => {
+        expect(axios.post).toHaveBeenCalledTimes(1);
+        expect(reducer.mock.results[0].value.user).toBe(data);
+        done();
+      });
+  });
+
+  it('do nothing when friend receive failed', (done) => {
+    const id = 10;
+    axios.post = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.receiveFriend(id))
+      .then(() => {
+        expect(axios.post).toHaveBeenCalledTimes(1);
+        expect(reducer).toHaveBeenCalledTimes(0);
         done();
       });
   });
