@@ -22,6 +22,7 @@ class AssaTestCase(TestCase):
         # friend relationship
         self.user_set[0].friends.add(self.user_set[1])
         self.user_set[2].friends_request.add(self.user_set[0])
+        self.user_set[0].friends_request.add(self.user_set[3])
 
         Timetable.objects.create(title='21', user=self.user_set[0])
         Timetable.objects.create(title='22', user=self.user_set[0])
@@ -207,20 +208,21 @@ class AssaTestCase(TestCase):
         response = self.delete('/api/user/friend/')
         self.assertEqual(response.status_code, 405)
 
-    def test_delete_user_friend_id(self):
-        response = self.delete('/api/user/friend/2/')
+    def test_put_user_friend_id(self):
+        response = self.post('/api/signin/',
+                             json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
+                             content_type='application/json')
+        response = self.put('/api/user/friend/1/')
+        self.assertEqual(response.status_code, 405)
+
+    def test_post_user_friend_id(self):
+        response = self.post('/api/user/friend/9/')
         self.assertEqual(response.status_code, 401)
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
-        response = self.delete('/api/user/friend/2/')
-        self.assertEqual(response.status_code, 204)
-        self.assertEqual(self.user_set[1].friends.filter(id=1).count(), 0)
-
-    def test_post_user_friend_id(self):
-        response = self.post('/api/signin/',
-                             json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
-                             content_type='application/json')
+        response = self.post('/api/user/friend/9/')
+        self.assertEqual(response.status_code, 404)
         response = self.post('/api/user/friend/2/')
         self.assertEqual(response.status_code, 204)
         self.assertEqual(self.user_set[0].friends_request.filter(id=2).count(), 0)
@@ -229,6 +231,29 @@ class AssaTestCase(TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(self.user_set[2].friends.filter(id=1).count(), 0)
         self.assertEqual(self.user_set[2].friends_request.filter(id=1).count(), 1)
+        response = self.post('/api/user/friend/4/')
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(self.user_set[0].friends.filter(id=4).count(), 1)
+        self.assertEqual(self.user_set[0].friends_request.filter(id=4).count(), 0)
+
+    def test_delete_user_friend_id(self):
+        response = self.post('/api/signin/',
+                             json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
+                             content_type='application/json')
+        response = self.delete('/api/user/friend/9/')
+        self.assertEqual(response.status_code, 404)
+        response = self.delete('/api/user/friend/2/')
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(self.user_set[0].friends_request.filter(id=2).count(), 0)
+        self.assertEqual(self.user_set[0].friends.filter(id=2).count(), 0)
+        response = self.delete('/api/user/friend/3/')
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(self.user_set[2].friends.filter(id=1).count(), 0)
+        self.assertEqual(self.user_set[2].friends_request.filter(id=1).count(), 0)
+        response = self.delete('/api/user/friend/4/')
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(self.user_set[0].friends.filter(id=4).count(), 0)
+        self.assertEqual(self.user_set[0].friends_request.filter(id=4).count(), 0)
 
     def test_timetable(self):
         timetable = Timetable.objects.get(id=2)

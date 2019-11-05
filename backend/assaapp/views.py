@@ -98,8 +98,8 @@ def api_user_friend_id(request, user_id):
         if request.method == 'POST':
             '''
             If a user already got friend request from (user_id), 
-            this method is considered as a friend approval.
-            Else, then this method is considered as a friend request
+            this request is considered as a friend approval.
+            Else this request is considered as a friend request.
             '''
             try:
                 friend = User.objects.get(id=user_id)
@@ -114,13 +114,19 @@ def api_user_friend_id(request, user_id):
             return HttpResponse(status=204)
         if request.method == 'DELETE':
             '''
+            Simply, remove all connections between two users.
+            If a user got friend request from (user_id),
+            this request is considered as a friend disapproval.
+            If a user is a friend of (user_id)
             Just delete a user from the friend list
             '''
             try:
-                friend = request.user.friends.get(id=user_id)
-                request.user.friends.remove(friend)
+                friend = User.objects.get(id=user_id)
             except User.DoesNotExist:
                 return HttpResponseNotFound()
+            request.user.friends.remove(friend)
+            request.user.friends_request.remove(friend)
+            friend.friends_request.remove(request.user)
             return HttpResponse(status=204)
         return HttpResponseNotAllowed(['POST', 'DELETE'])
     return HttpResponse(status=401)
