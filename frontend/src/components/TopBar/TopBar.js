@@ -6,8 +6,8 @@ import './TopBar.css';
 const TopBar = (props) => (
   <div className="TopBar">
     <div className="TopLeftBar">
-      <a href="/main">ASSA</a>
-      <a href="/manage">TIMETABLE</a>
+      <NavLink to="/main">ASSA</NavLink>
+      <NavLink to="/manage">TIMETABLE</NavLink>
     </div>
     <div className="Profile">
       <NavLink to="/setting">
