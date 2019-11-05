@@ -55,3 +55,11 @@ export const deleteFriend = (id) => (dispatch) => axios.delete(`/api/user/friend
 export const receiveFriend = (id) => (dispatch) => axios.post(`/api/user/friend/${id}/`)
   .then((res) => dispatch({ type: actionTypes.RECEIVE_FRIEND, user: res.data }))
   .catch(() => {});
+
+export const rejectFriend = (id) => (dispatch) => axios.delete(`/api/user/friend/${id}/`)
+  .then(() => dispatch({ type: actionTypes.REJECT_FRIEND, user_id: id }))
+  .catch(() => {});
+
+export const cancelFriend = (id) => (dispatch) => axios.delete(`/api/user/friend/${id}/`)
+  .then(() => dispatch({ type: actionTypes.CANCEL_FRIEND, user_id: id }))
+  .catch(() => {});

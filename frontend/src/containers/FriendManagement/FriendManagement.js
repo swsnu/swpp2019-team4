@@ -68,6 +68,15 @@ class FriendManagement extends Component {
     const friendsSend = this.props.storedFriendSend.map((friend) => (
       <div key={friend.id}>
         <span>{friend.username}</span>
+        <span>
+          <button
+            id="friend-cancel"
+            type="button"
+            onClick={() => this.props.onCancelFriend(friend.id)}
+          >
+            X
+          </button>
+        </span>
       </div>
     ));
 
@@ -76,11 +85,20 @@ class FriendManagement extends Component {
         <span>{friend.username}</span>
         <span>
           <button
-            id="email-input"
+            id="friend-receive"
             type="button"
             onClick={() => this.props.onReceiveFriend(friend.id)}
           >
             O
+          </button>
+        </span>
+        <span>
+          <button
+            id="friend-reject"
+            type="button"
+            onClick={() => this.props.onRejectFriend(friend.id)}
+          >
+            X
           </button>
         </span>
       </div>
@@ -98,18 +116,16 @@ class FriendManagement extends Component {
               onChange={(event) => this.setState({ email: event.target.value, message: '' })}
             />
           </span>
-          <div>{message}</div>
           <span>
             <button
-              id="email-input"
+              id="email-search"
               type="button"
               onClick={() => this.handleSearch()}
             >
-              {' '}
-O
-              {' '}
+              SEARCH
             </button>
           </span>
+          <div>{message}</div>
           <hr />
           <div>RECEIVE</div>
           {friendsReceive}
@@ -132,6 +148,8 @@ FriendManagement.propTypes = {
   onGetFriend: PropTypes.func.isRequired,
   onReceiveFriend: PropTypes.func.isRequired,
   onDeleteFriend: PropTypes.func.isRequired,
+  onCancelFriend: PropTypes.func.isRequired,
+  onRejectFriend: PropTypes.func.isRequired,
   onPostSearch: PropTypes.func.isRequired,
   storedFriend: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   storedFriendSend: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
@@ -156,6 +174,8 @@ const mapDispatchToProps = (dispatch) => ({
   onPostSearch: (email) => dispatch(actionCreators.postUserSearch(email)),
   onReceiveFriend: (id) => dispatch(actionCreators.receiveFriend(id)),
   onDeleteFriend: (id) => dispatch(actionCreators.deleteFriend(id)),
+  onCancelFriend: (id) => dispatch(actionCreators.cancelFriend(id)),
+  onRejectFriend: (id) => dispatch(actionCreators.rejectFriend(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FriendManagement);

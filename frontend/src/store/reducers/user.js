@@ -63,6 +63,13 @@ const reducer = (state = initialState, action) => {
 
     case actionTypes.DELETE_FRIEND:
       return { ...state, friend: state.friend.filter((user) => user.id !== action.user_id) };
+
+    case actionTypes.REJECT_FRIEND:
+      return { ...state, friend_receive: state.friend_receive.filter((user) => user.id !== action.user_id) };
+
+    case actionTypes.CANCEL_FRIEND:
+      return { ...state, friend_send: state.friend_send.filter((user) => user.id !== action.user_id) };
+
     default:
       return { ...state };
   }

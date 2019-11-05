@@ -64,7 +64,7 @@ class User(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
-    
+
     def data_large(self):
         return {'id': self.id, 'email': self.email, 'username': self.username,
                 'grade': self.grade, 'department': self.department,
