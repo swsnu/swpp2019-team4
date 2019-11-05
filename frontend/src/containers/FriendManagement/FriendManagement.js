@@ -21,14 +21,7 @@ class FriendManagement extends Component {
   }
 
   handleSearch() {
-    this.props.onPostSearch(this.state.email)
-      .then(() => {
-        if(this.props.storedSearch.is_exist){
-          this.props.onSendFriend(this.props.storedSearch.id);
-        } else{
-          alert("Error");
-        }
-      });
+    this.props.onPostSearch(this.state.email);
   }
 
   render() {
@@ -100,7 +93,6 @@ class FriendManagement extends Component {
 FriendManagement.propTypes = {
   onClose: PropTypes.func.isRequired,
   onGetFriend: PropTypes.func.isRequired,
-  onSendFriend: PropTypes.func.isRequired,
   onReceiveFriend: PropTypes.func.isRequired,
   onDeleteFriend: PropTypes.func.isRequired,
   onPostSearch: PropTypes.func.isRequired,
@@ -108,9 +100,7 @@ FriendManagement.propTypes = {
   storedFriendSend: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   storedFriendReceive: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   storedSearch: PropTypes.shape({
-    is_exist: PropTypes.bool.isRequired,
-    id: PropTypes.number.isRequired,
-    username: PropTypes.string.isRequired,
+    exist: PropTypes.bool.isRequired,
   }).isRequired,
 };
 
@@ -125,7 +115,6 @@ const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onGetFriend: () => dispatch(actionCreators.getFriend()),
   onPostSearch: (email) => dispatch(actionCreators.postUserSearch(email)),
-  onSendFriend: (id) => dispatch(actionCreators.sendFriend(id)),
   onReceiveFriend: (id) => dispatch(actionCreators.receiveFriend(id)),
   onDeleteFriend: (id) => dispatch(actionCreators.deleteFriend(id)),
 });

@@ -13,6 +13,5 @@ export {
   getFriend,
   deleteFriend,
   postUserSearch,
-  sendFriend,
   receiveFriend,
 } from './user';

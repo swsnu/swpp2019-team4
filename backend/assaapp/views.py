@@ -95,29 +95,27 @@ def api_user_friend(request):
     return HttpResponse(status=401)
 
 def api_user_friend_id(request, user_id):
+    '''
+    POST :
+    Accept as a friend only when the opponent sent a request.
+    Otherwise, it will be considered as a bad request.
+    DELETE :
+    Simply put, remove all connections between two users.
+    If a user got friend request from (user_id),
+    this request is considered as a friend disapproval.
+    If a user is a friend of (user_id)
+    just delete a user from the friend list.
+    '''
     if request.user.is_authenticated:
         if request.method == 'POST':
-            # If a user already got friend request from (user_id),
-            # this request is considered as a friend approval.
-            # Else this request is considered as a friend request.
             try:
-                friend = User.objects.get(id=user_id)
-            except User.DoesNotExist:
-                return HttpResponseNotFound()
-            try:
-                request.user.friends_request.get(id=user_id)
+                friend = request.user.friends_request.get(id=user_id)
                 request.user.friends_request.remove(friend)
                 request.user.friends.add(friend)
             except User.DoesNotExist:
-                friend.friends_request.add(request.user)
-                return JsonResponse(friend.data_medium())
-            return JsonResponse(friend.data_small())
+                return HttpResponseNotFound()
+            return JsonResponse(friend.data_medium())
         if request.method == 'DELETE':
-            # Simply put, remove all connections between two users.
-            # If a user got friend request from (user_id),
-            # this request is considered as a friend disapproval.
-            # If a user is a friend of (user_id)
-            # Just delete a user from the friend list
             try:
                 friend = User.objects.get(id=user_id)
             except User.DoesNotExist:
@@ -131,21 +129,33 @@ def api_user_friend_id(request, user_id):
 
 def api_user_search(request):
     '''
-    Get user id and username (minimum information) from email address
-    Cannot search itself
+    This api is to send friend request to the opponent using email address.
+    If the email address is a user's, then the api fails with USER error.
+    If the opponent already sent a request, then connects as a friend relationship.
+    If the user already sent a request, then the api fails with SENT error.
+    If the user is already a friend of the opponent, then the api fails with FRIEND error.
     '''
     if request.user.is_authenticated:
         if request.method == 'POST':
             try:
                 req_data = json.loads(request.body.decode())
                 email = req_data['email']
-                user = User.objects.get(email=email)
-                if request.user == user:
-                    return HttpResponseBadRequest(content='Cannot search itself')
+                friend = User.objects.get(email=email)
             except (KeyError, JSONDecodeError, User.DoesNotExist):
-                return HttpResponseNotFound(content='Bad email address')
-            user_data = {'id': user.id, 'username': user.username, 'email': user.email}
-            return JsonResponse(user_data)
+                return HttpResponseNotFound()
+            user = request.user
+            if user == friend:
+                return HttpResponseBadRequest(content='USER')
+            if user.friends.filter(id=friend.id).count() == 1:
+                return HttpResponseBadRequest(content='FRIEND')
+            if friend.friends_request.filter(id=user.id).count() == 1:
+                return HttpResponseBadRequest(content='SENT')
+            if user.friends_request.filter(id=friend.id).count() == 1:
+                user.friends_request.remove(friend)
+                user.friends.add(friend)
+                return JsonResponse({'user': friend.data_medium(), 'status': 'FRIEND'})
+            friend.friends_request.add(user)
+            return JsonResponse({'user': friend.data_medium(), 'status': 'PENDING'})
         return HttpResponseNotAllowed(['POST'])
     return HttpResponse(status=401)
 

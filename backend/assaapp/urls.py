@@ -11,7 +11,7 @@ urlpatterns = [
     path('user/', views.api_user),
     path('user/friend/', views.api_user_friend),
     path('user/friend/<int:user_id>/', views.api_user_friend_id),
-    path('user/search/', views.api_user_search),
+    path('user/friend/search/', views.api_user_search),
     path('timetable/', views.api_timetable),
     path('timetable/<int:timetable_id>/', views.api_timetable_id, name='timetable_id'),
     path('timetable/<int:timetable_id>/course/',

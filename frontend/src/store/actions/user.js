@@ -40,9 +40,9 @@ export const getFriend = () => (dispatch) => axios.get('/api/user/friend/')
   .then((res) => dispatch({ type: actionTypes.GET_FRIEND, user: res.data }))
   .catch(() => {});
 
-export const postUserSearch = (email) => (dispatch) => axios.post('/api/user/search/', { email })
-  .then((res) => dispatch({ type: actionTypes.GET_USER_SEARCH, search: { ...res.data, is_exist: true } }))
-  .catch(() => dispatch({ type: actionTypes.GET_USER_SEARCH, search: { id: 0, username: '', is_exist: false } }));
+export const postUserSearch = (email) => (dispatch) => axios.post('/api/user/friend/search/', { email })
+  .then((res) => dispatch({ type: actionTypes.GET_USER_SEARCH, user: res.data.user, exist: true, status: res.data.status } ))
+  .catch((res) => dispatch({ type: actionTypes.GET_USER_SEARCH, exist: false, status: res.data } ));
 
 export const deleteFriend = (id) => (dispatch) => axios.delete(`/api/user/friend/${id}/`)
   .then(() => dispatch({ type: actionTypes.DELETE_FRIEND, user_id: id }))
@@ -50,8 +50,4 @@ export const deleteFriend = (id) => (dispatch) => axios.delete(`/api/user/friend
 
 export const receiveFriend = (id) => (dispatch) => axios.post(`/api/user/friend/${id}/`)
   .then((res) => dispatch({ type: actionTypes.RECEIVE_FRIEND, user: res.data }))
-  .catch(() => {});
-
-export const sendFriend = (id) => (dispatch) => axios.post(`/api/user/friend/${id}/`)
-  .then((res) => dispatch({ type: actionTypes.SEND_FRIEND, user: res.data }))
   .catch(() => {});
