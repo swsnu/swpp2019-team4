@@ -29,8 +29,7 @@ class TimetableManagement extends Component {
     const courses = [];
     return (
       <div className="Manage">
-        <TopBar id="topbar" />
-        <button type="button" id="logout-button" onClick={() => this.handleLogout()}>LOGOUT</button>
+        <TopBar id="topbar" logout={() => this.handleLogout()} />
         <select id="semester-select">
           <option value="2019-1">2019-1</option>
           <option value="2019-s">2019-s</option>
@@ -69,6 +68,7 @@ TimetableManagement.propTypes = {
     is_authenticated: PropTypes.bool.isRequired,
   }).isRequired,
 };
+
 const mapStateToProps = (state) => ({
   storedUser: state.user.user,
 });
