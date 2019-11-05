@@ -62,14 +62,14 @@ const TimetableView = (props) => {
               coursesList[j][i].map(
                 (course) => (
                   <a
-                    href={`http://sugang.snu.ac.kr/sugang/cc/cc101.action?`
-                    + `openSchyy=2019&openShtmFg=U000200002&openDetaShtmFg=`
+                    href={'http://sugang.snu.ac.kr/sugang/cc/cc101.action?'
+                    + 'openSchyy=2019&openShtmFg=U000200002&openDetaShtmFg='
                     + `U000300001&sbjtCd=${course.clanum}`
                     + `&ltNo=${course.lecnum}&sugangFlag=P`}
                     target="_blank"
                     rel="noopener noreferrer"
                     key={0}
-                    >
+                  >
                     <div
                       className="square"
                       key={1}
