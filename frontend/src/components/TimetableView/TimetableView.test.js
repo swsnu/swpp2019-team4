@@ -24,8 +24,11 @@ describe('<TimetableView />', () => {
         week_day: 4, start_time: 840, end_time: 960, course_name: 'DS', color: '#FFFFFF',
       },
     ];
-    const component = mount(<TimetableView courses={courses} height={24} width={80} />);
-    const datastructure = component.find('#timetable');
-    expect(datastructure.length).toBe(1);
+    const componentFT = mount(<TimetableView courses={courses} height={24} width={80} text={false} link title="" />);
+    const componentTF = mount(<TimetableView courses={courses} height={24} width={80} text link={false} title="" />);
+    const datastructureFT = componentFT.find('.square');
+    expect(datastructureFT.length).toBe(6);
+    const datastructureTF = componentTF.find('.square');
+    expect(datastructureTF.length).toBe(6);
   });
 });

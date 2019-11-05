@@ -137,7 +137,7 @@ class Main extends Component {
         week_day: 2,
         start_time: 780,
         end_time: 840,
-        course_name: '컴공세미나',
+        course_name: '컴퓨터공학세미나',
         color: '#00C3F2',
         course_number: '4190.209',
         lecture_number: '001',
@@ -175,7 +175,7 @@ class Main extends Component {
         <TopBar id="topbar" logout={() => this.handleLogout()} />
         <br />
         <div className="Content-left">
-          <TimetableView id="timetable-table" height={24} width={80} courses={courses} text={true} />
+          <TimetableView id="timetable-table" height={24} width={80} courses={courses} text link title="TIMETABLE" />
         </div>
         <div className="Content-right">
           <MainPageFriendListView id="friend-list" friends={friend} />
