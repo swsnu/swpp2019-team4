@@ -8,17 +8,15 @@ class Verify extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      uid: '',
-      token: '',
       verify_status: false,
     };
+    this.props.onGetVerify(this.props.match.params.uid, this.props.match.params.token)
+      .then(() => { this.state.verify_status = true; })
+      .catch(() => { this.state.verify_status = false; });
   }
 
   componentDidMount() {
     this.props.onGetUser();
-    this.props.onGetVerify(this.props.match.params.uid, this.props.match.params.token)
-      .then(() => this.setState((prevState) => ({ ...prevState, verify_status: true })))
-      .catch(() => this.setState((prevState) => ({ ...prevState, verify_status: false })));
   }
 
   goToLogin() {
