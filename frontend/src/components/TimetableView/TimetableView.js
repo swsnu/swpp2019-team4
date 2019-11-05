@@ -8,6 +8,7 @@ import './TimetableView.css';
  * start_time, end_time are 660~1230 integer. This value is hour*60+minute (8:00~20:30). start_time must be divided by 30
  * color is 6 hexadigit number.
  * height is constant value, and width is max width percent value
+ * text is true of false. If text if true, text will show. If false, text will not show and can display more smaller
 */
 
 
@@ -26,7 +27,7 @@ const TimetableView = (props) => {
   for (let i = 0; i < props.courses.length; i += 1) {
     coursesList[props.courses[i].week_day][props.courses[i].start_time / 30 - 16].push(
       {
-        name: props.courses[i].course_name,
+        name: props.text?props.courses[i].course_name:'',
         length: props.courses[i].end_time - props.courses[i].start_time,
         color: props.courses[i].color,
         lecnum: props.courses[i].lecture_number,
@@ -35,7 +36,7 @@ const TimetableView = (props) => {
     );
   }
   for (let i = 0; i < 7; i += 1) {
-    tablehtmlIth.push(<th key={i} height={heightunit} width={widthunit}>{tableHeaderString[i]}</th>);
+    tablehtmlIth.push(<th key={i} height={heightunit} width={widthunit}>{props.text?tableHeaderString[i]:''}</th>);
   }
   tablehtml.push(<tr key={-1}>{tablehtmlIth}</tr>);
   for (let i = 0; i < 26; i += 1) {
@@ -48,7 +49,7 @@ const TimetableView = (props) => {
           width={widthunit}
           rowSpan={2}
         >
-          {`${i / 2 + 8}:00`}
+          {props.text?`${i / 2 + 8}:00`:''}
         </td>,
       );
     }
@@ -75,7 +76,7 @@ const TimetableView = (props) => {
                       key={1}
                       style={
                       {
-                        height: `${((heightunit * course.length) / 30) * 1.1}px`,
+                        height: `${((heightunit * course.length) / 30)+6}px`,
                         width: `${(14 * props.width) / 100}%`,
                         backgroundColor: course.color,
                         color: 'black',
@@ -120,5 +121,6 @@ TimetableView.propTypes = {
   ).isRequired,
   height: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
+  width: PropTypes.bool.isRequired,
 };
 export default TimetableView;
