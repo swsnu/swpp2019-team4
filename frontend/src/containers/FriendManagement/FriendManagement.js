@@ -15,6 +15,10 @@ class FriendManagement extends Component {
   componentDidMount() {
     this.props.onGetFriend();
   }
+  
+  componentWillUnmount() {
+    this.props.onPostSearch('');
+  }
 
   onEmailChange(email) {
     this.setState({ email: email });
@@ -26,7 +30,27 @@ class FriendManagement extends Component {
       <div key={friend.id}>
         <span>{friend.username}</span>
         <span>
-          <button id="email-input">
+          <button id="email-input" onClick={() => this.props.onDeleteFriend(friend.id)}>
+            X
+          </button>
+        </span>
+      </div>
+    ));
+    const friends_send = this.props.storedFriendSend.map((friend) => (
+      <div key={friend.id}>
+        <span>{friend.username}</span>
+        <span>
+          <button id="email-input" onClick={() => this.props.onDeleteFriend(friend.id)}>
+            X
+          </button>
+        </span>
+      </div>
+    ));
+    const friends_receive = this.props.storedFriendReceive.map((friend) => (
+      <div key={friend.id}>
+        <span>{friend.username}</span>
+        <span>
+          <button id="email-input" onClick={() => this.props.onDeleteFriend(friend.id)}>
             X
           </button>
         </span>
@@ -47,8 +71,16 @@ class FriendManagement extends Component {
             ? <div>{`${this.props.storedSearch.id} ${this.props.storedSearch.username}`}</div>
             : null}
           <hr />
-          <button type="button" onClick={this.props.onClose}>CLOSE</button>
+          <div>RECEIVE</div>
+          {friends_receive}
+          <hr />
+          <div>SEND</div>
+          {friends_send}
+          <hr />
+          <div>FRIENDS</div>
           {friends}
+          <hr />
+          <button type="button" onClick={this.props.onClose}>CLOSE</button>
         </div>
       </div>
     );
@@ -58,6 +90,7 @@ class FriendManagement extends Component {
 FriendManagement.propTypes = {
   onClose: PropTypes.func.isRequired,
   onGetFriend: PropTypes.func.isRequired,
+  onDeleteFriend: PropTypes.func.isRequired,
   onPostSearch: PropTypes.func.isRequired,
   storedFriend: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   storedSearch: PropTypes.shape({
@@ -68,6 +101,8 @@ FriendManagement.propTypes = {
 
 const mapStateToProps = (state) => ({
   storedFriend: state.user.friend,
+  storedFriendSend: state.user.friend_send,
+  storedFriendReceive: state.user.friend_recieve,
   storedSearch: state.user.search,
 });
 
@@ -75,6 +110,7 @@ const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onGetFriend: () => dispatch(actionCreators.getFriend()),
   onPostSearch: (email) => dispatch(actionCreators.postUserSearch(email)),
+  onDeleteFriend: (id) => dispatch(actionCreators.deleteFriend(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FriendManagement);

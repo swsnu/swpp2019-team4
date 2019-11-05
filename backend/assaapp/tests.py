@@ -199,7 +199,7 @@ class AssaTestCase(TestCase):
                              content_type='application/json')
         response = self.get('/api/user/friend/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(json.loads(response.content.decode())), 1)
+        self.assertEqual(len(json.loads(response.content.decode())['friend']), 1)
 
     def test_delete_user_friend(self):
         response = self.post('/api/signin/',
