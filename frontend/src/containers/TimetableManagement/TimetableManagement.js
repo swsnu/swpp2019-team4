@@ -6,6 +6,7 @@ import * as actionCreators from '../../store/actions/index';
 import TimetableView from '../../components/TimetableView/TimetableView';
 import TopBar from '../../components/TopBar/TopBar';
 import TimetableRecommend from '../TimetableRecommend/TimetableRecommend';
+import './TimetableManagement.css'
 
 class TimetableManagement extends Component {
   constructor(props) {
@@ -75,40 +76,53 @@ class TimetableManagement extends Component {
     return (
       <div className="Manage">
         <TopBar id="topbar" logout={() => this.handleLogout()} />
-        <select id="semester-select">
-          <option value="2019-1">2019-1</option>
-          <option value="2019-s">2019-s</option>
-          <option value="2019-2">2019-2</option>
-          <option value="2019-w">2019-w</option>
-        </select>
-        <label htmlFor="courses">
-          과목명
-          <input
-            id="courses"
-            type="text"
-            value={this.state.searchStrings}
-            onChange={(event) => this.setState({ searchStrings: event.target.value })}
+        <div className="searchBar">
+          <select id="semester-select">
+            <option value="2019-1">2019-1</option>
+            <option value="2019-s">2019-s</option>
+            <option value="2019-2">2019-2</option>
+            <option value="2019-w">2019-w</option>
+          </select>
+          <label className="input-courses" htmlFor="courses">
+            과목명
+            <input
+              id="courses"
+              type="text"
+              value={this.state.searchStrings}
+              onChange={(event) => this.setState({ searchStrings: event.target.value })}
+            />
+            <button type="button" className="search" onClick={() => this.search()}>검색</button>
+          </label>
+        </div>
+          <div className="searched-courses">
+            <div className="label">
+              <button type="button">과목검색</button>
+              <button type="button">내 과목</button>
+            </div>
+            <ul>
+              {courseList}
+            </ul>
+          </div>
+        <div className="timetable">
+          <TimetableView
+            id="timetable-table"
+            height={24}
+            width={60}
+            courses={this.props.timetable}
+            text
+            link
+            title=""
           />
-          <button type="button" className="search" onClick={() => this.search()}>검색</button>
-        </label>
-        <ol>
-          {courseList}
-        </ol>
-        <TimetableView
-          id="timetable-table"
-          height={24}
-          width={100}
-          courses={this.props.timetable}
-          text
-          link
-          title=""
-        />
-        <ol>
-          {timetableList}
-        </ol>
-        <button type="button" id="delete-button">DELETE</button>
-        <button type="button" id="create-button" onClick={() => this.createEmptyTimetable()}>CREATE</button>
-        <button type="button" id="timetable-recommend-button" onClick={() => this.statePopup(true)}>RECOMMEND</button>
+        </div>
+          <div className="timetable-list">
+            <ul>
+              {timetableList}
+            </ul>
+          </div>
+        <div className="manage-timetable-buttons">
+          <button type="button" id="delete-button">DELETE</button>
+          <button type="button" id="create-button" onClick={() => this.createEmptyTimetable()}>CREATE</button>
+          <button type="button" id="timetable-recommend-button" onClick={() => this.statePopup(true)}>RECOMMEND</button>
         {
           this.state.showPopup
             ? (
@@ -119,6 +133,7 @@ class TimetableManagement extends Component {
             )
             : null
         }
+        </div>
       </div>
     );
   }
