@@ -76,14 +76,88 @@ def api_signout(request):
     return HttpResponseNotAllowed(['GET'])
 
 def api_user(request):
-    if request.method == 'GET':
-        if request.user.is_authenticated:
-            user = {'email': request.user.email, 'username': request.user.username,
-                    'grade': request.user.grade, 'department': request.user.department,
-                    'is_authenticated': True}
-            return JsonResponse(user)
-        return HttpResponse(status=401)
-    return HttpResponseNotAllowed(['GET'])
+    if request.user.is_authenticated:
+        if request.method == 'GET':
+            return JsonResponse(request.user.data_large())
+        return HttpResponseNotAllowed(['GET'])
+    return HttpResponse(status=401)
+
+def api_user_friend(request):
+    if request.user.is_authenticated:
+        if request.method == 'GET':
+            friend = [user.data_medium() for user in request.user.friends.all()]
+            friend_receive = [user.data_small() for user in request.user.friends_request.all()]
+            friend_send = [user.data_small() for user in
+                           User.objects.filter(friends_request__in=[request.user.id])]
+            return JsonResponse({'friend': friend, 'friend_send': friend_send,
+                                 'friend_receive': friend_receive})
+        return HttpResponseNotAllowed(['GET'])
+    return HttpResponse(status=401)
+
+def api_user_friend_id(request, user_id):
+    '''
+    POST :
+    Accept as a friend only when the opponent sent a request.
+    Otherwise, it will be considered as a bad request.
+    DELETE :
+    Simply put, remove all connections between two users.
+    If a user got friend request from (user_id),
+    this request is considered as a friend disapproval.
+    If a user is a friend of (user_id)
+    just delete a user from the friend list.
+    '''
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            try:
+                friend = request.user.friends_request.get(id=user_id)
+                request.user.friends_request.remove(friend)
+                request.user.friends.add(friend)
+            except User.DoesNotExist:
+                return HttpResponseNotFound()
+            return JsonResponse(friend.data_medium())
+        if request.method == 'DELETE':
+            try:
+                friend = User.objects.get(id=user_id)
+            except User.DoesNotExist:
+                return HttpResponseNotFound()
+            request.user.friends.remove(friend)
+            request.user.friends_request.remove(friend)
+            friend.friends_request.remove(request.user)
+            return HttpResponse(status=204)
+        return HttpResponseNotAllowed(['POST', 'DELETE'])
+    return HttpResponse(status=401)
+
+def api_user_search(request):
+    '''
+    This api is to send friend request to the opponent using email address.
+    If the email address is a user's, then the api fails with USER error.
+    If the opponent already sent a request, then connects as a friend relationship.
+    If the user already sent a request, then the api fails with SENT error.
+    If the user is already a friend of the opponent, then the api fails with FRIEND error.
+    '''
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            try:
+                req_data = json.loads(request.body.decode())
+                email = req_data['email']
+                friend = User.objects.get(email=email)
+            except (KeyError, JSONDecodeError, User.DoesNotExist):
+                return HttpResponseNotFound(content='NULL')
+            user = request.user
+            if user == friend:
+                return HttpResponseBadRequest(content='USER')
+            if user.friends.filter(id=friend.id).count() == 1:
+                return HttpResponseBadRequest(content='FRIEND')
+            if friend.friends_request.filter(id=user.id).count() == 1:
+                return HttpResponseBadRequest(content='SENT')
+            if user.friends_request.filter(id=friend.id).count() == 1:
+                user.friends_request.remove(friend)
+                user.friends.add(friend)
+                return JsonResponse({'user': friend.data_medium(), 'status': 'FRIEND'})
+            friend.friends_request.add(user)
+            return JsonResponse({'user': friend.data_medium(), 'status': 'PENDING'})
+        return HttpResponseNotAllowed(['POST'])
+    return HttpResponse(status=401)
 
 def api_timetable(request):
     if request.user.is_authenticated:

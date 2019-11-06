@@ -31,6 +31,12 @@ function window(state) {
   );
 }
 
+jest.mock('../FriendManagement/FriendManagement', () => jest.fn((props) => (
+  <div className="FriendManagement">
+    <button id="close" type="button" onClick={props.onClose}> x </button>
+  </div>
+)));
+
 describe('<Main />', () => {
   let spyGetSignout;
 
@@ -66,5 +72,13 @@ describe('<Main />', () => {
   it('should redirect to login when is_authenticated is false', () => {
     const component = mount(window(stubStateFalse));
     expect(component.find('.Login').length).toBe(1);
+  });
+
+  it('should popup FriendManagement view when friend-manage button is clicked', () => {
+    const component = mount(window(stubState));
+    component.find('#friend-manage').simulate('click');
+    expect(component.find('.FriendManagement').length).toBe(1);
+    component.find('#close').simulate('click');
+    expect(component.find('.FriendManagement').length).toBe(0);
   });
 });

@@ -9,4 +9,10 @@ export {
   getUser,
   getSignout,
   getVerify,
+  getFriend,
+  deleteFriend,
+  rejectFriend,
+  cancelFriend,
+  postUserSearch,
+  receiveFriend,
 } from './user';
