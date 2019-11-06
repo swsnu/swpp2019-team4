@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
 import * as actionCreators from '../../store/actions/index';
+import './Login.css';
 
 class Login extends Component {
   constructor(props) {
@@ -21,9 +25,7 @@ class Login extends Component {
   handleLogin() {
     this.props.onLogin(this.state.email, this.state.password)
       .then(() => {
-        if (this.props.storedUser.is_authenticated === false) {
-          this.setState((prevState) => ({ ...prevState, login_failed: true }));
-        }
+        this.setState((prevState) => ({ ...prevState, login_failed: true }));
       });
   }
 
@@ -40,24 +42,37 @@ class Login extends Component {
     const loginNotice = (this.state.login_failed ? '이메일 또는 비밀번호가 잘못되었습니다.' : '');
     return (
       <div className="Login">
-        <input
-          type="text"
-          id="email-input"
-          value={this.state.email}
-          placeholder="Email"
-          onChange={(event) => this.setState({ email: event.target.value })}
-        />
-        <input
-          type="password"
-          id="pw-input"
-          value={this.state.pasword}
-          placeholder="Password"
-          onChange={(event) => this.setState({ password: event.target.value })}
-        />
-        <button type="button" id="login-button" onClick={() => this.handleLogin()}>로그인</button>
-        <button type="button" id="to-signup-button" onClick={() => this.goToSignup()}>회원가입</button>
+        <h1><b> ASSA </b></h1>
         <br />
-        {loginNotice}
+        <Form>
+          <Form.Group as={Row}>
+            <Form.Control
+              type="text"
+              id="email-input"
+              value={this.state.email}
+              placeholder="Email"
+              onChange={(event) => this.setState({ email: event.target.value })}
+            />
+            <Form.Control
+              type="password"
+              id="pw-input"
+              value={this.state.pasword}
+              placeholder="Password"
+              onChange={(event) => this.setState({ password: event.target.value })}
+            />
+          </Form.Group>
+          <Button type="button" id="login-button" onClick={() => this.handleLogin()}>로그인</Button>
+          <Button
+            variant="outline-primary"
+            type="button"
+            id="to-signup-button"
+            onClick={() => this.goToSignup()}
+          >
+회원가입
+          </Button>
+          <p id="login-notice">{loginNotice}</p>
+        </Form>
+        <br />
       </div>
     );
   }
