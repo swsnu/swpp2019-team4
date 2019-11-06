@@ -27,7 +27,7 @@ export const getTimetables = () => (dispatch) => axios.get('/api/timetable/')
   .then((res) => dispatch({ type: actionTypes.GET_TIMETABLES, timetables: res.data}))
   .catch(() => {})
 
-export const getCourses = () => (dispatch) => axios.get('/api/course/')
+export const getCourses = (searchStrings) => (dispatch) => axios.get('/api/course/' + searchStrings)
   .then((res) => dispatch({ type: actionTypes.GET_COURSES, courses: res.data}))
   .catch(() => {})
 

@@ -12,13 +12,13 @@ class TimetableManagement extends Component {
     super(props);
     this.state = {
       showPopup: false,
+      searchStrings: "",
     };
   }
 
   componentDidMount() {
     this.props.onGetUser();
     this.props.onGetTimetables();
-    this.props.onGetCourses();
   }
 
   statePopup(value) {
@@ -27,6 +27,10 @@ class TimetableManagement extends Component {
 
   handleLogout() {
     this.props.onLogout();
+  }
+
+  search() {
+    this.props.onGetCourses(this.state.searchStrings);
   }
 
   render() {
@@ -55,7 +59,13 @@ class TimetableManagement extends Component {
         </select>
         <label htmlFor="courses">
           과목명
-          <input id="courses" type="text" />
+          <input
+            id="courses"
+            type="text"
+            value={this.state.searchStrings}
+            onChange={(event) => this.setState({ searchStrings: event.target.value })}
+          />
+          <button type="button" onClick={() => this.search()}>검색</button>
         </label>
         <ol>
           {course_list}
@@ -100,7 +110,7 @@ const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onLogout: () => dispatch(actionCreators.getSignout()),
   onGetTimetables: () => dispatch(actionCreators.getTimetables()),
-  onGetCourses: () => dispatch(actionCreators.getCourses()),
+  onGetCourses: (searchStrings) => dispatch(actionCreators.getCourses(searchStrings)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableManagement);
