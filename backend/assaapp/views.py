@@ -249,8 +249,10 @@ def api_timetable_id_course(request, timetable_id):
             try:
                 string_pool = "0123456789ABCDEF"
                 color = "#"
-                for i in range(6):
+                i = 1
+                while i <= 6:
                     color += random.choice(string_pool)
+                    i += 1
                 body = request.body.decode()
                 course_id = json.loads(body)['course_id']
                 try:
