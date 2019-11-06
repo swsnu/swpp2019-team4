@@ -34,15 +34,15 @@ class Main extends Component {
       showFriendManagement: !prevState.showFriendManagement,
     }));
   }
+
   changePopup(value) {
-    if(value==-1){
+    if (value === -1) {
       this.setState((prevState) => ({
         ...prevState,
         showPopup: false,
         showindex: -1,
       }));
-    }
-    else{
+    } else {
       this.setState((prevState) => ({
         ...prevState,
         showPopup: true,
@@ -72,13 +72,13 @@ class Main extends Component {
         timeleft: '2147483647',
         timetable: [
           {
-            "name": "소프트웨어 개발의 원리와 실습",
-            "week_day": 0,
-            "start_time": 1020,
-            "end_time": 1110,
-            "course_number": "M1522.002400",
-            "lecture_number": "001",
-            "color": "#FF0000",
+            name: '소프트웨어 개발의 원리와 실습',
+            week_day: 0,
+            start_time: 1020,
+            end_time: 1110,
+            course_number: 'M1522.002400',
+            lecture_number: '001',
+            color: '#FF0000',
           },
         ],
       },
@@ -115,7 +115,7 @@ class Main extends Component {
             ? (
               <FriendTimetable
                 title={`${friend[this.state.showindex].name}님의 시간표`}
-                timetable={friend.filter(x=> x.id===this.state.showindex)[0].timetable}
+                timetable={friend.filter((x) => x.id === this.state.showindex)[0].timetable}
                 closePopup={() => this.changePopup(-1)}
               />
             )
