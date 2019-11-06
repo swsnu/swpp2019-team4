@@ -1,4 +1,5 @@
 import json
+import random
 from json import JSONDecodeError
 from django.db.utils import IntegrityError
 from django.http import HttpResponse, HttpResponseNotAllowed, \
@@ -11,7 +12,6 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from assaapp.models import User, Timetable, Course, CourseColor, CourseTime
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
-
 def api_signup(request):
     if request.method == 'POST':
         try:
@@ -173,7 +173,7 @@ def api_timetable(request):
                 timetable = Timetable(title=timetable_title,
                                       semester=timetable_semester, user=request.user)
                 timetable.save()
-                return HttpResponse(status=201)
+                return JsonResponse(model_to_dict(timetable), status=201)
             except (KeyError, JSONDecodeError):
                 return HttpResponseBadRequest()
         return HttpResponseNotAllowed(['GET', 'POST'])
@@ -194,7 +194,7 @@ def api_timetable_id(request, timetable_id):
                     courses_data.append(
                         {
                             'name': course_data.course.title,
-                            'weekday': course_time.weekday,
+                            'week_day': course_time.weekday,
                             'start_time': course_time.start_time.hour*60
                                           +course_time.start_time.minute,
                             'end_time': course_time.end_time.hour*60
@@ -247,14 +247,38 @@ def api_timetable_id_course(request, timetable_id):
                 return HttpResponseNotFound()
         if request.method == 'POST':
             try:
+                string_pool = "0123456789ABCDEF"
+                color = "#"
+                i = 1
+                while i <= 6:
+                    color += random.choice(string_pool)
+                    i += 1
                 body = request.body.decode()
                 course_id = json.loads(body)['course_id']
                 try:
                     timetable = Timetable.objects.get(pk=timetable_id)
                     course = Course.objects.get(pk=course_id)
-                    timetable.courses.add(course)
+                    CourseColor(timetable=timetable, course=course, color=color).save()
                     timetable.save()
-                    return HttpResponse(status=200)
+                    courses_color = [course for
+                                    course in CourseColor.objects.filter(timetable=timetable_id)]
+                    courses_data = []
+                    for course_data in courses_color:
+                        for course_time in CourseTime.objects.filter(course=course_data.course):
+                            courses_data.append(
+                                {
+                                    'name': course_data.course.title,
+                                    'week_day': course_time.weekday,
+                                    'start_time': course_time.start_time.hour*60
+                                                +course_time.start_time.minute,
+                                    'end_time': course_time.end_time.hour*60
+                                                +course_time.end_time.minute,
+                                    'color': course_data.color,
+                                    'lecture_number': course_data.course.lecture_number,
+                                    'course_number': course_data.course.course_number,
+                                }
+                            )
+                    return JsonResponse(courses_data, safe=False)
                 except (Timetable.DoesNotExist, Course.DoesNotExist):
                     return HttpResponseNotFound()
             except (KeyError, JSONDecodeError):
@@ -265,19 +289,19 @@ def api_timetable_id_course(request, timetable_id):
 def api_course(request):
     if request.user.is_authenticated:
         if request.method == 'GET':
-            course_list = [course for course in Course.objects.all().values()]
+            course_list = [course for course in Course.objects.values()]
+            if len(request.GET.get('title')) > 0 :
+                match_text = request.GET.get('title')
+                def is_matched (text) :
+                    matched = 0
+                    for i in range(len(text)) :
+                        if matched == len(match_text) :
+                            return True
+                        if text[i] == match_text[matched] :
+                            matched += 1
+                    return False
+                course_list = list(filter(lambda x : is_matched(x['title']), course_list))
             return JsonResponse(course_list, safe=False)
-        return HttpResponseNotAllowed(['GET'])
-    return HttpResponse(status=401)
-
-def api_course_id(request, course_id):
-    if request.user.is_authenticated:
-        if request.method == 'GET':
-            try:
-                course = Course.objects.get(pk=course_id)
-                return JsonResponse(model_to_dict(course), status=200)
-            except Course.DoesNotExist:
-                return HttpResponseNotFound()
         return HttpResponseNotAllowed(['GET'])
     return HttpResponse(status=401)
 

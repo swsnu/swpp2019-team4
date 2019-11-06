@@ -12,11 +12,14 @@ class TimetableManagement extends Component {
     super(props);
     this.state = {
       showPopup: false,
+      searchStrings: '',
+      timetableId: -1,
     };
   }
 
   componentDidMount() {
     this.props.onGetUser();
+    this.props.onGetTimetables();
   }
 
   statePopup(value) {
@@ -27,13 +30,48 @@ class TimetableManagement extends Component {
     this.props.onLogout();
   }
 
+  post(courseId) {
+    if (this.state.timetableId !== -1) {
+      this.props.onPostCourse(this.state.timetableId, courseId);
+      this.props.onGetTimetables();
+      this.props.onGetTimetable(this.state.timetableId);
+    }
+  }
+
+  show(timetableId) {
+    this.setState({ timetableId });
+    this.props.onGetTimetable(timetableId);
+  }
+
+  createEmptyTimetable() {
+    this.props.onPostTimetable('new timetable', '2019-2');
+  }
+
+  search() {
+    this.props.onGetCourses(this.state.searchStrings);
+  }
+
   render() {
     if (this.props.storedUser.is_authenticated === false) {
       return (
         <Redirect to="/login" />
       );
     }
-    const courses = [];
+
+    const timetableList = this.props.timetables.map((timetable) => (
+      <li key={timetable.id}>
+        <button type="button" className="createTimetable" onClick={() => this.show(timetable.id)}>
+          {timetable.title}
+        </button>
+      </li>
+    ));
+    const courseList = this.props.courses.map((course) => (
+      <li key={course.id}>
+        <button type="button" className="postCourse" onClick={() => this.post(course.id)}>
+          {course.title}
+        </button>
+      </li>
+    ));
     return (
       <div className="Manage">
         <TopBar id="topbar" logout={() => this.handleLogout()} />
@@ -45,21 +83,31 @@ class TimetableManagement extends Component {
         </select>
         <label htmlFor="courses">
           과목명
-          <input id="courses" type="text" />
+          <input
+            id="courses"
+            type="text"
+            value={this.state.searchStrings}
+            onChange={(event) => this.setState({ searchStrings: event.target.value })}
+          />
+          <button type="button" className="search" onClick={() => this.search()}>검색</button>
         </label>
         <ol>
-          <li><button type="button">소프트웨어 개발의 원리와 실습</button></li>
-          <li><button type="button">전기전자회로</button></li>
-          <li><button type="button">인터넷 보안과 프라이버시</button></li>
+          {courseList}
         </ol>
-        <TimetableView id="timetable-table" height={24} width={80} courses={courses} text link title="" />
+        <TimetableView
+          id="timetable-table"
+          height={24}
+          width={100}
+          courses={this.props.timetable}
+          text
+          link
+          title=""
+        />
         <ol>
-          <li><button type="button">Timetable1</button></li>
-          <li><button type="button">Timetable2</button></li>
-          <li><button type="button">Timetable3</button></li>
+          {timetableList}
         </ol>
         <button type="button" id="delete-button">DELETE</button>
-        <button type="button" id="create-button">CREATE</button>
+        <button type="button" id="create-button" onClick={() => this.createEmptyTimetable()}>CREATE</button>
         <button type="button" id="timetable-recommend-button" onClick={() => this.statePopup(true)}>RECOMMEND</button>
         {
           this.state.showPopup
@@ -79,6 +127,26 @@ class TimetableManagement extends Component {
 TimetableManagement.propTypes = {
   onGetUser: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
+  onGetTimetables: PropTypes.func.isRequired,
+  onGetCourses: PropTypes.func.isRequired,
+  onGetTimetable: PropTypes.func.isRequired,
+  onPostTimetable: PropTypes.func.isRequired,
+  onPostCourse: PropTypes.func.isRequired,
+  timetables: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+    }),
+  ).isRequired,
+  courses: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+    }),
+  ).isRequired,
+  timetable: PropTypes.arrayOf(
+    PropTypes.shape({
+
+    }),
+  ).isRequired,
   storedUser: PropTypes.shape({
     is_authenticated: PropTypes.bool.isRequired,
   }).isRequired,
@@ -86,11 +154,19 @@ TimetableManagement.propTypes = {
 
 const mapStateToProps = (state) => ({
   storedUser: state.user.user,
+  timetables: state.user.timetables,
+  courses: state.user.courses,
+  timetable: state.user.timetable,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onLogout: () => dispatch(actionCreators.getSignout()),
+  onGetTimetables: () => dispatch(actionCreators.getTimetables()),
+  onGetCourses: (searchStrings) => dispatch(actionCreators.getCourses(searchStrings)),
+  onGetTimetable: (timetableId) => dispatch(actionCreators.getTimetable(timetableId)),
+  onPostTimetable: (timetableName, semester) => dispatch(actionCreators.postTimetable(timetableName, semester)),
+  onPostCourse: (title, courseId) => dispatch(actionCreators.postCourse(title, courseId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableManagement);
