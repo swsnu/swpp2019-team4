@@ -461,54 +461,26 @@ class AssaTestCase(TestCase):
                              content_type='application/json')
         self.assertEqual(response.status_code, 200)
         response = self.get('/api/timetable/1/course/')
-        self.assertEqual(1, len(json.loads(response.content.decode())))
+        self.assertEqual(2, len(json.loads(response.content.decode())))
 
     def test_course_not_allowed(self):
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
-        response = self.put('/api/course/')
+        response = self.put('/api/course/asdf/')
         self.assertEqual(response.status_code, 405)
-        response = self.delete('/api/course/')
+        response = self.delete('/api/course/asdf/')
         self.assertEqual(response.status_code, 405)
 
     def test_get_course(self):
-        response = self.get('/api/course/')
+        response = self.get('/api/course/swpp/')
         self.assertEqual(response.status_code, 401)
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
-        response = self.get('/api/course/')
+        response = self.get('/api/course/swpp/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(1, len(json.loads(response.content.decode())))
-
-    def test_course_id_not_allowed(self):
-        response = self.post('/api/signin/',
-                             json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
-                             content_type='application/json')
-        response = self.post('/api/course/1/')
-        self.assertEqual(response.status_code, 405)
-
-    def test_get_course_id(self):
-        response = self.get('/api/course/1/')
-        self.assertEqual(response.status_code, 401)
-        response = self.post('/api/signin/',
-                             json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
-                             content_type='application/json')
-        response = self.get('/api/course/101/')
-        self.assertEqual(response.status_code, 404)
-        response = self.get('/api/course/1/')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content.decode()), {
-                        "id":1, "semester":"2019-2", "classification":"전필",
-                        "college":"공과대학", "department":"컴퓨터공학부",
-                        "degree_program":"학사", "academic_year":3,
-                        "course_number":"M1522.002400", "lecture_number":"001",
-                        "title":"swpp", "subtitle":"",
-                        "credit":4, "lecture_credit":2,
-                        "lab_credit":1, "lecture_type":"", "location":"301동",
-                        "professor":"전병곤", "quota":"80", "remark":"소개원실 재미있어요",
-                        "language":"영어", "status":"설강"})
 
     def test_make_course(self):
         req_data = {

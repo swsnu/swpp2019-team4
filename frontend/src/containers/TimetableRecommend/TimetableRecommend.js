@@ -22,7 +22,7 @@ class TimetableRecommend extends Component {
     for (let i = 0; i < this.props.timetable.length; i += i + 1) {
       tableviewlist.push(
         <div
-          key ={this.props.timetable[i].id}
+          key={i}
           className="timetable"
           role="button"
           tabIndex={0}

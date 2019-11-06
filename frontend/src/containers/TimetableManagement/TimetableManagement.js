@@ -42,7 +42,7 @@ class TimetableManagement extends Component {
   }
 
   createEmptyTimetable() {
-    this.props.onPostTimetable('new timetable', '2019-s');
+    this.props.onPostTimetable('new timetable', '2019-2');
   }
 
   search() {
@@ -132,18 +132,18 @@ TimetableManagement.propTypes = {
   onPostCourse: PropTypes.func.isRequired,
   timetables: PropTypes.arrayOf(
     PropTypes.shape({
-      id:PropTypes.number.isRequired
-    })
+      id: PropTypes.number.isRequired,
+    }),
   ).isRequired,
   courses: PropTypes.arrayOf(
     PropTypes.shape({
-      id:PropTypes.number.isRequired
-    })
+      id: PropTypes.number.isRequired,
+    }),
   ).isRequired,
   timetable: PropTypes.arrayOf(
     PropTypes.shape({
-      
-    })
+
+    }),
   ).isRequired,
   storedUser: PropTypes.shape({
     is_authenticated: PropTypes.bool.isRequired,

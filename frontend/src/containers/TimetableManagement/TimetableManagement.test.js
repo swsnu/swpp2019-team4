@@ -14,10 +14,10 @@ const stubState = {
   timetables: [
     {
       id: 1,
-      title: "my timetable",
-      semester: "2019-2",
+      title: 'my timetable',
+      semester: '2019-2',
       user_id: 2,
-    }
+    },
   ],
   courses: [
     {
@@ -39,10 +39,10 @@ const stubStateFalse = {
   timetables: [
     {
       id: 1,
-      title: "my timetable",
-      semester: "2019-2",
+      title: 'my timetable',
+      semester: '2019-2',
       user_id: 2,
-    }
+    },
   ],
   courses: [
     {
@@ -54,7 +54,7 @@ const stubStateFalse = {
       color: '#2BC366',
       course_number: 'M1522.000900',
       lecture_number: '001',
-    }
+    },
   ],
   timetable: [],
 };
@@ -109,7 +109,7 @@ describe('verification test', () => {
     mount(timetableManagement(stubState));
     expect(spyGetUser).toBeCalledTimes(1);
     expect(spyGetTimetables).toBeCalledTimes(1);
-  })
+  });
 
   it('should render timetableManagement', () => {
     const component = mount(timetableManagement(stubState));
@@ -130,7 +130,7 @@ describe('verification test', () => {
     const component = mount(timetableManagement(stubState));
     component.find('#create-button').simulate('click');
     expect(spyPostTimetable).toBeCalledTimes(1);
-  })
+  });
 
   it('should call post when pressed postCourse button', () => {
     const component = mount(timetableManagement(stubState));
@@ -138,13 +138,13 @@ describe('verification test', () => {
     expect(spyPostCourse).toBeCalledTimes(1);
     expect(spyGetTimetables).toBeCalledTimes(2);
     expect(spyGetTimetable).toBeCalledTimes(1);
-  })
+  });
 
   it('should call show when pressed createTimetable button', () => {
     const component = mount(timetableManagement(stubState));
     component.find('.createTimetable').simulate('click');
     expect(spyGetTimetable).toBeCalledTimes(1);
-  })
+  });
 
   it('should call signout when pressed logout button', () => {
     const component = mount(timetableManagement(stubState));
@@ -156,12 +156,12 @@ describe('verification test', () => {
     const component = mount(timetableManagement(stubState));
     component.find('.search').simulate('click');
     expect(spyGetCourses).toBeCalledTimes(1);
-  })
+  });
 
   it('should change value when typing in search', () => {
     const component = mount(timetableManagement(stubState));
-    component.find('#courses').simulate('change', "asdf");
-  })
+    component.find('#courses').simulate('change', 'asdf');
+  });
   it('should redirect to login when is_authenticated is false', () => {
     const component = mount(timetableManagement(stubStateFalse));
     expect(component.find('.Login').length).toBe(1);

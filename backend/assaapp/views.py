@@ -12,7 +12,6 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from assaapp.models import User, Timetable, Course, CourseColor, CourseTime
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
 import random
-import logging
 def api_signup(request):
     if request.method == 'POST':
         try:
@@ -269,25 +268,10 @@ def api_timetable_id_course(request, timetable_id):
     return HttpResponse(status=401)
 
 def api_course(request, title):
-    logging.warning(title);
     if request.user.is_authenticated:
         if request.method == 'GET':
-            try:
-                course_list = [course for course in Course.objects.filter(title=title).values()]
-                return JsonResponse(course_list, safe=False)
-            except (KeyError, JSONDecodeError):
-                return HttpResponseNotFound()
-        return HttpResponseNotAllowed(['GET'])
-    return HttpResponse(status=401)
-
-def api_course_id(request, course_id):
-    if request.user.is_authenticated:
-        if request.method == 'GET':
-            try:
-                course = Course.objects.get(pk=course_id)
-                return JsonResponse(model_to_dict(course), status=200)
-            except Course.DoesNotExist:
-                return HttpResponseNotFound()
+            course_list = [course for course in Course.objects.filter(title=title).values()]
+            return JsonResponse(course_list, safe=False)
         return HttpResponseNotAllowed(['GET'])
     return HttpResponse(status=401)
 
