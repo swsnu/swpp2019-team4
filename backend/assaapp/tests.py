@@ -356,7 +356,6 @@ class AssaTestCase(TestCase):
                     course=Course.objects.get(id=1), color="#2468AC").save()
         response = self.get('/api/timetable/1/')
         self.assertEqual(response.status_code, 200)
-        self.maxDiff=None
         self.assertEqual(response.content.decode(),
                          '[{"name": "swpp", "week_day": 0, "start_time": 1020,'
                          ' "end_time": 1110, "color": "#2468AC",'
