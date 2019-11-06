@@ -30,7 +30,6 @@ class FriendManagement extends Component {
               message = `${this.props.storedSearch.username} 님과 친구가 되었습니다.`;
               break;
             default:
-              message = '';
           }
         } else {
           switch (this.props.storedSearch.status) {
@@ -45,7 +44,6 @@ class FriendManagement extends Component {
               message = '이미 친구인 상태입니다.';
               break;
             default:
-              message = '';
           }
         }
         this.setState((prevState) => ({ ...prevState, message }));
