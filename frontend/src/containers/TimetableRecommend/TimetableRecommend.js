@@ -84,7 +84,7 @@ CLOSE
 TimetableRecommend.propTypes = {
   closePopup: PropTypes.func.isRequired,
   timetable: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.shape({
-    course_name: PropTypes.string,
+    name: PropTypes.string,
     weekday: PropTypes.number,
     start_time: PropTypes.number,
     end_time: PropTypes.number,

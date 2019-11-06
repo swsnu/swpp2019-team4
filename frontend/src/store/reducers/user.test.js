@@ -221,7 +221,7 @@ describe('Reducer', () => {
           week_day: 0,
           start_time: 660,
           end_time: 750,
-          course_name: '자료구조',
+          name: '자료구조',
           color: '#2BC366',
           course_number: 'M1522.000900',
           lecture_number: '001',

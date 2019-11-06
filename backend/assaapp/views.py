@@ -1,4 +1,5 @@
 import json
+import random
 from json import JSONDecodeError
 from django.db.utils import IntegrityError
 from django.http import HttpResponse, HttpResponseNotAllowed, \
@@ -11,7 +12,6 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from assaapp.models import User, Timetable, Course, CourseColor, CourseTime
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
-import random
 def api_signup(request):
     if request.method == 'POST':
         try:
@@ -249,7 +249,7 @@ def api_timetable_id_course(request, timetable_id):
             try:
                 string_pool = "0123456789ABCDEF"
                 color = "#"
-                for i in range (6) :
+                for i in range(6):
                     color += random.choice(string_pool)
                 body = request.body.decode()
                 course_id = json.loads(body)['course_id']

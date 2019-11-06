@@ -5,7 +5,6 @@ from django.utils.encoding import force_bytes
 from django.forms.models import model_to_dict
 from assaapp.models import User, Timetable, Course, CourseColor, CourseTime
 from assaapp.tokens import ACCOUNT_ACTIVATION_TOKEN
-
 class AssaTestCase(TestCase):
     def setUp(self):
         self.client = Client(enforce_csrf_checks=True)
