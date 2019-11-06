@@ -1,19 +1,26 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect, NavLink } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import * as actionCreators from '../../store/actions/index';
 import TimetableView from '../../components/TimetableView/TimetableView';
 import TopBar from '../../components/TopBar/TopBar';
+import TimetableRecommend from '../TimetableRecommend/TimetableRecommend';
 
 class TimetableManagement extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      showPopup: false,
+    };
   }
 
   componentDidMount() {
     this.props.onGetUser();
+  }
+
+  statePopup(value) {
+    this.setState((prevState) => ({ ...prevState, showPopup: value }));
   }
 
   handleLogout() {
@@ -45,7 +52,7 @@ class TimetableManagement extends Component {
           <li><button type="button">전기전자회로</button></li>
           <li><button type="button">인터넷 보안과 프라이버시</button></li>
         </ol>
-        <TimetableView id="timetable-table" height={24} width={80} courses={courses} />
+        <TimetableView id="timetable-table" height={24} width={80} courses={courses} text link title="" />
         <ol>
           <li><button type="button">Timetable1</button></li>
           <li><button type="button">Timetable2</button></li>
@@ -53,9 +60,17 @@ class TimetableManagement extends Component {
         </ol>
         <button type="button" id="delete-button">DELETE</button>
         <button type="button" id="create-button">CREATE</button>
-        <NavLink to="/timetable/recommend">
-          <button type="button" id="timetable-recommend-button">RECOMMEND</button>
-        </NavLink>
+        <button type="button" id="timetable-recommend-button" onClick={() => this.statePopup(true)}>RECOMMEND</button>
+        {
+          this.state.showPopup
+            ? (
+              <TimetableRecommend
+                timetable={[]}
+                closePopup={() => this.statePopup(false)}
+              />
+            )
+            : null
+        }
       </div>
     );
   }

@@ -5,8 +5,22 @@ import PropTypes from 'prop-types';
 import * as actionCreators from '../../store/actions/index';
 
 class Verify extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      verify_status: false,
+    };
+    this.props.onGetVerify(this.props.match.params.uid, this.props.match.params.token)
+      .then(() => { this.state.verify_status = true; })
+      .catch(() => { this.state.verify_status = false; });
+  }
+
   componentDidMount() {
     this.props.onGetUser();
+  }
+
+  goToLogin() {
+    this.props.history.replace('/login');
   }
 
   render() {
@@ -15,9 +29,18 @@ class Verify extends Component {
         <Redirect to="/main" />
       );
     }
-    this.props.onGetVerify(this.props.match.params.uid, this.props.match.params.token);
+    const verifyNotice = (this.state.verify_status ? '이메일 확인이 완료되었습니다.' : '부적절한 요청입니다.');
     return (
-      <Redirect to="/login/" />
+      <div className="Verify">
+        <h3 id="notice">{verifyNotice}</h3>
+        <button
+          type="button"
+          id="to-login-button"
+          onClick={() => this.goToLogin()}
+        >
+로그인 화면으로 돌아가기
+        </button>
+      </div>
     );
   }
 }
@@ -25,6 +48,9 @@ class Verify extends Component {
 Verify.propTypes = {
   onGetUser: PropTypes.func.isRequired,
   onGetVerify: PropTypes.func.isRequired,
+  history: PropTypes.shape({
+    replace: PropTypes.func.isRequired,
+  }).isRequired,
   storedUser: PropTypes.shape({
     is_authenticated: PropTypes.bool.isRequired,
   }).isRequired,
