@@ -12,8 +12,8 @@ class TimetableManagement extends Component {
     super(props);
     this.state = {
       showPopup: false,
-      searchStrings: "",
-      timetable_id: 0,
+      searchStrings: '',
+      timetableId: 0,
     };
   }
 
@@ -30,19 +30,19 @@ class TimetableManagement extends Component {
     this.props.onLogout();
   }
 
-  post(course_id) {
-    this.props.onPostCourse(this.state.timetable_id, course_id);
+  post(courseId) {
+    this.props.onPostCourse(this.state.timetableId, courseId);
     this.props.onGetTimetables();
-    this.props.onGetTimetable(this.state.timetable_id);
+    this.props.onGetTimetable(this.state.timetableId);
   }
 
-  show(timetable_id) {
-    this.setState({timetable_id: timetable_id})
-    this.props.onGetTimetable(timetable_id);
+  show(timetableId) {
+    this.setState({ timetableId });
+    this.props.onGetTimetable(timetableId);
   }
 
   createEmptyTimetable() {
-    this.props.onPostTimetable("new timetable", "2019-s");
+    this.props.onPostTimetable('new timetable', '2019-s');
   }
 
   search() {
@@ -56,15 +56,20 @@ class TimetableManagement extends Component {
       );
     }
 
-    const timetable_list = this.props.timetables.map((timetable) => (
-      <li><button type="button" onClick = {() => this.show(timetable.id)}>{timetable.title}</button></li>
-    ))
-    console.log(this.props.courses)
-    const course_list = this.props.courses.map((course) => (
-      <li><button type="button" onClick ={() => this.post(course.id)}>{course.title}</button></li>
-    ))
-    console.log(this.state.timetable_id);
-    console.log(this.props.timetable);
+    const timetableList = this.props.timetables.map((timetable) => (
+      <li key={timetable.id}>
+        <button type="button" onClick={() => this.show(timetable.id)}>
+          {timetable.title}
+        </button>
+      </li>
+    ));
+    const courseList = this.props.courses.map((course) => (
+      <li key={course.id}>
+        <button type="button" onClick={() => this.post(course.id)}>
+          {course.title}
+        </button>
+      </li>
+    ));
     return (
       <div className="Manage">
         <TopBar id="topbar" logout={() => this.handleLogout()} />
@@ -85,17 +90,19 @@ class TimetableManagement extends Component {
           <button type="button" onClick={() => this.search()}>검색</button>
         </label>
         <ol>
-          {course_list}
+          {courseList}
         </ol>
-        <TimetableView id="timetable-table" 
-          height={24} 
-          width={100} 
-          courses={this.props.timetable} 
-          text={true}
-          link 
-          title="" />
+        <TimetableView
+          id="timetable-table"
+          height={24}
+          width={100}
+          courses={this.props.timetable}
+          text
+          link
+          title=""
+        />
         <ol>
-          {timetable_list}
+          {timetableList}
         </ol>
         <button type="button" id="delete-button">DELETE</button>
         <button type="button" id="create-button" onClick={() => this.createEmptyTimetable()}>CREATE</button>
@@ -118,6 +125,15 @@ class TimetableManagement extends Component {
 TimetableManagement.propTypes = {
   onGetUser: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
+  onGetTimetables: PropTypes.func.isRequired,
+  onGetCourses: PropTypes.func.isRequired,
+  onGetTimetable: PropTypes.func.isRequired,
+  onPostTimetable: PropTypes.func.isRequired,
+  onPostCourse: PropTypes.func.isRequired,
+  timetables: PropTypes.arrayOf({}).isRequired,
+  courses: PropTypes.arrayOf({}).isRequired,
+  timetable: PropTypes.shape({
+  }).isRequired,
   storedUser: PropTypes.shape({
     is_authenticated: PropTypes.bool.isRequired,
   }).isRequired,
@@ -135,9 +151,9 @@ const mapDispatchToProps = (dispatch) => ({
   onLogout: () => dispatch(actionCreators.getSignout()),
   onGetTimetables: () => dispatch(actionCreators.getTimetables()),
   onGetCourses: (searchStrings) => dispatch(actionCreators.getCourses(searchStrings)),
-  onGetTimetable: (timetable_id) => dispatch(actionCreators.getTimetable(timetable_id)),
-  onPostTimetable: (timetable_name, semester) => dispatch(actionCreators.postTimetable(timetable_name, semester)),
-  onPostCourse: (title, course_id) => dispatch(actionCreators.postCourse(title, course_id))
+  onGetTimetable: (timetableId) => dispatch(actionCreators.getTimetable(timetableId)),
+  onPostTimetable: (timetableName, semester) => dispatch(actionCreators.postTimetable(timetableName, semester)),
+  onPostCourse: (title, courseId) => dispatch(actionCreators.postCourse(title, courseId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableManagement);

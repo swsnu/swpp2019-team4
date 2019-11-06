@@ -27,14 +27,13 @@ const reducer = (state = initialState, action) => {
     case actionTypes.GET_USER:
       return { ...state, user: { ...action.user, is_authenticated: true } };
     case actionTypes.GET_TIMETABLES:
-      return { ...state, timetables: action.timetables}
+      return { ...state, timetables: action.timetables };
     case actionTypes.GET_TIMETABLE:
-      return { ...state, timetable: action.timetable}
+      return { ...state, timetable: action.timetable };
     case actionTypes.POST_TIMETABLE:
-      console.log(action.timetable)
-      return { ...state, timetables: state.timetables.concat(action.timetable)}
+      return { ...state, timetables: state.timetables.concat(action.timetable) };
     case actionTypes.GET_COURSES:
-      return { ...state, courses: action.courses}
+      return { ...state, courses: action.courses };
     case actionTypes.GET_FRIEND:
       return {
         ...state,
