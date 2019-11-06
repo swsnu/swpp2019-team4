@@ -15,4 +15,5 @@ export {
   cancelFriend,
   postUserSearch,
   receiveFriend,
+  getTimetableData,
 } from './user';

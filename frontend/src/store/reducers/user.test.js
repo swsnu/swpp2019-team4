@@ -50,6 +50,7 @@ describe('Reducer', () => {
       friend: [],
       friend_send: [],
       friend_receive: [],
+      timetable_data: [],
       search: {
         exist: false,
         status: '',

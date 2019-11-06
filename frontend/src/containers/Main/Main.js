@@ -22,6 +22,7 @@ class Main extends Component {
 
   componentDidMount() {
     this.props.onGetUser();
+    this.props.onGetTimetableData();
   }
 
   handleLogout() {
@@ -97,12 +98,16 @@ class Main extends Component {
         timetable: [],
       },
     ];
+    let courses = [];
+    if (this.props.timetable_list !== undefined && this.props.storedUser.timetable_main !== undefined) {
+      courses = this.props.timetable_list[this.props.storedUser.timetable_main];
+    }
     return (
       <div className="Main">
         <TopBar id="topbar" logout={() => this.handleLogout()} />
         <br />
         <div className="Content-left">
-          <TimetableView id="timetable-table" height={24} width={80} courses={[]} text link title="TIMETABLE" />
+          <TimetableView id="timetable-table" height={24} width={80} courses={courses} text link title="TIMETABLE" />
         </div>
         <div className="Content-right">
           <button type="button" id="friend-manage" onClick={() => this.toggleFriendManagement()}>
@@ -132,17 +137,34 @@ class Main extends Component {
 Main.propTypes = {
   onGetUser: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
+  onGetTimetableData: PropTypes.func.isRequired,
   storedUser: PropTypes.shape({
     is_authenticated: PropTypes.bool.isRequired,
+    timetable_main: PropTypes.number.isRequired,
   }).isRequired,
+  timetable_list: PropTypes.arrayOf(
+    PropTypes.arrayOf(
+      PropTypes.shape({
+        start_time: PropTypes.number.isRequired,
+        end_time: PropTypes.number.isRequired,
+        week_day: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+        color: PropTypes.string.isRequired,
+        lecture_number: PropTypes.string.isRequired,
+        course_number: PropTypes.string.isRequired,
+      }),
+    ),
+  ).isRequired,
 };
 const mapStateToProps = (state) => ({
   storedUser: state.user.user,
+  timetable_list: state.user.timetable_data,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onLogout: () => dispatch(actionCreators.getSignout()),
+  onGetTimetableData: () => dispatch(actionCreators.getTimetableData()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);
