@@ -22,7 +22,11 @@ function timetableManagement(state) {
     <Provider store={mockStore}>
       <ConnectedRouter history={createBrowserHistory()}>
         <Switch>
-          <Route path="/" exact render={() => <TimetableManagement courses={[]} height={24} width={80} />} />
+          <Route
+            path="/"
+            exact
+            render={() => <TimetableManagement courses={[]} height={24} width={80} text link title="" />}
+          />
           <Route path="/login" exact render={() => <div className="Login" />} />
           <Route path="/main" exact render={() => <div className="Main" />} />
         </Switch>
@@ -50,6 +54,9 @@ describe('verification test', () => {
     expect(component.find('#delete-button').length).toBe(1);
     expect(component.find('#create-button').length).toBe(1);
     expect(component.find('#timetable-recommend-button').length).toBe(1);
+    component.find('#timetable-recommend-button').simulate('click');
+    expect(component.find('#close-button').length).toBe(1);
+    component.find('#close-button').simulate('click');
   });
 
   it('should call signout when pressed logout button', () => {

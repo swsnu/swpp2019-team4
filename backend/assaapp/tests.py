@@ -244,11 +244,17 @@ class AssaTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content.decode(),
                          '[{"name": "swpp", "weekday": 0, "start_time": 1020,'
-                         ' "end_time": 1110, "color": "#2468AC"},'
+                         ' "end_time": 1110, "color": "#2468AC",'
+                         ' "lecture_number": "001",'
+                         ' "course_number": "M1522.002400"},'
                          ' {"name": "swpp", "weekday": 2, "start_time": 1020,'
-                         ' "end_time": 1110, "color": "#2468AC"},'
+                         ' "end_time": 1110, "color": "#2468AC",'
+                         ' "lecture_number": "001",'
+                         ' "course_number": "M1522.002400"},'
                          ' {"name": "swpp", "weekday": 3, "start_time": 1110,'
-                         ' "end_time": 1230, "color": "#2468AC"}]')
+                         ' "end_time": 1230, "color": "#2468AC",'
+                         ' "lecture_number": "001",'
+                         ' "course_number": "M1522.002400"}]')
         response = self.get('/api/timetable/101/')
         self.assertEqual(response.status_code, 404)
 
