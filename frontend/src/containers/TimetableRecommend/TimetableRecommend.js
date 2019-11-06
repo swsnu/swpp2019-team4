@@ -22,6 +22,7 @@ class TimetableRecommend extends Component {
     for (let i = 0; i < this.props.timetable.length; i += i + 1) {
       tableviewlist.push(
         <div
+          key ={this.props.timetable[i].id}
           className="timetable"
           role="button"
           tabIndex={0}
@@ -83,7 +84,7 @@ CLOSE
 TimetableRecommend.propTypes = {
   closePopup: PropTypes.func.isRequired,
   timetable: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string,
+    course_name: PropTypes.string,
     weekday: PropTypes.number,
     start_time: PropTypes.number,
     end_time: PropTypes.number,

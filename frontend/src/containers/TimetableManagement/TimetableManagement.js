@@ -58,14 +58,14 @@ class TimetableManagement extends Component {
 
     const timetableList = this.props.timetables.map((timetable) => (
       <li key={timetable.id}>
-        <button type="button" onClick={() => this.show(timetable.id)}>
+        <button type="button" className="createTimetable" onClick={() => this.show(timetable.id)}>
           {timetable.title}
         </button>
       </li>
     ));
     const courseList = this.props.courses.map((course) => (
       <li key={course.id}>
-        <button type="button" onClick={() => this.post(course.id)}>
+        <button type="button" className="postCourse" onClick={() => this.post(course.id)}>
           {course.title}
         </button>
       </li>
@@ -87,7 +87,7 @@ class TimetableManagement extends Component {
             value={this.state.searchStrings}
             onChange={(event) => this.setState({ searchStrings: event.target.value })}
           />
-          <button type="button" onClick={() => this.search()}>검색</button>
+          <button type="button" className="search" onClick={() => this.search()}>검색</button>
         </label>
         <ol>
           {courseList}
@@ -130,10 +130,21 @@ TimetableManagement.propTypes = {
   onGetTimetable: PropTypes.func.isRequired,
   onPostTimetable: PropTypes.func.isRequired,
   onPostCourse: PropTypes.func.isRequired,
-  timetables: PropTypes.arrayOf({}).isRequired,
-  courses: PropTypes.arrayOf({}).isRequired,
-  timetable: PropTypes.shape({
-  }).isRequired,
+  timetables: PropTypes.arrayOf(
+    PropTypes.shape({
+      id:PropTypes.number.isRequired
+    })
+  ).isRequired,
+  courses: PropTypes.arrayOf(
+    PropTypes.shape({
+      id:PropTypes.number.isRequired
+    })
+  ).isRequired,
+  timetable: PropTypes.arrayOf(
+    PropTypes.shape({
+      
+    })
+  ).isRequired,
   storedUser: PropTypes.shape({
     is_authenticated: PropTypes.bool.isRequired,
   }).isRequired,
