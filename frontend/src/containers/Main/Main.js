@@ -7,6 +7,7 @@ import TimetableView from '../../components/TimetableView/TimetableView';
 import MainPageFriendListView from '../../components/MainPageFriendListView/MainPageFriendListView';
 import TopBar from '../../components/TopBar/TopBar';
 import FriendManagement from '../FriendManagement/FriendManagement';
+import FriendTimetable from '../../components/FriendTimetable/FriendTimetable';
 import './Main.css';
 
 class Main extends Component {
@@ -14,6 +15,8 @@ class Main extends Component {
     super(props);
     this.state = {
       showFriendManagement: false,
+      showPopup: false,
+      showindex: -1,
     };
   }
 
@@ -27,8 +30,25 @@ class Main extends Component {
 
   toggleFriendManagement() {
     this.setState((prevState) => ({
+      ...prevState,
       showFriendManagement: !prevState.showFriendManagement,
     }));
+  }
+
+  changePopup(value) {
+    if (value === -1) {
+      this.setState((prevState) => ({
+        ...prevState,
+        showPopup: false,
+        showindex: -1,
+      }));
+    } else {
+      this.setState((prevState) => ({
+        ...prevState,
+        showPopup: true,
+        showindex: value,
+      }));
+    }
   }
 
   render() {
@@ -39,16 +59,42 @@ class Main extends Component {
     }
     const friend = [
       {
-        id: 1, name: '정재윤', inclass: false, timeleft: '2147483647',
+        id: 0,
+        name: '정재윤',
+        inclass: false,
+        timeleft: '2147483647',
+        timetable: [],
       },
       {
-        id: 2, name: '구준서', inclass: false, timeleft: '2147483647',
+        id: 1,
+        name: '구준서',
+        inclass: false,
+        timeleft: '2147483647',
+        timetable: [
+          {
+            name: '소프트웨어 개발의 원리와 실습',
+            week_day: 0,
+            start_time: 1020,
+            end_time: 1110,
+            course_number: 'M1522.002400',
+            lecture_number: '001',
+            color: '#FF0000',
+          },
+        ],
       },
       {
-        id: 3, name: '김영찬', inclass: true, timeleft: '2147483647',
+        id: 2,
+        name: '김영찬',
+        inclass: true,
+        timeleft: '2147483647',
+        timetable: [],
       },
       {
-        id: 4, name: '김현수', inclass: false, timeleft: '2147483647',
+        id: 3,
+        name: '김현수',
+        inclass: false,
+        timeleft: '2147483647',
+        timetable: [],
       },
     ];
     return (
@@ -62,8 +108,19 @@ class Main extends Component {
           <button type="button" id="friend-manage" onClick={() => this.toggleFriendManagement()}>
             MANAGE FRIENDS
           </button>
-          <MainPageFriendListView id="friend-list" friends={friend} />
+          <MainPageFriendListView id="friend-list" friends={friend} onClick={(id) => this.changePopup(id)} />
         </div>
+        {
+          this.state.showPopup
+            ? (
+              <FriendTimetable
+                title={`${friend[this.state.showindex].name}님의 시간표`}
+                timetable={friend.filter((x) => x.id === this.state.showindex)[0].timetable}
+                closePopup={() => this.changePopup(-1)}
+              />
+            )
+            : null
+        }
         {this.state.showFriendManagement
           ? <FriendManagement onClose={() => this.toggleFriendManagement()} />
           : null}

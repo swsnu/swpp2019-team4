@@ -63,6 +63,12 @@ describe('<Main />', () => {
     expect(friendlist.length).toBe(1);
   });
 
+  it('should call friend timetable when pressed friend button', () => {
+    const component = mount(window(stubState));
+    component.find('#friend-status').at(0).simulate('click');
+    component.find('#close-button').at(0).simulate('click');
+  });
+
   it('should call signout when pressed logout button', () => {
     const component = mount(window(stubState));
     component.find('#logout-button').simulate('click');
