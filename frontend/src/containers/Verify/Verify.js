@@ -7,13 +7,13 @@ import * as actionCreators from '../../store/actions/index';
 class Verify extends Component {
   constructor(props) {
     super(props);
-    this._isMounted = true;
+    this.is_mount = true;
     this.state = {
       verify_status: false,
     };
     this.props.onGetVerify(this.props.match.params.uid, this.props.match.params.token)
-      .then(() => { if(this._isMounted) this.setState({ verify_status: true }); })
-      .catch(() => { if(this._isMounted) this.setState({ verify_status: false }); });
+      .then(() => { if (this.is_mount) this.setState({ verify_status: true }); })
+      .catch(() => { if (this.is_mount) this.setState({ verify_status: false }); });
   }
 
   componentDidMount() {
@@ -21,7 +21,7 @@ class Verify extends Component {
   }
 
   componentWillUnmount() {
-    this._isMounted = false;
+    this.is_mount = false;
   }
 
   goToLogin() {
