@@ -187,7 +187,7 @@ def api_timetable_data(request):
             timetable_list = []
             for timetable in timetables:
                 courses_color = [course for
-                                course in CourseColor.objects.filter(timetable=timetable)]
+                                 course in CourseColor.objects.filter(timetable=timetable)]
                 courses_data = []
                 for course_data in courses_color:
                     for course_time in CourseTime.objects.filter(course=course_data.course):
@@ -196,7 +196,7 @@ def api_timetable_data(request):
                                 'name': course_data.course.title,
                                 'week_day': course_time.weekday,
                                 'start_time': course_time.start_time.hour*60
-                                            +course_time.start_time.minute,
+                                              +course_time.start_time.minute,
                                 'end_time': course_time.end_time.hour*60
                                             +course_time.end_time.minute,
                                 'color': course_data.color,

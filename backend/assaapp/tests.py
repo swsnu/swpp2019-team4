@@ -346,7 +346,7 @@ class AssaTestCase(TestCase):
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
-        response = self.post('/api/timetable/data/',json.dumps({}),
+        response = self.post('/api/timetable/data/', json.dumps({}),
                              content_type='application/json')
         self.assertEqual(response.status_code, 405)
         CourseTime(course=Course.objects.get(id=1),
