@@ -27,9 +27,15 @@ export const getTimetables = () => (dispatch) => axios.get('/api/timetable/')
   .then((res) => dispatch({ type: actionTypes.GET_TIMETABLES, timetables: res.data}))
   .catch(() => {})
 
+export const getTimetable = (timetable_id) => (dispatch) => axios.get(`/api/timetable/${timetable_id}/`)
+  .then((res) => dispatch({ type: actionTypes.GET_TIMETABLE, timetable: res.data}))
+  .catch(() => {})
+
 export const getCourses = (searchStrings) => (dispatch) => axios.get('/api/course/' + searchStrings)
   .then((res) => dispatch({ type: actionTypes.GET_COURSES, courses: res.data}))
   .catch(() => {})
+
+export const postCourse = (timetable_id, course_id) => () => axios.post(`/api/timetable/${timetable_id}/course/`, {course_id});
 
 export const postUserSearch = (email) => (dispatch) => axios.post('/api/user/friend/search/', { email })
   .then((res) => dispatch({

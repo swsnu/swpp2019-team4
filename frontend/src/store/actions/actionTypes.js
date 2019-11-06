@@ -10,4 +10,6 @@ export const REJECT_FRIEND = 'REJECT_FRIEND';
 export const CANCEL_FRIEND = 'CANCEL_FRIEND';
 
 export const GET_TIMETABLES = 'GET_TIMETABLES';
+export const GET_TIMETABLE = 'GET_TIMETABLE';
 export const GET_COURSES = 'GET_COURSES';
+export const POST_COURSE = 'POST_COURSE';

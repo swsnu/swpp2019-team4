@@ -4,6 +4,7 @@ const initialState = {
   user: {
     is_authenticated: null,
   },
+  timetable: [],
   timetables: [],
   courses: [],
   friend: [],
@@ -27,6 +28,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, user: { ...action.user, is_authenticated: true } };
     case actionTypes.GET_TIMETABLES:
       return { ...state, timetables: action.timetables}
+    case actionTypes.GET_TIMETABLE:
+      return { ...state, timetable: action.timetable}
     case actionTypes.GET_COURSES:
       return { ...state, courses: action.courses}
     case actionTypes.GET_FRIEND:

@@ -17,4 +17,6 @@ export {
   receiveFriend,
   getTimetables,
   getCourses,
+  postCourse,
+  getTimetable,
 } from './user';

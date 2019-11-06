@@ -195,7 +195,7 @@ def api_timetable_id(request, timetable_id):
                     courses_data.append(
                         {
                             'name': course_data.course.title,
-                            'weekday': course_time.weekday,
+                            'week_day': course_time.weekday,
                             'start_time': course_time.start_time.hour*60
                                           +course_time.start_time.minute,
                             'end_time': course_time.end_time.hour*60

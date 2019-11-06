@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from assaapp.models import User, Timetable, Course, CourseTime
+from assaapp.models import User, Timetable, Course, CourseTime, CourseColor
 
 class UserCreationForm(forms.ModelForm):
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
@@ -65,4 +65,5 @@ admin.site.register(User, UserAdmin)
 admin.site.register(Timetable)
 admin.site.register(Course)
 admin.site.register(CourseTime)
+admin.site.register(CourseColor)
 admin.site.unregister(Group)

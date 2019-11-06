@@ -13,6 +13,7 @@ class TimetableManagement extends Component {
     this.state = {
       showPopup: false,
       searchStrings: "",
+      timetable_id: 0,
     };
   }
 
@@ -29,6 +30,17 @@ class TimetableManagement extends Component {
     this.props.onLogout();
   }
 
+  post(course_id) {
+    this.props.onPostCourse(this.state.timetable_id, course_id);
+    this.props.onGetTimetables();
+    this.props.onGetTimetable(this.state.timetable_id);
+  }
+
+  show(timetable_id) {
+    this.setState({timetable_id: timetable_id})
+    this.props.onGetTimetable(timetable_id);
+  }
+
   search() {
     this.props.onGetCourses(this.state.searchStrings);
   }
@@ -41,13 +53,14 @@ class TimetableManagement extends Component {
     }
 
     const timetable_list = this.props.timetables.map((timetable) => (
-      <li><button type="button">{timetable.title}</button></li>
+      <li><button type="button" onClick = {() => this.show(timetable.id)}>{timetable.title}</button></li>
     ))
-
+    console.log(this.props.courses)
     const course_list = this.props.courses.map((course) => (
-      <li><button type="button">{course.title}</button></li>
+      <li><button type="button" onClick ={() => this.post(course.id)}>{course.title}</button></li>
     ))
-    const courses = [];
+    console.log(this.state.timetable_id);
+    console.log(this.props.timetable);
     return (
       <div className="Manage">
         <TopBar id="topbar" logout={() => this.handleLogout()} />
@@ -70,7 +83,13 @@ class TimetableManagement extends Component {
         <ol>
           {course_list}
         </ol>
-        <TimetableView id="timetable-table" height={24} width={80} courses={courses} text link title="" />
+        <TimetableView id="timetable-table" 
+          height={24} 
+          width={100} 
+          courses={this.props.timetable} 
+          text={true}
+          link 
+          title="" />
         <ol>
           {timetable_list}
         </ol>
@@ -104,6 +123,7 @@ const mapStateToProps = (state) => ({
   storedUser: state.user.user,
   timetables: state.user.timetables,
   courses: state.user.courses,
+  timetable: state.user.timetable,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -111,6 +131,8 @@ const mapDispatchToProps = (dispatch) => ({
   onLogout: () => dispatch(actionCreators.getSignout()),
   onGetTimetables: () => dispatch(actionCreators.getTimetables()),
   onGetCourses: (searchStrings) => dispatch(actionCreators.getCourses(searchStrings)),
+  onGetTimetable: (timetable_id) => dispatch(actionCreators.getTimetable(timetable_id)),
+  onPostCourse: (timetable_id, course_id) => dispatch(actionCreators.postCourse(timetable_id, course_id))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableManagement);
