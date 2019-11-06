@@ -13,3 +13,4 @@ export const GET_TIMETABLES = 'GET_TIMETABLES';
 export const GET_TIMETABLE = 'GET_TIMETABLE';
 export const GET_COURSES = 'GET_COURSES';
 export const POST_COURSE = 'POST_COURSE';
+export const POST_TIMETABLE = 'POST_TIMETABLE';

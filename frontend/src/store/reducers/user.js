@@ -30,6 +30,9 @@ const reducer = (state = initialState, action) => {
       return { ...state, timetables: action.timetables}
     case actionTypes.GET_TIMETABLE:
       return { ...state, timetable: action.timetable}
+    case actionTypes.POST_TIMETABLE:
+      console.log(action.timetable)
+      return { ...state, timetables: state.timetables.concat(action.timetable)}
     case actionTypes.GET_COURSES:
       return { ...state, courses: action.courses}
     case actionTypes.GET_FRIEND:

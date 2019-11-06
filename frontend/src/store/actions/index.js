@@ -19,4 +19,5 @@ export {
   getCourses,
   postCourse,
   getTimetable,
+  postTimetable,
 } from './user';

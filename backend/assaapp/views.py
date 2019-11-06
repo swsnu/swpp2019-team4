@@ -174,7 +174,7 @@ def api_timetable(request):
                 timetable = Timetable(title=timetable_title,
                                       semester=timetable_semester, user=request.user)
                 timetable.save()
-                return HttpResponse(status=201)
+                return JsonResponse(model_to_dict(timetable), status=201)
             except (KeyError, JSONDecodeError):
                 return HttpResponseBadRequest()
         return HttpResponseNotAllowed(['GET', 'POST'])

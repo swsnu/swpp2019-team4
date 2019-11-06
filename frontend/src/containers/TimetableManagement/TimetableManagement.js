@@ -41,6 +41,10 @@ class TimetableManagement extends Component {
     this.props.onGetTimetable(timetable_id);
   }
 
+  createEmptyTimetable() {
+    this.props.onPostTimetable("new timetable", "2019-s");
+  }
+
   search() {
     this.props.onGetCourses(this.state.searchStrings);
   }
@@ -94,7 +98,7 @@ class TimetableManagement extends Component {
           {timetable_list}
         </ol>
         <button type="button" id="delete-button">DELETE</button>
-        <button type="button" id="create-button">CREATE</button>
+        <button type="button" id="create-button" onClick={() => this.createEmptyTimetable()}>CREATE</button>
         <button type="button" id="timetable-recommend-button" onClick={() => this.statePopup(true)}>RECOMMEND</button>
         {
           this.state.showPopup
@@ -132,7 +136,8 @@ const mapDispatchToProps = (dispatch) => ({
   onGetTimetables: () => dispatch(actionCreators.getTimetables()),
   onGetCourses: (searchStrings) => dispatch(actionCreators.getCourses(searchStrings)),
   onGetTimetable: (timetable_id) => dispatch(actionCreators.getTimetable(timetable_id)),
-  onPostCourse: (timetable_id, course_id) => dispatch(actionCreators.postCourse(timetable_id, course_id))
+  onPostTimetable: (timetable_name, semester) => dispatch(actionCreators.postTimetable(timetable_name, semester)),
+  onPostCourse: (title, course_id) => dispatch(actionCreators.postCourse(title, course_id))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableManagement);
