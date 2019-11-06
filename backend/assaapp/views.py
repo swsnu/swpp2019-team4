@@ -258,10 +258,27 @@ def api_timetable_id_course(request, timetable_id):
                 try:
                     timetable = Timetable.objects.get(pk=timetable_id)
                     course = Course.objects.get(pk=course_id)
-                    timetable.courses.add(course)
                     CourseColor(timetable=timetable, course=course, color=color).save()
                     timetable.save()
-                    return HttpResponse(status=200)
+                    courses_color = [course for
+                                    course in CourseColor.objects.filter(timetable=timetable_id)]
+                    courses_data = []
+                    for course_data in courses_color:
+                        for course_time in CourseTime.objects.filter(course=course_data.course):
+                            courses_data.append(
+                                {
+                                    'name': course_data.course.title,
+                                    'week_day': course_time.weekday,
+                                    'start_time': course_time.start_time.hour*60
+                                                +course_time.start_time.minute,
+                                    'end_time': course_time.end_time.hour*60
+                                                +course_time.end_time.minute,
+                                    'color': course_data.color,
+                                    'lecture_number': course_data.course.lecture_number,
+                                    'course_number': course_data.course.course_number,
+                                }
+                            )
+                    return JsonResponse(courses_data, safe=False)
                 except (Timetable.DoesNotExist, Course.DoesNotExist):
                     return HttpResponseNotFound()
             except (KeyError, JSONDecodeError):
