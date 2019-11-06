@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const MainPageFriendView = (props) => { // TODO: props.friends
   const friend = props.friend;
-  const courses = props.courses;
+  const courses = props.friend.timetable;
   const date = new Date();
   const week_day = (date.getDay() + 6) % 7;
   const time = date.getHours() * 60 + date.getMinutes();
@@ -35,7 +35,7 @@ const MainPageFriendView = (props) => { // TODO: props.friends
       >
         {friend.name}
         <br />
-        {inClass ? currentClass + timeLeft + '분 남음' : '공강 ' + (timeLeft < 240 ? timeLeft + '분 남음' : '')}
+        {inClass ? currentClass + '\n' + timeLeft + '분 남음' : '공강\n' + (timeLeft < 240 ? timeLeft + '분 남음' : '')}
       </button>
       <br/>
     </div>
