@@ -97,11 +97,9 @@ class Main extends Component {
         timetable: [],
       },
     ];
-    const friendListView = friend.map(user => {
-      return (
-        <MainPageFriendView friend={user} onClick={() => this.changePopup(user.id) } key={user.id}/>
-      )
-    });
+    const friendListView = friend.map((user) => (
+      <MainPageFriendView friend={user} onClick={() => this.changePopup(user.id)} key={user.id} />
+    ));
     return (
       <div className="Main">
         <TopBar id="topbar" logout={() => this.handleLogout()} />
