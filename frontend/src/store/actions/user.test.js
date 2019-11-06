@@ -26,7 +26,7 @@ describe('user action test', () => {
       reject(new Error(''));
     }));
     store.dispatch(actionCreators.postSignup())
-      .then(() => {
+      .catch(() => {
         expect(axios.post).toHaveBeenCalledTimes(1);
         done();
       });

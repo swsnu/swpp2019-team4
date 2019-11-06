@@ -39,7 +39,6 @@ describe('Reducer', () => {
         status: '',
         username: '',
       },
-      email_sending: null,
     };
   });
   afterEach(() => { jest.clearAllMocks(); });
@@ -56,7 +55,6 @@ describe('Reducer', () => {
         status: '',
         username: '',
       },
-      email_sending: null,
     };
     const newState = reducer(undefined, {});
     expect(newState).toEqual(initState);
@@ -76,14 +74,6 @@ describe('Reducer', () => {
       user: { email: 'cubec' },
     });
     expect(newState.user.email).toBe('cubec');
-  });
-
-  it('should set sending status', () => {
-    const newState = reducer(stubState, {
-      type: actionTypes.SET_SEND_STATUS,
-      email_sending: 1,
-    });
-    expect(newState.email_sending).toBe(1);
   });
 
   it('should get friends', () => {
