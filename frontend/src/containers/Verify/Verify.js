@@ -7,16 +7,21 @@ import * as actionCreators from '../../store/actions/index';
 class Verify extends Component {
   constructor(props) {
     super(props);
+    this._isMounted = true;
     this.state = {
       verify_status: false,
     };
     this.props.onGetVerify(this.props.match.params.uid, this.props.match.params.token)
-      .then(() => { this.state.verify_status = true; })
-      .catch(() => { this.state.verify_status = false; });
+      .then(() => { if(this._isMounted) this.setState({ verify_status: true }); })
+      .catch(() => { if(this._isMounted) this.setState({ verify_status: false }); });
   }
 
   componentDidMount() {
     this.props.onGetUser();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   goToLogin() {
