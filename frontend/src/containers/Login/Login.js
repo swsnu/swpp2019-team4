@@ -25,9 +25,7 @@ class Login extends Component {
   handleLogin() {
     this.props.onLogin(this.state.email, this.state.password)
       .then(() => {
-        if (this.props.storedUser.is_authenticated === false) {
-          this.setState((prevState) => ({ ...prevState, login_failed: true }));
-        }
+        this.setState((prevState) => ({ ...prevState, login_failed: true }));
       });
   }
 
