@@ -70,8 +70,8 @@ describe('verification test', () => {
   it('postSignup should be called when signup process is successfully done', () => {
     const component = mount(signup(stubState));
     component.find('#email-input').simulate('change', { target: { value: 'anonimous@asdf.com' } });
-    component.find('#password-input').simulate('change', { target: { value: '12341234' } });
-    component.find('#password-confirm-input').simulate('change', { target: { value: '12341234' } });
+    component.find('#password-input').simulate('change', { target: { value: '54325432' } });
+    component.find('#password-confirm-input').simulate('change', { target: { value: '54325432' } });
     component.find('#username-input').simulate('change', { target: { value: '소개원실' } });
     component.find('#department-input').simulate('change', { target: { value: '컴퓨터공학부' } });
     component.find('#grade-input').simulate('change', { target: { value: '1' } });
