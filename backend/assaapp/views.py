@@ -258,7 +258,6 @@ def api_timetable_id_course(request, timetable_id):
                 try:
                     timetable = Timetable.objects.get(pk=timetable_id)
                     course = Course.objects.get(pk=course_id)
-                    timetable.courses.add(course)
                     CourseColor(timetable=timetable, course=course, color=color).save()
                     timetable.save()
                     courses_color = [course for
