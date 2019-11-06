@@ -10,6 +10,7 @@ class Login extends Component {
     this.state = {
       email: '',
       password: '',
+      login_failed: false,
     };
   }
 
@@ -18,7 +19,12 @@ class Login extends Component {
   }
 
   handleLogin() {
-    this.props.onLogin(this.state.email, this.state.password);
+    this.props.onLogin(this.state.email, this.state.password)
+      .then(() => {
+        if (this.props.storedUser.is_authenticated === false) {
+          this.setState((prevState) => ({ ...prevState, login_failed: true }));
+        }
+      });
   }
 
   goToSignup() {
@@ -31,6 +37,7 @@ class Login extends Component {
         <Redirect to="/main" />
       );
     }
+    const loginNotice = (this.state.login_failed ? '이메일 또는 비밀번호가 잘못되었습니다.' : '');
     return (
       <div className="Login">
         <input
@@ -49,6 +56,8 @@ class Login extends Component {
         />
         <button type="button" id="login-button" onClick={() => this.handleLogin()}>로그인</button>
         <button type="button" id="to-signup-button" onClick={() => this.goToSignup()}>회원가입</button>
+        <br />
+        {loginNotice}
       </div>
     );
   }

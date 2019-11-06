@@ -16,17 +16,19 @@ class Signup extends Component {
       username: '',
       grade: '1',
       department: '컴퓨터공학부',
+      email_sending: 0,
     };
   }
 
   componentDidMount() {
-    this.props.onSetSendStatus(false);
     this.props.onGetUser();
   }
 
   handleSignup(email, password, username, department, grade) {
-    this.props.onSetSendStatus(true);
-    this.props.onPostSignup(email, password, username, department, grade);
+    this.setState((prevState) => ({ ...prevState, email_sending: 1 }));
+    this.props.onPostSignup(email, password, username, department, grade)
+      .then(() => this.setState((prevState) => ({ ...prevState, email_sending: 2 })))
+      .catch(() => this.setState((prevState) => ({ ...prevState, email_sending: 3 })));
   }
 
   goToLogin() {
@@ -53,6 +55,11 @@ class Signup extends Component {
     const usernameNotice = (usernameValid ? '' : '이름은 1자 이상 32자 이하로 구성되어야 합니다.');
     const departmentNotice = (departmentValid ? '' : '존재하는 학과를 입력해야 합니다.');
     const gradeNotice = (gradeValid ? '' : '학년은 1 이상 99 이하의 정수여야 합니다.');
+
+    const emailSendNotice = ['가입하기 버튼을 누르면 입력한 이메일로 확인 메일이 발송됩니다.',
+      '이메일 보내는 중...',
+      '입력한 이메일로 확인 메일을 발송했습니다. 이메일 확인 절차를 마치면 계정이 생성됩니다.',
+      '메일을 발송하지 못했습니다. 이메일을 다시 한 번 확인해 주시기 바랍니다.'][this.state.email_sending];
     return (
       <div className="Signup">
         <h2>Welcome to ASSA!</h2>
@@ -126,7 +133,7 @@ class Signup extends Component {
         <button
           type="button"
           id="to-login-button"
-          disabled={this.props.email_sending}
+          disabled={this.state.email_sending === 1}
           onClick={() => this.goToLogin()}
         >
 뒤로가기
@@ -135,7 +142,7 @@ class Signup extends Component {
           type="button"
           id="confirm-signup-button"
           disabled={
-            this.props.email_sending
+            (this.state.email_sending === 1)
             || !(emailValid && passwordValid && passwordConfirmValid && usernameValid && departmentValid && gradeValid)
           }
           onClick={() => this.handleSignup(this.state.email,
@@ -147,14 +154,13 @@ class Signup extends Component {
 가입하기
         </button>
         <br />
-                가입하기 버튼을 누르면 입력한 이메일로 확인 메일이 발송됩니다.
+        {emailSendNotice}
       </div>
     );
   }
 }
 
 Signup.propTypes = {
-  onSetSendStatus: PropTypes.func.isRequired,
   onGetUser: PropTypes.func.isRequired,
   onPostSignup: PropTypes.func.isRequired,
   history: PropTypes.shape({
@@ -163,11 +169,9 @@ Signup.propTypes = {
   storedUser: PropTypes.shape({
     is_authenticated: PropTypes.bool,
   }).isRequired,
-  email_sending: PropTypes.bool.isRequired,
 };
 const mapStateToProps = (state) => ({
   storedUser: state.user.user,
-  email_sending: state.user.email_sending,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -175,7 +179,6 @@ const mapDispatchToProps = (dispatch) => ({
   onPostSignup: (email, password, username, department, grade) => dispatch(
     actionCreators.postSignup(email, password, username, department, grade),
   ),
-  onSetSendStatus: (status) => dispatch(actionCreators.setSendStatus(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Signup);
