@@ -4,6 +4,7 @@ import TimetableView from './TimetableView';
 
 describe('<TimetableView />', () => {
   it('TimetableView render test', () => {
+    const trueobject = true;
     const courses = [
       {
         week_day: 0,
@@ -39,6 +40,7 @@ describe('<TimetableView />', () => {
         height={24}
         width={80}
         text={false}
+        link={trueobject}
         title=""
       />,
     );
@@ -47,6 +49,7 @@ describe('<TimetableView />', () => {
         courses={courses}
         height={24}
         width={80}
+        text={trueobject}
         link={false}
         title=""
       />,
