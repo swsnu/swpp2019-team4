@@ -31,7 +31,7 @@ export const getTimetable = (timetableId) => (dispatch) => axios.get(`/api/timet
   .then((res) => dispatch({ type: actionTypes.GET_TIMETABLE, timetable: res.data }))
   .catch(() => {});
 
-export const getCourses = (searchStrings) => (dispatch) => axios.get(`/api/course/${searchStrings}`)
+export const getCourses = (searchStrings) => (dispatch) => axios.get(`/api/course/?title=${searchStrings}`)
   .then((res) => dispatch({ type: actionTypes.GET_COURSES, courses: res.data }))
   .catch(() => {});
 

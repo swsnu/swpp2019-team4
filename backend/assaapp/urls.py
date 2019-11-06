@@ -16,5 +16,5 @@ urlpatterns = [
     path('timetable/<int:timetable_id>/', views.api_timetable_id, name='timetable_id'),
     path('timetable/<int:timetable_id>/course/',
          views.api_timetable_id_course, name='timetable_id_course'),
-    path('course/<slug:title>/', views.api_course, name='course')
+    path('course/', views.api_course, name='course')
 ]

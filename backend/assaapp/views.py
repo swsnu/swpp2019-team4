@@ -269,10 +269,21 @@ def api_timetable_id_course(request, timetable_id):
         return HttpResponseNotAllowed(['GET', 'POST'])
     return HttpResponse(status=401)
 
-def api_course(request, title):
+def api_course(request):
     if request.user.is_authenticated:
         if request.method == 'GET':
-            course_list = [course for course in Course.objects.filter(title=title).values()]
+            course_list = [course for course in Course.objects.values()]
+            if len(request.GET.get('title')) > 0 :
+                match_text = request.GET.get('title')
+                def is_matched (text) :
+                    matched = 0
+                    for i in range(len(text)) :
+                        if matched == len(match_text) :
+                            return True
+                        if text[i] == match_text[matched] :
+                            matched += 1
+                    return False
+                course_list = list(filter(lambda x : is_matched(x['title']), course_list))
             return JsonResponse(course_list, safe=False)
         return HttpResponseNotAllowed(['GET'])
     return HttpResponse(status=401)
