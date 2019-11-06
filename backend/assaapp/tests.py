@@ -340,6 +340,7 @@ class AssaTestCase(TestCase):
         self.assertEqual(response.status_code, 405)
 
     def test_get_timetable_id(self):
+        self.maxDiff=None
         response = self.get('/api/timetable/1/')
         self.assertEqual(response.status_code, 401)
         response = self.post('/api/signin/',
@@ -356,15 +357,15 @@ class AssaTestCase(TestCase):
         response = self.get('/api/timetable/1/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content.decode(),
-                         '[{"name": "swpp", "weekday": 0, "start_time": 1020,'
+                         '[{"name": "swpp", "week_day": 0, "start_time": 1020,'
                          ' "end_time": 1110, "color": "#2468AC",'
                          ' "lecture_number": "001",'
                          ' "course_number": "M1522.002400"},'
-                         ' {"name": "swpp", "weekday": 2, "start_time": 1020,'
+                         ' {"name": "swpp", "week_day": 2, "start_time": 1020,'
                          ' "end_time": 1110, "color": "#2468AC",'
                          ' "lecture_number": "001",'
                          ' "course_number": "M1522.002400"},'
-                         ' {"name": "swpp", "weekday": 3, "start_time": 1110,'
+                         ' {"name": "swpp", "week_day": 3, "start_time": 1110,'
                          ' "end_time": 1230, "color": "#2468AC",'
                          ' "lecture_number": "001",'
                          ' "course_number": "M1522.002400"}]')
