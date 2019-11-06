@@ -340,7 +340,6 @@ class AssaTestCase(TestCase):
         self.assertEqual(response.status_code, 405)
 
     def test_get_timetable_id(self):
-        self.maxDiff=None
         response = self.get('/api/timetable/1/')
         self.assertEqual(response.status_code, 401)
         response = self.post('/api/signin/',

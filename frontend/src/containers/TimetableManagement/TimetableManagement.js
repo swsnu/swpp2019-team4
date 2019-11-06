@@ -13,7 +13,7 @@ class TimetableManagement extends Component {
     this.state = {
       showPopup: false,
       searchStrings: '',
-      timetableId: 0,
+      timetableId: -1,
     };
   }
 
@@ -31,9 +31,11 @@ class TimetableManagement extends Component {
   }
 
   post(courseId) {
-    this.props.onPostCourse(this.state.timetableId, courseId);
-    this.props.onGetTimetables();
-    this.props.onGetTimetable(this.state.timetableId);
+    if (this.state.timetableId !== -1) {
+      this.props.onPostCourse(this.state.timetableId, courseId);
+      this.props.onGetTimetables();
+      this.props.onGetTimetable(this.state.timetableId);
+    }
   }
 
   show(timetableId) {
