@@ -4,6 +4,8 @@ const initialState = {
   user: {
     is_authenticated: null,
   },
+  timetables: [],
+  courses: [],
   friend: [],
   friend_send: [],
   friend_receive: [],
@@ -23,7 +25,10 @@ const reducer = (state = initialState, action) => {
       return { ...state, user: { is_authenticated: action.is_authenticated } };
     case actionTypes.GET_USER:
       return { ...state, user: { ...action.user, is_authenticated: true } };
-
+    case actionTypes.GET_TIMETABLES:
+      return { ...state, timetables: action.timetables}
+    case actionTypes.GET_COURSES:
+      return { ...state, courses: action.courses}
     case actionTypes.GET_FRIEND:
       return {
         ...state,

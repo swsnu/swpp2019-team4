@@ -23,6 +23,14 @@ export const getFriend = () => (dispatch) => axios.get('/api/user/friend/')
   .then((res) => dispatch({ type: actionTypes.GET_FRIEND, user: res.data }))
   .catch(() => {});
 
+export const getTimetables = () => (dispatch) => axios.get('/api/timetable/')
+  .then((res) => dispatch({ type: actionTypes.GET_TIMETABLES, timetables: res.data}))
+  .catch(() => {})
+
+export const getCourses = () => (dispatch) => axios.get('/api/course/')
+  .then((res) => dispatch({ type: actionTypes.GET_COURSES, courses: res.data}))
+  .catch(() => {})
+
 export const postUserSearch = (email) => (dispatch) => axios.post('/api/user/friend/search/', { email })
   .then((res) => dispatch({
     type: actionTypes.GET_USER_SEARCH, user: res.data.user, exist: true, status: res.data.status,

@@ -17,6 +17,8 @@ class TimetableManagement extends Component {
 
   componentDidMount() {
     this.props.onGetUser();
+    this.props.onGetTimetables();
+    this.props.onGetCourses();
   }
 
   statePopup(value) {
@@ -33,6 +35,14 @@ class TimetableManagement extends Component {
         <Redirect to="/login" />
       );
     }
+
+    const timetable_list = this.props.timetables.map((timetable) => (
+      <li><button type="button">{timetable.title}</button></li>
+    ))
+
+    const course_list = this.props.courses.map((course) => (
+      <li><button type="button">{course.title}</button></li>
+    ))
     const courses = [];
     return (
       <div className="Manage">
@@ -48,15 +58,11 @@ class TimetableManagement extends Component {
           <input id="courses" type="text" />
         </label>
         <ol>
-          <li><button type="button">소프트웨어 개발의 원리와 실습</button></li>
-          <li><button type="button">전기전자회로</button></li>
-          <li><button type="button">인터넷 보안과 프라이버시</button></li>
+          {course_list}
         </ol>
         <TimetableView id="timetable-table" height={24} width={80} courses={courses} text link title="" />
         <ol>
-          <li><button type="button">Timetable1</button></li>
-          <li><button type="button">Timetable2</button></li>
-          <li><button type="button">Timetable3</button></li>
+          {timetable_list}
         </ol>
         <button type="button" id="delete-button">DELETE</button>
         <button type="button" id="create-button">CREATE</button>
@@ -86,11 +92,15 @@ TimetableManagement.propTypes = {
 
 const mapStateToProps = (state) => ({
   storedUser: state.user.user,
+  timetables: state.user.timetables,
+  courses: state.user.courses,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onLogout: () => dispatch(actionCreators.getSignout()),
+  onGetTimetables: () => dispatch(actionCreators.getTimetables()),
+  onGetCourses: () => dispatch(actionCreators.getCourses()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableManagement);

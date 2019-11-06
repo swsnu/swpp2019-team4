@@ -11,6 +11,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from assaapp.models import User, Timetable, Course, CourseColor, CourseTime
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
+import random
 
 def api_signup(request):
     if request.method == 'POST':
@@ -247,12 +248,17 @@ def api_timetable_id_course(request, timetable_id):
                 return HttpResponseNotFound()
         if request.method == 'POST':
             try:
+                string_pool = "0123456789ABCDEF"
+                color = "#"
+                for i in range (6) :
+                    color += random.choice(string_pool)
                 body = request.body.decode()
                 course_id = json.loads(body)['course_id']
                 try:
                     timetable = Timetable.objects.get(pk=timetable_id)
                     course = Course.objects.get(pk=course_id)
                     timetable.courses.add(course)
+                    CourseColor(timetable=timetable, course=course, color=color).save()
                     timetable.save()
                     return HttpResponse(status=200)
                 except (Timetable.DoesNotExist, Course.DoesNotExist):

@@ -8,3 +8,6 @@ export const RECEIVE_FRIEND = 'RECEIVE_FRIEND';
 export const DELETE_FRIEND = 'DELETE_FRIEND';
 export const REJECT_FRIEND = 'REJECT_FRIEND';
 export const CANCEL_FRIEND = 'CANCEL_FRIEND';
+
+export const GET_TIMETABLES = 'GET_TIMETABLES';
+export const GET_COURSES = 'GET_COURSES';
