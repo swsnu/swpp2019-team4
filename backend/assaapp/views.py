@@ -247,7 +247,7 @@ def api_timetable_id_course(request, timetable_id):
                 return HttpResponseNotFound()
         if request.method == 'POST':
             try:
-                string_pool = "0123456789ABCDEF"
+                string_pool = "89ABCDEF"
                 color = "#"
                 i = 1
                 while i <= 6:

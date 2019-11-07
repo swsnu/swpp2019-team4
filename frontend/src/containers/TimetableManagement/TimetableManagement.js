@@ -70,7 +70,7 @@ class TimetableManagement extends Component {
       );
     }
     const timetableList = this.props.timetables.map((timetable) => (
-      <li key={timetable.id}>
+      <li key={timetable.id} className={"tt "+timetable.id}>
         <button type="button" className="createTimetable" onClick={() => this.show(timetable.id)}>
           {timetable.title}
         </button>
@@ -121,8 +121,8 @@ class TimetableManagement extends Component {
         </div>
           <div className="searched-courses">
             <div className="label" id="label">
-              <button type="button" onClick={() => this.showCoursesInSearch()}>과목검색</button>
-              <button type="button" onClick={() => this.showCoursesInTimetable()}>내 과목</button>
+              <button className="button" type="button" onClick={() => this.showCoursesInSearch()}>과목검색</button>
+              <button className="button" type="button" onClick={() => this.showCoursesInTimetable()}>내 과목</button>
             </div>
             <ul>
               {courseList}

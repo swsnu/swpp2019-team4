@@ -51,16 +51,21 @@
     padding: 0;
 }
 
-.timetable-list button {
+.timetable-list button.createTimetable:hover {
+    background-color: darkgreen;
+    color: white;
+}
+.timetable-list button.createTimetable.active {
+    background-color: darkgreen;
+    color: white;
+}
+.timetable-list button.createTimetable {
     background-color: green;
     width: 100%;
     padding: 10px;
     color: white;
 }
-.timetable-list button:hover {
-    background-color: darkgreen;
-    color: white;
-}
+
 .manage-timetable-buttons{
     float:right;
 }
