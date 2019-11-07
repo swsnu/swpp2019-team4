@@ -5,6 +5,8 @@ describe('Reducer', () => {
   let stubState;
   beforeEach(() => {
     stubState = {
+      timetables: [],
+      courses: [],
       user: {
         is_authenticated: null,
       },
@@ -47,6 +49,9 @@ describe('Reducer', () => {
       user: {
         is_authenticated: null,
       },
+      timetable: [],
+      timetables: [],
+      courses: [],
       friend: [],
       friend_send: [],
       friend_receive: [],
@@ -157,5 +162,72 @@ describe('Reducer', () => {
       user_id: 2,
     });
     expect(newState.friend_receive.length).toBe(0);
+  });
+
+  it('should get timetables', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.GET_TIMETABLES,
+      timetables: [
+        {
+          id: 1,
+          title: 'my timetable',
+          semester: '2019-2',
+          user_id: 2,
+        },
+      ],
+    });
+    expect(newState.timetables.length).toBe(1);
+  });
+
+  it('should get timetable', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.GET_TIMETABLE,
+      timetable:
+        {
+          id: 1,
+          title: 'my timetable',
+          semester: '2019-2',
+          user_id: 2,
+        },
+
+    });
+    expect(newState.timetable).toStrictEqual(
+      {
+        id: 1,
+        title: 'my timetable',
+        semester: '2019-2',
+        user_id: 2,
+      },
+    );
+  });
+  it('should post timetable', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.POST_TIMETABLE,
+      timetable:
+        {
+          id: 1,
+          title: 'my timetable',
+          semester: '2019-2',
+          user_id: 2,
+        },
+    });
+    expect(newState.timetables.length).toBe(1);
+  });
+
+  it('should get courses', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.GET_COURSES,
+      courses: [
+        {
+          week_day: 0,
+          start_time: 660,
+          end_time: 750,
+          name: '자료구조',
+          color: '#2BC366',
+          course_number: 'M1522.000900',
+          lecture_number: '001',
+        }],
+    });
+    expect(newState.courses.length).toBe(1);
   });
 });

@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import * as actionCreators from '../../store/actions/index';
 import TimetableView from '../../components/TimetableView/TimetableView';
-import MainPageFriendListView from '../../components/MainPageFriendListView/MainPageFriendListView';
+import MainPageFriendView from '../../components/MainPageFriendView/MainPageFriendView';
 import TopBar from '../../components/TopBar/TopBar';
 import FriendManagement from '../FriendManagement/FriendManagement';
 import FriendTimetable from '../../components/FriendTimetable/FriendTimetable';
@@ -74,7 +74,7 @@ class Main extends Component {
         timetable: [
           {
             name: '소프트웨어 개발의 원리와 실습',
-            week_day: 0,
+            week_day: 3,
             start_time: 1020,
             end_time: 1110,
             course_number: 'M1522.002400',
@@ -98,10 +98,16 @@ class Main extends Component {
         timetable: [],
       },
     ];
+    
     let courses = [];
     if (this.props.timetable_list !== undefined && this.props.storedUser.timetable_main !== undefined) {
       courses = this.props.timetable_list[this.props.storedUser.timetable_main];
     }
+    
+    const friendListView = friend.map((user) => (
+      <MainPageFriendView friend={user} onClick={() => this.changePopup(user.id)} key={user.id} />
+    ));
+    
     return (
       <div className="Main">
         <TopBar id="topbar" logout={() => this.handleLogout()} />
@@ -113,7 +119,7 @@ class Main extends Component {
           <button type="button" id="friend-manage" onClick={() => this.toggleFriendManagement()}>
             MANAGE FRIENDS
           </button>
-          <MainPageFriendListView id="friend-list" friends={friend} onClick={(id) => this.changePopup(id)} />
+          {friendListView}
         </div>
         {
           this.state.showPopup

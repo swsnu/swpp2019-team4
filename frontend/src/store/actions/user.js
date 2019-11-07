@@ -23,6 +23,27 @@ export const getFriend = () => (dispatch) => axios.get('/api/user/friend/')
   .then((res) => dispatch({ type: actionTypes.GET_FRIEND, user: res.data }))
   .catch(() => {});
 
+export const getTimetables = () => (dispatch) => axios.get('/api/timetable/')
+  .then((res) => dispatch({ type: actionTypes.GET_TIMETABLES, timetables: res.data }))
+  .catch(() => {});
+
+export const getTimetable = (timetableId) => (dispatch) => axios.get(`/api/timetable/${timetableId}/`)
+  .then((res) => dispatch({ type: actionTypes.GET_TIMETABLE, timetable: res.data }))
+  .catch(() => {});
+
+export const getCourses = (searchStrings) => (dispatch) => axios.get(`/api/course/?title=${searchStrings}`)
+  .then((res) => dispatch({ type: actionTypes.GET_COURSES, courses: res.data }))
+  .catch(() => {});
+
+export const postCourse = (timetableId, courseId) => (dispatch) => axios.post(
+  `/api/timetable/${timetableId}/course/`, { course_id: courseId },)
+  .then((res) => dispatch ({ type: actionTypes.POST_COURSE, timetable: res.data}))
+  .catch(() => {})
+
+export const postTimetable = (title, semester) => (dispatch) => axios.post('/api/timetable/', { title, semester })
+  .then((res) => dispatch({ type: actionTypes.POST_TIMETABLE, timetable: res.data }))
+  .catch(() => {});
+
 export const postUserSearch = (email) => (dispatch) => axios.post('/api/user/friend/search/', { email })
   .then((res) => dispatch({
     type: actionTypes.GET_USER_SEARCH, user: res.data.user, exist: true, status: res.data.status,
