@@ -24,7 +24,7 @@ const TimetableView = (props) => {
       coursesList[j].push([]);
     }
   }
-  for (let i = 0; i < props.courses.length; i += 1) {
+  for (let i = 0; props.courses !== undefined && i < props.courses.length; i += 1) {
     coursesList[props.courses[i].week_day][props.courses[i].start_time / 30 - 16].push(
       {
         name: props.text ? props.courses[i].name : '',

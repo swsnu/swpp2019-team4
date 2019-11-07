@@ -179,6 +179,37 @@ def api_timetable(request):
         return HttpResponseNotAllowed(['GET', 'POST'])
     return HttpResponse(status=401)
 
+def api_timetable_data(request):
+    if request.user.is_authenticated:
+        if request.method == 'GET':
+            timetables = [timetable for timetable in
+                          Timetable.objects.filter(user__id=request.user.id)]
+            timetable_list = []
+            for timetable in timetables:
+                courses_color = [course for
+                                 course in CourseColor.objects.filter(timetable=timetable)]
+                courses_data = []
+                for course_data in courses_color:
+                    for course_time in CourseTime.objects.filter(course=course_data.course):
+                        courses_data.append(
+                            {
+                                'name': course_data.course.title,
+                                'week_day': course_time.weekday,
+                                'start_time': course_time.start_time.hour*60
+                                              +course_time.start_time.minute,
+                                'end_time': course_time.end_time.hour*60
+                                            +course_time.end_time.minute,
+                                'color': course_data.color,
+                                'lecture_number': course_data.course.lecture_number,
+                                'course_number': course_data.course.course_number,
+                            }
+                        )
+                timetable_list.append(courses_data)
+            return JsonResponse(timetable_list, safe=False)
+        return HttpResponseNotAllowed(['GET'])
+    return HttpResponse(status=401)
+
+
 def api_timetable_id(request, timetable_id):
     if request.user.is_authenticated:
         if request.method == 'GET':

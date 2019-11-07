@@ -13,6 +13,7 @@ urlpatterns = [
     path('user/friend/<int:user_id>/', views.api_user_friend_id),
     path('user/friend/search/', views.api_user_search),
     path('timetable/', views.api_timetable),
+    path('timetable/data/', views.api_timetable_data),
     path('timetable/<int:timetable_id>/', views.api_timetable_id, name='timetable_id'),
     path('timetable/<int:timetable_id>/course/',
          views.api_timetable_id_course, name='timetable_id_course'),

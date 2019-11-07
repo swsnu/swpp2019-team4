@@ -15,6 +15,7 @@ export {
   cancelFriend,
   postUserSearch,
   receiveFriend,
+  getTimetableData,
   getTimetables,
   getCourses,
   postCourse,
