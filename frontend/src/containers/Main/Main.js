@@ -17,15 +17,18 @@ class Main extends Component {
       showFriendManagement: false,
       showPopup: false,
       showindex: -1,
+      time: Date.now(),
     };
   }
 
   componentDidMount() {
     this.props.onGetUser();
+    this.interval = setInterval(() => this.setState({ time: Date.now() }), 5000);
   }
 
   handleLogout() {
     this.props.onLogout();
+    clearInterval(this.interval);
   }
 
   toggleFriendManagement() {
