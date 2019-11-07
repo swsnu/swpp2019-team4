@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const MainPageFriendView = (props) => { // TODO: props.friends
+const MainPageFriendView = (props) => {
   const { friend } = props;
   const courses = props.friend.timetable;
   const date = new Date();
-  const weekDay = (date.getDay() + 6) % 7;
-  const time = date.getHours() * 60 + date.getMinutes();
+  const dateLocal = new Date(date.getTime() + 9 * 60 * 60000); // Hardcoded utc+9
+  const weekDay = (dateLocal.getUTCDay() + 6) % 7;
+  const time = dateLocal.getUTCHours() * 60 + dateLocal.getUTCMinutes();
 
   let inClass = false;
   let timeLeft = 10000;
