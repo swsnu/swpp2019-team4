@@ -85,6 +85,12 @@ const reducer = (state = initialState, action) => {
 
     case actionTypes.GET_TIMETABLE_DATA:
       return { ...state, timetable_data: action.timetable_list };
+
+    case actionTypes.POST_MAIN_TIMETABLE:{
+      const newuser=state.user;
+      newuser.timetable_main=action.timetable_main
+      return {...state, user: newuser }
+    }
     default:
       return { ...state };
   }

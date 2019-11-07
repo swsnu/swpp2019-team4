@@ -22,6 +22,7 @@ class TimetableManagement extends Component {
   componentDidMount() {
     this.props.onGetUser();
     this.props.onGetTimetables();
+    this.props.onGetTimetableData();
   }
 
   statePopup(value) {
@@ -71,7 +72,7 @@ class TimetableManagement extends Component {
     }
     const timetableList = this.props.timetables.map((timetable) => (
       <li key={timetable.id} className={"tt "+timetable.id}>
-        <button type="button" className="createTimetable" onClick={() => this.show(timetable.id)}>
+        <button type="button" className="createTimetable" onClick={() => {this.show(timetable.id);this.props.onPostMainTimetable(timetable.id);}}>
           {timetable.title}
         </button>
       </li>
@@ -152,7 +153,7 @@ class TimetableManagement extends Component {
           this.state.showPopup
             ? (
               <TimetableRecommend
-                timetable={[]}
+                timetable={this.props.timetable_list}
                 closePopup={() => this.statePopup(false)}
               />
             )
@@ -197,6 +198,7 @@ const mapStateToProps = (state) => ({
   timetables: state.user.timetables,
   courses: state.user.courses,
   timetable: state.user.timetable,
+  timetable_list: state.user.timetable_data,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -207,6 +209,8 @@ const mapDispatchToProps = (dispatch) => ({
   onGetTimetable: (timetableId) => dispatch(actionCreators.getTimetable(timetableId)),
   onPostTimetable: (timetableName, semester) => dispatch(actionCreators.postTimetable(timetableName, semester)),
   onPostCourse: (title, courseId) => dispatch(actionCreators.postCourse(title, courseId)),
+  onGetTimetableData: () => dispatch(actionCreators.getTimetableData()),
+  onPostMainTimetable: (id) => dispatch(actionCreators.postMainTimetable(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableManagement);
