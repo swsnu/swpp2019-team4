@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import PropTypes, { array } from 'prop-types';
 import * as actionCreators from '../../store/actions/index';
 import TimetableView from '../../components/TimetableView/TimetableView';
 import TopBar from '../../components/TopBar/TopBar';
@@ -13,6 +13,7 @@ class TimetableManagement extends Component {
     super(props);
     this.state = {
       showPopup: false,
+      showCourses: true,
       searchStrings: '',
       timetableId: -1,
     };
@@ -42,14 +43,24 @@ class TimetableManagement extends Component {
   show(timetableId) {
     this.setState({ timetableId });
     this.props.onGetTimetable(timetableId);
+    this.showCoursesInTimetable();
   }
 
   createEmptyTimetable() {
     this.props.onPostTimetable('new timetable', '2019-2');
   }
 
+  showCoursesInSearch() {
+    this.setState({showCourses:true})
+  }
+
+  showCoursesInTimetable() {
+    this.setState({showCourses:false})
+  }
+
   search() {
     this.props.onGetCourses(this.state.searchStrings);
+    this.showCoursesInSearch();
   }
 
   render() {
@@ -58,7 +69,6 @@ class TimetableManagement extends Component {
         <Redirect to="/login" />
       );
     }
-
     const timetableList = this.props.timetables.map((timetable) => (
       <li key={timetable.id}>
         <button type="button" className="createTimetable" onClick={() => this.show(timetable.id)}>
@@ -66,13 +76,28 @@ class TimetableManagement extends Component {
         </button>
       </li>
     ));
-    const courseList = this.props.courses.map((course) => (
-      <li key={course.id}>
-        <button type="button" className="postCourse" onClick={() => this.post(course.id)}>
-          {course.title}
-        </button>
-      </li>
-    ));
+    let courseList;
+    if (this.state.showCourses === true) {
+      courseList = this.props.courses.map((course) => (
+        <li key={course.id}>
+          <button type="button" className="postCourse" onClick={() => this.post(course.id)}>
+            {course.title}
+          </button>
+        </li>
+      ));
+    } else {
+      let timetableDict = this.props.timetable;
+      const names = timetableDict.map((timetable) => timetable.name)
+      const uniqueTimetable = names.filter( (item, idx, array) => {
+        return array.indexOf( item ) == idx;
+      });
+      courseList = uniqueTimetable.map((course) => (
+        <li>
+          <button type="button">{course}</button>
+        </li>
+      ))
+    }
+    
     return (
       <div className="Manage">
         <TopBar id="topbar" logout={() => this.handleLogout()} />
@@ -96,8 +121,8 @@ class TimetableManagement extends Component {
         </div>
           <div className="searched-courses">
             <div className="label">
-              <button type="button">과목검색</button>
-              <button type="button">내 과목</button>
+              <button type="button" onClick={() => this.showCoursesInSearch()}>과목검색</button>
+              <button type="button" onClick={() => this.showCoursesInTimetable()}>내 과목</button>
             </div>
             <ul>
               {courseList}
