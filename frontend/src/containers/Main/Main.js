@@ -26,9 +26,12 @@ class Main extends Component {
     this.interval = setInterval(() => this.setState({ time: Date.now() }), 5000);
   }
 
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
   handleLogout() {
     this.props.onLogout();
-    clearInterval(this.interval);
   }
 
   toggleFriendManagement() {
