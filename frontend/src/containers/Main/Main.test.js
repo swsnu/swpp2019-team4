@@ -54,13 +54,11 @@ describe('<Main />', () => {
     const informationbutton = component.find('#personal-information-button');
     const logoutbutton = component.find('#logout-button');
     const timetable = component.find('#timetable-table');
-    const friendlist = component.find('#friend-list');
     expect(assabutton.length).toBe(4);
     expect(timetablebutton.length).toBe(4);
     expect(informationbutton.length).toBe(1);
     expect(logoutbutton.length).toBe(1);
     expect(timetable.length).toBe(1);
-    expect(friendlist.length).toBe(1);
   });
 
   it('should call friend timetable when pressed friend button', () => {
