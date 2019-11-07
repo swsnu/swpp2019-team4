@@ -85,6 +85,7 @@ class TimetableManagement extends Component {
           </button>
         </li>
       ));
+
     } else {
       let timetableDict = this.props.timetable;
       const names = timetableDict.map((timetable) => timetable.name)
@@ -97,7 +98,6 @@ class TimetableManagement extends Component {
         </li>
       ))
     }
-    
     return (
       <div className="Manage">
         <TopBar id="topbar" logout={() => this.handleLogout()} />
@@ -120,7 +120,7 @@ class TimetableManagement extends Component {
           </label>
         </div>
           <div className="searched-courses">
-            <div className="label">
+            <div className="label" id="label">
               <button type="button" onClick={() => this.showCoursesInSearch()}>과목검색</button>
               <button type="button" onClick={() => this.showCoursesInTimetable()}>내 과목</button>
             </div>

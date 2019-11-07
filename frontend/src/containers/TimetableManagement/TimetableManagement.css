@@ -19,9 +19,13 @@
     padding: 0;
 }
 .searched-courses .label button {
-    background-color : darkgreen;
+    background-color : #7ABB4C;
     width: 50%;
     padding: 5px;
+    color: white;
+}
+.searched-courses .label button:hover {
+    background-color : green;
     color: white;
 }
 .searched-courses ul button {
@@ -53,7 +57,10 @@
     padding: 10px;
     color: white;
 }
-
+.timetable-list button:hover {
+    background-color: darkgreen;
+    color: white;
+}
 .manage-timetable-buttons{
     float:right;
 }
