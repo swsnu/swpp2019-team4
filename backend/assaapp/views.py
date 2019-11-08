@@ -12,6 +12,33 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from assaapp.models import User, Timetable, Course, CourseColor, CourseTime
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
+def is_matched(text):
+    matched = 0
+    for i in range(len(text)):
+        if matched == len(match_text):
+            return True
+        if text[i] == match_text[matched]:
+            matched += 1
+    return False
+
+def course_data(courses_color):
+    data=[]
+    for course_data in courses_color:
+        for course_time in CourseTime.objects.filter(course=course_data.course):
+            data.append(
+                {
+                    'title': course_data.course.title,
+                    'week_day': course_time.weekday,
+                    'start_time': course_time.start_time.hour*60
+                                +course_time.start_time.minute,
+                    'end_time': course_time.end_time.hour*60
+                                +course_time.end_time.minute,
+                    'color': course_data.color,
+                    'lecture_number': course_data.course.lecture_number,
+                    'course_number': course_data.course.course_number,
+                }
+            )
+    return data
 def api_signup(request):
     if request.method == 'POST':
         try:
@@ -188,23 +215,7 @@ def api_timetable_data(request):
             for timetable in timetables:
                 courses_color = [course for
                                  course in CourseColor.objects.filter(timetable=timetable)]
-                courses_data = []
-                for course_data in courses_color:
-                    for course_time in CourseTime.objects.filter(course=course_data.course):
-                        courses_data.append(
-                            {
-                                'title': course_data.course.title,
-                                'week_day': course_time.weekday,
-                                'start_time': course_time.start_time.hour*60
-                                              +course_time.start_time.minute,
-                                'end_time': course_time.end_time.hour*60
-                                            +course_time.end_time.minute,
-                                'color': course_data.color,
-                                'lecture_number': course_data.course.lecture_number,
-                                'course_number': course_data.course.course_number,
-                            }
-                        )
-                timetable_list.append(courses_data)
+                timetable_list.append(course_data(courses_color))
             return JsonResponse(timetable_list, safe=False)
         return HttpResponseNotAllowed(['GET'])
     return HttpResponse(status=401)
@@ -219,23 +230,7 @@ def api_timetable_id(request, timetable_id):
                 return JsonResponse([], status=404, safe=False)
             courses_color = [course for
                              course in CourseColor.objects.filter(timetable=timetable_id)]
-            courses_data = []
-            for course_data in courses_color:
-                for course_time in CourseTime.objects.filter(course=course_data.course):
-                    courses_data.append(
-                        {
-                            'title': course_data.course.title,
-                            'week_day': course_time.weekday,
-                            'start_time': course_time.start_time.hour*60
-                                          +course_time.start_time.minute,
-                            'end_time': course_time.end_time.hour*60
-                                        +course_time.end_time.minute,
-                            'color': course_data.color,
-                            'lecture_number': course_data.course.lecture_number,
-                            'course_number': course_data.course.course_number,
-                        }
-                    )
-            return JsonResponse(courses_data, safe=False)
+            return JsonResponse(course_data(courses_color), safe=False)
         if request.method == 'PUT':
             try:
                 body = request.body.decode()
@@ -292,7 +287,7 @@ def api_timetable_id_course(request, timetable_id):
                     CourseColor(timetable=timetable, course=course, color=color).save()
                     timetable.save()
                     courses_color = [course for
-                                    course in CourseColor.objects.filter(timetable=timetable_id)]
+                                     course in CourseColor.objects.filter(timetable=timetable_id)]
                     courses_data = []
                     for course_data in courses_color:
                         for course_time in CourseTime.objects.filter(course=course_data.course):
@@ -301,7 +296,7 @@ def api_timetable_id_course(request, timetable_id):
                                     'name': course_data.course.title,
                                     'week_day': course_time.weekday,
                                     'start_time': course_time.start_time.hour*60
-                                                +course_time.start_time.minute,
+                                                  +course_time.start_time.minute,
                                     'end_time': course_time.end_time.hour*60
                                                 +course_time.end_time.minute,
                                     'color': course_data.color,
@@ -321,17 +316,9 @@ def api_course(request):
     if request.user.is_authenticated:
         if request.method == 'GET':
             course_list = [course for course in Course.objects.values()]
-            if len(request.GET.get('title')) > 0 :
+            if len(request.GET.get('title')) > 0:
                 match_text = request.GET.get('title')
-                def is_matched (text) :
-                    matched = 0
-                    for i in range(len(text)) :
-                        if matched == len(match_text) :
-                            return True
-                        if text[i] == match_text[matched] :
-                            matched += 1
-                    return False
-                course_list = list(filter(lambda x : is_matched(x['title']), course_list))
+                course_list = list(filter(lambda x: is_matched(x['title']), course_list))
             return JsonResponse(course_list, safe=False)
         return HttpResponseNotAllowed(['GET'])
     return HttpResponse(status=401)

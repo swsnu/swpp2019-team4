@@ -213,7 +213,7 @@ describe('Reducer', () => {
     });
     expect(newState.timetables.length).toBe(1);
   });
-  
+
   it('should post course', () => {
     const newState = reducer(stubState, {
       type: actionTypes.POST_COURSE,

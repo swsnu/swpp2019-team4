@@ -36,9 +36,10 @@ export const getCourses = (searchStrings) => (dispatch) => axios.get(`/api/cours
   .catch(() => {});
 
 export const postCourse = (timetableId, courseId) => (dispatch) => axios.post(
-  `/api/timetable/${timetableId}/course/`, { course_id: courseId },)
-  .then((res) => dispatch ({ type: actionTypes.POST_COURSE, timetable: res.data}))
-  .catch(() => {})
+  `/api/timetable/${timetableId}/course/`, { course_id: courseId },
+)
+  .then((res) => dispatch({ type: actionTypes.POST_COURSE, timetable: res.data }))
+  .catch(() => {});
 
 export const postTimetable = (title, semester) => (dispatch) => axios.post('/api/timetable/', { title, semester })
   .then((res) => dispatch({ type: actionTypes.POST_TIMETABLE, timetable: res.data }))

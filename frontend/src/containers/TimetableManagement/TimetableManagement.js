@@ -4,10 +4,10 @@ import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import * as actionCreators from '../../store/actions/index';
 import TimetableView from '../../components/TimetableView/TimetableView';
-import SideView from '../../components/SideView/SideView'
+import SideView from '../../components/SideView/SideView';
 import TopBar from '../../components/TopBar/TopBar';
 import TimetableRecommend from '../TimetableRecommend/TimetableRecommend';
-import './TimetableManagement.css'
+import './TimetableManagement.css';
 
 class TimetableManagement extends Component {
   constructor(props) {
@@ -52,11 +52,11 @@ class TimetableManagement extends Component {
   }
 
   showCoursesInSearch() {
-    this.setState({showCourses:true})
+    this.setState({ showCourses: true });
   }
 
   showCoursesInTimetable() {
-    this.setState({showCourses:false})
+    this.setState({ showCourses: false });
   }
 
   search() {
@@ -70,15 +70,21 @@ class TimetableManagement extends Component {
         <Redirect to="/login" />
       );
     }
-    const timetableList = <SideView 
-    list={this.props.timetables}
-     className="timetable-list" 
-     onClick={(id) => this.show(id)} />
+    const timetableList = (
+      <SideView
+        list={this.props.timetables}
+        className="timetable-list"
+        onClick={(id) => this.show(id)}
+      />
+    );
 
-    const courseList = <SideView 
-    list={this.state.showCourses?this.props.courses:this.props.timetable} 
-    className="course-list"
-    onClick={(id) => this.post(id)} />
+    const courseList = (
+      <SideView
+        list={this.state.showCourses ? this.props.courses : this.props.timetable}
+        className="course-list"
+        onClick={(id) => this.post(id)}
+      />
+    );
     return (
       <div className="Manage">
         <TopBar id="topbar" logout={() => this.handleLogout()} />
@@ -100,13 +106,13 @@ class TimetableManagement extends Component {
             <button type="button" className="search" onClick={() => this.search()}>검색</button>
           </label>
         </div>
-          <div className="searched-courses">
-            <div className="label" id="label">
-              <button className="button" type="button" onClick={() => this.showCoursesInSearch()}>과목검색</button>
-              <button className="button" type="button" onClick={() => this.showCoursesInTimetable()}>내 과목</button>
-            </div>
-            {courseList}
+        <div className="searched-courses">
+          <div className="label" id="label">
+            <button className="button" type="button" onClick={() => this.showCoursesInSearch()}>과목검색</button>
+            <button className="button" type="button" onClick={() => this.showCoursesInTimetable()}>내 과목</button>
           </div>
+          {courseList}
+        </div>
         <div className="timetable">
           <TimetableView
             id="timetable-table"
@@ -118,12 +124,12 @@ class TimetableManagement extends Component {
             title=""
           />
         </div>
-          {timetableList}
+        {timetableList}
         <div className="manage-timetable-buttons">
           <button type="button" id="delete-button">DELETE</button>
           <button type="button" id="create-button" onClick={() => this.createEmptyTimetable()}>CREATE</button>
           <button type="button" id="timetable-recommend-button" onClick={() => this.statePopup(true)}>RECOMMEND</button>
-        {
+          {
           this.state.showPopup
             ? (
               <TimetableRecommend
