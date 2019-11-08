@@ -7,7 +7,7 @@ const friend = {
   name: 'KOO',
   timetable: [
     {
-      name: 'SWPP',
+      title: 'SWPP',
       week_day: 2,
       start_time: 1020,
       end_time: 1110,
@@ -16,7 +16,7 @@ const friend = {
       color: '#FF0000',
     },
     {
-      name: 'SWPP2',
+      title: 'SWPP2',
       week_day: 3,
       start_time: 1020,
       end_time: 1110,
@@ -25,7 +25,7 @@ const friend = {
       color: '#FF0000',
     },
     {
-      name: 'SWPP3',
+      title: 'SWPP3',
       week_day: 3,
       start_time: 1120,
       end_time: 1210,

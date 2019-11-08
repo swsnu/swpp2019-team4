@@ -39,7 +39,6 @@ class TimetableManagement extends Component {
       this.props.onPostCourse(this.state.timetableId, courseId);
       this.props.onGetTimetables();
       this.props.onGetTimetable(this.state.timetableId);
-      
     }
   }
 

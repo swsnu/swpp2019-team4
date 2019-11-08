@@ -17,6 +17,6 @@ const SideView = (props) => {
 };
 
 SideView.propTypes = {
-  
-}
+
+};
 export default SideView;

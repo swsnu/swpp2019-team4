@@ -74,5 +74,5 @@ export const getTimetableData = () => (dispatch) => axios.get('/api/timetable/da
   .catch(() => {});
 
 export const postMainTimetable = (id) => (dispatch) => axios.post(`/api/timetable/main/${id}`)
-  .then((res) => dispatch({ type: actionTypes.POST_MAIN_TIMETABLE, main_timetable: res.data['id'] }))
+  .then((res) => dispatch({ type: actionTypes.POST_MAIN_TIMETABLE, main_timetable: res.data.id }))
   .catch(() => {});

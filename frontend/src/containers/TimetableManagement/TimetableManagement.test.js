@@ -25,15 +25,15 @@ const stubState = {
       week_day: 0,
       start_time: 660,
       end_time: 750,
-      name: '자료구조',
+      title: '자료구조',
       color: '#2BC366',
       course_number: 'M1522.000900',
       lecture_number: '001',
     },
   ],
-  timetable: [],
+  timetable:[],
+  timetable_list: [],
 };
-
 const stubStateFalse = {
   user: { is_authenticated: false },
   timetables: [
@@ -50,15 +50,15 @@ const stubStateFalse = {
       week_day: 0,
       start_time: 660,
       end_time: 750,
-      name: '자료구조',
+      title: '자료구조',
       color: '#2BC366',
       course_number: 'M1522.000900',
       lecture_number: '001',
     },
   ],
-  timetable: [],
+  timetable:[],
+  timetable_list: [],
 };
-
 function timetableManagement(state) {
   const mockStore = getMockStore(state);
   return (
@@ -129,15 +129,17 @@ describe('verification test', () => {
   it('should call postTimetable when pressed create-button', () => {
     const component = mount(timetableManagement(stubState));
     component.find('#create-button').simulate('click');
+    console.log(component.find('#create-button').debug())
     expect(spyPostTimetable).toBeCalledTimes(1);
   });
 
   it('should call post when pressed postCourse button', () => {
     const component = mount(timetableManagement(stubState));
     component.find('.course-list').find('button').simulate('click');
-    // expect(spyPostCourse).toBeCalledTimes(1);
-    // expect(spyGetTimetables).toBeCalledTimes(2);
-    // expect(spyGetTimetable).toBeCalledTimes(1);
+    console.log(component.find('.course-list').find('button').debug());
+    //expect(spyPostCourse).toBeCalledTimes(1);
+    //expect(spyGetTimetables).toBeCalledTimes(2);
+    //expect(spyGetTimetable).toBeCalledTimes(1);
   });
 
   it('should call show when pressed createTimetable button', () => {

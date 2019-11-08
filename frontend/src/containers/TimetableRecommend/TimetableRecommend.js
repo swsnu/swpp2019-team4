@@ -19,7 +19,7 @@ class TimetableRecommend extends Component {
 
   render() {
     const tableviewlist = [];
-    for (let i = 0; i < this.props.timetable.length; i = i + 1) {
+    for (let i = 0; i < this.props.timetable.length; i += 1) {
       tableviewlist.push(
         <div
           key={i}
