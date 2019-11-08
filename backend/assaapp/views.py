@@ -334,19 +334,7 @@ def api_course(request):
             course_list = [course for course in Course.objects.values()]
             if len(request.GET.get('title')) > 0:
                 match_text = request.GET.get('title')
-<<<<<<< HEAD
                 course_list = list(filter(lambda x: is_matched(x['title']), course_list))
-=======
-                def is_matched (text) :
-                    matched = 0
-                    for i in range(len(text)) :
-                        if text[i] == match_text[matched] :
-                            matched += 1
-                        if matched == len(match_text) :
-                            return True
-                    return False
-                course_list = list(filter(lambda x : is_matched(x['title']), course_list))
->>>>>>> origin/setmaintimetable
             return JsonResponse(course_list, safe=False)
         return HttpResponseNotAllowed(['GET'])
     return HttpResponse(status=401)

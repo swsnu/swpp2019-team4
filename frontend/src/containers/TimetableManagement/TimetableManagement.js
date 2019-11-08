@@ -71,7 +71,6 @@ class TimetableManagement extends Component {
         <Redirect to="/login" />
       );
     }
-<<<<<<< HEAD
     const timetableList = (
       <SideView
         list={this.props.timetables}
@@ -87,37 +86,6 @@ class TimetableManagement extends Component {
         onClick={(id) => this.post(id)}
       />
     );
-=======
-    const timetableList = this.props.timetables.map((timetable) => (
-      <li key={timetable.id} className={"tt "+timetable.id}>
-        <button type="button" className="createTimetable" onClick={() => {this.show(timetable.id);this.props.onPostMainTimetable(timetable.id);}}>
-          {timetable.title}
-        </button>
-      </li>
-    ));
-    let courseList;
-    if (this.state.showCourses === true) {
-      courseList = this.props.courses.map((course) => (
-        <li key={course.id}>
-          <button type="button" className="postCourse" onClick={() => this.post(course.id)}>
-            {course.title}
-          </button>
-        </li>
-      ));
-
-    } else {
-      let timetableDict = this.props.timetable;
-      const names = timetableDict.map((timetable) => timetable.name)
-      const uniqueTimetable = names.filter( (item, idx, array) => {
-        return array.indexOf( item ) == idx;
-      });
-      courseList = uniqueTimetable.map((course) => (
-        <li>
-          <button type="button">{course}</button>
-        </li>
-      ))
-    }
->>>>>>> origin/setmaintimetable
     return (
       <div className="Manage">
         <TopBar id="topbar" logout={() => this.handleLogout()} />
