@@ -15,7 +15,7 @@ from .tokens import ACCOUNT_ACTIVATION_TOKEN
 
 
 def course_data(courses_color):
-    data=[]
+    data = []
     for course_data in courses_color:
         for course_time in CourseTime.objects.filter(course=course_data.course):
             data.append(
@@ -23,7 +23,7 @@ def course_data(courses_color):
                     'title': course_data.course.title,
                     'week_day': course_time.weekday,
                     'start_time': course_time.start_time.hour*60
-                                +course_time.start_time.minute,
+                                  +course_time.start_time.minute,
                     'end_time': course_time.end_time.hour*60
                                 +course_time.end_time.minute,
                     'color': course_data.color,
@@ -209,7 +209,7 @@ def api_timetable_main_id(request, timetable_id):
             if timetable.user.id != request.user.id:
                 return JsonResponse({'id':request.user.timetable_main.id}, status=405, safe=False)
             newuser = request.user
-            newuser.timetable_main=timetable
+            newuser.timetable_main = timetable
             newuser.save()
             return JsonResponse({'id':timetable_id}, status=201, safe=False)
         return HttpResponseNotAllowed(['POST'])

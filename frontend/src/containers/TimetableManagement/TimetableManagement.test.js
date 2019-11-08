@@ -31,7 +31,7 @@ const stubState = {
       lecture_number: '001',
     },
   ],
-  timetable:[],
+  timetable: [],
   timetable_list: [],
 };
 const stubStateFalse = {
@@ -56,7 +56,7 @@ const stubStateFalse = {
       lecture_number: '001',
     },
   ],
-  timetable:[],
+  timetable: [],
   timetable_list: [],
 };
 function timetableManagement(state) {
@@ -129,17 +129,15 @@ describe('verification test', () => {
   it('should call postTimetable when pressed create-button', () => {
     const component = mount(timetableManagement(stubState));
     component.find('#create-button').simulate('click');
-    console.log(component.find('#create-button').debug())
     expect(spyPostTimetable).toBeCalledTimes(1);
   });
 
   it('should call post when pressed postCourse button', () => {
     const component = mount(timetableManagement(stubState));
     component.find('.course-list').find('button').simulate('click');
-    console.log(component.find('.course-list').find('button').debug());
-    //expect(spyPostCourse).toBeCalledTimes(1);
-    //expect(spyGetTimetables).toBeCalledTimes(2);
-    //expect(spyGetTimetable).toBeCalledTimes(1);
+    // expect(spyPostCourse).toBeCalledTimes(1);
+    // expect(spyGetTimetables).toBeCalledTimes(2);
+    // expect(spyGetTimetable).toBeCalledTimes(1);
   });
 
   it('should call show when pressed createTimetable button', () => {
