@@ -28,7 +28,7 @@ const reducer = (state = initialState, action) => {
     case actionTypes.GET_USER: {
       const newUser = action.user;
       newUser.is_authenticated = true;
-      return { ...state, user: newUser };// return { ...state, user: { ...action.user, is_authenticated: true } };
+      return { ...state, user: newUser };
     }
     case actionTypes.GET_TIMETABLES:
       return { ...state, timetables: action.timetables };

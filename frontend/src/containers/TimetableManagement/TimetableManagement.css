@@ -4,36 +4,6 @@
     height: 720px;
 }
 
-.searchBar {
-    width: 100%;
-    height: 120px;
-}
-
-.searchBar #semester-select {
-    float:left;
-    margin: 10px;
-}
-.searched-courses ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-.searched-courses .label button {
-    background-color : #7ABB4C;
-    width: 50%;
-    padding: 5px;
-    color: white;
-}
-.searched-courses .label button:hover {
-    background-color : green;
-    color: white;
-}
-.searched-courses ul button {
-    background-color : green;
-    width: 100%;
-    padding: 10px;
-    color: white;
-}
 .timetable {
     float:left;
     width:60%;
@@ -45,26 +15,28 @@
     height:720px;
 }
 
-.timetable-list ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+.searchBar {
+    width: 100%;
+    height: 120px;
 }
 
-.timetable-list button.createTimetable:hover {
-    background-color: darkgreen;
+.searchBar #semester-select {
+    float:left;
+    margin: 10px;
+}
+
+.searched-courses .label button {
+    background-color : #7ABB4C;
+    width: 50%;
+    padding: 5px;
     color: white;
 }
-.timetable-list button.createTimetable.active {
-    background-color: darkgreen;
+.searched-courses .label button:hover {
+    background-color : green;
     color: white;
 }
-.timetable-list button.createTimetable {
-    background-color: green;
-    width: 100%;
-    padding: 10px;
-    color: white;
-}
+
+
 
 .manage-timetable-buttons{
     float:right;

@@ -193,7 +193,7 @@ def api_timetable_data(request):
                     for course_time in CourseTime.objects.filter(course=course_data.course):
                         courses_data.append(
                             {
-                                'name': course_data.course.title,
+                                'title': course_data.course.title,
                                 'week_day': course_time.weekday,
                                 'start_time': course_time.start_time.hour*60
                                               +course_time.start_time.minute,
@@ -224,7 +224,7 @@ def api_timetable_id(request, timetable_id):
                 for course_time in CourseTime.objects.filter(course=course_data.course):
                     courses_data.append(
                         {
-                            'name': course_data.course.title,
+                            'title': course_data.course.title,
                             'week_day': course_time.weekday,
                             'start_time': course_time.start_time.hour*60
                                           +course_time.start_time.minute,

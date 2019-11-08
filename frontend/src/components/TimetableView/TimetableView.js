@@ -27,7 +27,7 @@ const TimetableView = (props) => {
   for (let i = 0; props.courses !== undefined && i < props.courses.length; i += 1) {
     coursesList[props.courses[i].week_day][props.courses[i].start_time / 30 - 16].push(
       {
-        name: props.text ? props.courses[i].name : '',
+        title: props.text ? props.courses[i].title : '',
         length: props.courses[i].end_time - props.courses[i].start_time,
         color: props.courses[i].color,
         lecnum: props.courses[i].lecture_number,
@@ -75,7 +75,7 @@ const TimetableView = (props) => {
                       }
                     }
                     >
-                      {course.name}
+                      {course.title}
                     </div>
                   );
                   if (props.link === true) {
@@ -121,7 +121,7 @@ TimetableView.propTypes = {
       start_time: PropTypes.number.isRequired,
       end_time: PropTypes.number.isRequired,
       week_day: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
       color: PropTypes.string.isRequired,
       lecture_number: PropTypes.string.isRequired,
       course_number: PropTypes.string.isRequired,
