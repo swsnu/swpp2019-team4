@@ -62,18 +62,24 @@ class Main extends Component {
       {
         id: 0,
         name: '정재윤',
-        inclass: false,
-        timeleft: '2147483647',
-        timetable: [],
+        timetable: [
+          {
+            name: '소개원실 (테스트용)',
+            week_day: 3,
+            start_time: 1110,
+            end_time: 1170,
+            course_number: 'M1522.002400',
+            lecture_number: '001',
+            color: '#FF0000',
+          },
+        ],
       },
       {
         id: 1,
         name: '구준서',
-        inclass: false,
-        timeleft: '2147483647',
         timetable: [
           {
-            name: '소프트웨어 개발의 원리와 실습',
+            name: '소개원실 (테스트용)',
             week_day: 3,
             start_time: 1020,
             end_time: 1110,
@@ -86,16 +92,32 @@ class Main extends Component {
       {
         id: 2,
         name: '김영찬',
-        inclass: true,
-        timeleft: '2147483647',
-        timetable: [],
+        timetable: [
+          {
+            name: '소개원실 (테스트용)',
+            week_day: 3,
+            start_time: 1170,
+            end_time: 1230,
+            course_number: 'M1522.002400',
+            lecture_number: '001',
+            color: '#FF0000',
+          },
+        ],
       },
       {
         id: 3,
         name: '김현수',
-        inclass: false,
-        timeleft: '2147483647',
-        timetable: [],
+        timetable: [
+          {
+            name: '소개원실 (테스트용)',
+            week_day: 3,
+            start_time: 480,
+            end_time: 1440,
+            course_number: 'M1522.002400',
+            lecture_number: '001',
+            color: '#FF0000',
+          },
+        ],
       },
     ];
 

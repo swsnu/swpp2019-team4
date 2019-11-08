@@ -21,4 +21,5 @@ export {
   postCourse,
   getTimetable,
   postTimetable,
+  postMainTimetable,
 } from './user';

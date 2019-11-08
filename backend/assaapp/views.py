@@ -206,6 +206,22 @@ def api_timetable(request):
         return HttpResponseNotAllowed(['GET', 'POST'])
     return HttpResponse(status=401)
 
+def api_timetable_main_id(request, timetable_id):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            try:
+                timetable = Timetable.objects.get(id=timetable_id)
+            except Timetable.DoesNotExist:
+                return JsonResponse({'id':request.user.timetable_main.id}, status=404, safe=False)
+            if timetable.user.id != request.user.id:
+                return JsonResponse({'id':request.user.timetable_main.id}, status=405, safe=False)
+            newuser = request.user
+            newuser.timetable_main=timetable
+            newuser.save()
+            return JsonResponse({'id':timetable_id}, status=201, safe=False)
+        return HttpResponseNotAllowed(['POST'])
+    return HttpResponse(status=401)
+
 def api_timetable_data(request):
     if request.user.is_authenticated:
         if request.method == 'GET':
@@ -318,7 +334,19 @@ def api_course(request):
             course_list = [course for course in Course.objects.values()]
             if len(request.GET.get('title')) > 0:
                 match_text = request.GET.get('title')
+<<<<<<< HEAD
                 course_list = list(filter(lambda x: is_matched(x['title']), course_list))
+=======
+                def is_matched (text) :
+                    matched = 0
+                    for i in range(len(text)) :
+                        if text[i] == match_text[matched] :
+                            matched += 1
+                        if matched == len(match_text) :
+                            return True
+                    return False
+                course_list = list(filter(lambda x : is_matched(x['title']), course_list))
+>>>>>>> origin/setmaintimetable
             return JsonResponse(course_list, safe=False)
         return HttpResponseNotAllowed(['GET'])
     return HttpResponse(status=401)

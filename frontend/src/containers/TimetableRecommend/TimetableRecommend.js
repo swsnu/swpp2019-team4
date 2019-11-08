@@ -19,19 +19,19 @@ class TimetableRecommend extends Component {
 
   render() {
     const tableviewlist = [];
-    for (let i = 0; i < this.props.timetable.length; i += i + 1) {
+    for (let i = 0; i < this.props.timetable.length; i = i + 1) {
       tableviewlist.push(
         <div
           key={i}
-          className="timetable"
+          className="recommended-timetable-space"
           role="button"
           tabIndex={0}
           onClick={() => this.changeview(this.props.timetable[i])}
           onKeyDown={() => this.changeview(this.props.timetable[i])}
         >
           <TimetableView
-            id="timetable-table"
-            height={3}
+            id="timetable-one-result"
+            height={4}
             width={20}
             courses={this.props.timetable[i]}
             text={false}
@@ -44,13 +44,13 @@ class TimetableRecommend extends Component {
     return (
       <div className="popup">
         <div className="popup_inner">
-          <div className="timetable-list">
+          <div className="recommended-result-list">
             {tableviewlist}
           </div>
-          <div className="timetable-show">
+          <div className="timetable-result-space">
             <div className="timetable-result">
               <TimetableView
-                id="timetable-table"
+                id="timetable-resultview"
                 height={20}
                 width={80}
                 courses={this.state.courses}

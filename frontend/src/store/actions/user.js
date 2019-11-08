@@ -72,3 +72,7 @@ export const cancelFriend = (id) => (dispatch) => axios.delete(`/api/user/friend
 export const getTimetableData = () => (dispatch) => axios.get('/api/timetable/data/')
   .then((res) => dispatch({ type: actionTypes.GET_TIMETABLE_DATA, timetable_list: res.data }))
   .catch(() => {});
+
+export const postMainTimetable = (id) => (dispatch) => axios.post(`/api/timetable/main/${id}`)
+  .then((res) => dispatch({ type: actionTypes.POST_MAIN_TIMETABLE, main_timetable: res.data['id'] }))
+  .catch(() => {});
