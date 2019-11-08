@@ -213,6 +213,27 @@ describe('Reducer', () => {
     });
     expect(newState.timetables.length).toBe(1);
   });
+  
+  it('should post course', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.POST_COURSE,
+      timetable:
+        {
+          id: 1,
+          title: 'my timetable',
+          semester: '2019-2',
+          user_id: 2,
+        },
+    });
+    expect(newState.timetable).toStrictEqual(
+      {
+        id: 1,
+        title: 'my timetable',
+        semester: '2019-2',
+        user_id: 2,
+      },
+    );
+  });
 
   it('should get courses', () => {
     const newState = reducer(stubState, {

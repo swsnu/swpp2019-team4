@@ -73,22 +73,12 @@ class TimetableManagement extends Component {
     const timetableList = <SideView 
     list={this.props.timetables}
      className="timetable-list" 
-     info=""
      onClick={(id) => this.show(id)} />
 
-    let courseList;
-    if (this.state.showCourses === true) {
-      courseList = <SideView 
-      list={this.props.courses} 
-      className="course-list" 
-      info=""
-      onClick={(id) => this.post(id)} />
-    } else {
-      courseList = <SideView 
-      list={this.props.timetable}
-      className="course-list"
-      info=""/>
-    }
+    const courseList = <SideView 
+    list={this.state.showCourses?this.props.courses:this.props.timetable} 
+    className="course-list"
+    onClick={(id) => this.post(id)} />
     return (
       <div className="Manage">
         <TopBar id="topbar" logout={() => this.handleLogout()} />

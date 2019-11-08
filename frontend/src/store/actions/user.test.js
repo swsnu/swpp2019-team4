@@ -196,7 +196,16 @@ describe('user action test', () => {
         done();
       });
   });
-
+  it('should call getTimetableData', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 204, data: null });
+    }));
+    store.dispatch(actionCreators.getTimetableData())
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
   it('should call postTimetable that can be failed', (done) => {
     axios.post = jest.fn(() => new Promise((resolve, reject) => {
       reject(new Error(''));
