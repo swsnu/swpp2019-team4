@@ -12,14 +12,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from assaapp.models import User, Timetable, Course, CourseColor, CourseTime
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
-def is_matched(text):
-    matched = 0
-    for i in range(len(text)):
-        if matched == len(match_text):
-            return True
-        if text[i] == match_text[matched]:
-            matched += 1
-    return False
+
 
 def course_data(courses_color):
     data=[]
@@ -309,7 +302,7 @@ def api_timetable_id_course(request, timetable_id):
                         for course_time in CourseTime.objects.filter(course=course_data.course):
                             courses_data.append(
                                 {
-                                    'name': course_data.course.title,
+                                    'title': course_data.course.title,
                                     'week_day': course_time.weekday,
                                     'start_time': course_time.start_time.hour*60
                                                   +course_time.start_time.minute,
@@ -334,6 +327,14 @@ def api_course(request):
             course_list = [course for course in Course.objects.values()]
             if len(request.GET.get('title')) > 0:
                 match_text = request.GET.get('title')
+                def is_matched(text):
+                    matched = 0
+                    for i in range(len(text)):
+                        if matched == len(match_text):
+                            return True
+                        if text[i] == match_text[matched]:
+                            matched += 1
+                    return False
                 course_list = list(filter(lambda x: is_matched(x['title']), course_list))
             return JsonResponse(course_list, safe=False)
         return HttpResponseNotAllowed(['GET'])

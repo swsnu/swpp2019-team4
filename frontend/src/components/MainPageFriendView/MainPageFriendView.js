@@ -18,7 +18,7 @@ const MainPageFriendView = (props) => {
       if (courses[i].start_time <= time && time < courses[i].end_time) {
         inClass = true;
         timeLeft = courses[i].end_time - time;
-        currentClass = courses[i].name;
+        currentClass = courses[i].title;
       } else if (!inClass && time < courses[i].start_time && timeLeft > courses[i].start_time - time) {
         timeLeft = courses[i].start_time - time;
         // nextClass = courses[i].name;

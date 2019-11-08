@@ -64,7 +64,7 @@ class Main extends Component {
         name: '정재윤',
         timetable: [
           {
-            name: '소개원실 (테스트용)',
+            title: '소개원실 (테스트용)',
             week_day: 3,
             start_time: 1110,
             end_time: 1170,
@@ -79,7 +79,7 @@ class Main extends Component {
         name: '구준서',
         timetable: [
           {
-            name: '소개원실 (테스트용)',
+            title: '소개원실 (테스트용)',
             week_day: 3,
             start_time: 1020,
             end_time: 1110,
@@ -94,7 +94,7 @@ class Main extends Component {
         name: '김영찬',
         timetable: [
           {
-            name: '소개원실 (테스트용)',
+            title: '소개원실 (테스트용)',
             week_day: 3,
             start_time: 1170,
             end_time: 1230,
@@ -109,8 +109,8 @@ class Main extends Component {
         name: '김현수',
         timetable: [
           {
-            name: '소개원실 (테스트용)',
-            week_day: 3,
+            title: '소개원실 (테스트용)',
+            week_day: 4,
             start_time: 480,
             end_time: 1440,
             course_number: 'M1522.002400',
