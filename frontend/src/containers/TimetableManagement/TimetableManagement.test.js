@@ -8,7 +8,6 @@ import { getMockStore } from '../../test-utils/mocks';
 import TimetableManagement from './TimetableManagement';
 
 import * as actionCreators from '../../store/actions/user';
-import TimetableRecommend from '../TimetableRecommend/TimetableRecommend';
 
 jest.mock('../TimetableRecommend/TimetableRecommend');
 const stubState = {
@@ -103,7 +102,7 @@ describe('verification test', () => {
       .mockImplementation(() => () => {});
     spyPostCourse = jest.spyOn(actionCreators, 'postCourse')
       .mockImplementation(() => () => {});
-    //TimetableRecommend.mockClear();
+    // TimetableRecommend.mockClear();
   });
 
   afterEach(() => jest.clearAllMocks());
@@ -149,7 +148,7 @@ describe('verification test', () => {
     expect(spyPostCourse).toBeCalledTimes(1);
     expect(spyGetTimetables).toBeCalledTimes(2);
     expect(spyGetTimetable).toBeCalledTimes(2);
-  })
+  });
 
   it('should call show when pressed createTimetable button', () => {
     const component = mount(timetableManagement(stubState));

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './SideView.css';
 
 const SideView = (props) => {
@@ -17,6 +18,10 @@ const SideView = (props) => {
 };
 
 SideView.propTypes = {
-
+  list: PropTypes.shape({
+    map: PropTypes.func.isRequired,
+  }).isRequired,
+  onClick: PropTypes.func.isRequired,
+  className: PropTypes.string.isRequired,
 };
 export default SideView;

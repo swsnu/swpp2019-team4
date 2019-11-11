@@ -167,7 +167,7 @@ function timetableRecommend(state) {
 
 describe('verification test', () => {
   beforeEach(() => {
-    //TimetableView.mockClear();
+    // TimetableView.mockClear();
   });
 
   afterEach(() => jest.clearAllMocks());

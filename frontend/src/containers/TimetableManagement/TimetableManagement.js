@@ -111,7 +111,13 @@ class TimetableManagement extends Component {
         <div className="searched-courses">
           <div className="label" id="label">
             <button className="result-button" type="button" onClick={() => this.showCoursesInSearch()}>과목검색</button>
-            <button className="timetable-button" type="button" onClick={() => this.showCoursesInTimetable()}>내 과목</button>
+            <button
+              className="timetable-button"
+              type="button"
+              onClick={() => this.showCoursesInTimetable()}
+            >
+            내 과목
+            </button>
           </div>
           {courseList}
         </div>
@@ -155,6 +161,8 @@ TimetableManagement.propTypes = {
   onGetTimetable: PropTypes.func.isRequired,
   onPostTimetable: PropTypes.func.isRequired,
   onPostCourse: PropTypes.func.isRequired,
+  onGetTimetableData: PropTypes.func.isRequired,
+  onPostMainTimetable: PropTypes.func.isRequired,
   timetables: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
@@ -167,7 +175,10 @@ TimetableManagement.propTypes = {
   ).isRequired,
   timetable: PropTypes.arrayOf(
     PropTypes.shape({
-
+    }),
+  ).isRequired,
+  timetable_list: PropTypes.arrayOf(
+    PropTypes.shape({
     }),
   ).isRequired,
   storedUser: PropTypes.shape({

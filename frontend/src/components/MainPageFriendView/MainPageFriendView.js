@@ -52,7 +52,7 @@ MainPageFriendView.propTypes = {
         week_day: PropTypes.number.isRequired,
         start_time: PropTypes.number.isRequired,
         end_time: PropTypes.node.isRequired,
-        name: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired,
       }).isRequired,
     ).isRequired,
   }).isRequired,
