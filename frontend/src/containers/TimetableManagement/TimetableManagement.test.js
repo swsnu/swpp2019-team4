@@ -8,7 +8,9 @@ import { getMockStore } from '../../test-utils/mocks';
 import TimetableManagement from './TimetableManagement';
 
 import * as actionCreators from '../../store/actions/user';
+import TimetableRecommend from '../TimetableRecommend/TimetableRecommend';
 
+jest.mock('../TimetableRecommend/TimetableRecommend');
 const stubState = {
   user: { is_authenticated: true },
   timetables: [
@@ -101,6 +103,7 @@ describe('verification test', () => {
       .mockImplementation(() => () => {});
     spyPostCourse = jest.spyOn(actionCreators, 'postCourse')
       .mockImplementation(() => () => {});
+    //TimetableRecommend.mockClear();
   });
 
   afterEach(() => jest.clearAllMocks());
@@ -122,8 +125,6 @@ describe('verification test', () => {
     expect(component.find('#create-button').length).toBe(1);
     expect(component.find('#timetable-recommend-button').length).toBe(1);
     component.find('#timetable-recommend-button').simulate('click');
-    expect(component.find('#close-button').length).toBe(1);
-    component.find('#close-button').simulate('click');
   });
 
   it('should call postTimetable when pressed create-button', () => {

@@ -11,7 +11,7 @@ const stubState = {
   user: { is_authenticated: true },
 };
 
-function timetableManagement(state) {
+function timetableRecommend(state) {
   const mockStore = getMockStore(state);
   const recommendlist = [
     [
@@ -167,18 +167,18 @@ function timetableManagement(state) {
 
 describe('verification test', () => {
   beforeEach(() => {
-
+    //TimetableView.mockClear();
   });
 
   afterEach(() => jest.clearAllMocks());
 
   it('should render timetableRecommend', () => {
-    const component = mount(timetableManagement(stubState));
-    expect(component.find('#timetable-table').length).toBe(2);
+    const component = mount(timetableRecommend(stubState));
+    expect(component.find('.recommended-timetable-space').length).toBe(1);
     expect(component.find('#save-button').length).toBe(1);
     expect(component.find('#close-button').length).toBe(1);
-    expect(component.find('.timetable').length).toBe(1);
-    component.find('.timetable').simulate('click');
-    component.find('.timetable').simulate('keydown');
+    component.find('.recommended-timetable-space').simulate('click');
+    component.find('.recommended-timetable-space').simulate('keydown');
+    component.find('#close-button').simulate('click');
   });
 });

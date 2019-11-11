@@ -330,10 +330,10 @@ def api_course(request):
                 def is_matched(text):
                     matched = 0
                     for i in range(len(text)):
-                        if matched == len(match_text):
-                            return True
                         if text[i] == match_text[matched]:
                             matched += 1
+                        if matched == len(match_text):
+                            return True
                     return False
                 course_list = list(filter(lambda x: is_matched(x['title']), course_list))
             return JsonResponse(course_list, safe=False)
