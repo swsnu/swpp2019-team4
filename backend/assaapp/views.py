@@ -1,6 +1,6 @@
 import json
-import random
 from json import JSONDecodeError
+import random
 from django.db.utils import IntegrityError
 from django.http import HttpResponse, HttpResponseNotAllowed, \
     JsonResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseNotFound
@@ -16,19 +16,19 @@ from .tokens import ACCOUNT_ACTIVATION_TOKEN
 
 def course_data(courses_color):
     data = []
-    for course_data in courses_color:
-        for course_time in CourseTime.objects.filter(course=course_data.course):
+    for color_data in courses_color:
+        for course_time in CourseTime.objects.filter(course=color_data.course):
             data.append(
                 {
-                    'title': course_data.course.title,
+                    'title': color_data.course.title,
                     'week_day': course_time.weekday,
                     'start_time': course_time.start_time.hour*60
                                   +course_time.start_time.minute,
                     'end_time': course_time.end_time.hour*60
                                 +course_time.end_time.minute,
-                    'color': course_data.color,
-                    'lecture_number': course_data.course.lecture_number,
-                    'course_number': course_data.course.course_number,
+                    'color': color_data.color,
+                    'lecture_number': color_data.course.lecture_number,
+                    'course_number': color_data.course.course_number,
                 }
             )
     return data
@@ -297,22 +297,7 @@ def api_timetable_id_course(request, timetable_id):
                     timetable.save()
                     courses_color = [course for
                                      course in CourseColor.objects.filter(timetable=timetable_id)]
-                    courses_data = []
-                    for course_data in courses_color:
-                        for course_time in CourseTime.objects.filter(course=course_data.course):
-                            courses_data.append(
-                                {
-                                    'title': course_data.course.title,
-                                    'week_day': course_time.weekday,
-                                    'start_time': course_time.start_time.hour*60
-                                                  +course_time.start_time.minute,
-                                    'end_time': course_time.end_time.hour*60
-                                                +course_time.end_time.minute,
-                                    'color': course_data.color,
-                                    'lecture_number': course_data.course.lecture_number,
-                                    'course_number': course_data.course.course_number,
-                                }
-                            )
+                    courses_data = course_data(courses_color)
                     return JsonResponse(courses_data, safe=False)
                 except (Timetable.DoesNotExist, Course.DoesNotExist):
                     return HttpResponseNotFound()
