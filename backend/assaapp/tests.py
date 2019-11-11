@@ -377,15 +377,15 @@ class AssaTestCase(TestCase):
         response = self.get('/api/timetable/1/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content.decode(),
-                         '[{"name": "swpp", "week_day": 0, "start_time": 1020,'
+                         '[{"title": "swpp", "week_day": 0, "start_time": 1020,'
                          ' "end_time": 1110, "color": "#2468AC",'
                          ' "lecture_number": "001",'
                          ' "course_number": "M1522.002400"},'
-                         ' {"name": "swpp", "week_day": 2, "start_time": 1020,'
+                         ' {"title": "swpp", "week_day": 2, "start_time": 1020,'
                          ' "end_time": 1110, "color": "#2468AC",'
                          ' "lecture_number": "001",'
                          ' "course_number": "M1522.002400"},'
-                         ' {"name": "swpp", "week_day": 3, "start_time": 1110,'
+                         ' {"title": "swpp", "week_day": 3, "start_time": 1110,'
                          ' "end_time": 1230, "color": "#2468AC",'
                          ' "lecture_number": "001",'
                          ' "course_number": "M1522.002400"}]')
@@ -481,24 +481,29 @@ class AssaTestCase(TestCase):
                              content_type='application/json')
         self.assertEqual(response.status_code, 200)
         response = self.get('/api/timetable/1/course/')
-        self.assertEqual(2, len(json.loads(response.content.decode())))
+        self.assertEqual(1, len(json.loads(response.content.decode())))
 
     def test_course_not_allowed(self):
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
-        response = self.put('/api/course/asdf/')
+        response = self.post('/api/course/')
         self.assertEqual(response.status_code, 405)
-        response = self.delete('/api/course/asdf/')
+        response = self.put('/api/course/')
+        self.assertEqual(response.status_code, 405)
+        response = self.delete('/api/course/')
         self.assertEqual(response.status_code, 405)
 
     def test_get_course(self):
-        response = self.get('/api/course/swpp/')
+        response = self.get('/api/course/?title=asdf')
         self.assertEqual(response.status_code, 401)
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
-        response = self.get('/api/course/swpp/')
+        response = self.get('/api/course/?title=asdf')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(0, len(json.loads(response.content.decode())))
+        response = self.get('/api/course/?title=swpp')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(1, len(json.loads(response.content.decode())))
 
