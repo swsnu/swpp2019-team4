@@ -110,8 +110,8 @@ class TimetableManagement extends Component {
         </div>
         <div className="searched-courses">
           <div className="label" id="label">
-            <button className="button" type="button" onClick={() => this.showCoursesInSearch()}>과목검색</button>
-            <button className="button" type="button" onClick={() => this.showCoursesInTimetable()}>내 과목</button>
+            <button className="result-button" type="button" onClick={() => this.showCoursesInSearch()}>과목검색</button>
+            <button className="timetable-button" type="button" onClick={() => this.showCoursesInTimetable()}>내 과목</button>
           </div>
           {courseList}
         </div>

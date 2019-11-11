@@ -133,18 +133,28 @@ describe('verification test', () => {
     expect(spyPostTimetable).toBeCalledTimes(1);
   });
 
-  it('should call post when pressed postCourse button', () => {
+  it('should not call post when pressed postCourse button', () => {
     const component = mount(timetableManagement(stubState));
     component.find('.course-list').find('button').simulate('click');
-    // expect(spyPostCourse).toBeCalledTimes(1);
-    // expect(spyGetTimetables).toBeCalledTimes(2);
-    // expect(spyGetTimetable).toBeCalledTimes(1);
+    expect(spyPostCourse).toBeCalledTimes(0);
+    expect(spyGetTimetables).toBeCalledTimes(1);
+    expect(spyGetTimetable).toBeCalledTimes(0);
   });
+
+  it('should call post when pressed postCourse button when timetableId !== -1', () => {
+    const component = mount(timetableManagement(stubState));
+    component.find('.timetable-list').find('button').simulate('click');
+    component.find('.result-button').find('button').simulate('click');
+    component.find('.course-list').find('button').simulate('click');
+    expect(spyPostCourse).toBeCalledTimes(1);
+    expect(spyGetTimetables).toBeCalledTimes(2);
+    expect(spyGetTimetable).toBeCalledTimes(2);
+  })
 
   it('should call show when pressed createTimetable button', () => {
     const component = mount(timetableManagement(stubState));
     component.find('.timetable-list').find('button').simulate('click');
-    // expect(spyGetTimetable).toBeCalledTimes(1);
+    expect(spyGetTimetable).toBeCalledTimes(1);
   });
 
   it('should call signout when pressed logout button', () => {
