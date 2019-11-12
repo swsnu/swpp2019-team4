@@ -123,13 +123,17 @@ class Main extends Component {
 
     let courses = [];
     if (this.props.timetable_list !== undefined && this.props.storedUser.timetable_main !== undefined) {
-      courses = this.props.timetable_list[this.props.storedUser.timetable_main];
+      const filtered = this.props.timetable_list.filter(
+        (x) => x.length !== 0 && x[0].timetable_id === this.props.storedUser.timetable_main,
+      );
+      if (filtered.length !== 0) {
+        [courses] = filtered;
+      }
     }
 
     const friendListView = friend.map((user) => (
       <MainPageFriendView friend={user} onClick={() => this.changePopup(user.id)} key={user.id} />
     ));
-
     return (
       <div className="Main">
         <TopBar id="topbar" logout={() => this.handleLogout()} />

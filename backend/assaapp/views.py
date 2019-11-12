@@ -20,6 +20,9 @@ def course_data(courses_color):
         for course_time in CourseTime.objects.filter(course=color_data.course):
             data.append(
                 {
+                    'course_id': color_data.course.id,
+                    'course_color_id': color_data.id,
+                    'timetable_id': color_data.timetable.id,
                     'title': color_data.course.title,
                     'week_day': course_time.weekday,
                     'start_time': course_time.start_time.hour*60
