@@ -10,11 +10,50 @@ import Main from './Main';
 import * as actionCreators from '../../store/actions/user';
 
 const stubState = {
-  user: { is_authenticated: true },
+  user: { is_authenticated: true, timetable_main: 0 },
+  timetable_data: [
+    [
+      {
+        timetable_id: 0,
+        course_id: 0,
+        course_color_id: 0, 
+        week_day: 0,
+        start_time: 660,
+        end_time: 690,
+        color: '#FFFFFF',
+        lecture_number: 'LN',
+        course_number: 'CN',
+      },
+    ],
+  ],
 };
 
 const stubStateFalse = {
-  user: { is_authenticated: false },
+  user: { is_authenticated: false, timetable_main: 0 },
+  timetable_data: [
+    [
+      {
+        timetable_id: 0,
+        course_id: 0,
+        course_color_id: 0, 
+        week_day: 0,
+        start_time: 660,
+        end_time: 690,
+        color: '#FFFFFF',
+        lecture_number: 'LN',
+        course_number: 'CN',
+      },
+    ],
+  ],
+};
+
+const stubStateNone = {
+  user: { is_authenticated: true, timetable_main: 0 },
+  timetable_data: [[],],
+};
+
+const stubStateUndefined = {
+  user: { is_authenticated: true, timetable_main: 0 },
 };
 
 function window(state) {
@@ -84,5 +123,13 @@ describe('<Main />', () => {
     expect(component.find('.FriendManagement').length).toBe(1);
     component.find('#close').simulate('click');
     expect(component.find('.FriendManagement').length).toBe(0);
+  });
+
+  it('should render with empty list', () => {
+    const component = mount(window(stubStateNone));
+  });
+
+  it('should render with undefineds', () => {
+    const component = mount(window(stubStateUndefined));
   });
 });
