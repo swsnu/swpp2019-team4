@@ -1,5 +1,6 @@
 .Login {
-  background-image: url('/background.webp');
+  background: url('/background.webp') rgba(255, 255, 255, .5);
+  background-blend-mode: overlay;
   background-size: cover;
   background-position-x: center;
   background-position-y: center;
@@ -15,21 +16,17 @@
 }
 
 .Login h1 .first-letter {
-  color: #FF0000;
+  color: #6000BB;
 }
 
 .Login .form-control {
   background-color: #fffa !important;
 }
 
-.Login .row {
-  height: 100% !important;
-}
-
-.Login #login-notice {
+#login-notice {
   min-height: 1.5em;
 }
 
-.Login #login-area {
-  max-width: 400px !important;
+#login-area {
+  max-width: 350px !important;
 }

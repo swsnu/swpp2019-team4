@@ -1,3 +1,10 @@
 .FrontBar {
-    max-height: 200px;
+  max-height: 200px;
+  left: 0;
+  right: 0;
+}
+
+#image-logo {
+  height: 64px;
+  width: 64px;
 }

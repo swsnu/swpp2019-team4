@@ -1,14 +1,10 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import './TopBar.css';
+import './FrontBar.css';
 
-const FrontBar = (props) => (
-  <div className="FrontBar">
-      <img src="/logo192.png" className="image-logo" />
+const FrontBar = () => (
+  <div className="FrontBar row justify-content-center pt-1">
+    <img src="/logo192.png" alt="logo" id="image-logo" />
   </div>
 );
 
-FrontBar.propTypes = {
-};
 export default FrontBar;
