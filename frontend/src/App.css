@@ -20,3 +20,20 @@
 .App-link {
     color: #09d3ac;
 }
+
+.background {
+  background: url('/background.webp') rgba(255, 255, 255, .5);
+  background-blend-mode: overlay;
+  background-size: cover;
+  background-position-x: center;
+  background-position-y: center;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.form-control {
+  background-color: #fff8 !important;
+}

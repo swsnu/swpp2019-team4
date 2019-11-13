@@ -1,26 +1,9 @@
-.Login {
-  background: url('/background.webp') rgba(255, 255, 255, .5);
-  background-blend-mode: overlay;
-  background-size: cover;
-  background-position-x: center;
-  background-position-y: center;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-
 .Login h1 {
   font-family: 'Major Mono Display', monospace;
 }
 
 .Login h1 .first-letter {
   color: #6000BB;
-}
-
-.Login .form-control {
-  background-color: #fffa !important;
 }
 
 #login-notice {

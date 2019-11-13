@@ -38,7 +38,7 @@ class Login extends Component {
     }
     const loginNotice = (this.state.login_failed ? '이메일 또는 비밀번호가 잘못되었습니다.' : '');
     return (
-      <div className="Login d-flex flex-column">
+      <div className="Login background d-flex flex-column">
         <div className="row flex-grow-1" id="login-content">
           <div className="col-5 offset-2 d-flex flex-column justify-content-center">
             <h1 className="text-left mb-0">
