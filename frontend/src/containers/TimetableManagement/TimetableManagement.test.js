@@ -9,12 +9,56 @@ import TimetableManagement from './TimetableManagement';
 
 import * as actionCreators from '../../store/actions/user';
 
+jest.mock('../TimetableRecommend/TimetableRecommend');
 const stubState = {
   user: { is_authenticated: true },
+  timetables: [
+    {
+      id: 1,
+      title: 'my timetable',
+      semester: '2019-2',
+      user_id: 2,
+    },
+  ],
+  courses: [
+    {
+      id: 0,
+      week_day: 0,
+      start_time: 660,
+      end_time: 750,
+      title: '자료구조',
+      color: '#2BC366',
+      course_number: 'M1522.000900',
+      lecture_number: '001',
+    },
+  ],
+  timetable: [],
+  timetable_list: [],
 };
-
 const stubStateFalse = {
   user: { is_authenticated: false },
+  timetables: [
+    {
+      id: 1,
+      title: 'my timetable',
+      semester: '2019-2',
+      user_id: 2,
+    },
+  ],
+  courses: [
+    {
+      id: 0,
+      week_day: 0,
+      start_time: 660,
+      end_time: 750,
+      title: '자료구조',
+      color: '#2BC366',
+      course_number: 'M1522.000900',
+      lecture_number: '001',
+    },
+  ],
+  timetable: [],
+  timetable_list: [],
 };
 function timetableManagement(state) {
   const mockStore = getMockStore(state);
@@ -36,13 +80,38 @@ function timetableManagement(state) {
 }
 
 describe('verification test', () => {
+  let spyGetUser;
   let spyGetSignout;
+  let spyGetTimetables;
+  let spyGetCourses;
+  let spyGetTimetable;
+  let spyPostTimetable;
+  let spyPostCourse;
   beforeEach(() => {
+    spyGetUser = jest.spyOn(actionCreators, 'getUser')
+      .mockImplementation(() => () => {});
     spyGetSignout = jest.spyOn(actionCreators, 'getSignout')
       .mockImplementation(() => () => {});
+    spyGetTimetables = jest.spyOn(actionCreators, 'getTimetables')
+      .mockImplementation(() => () => {});
+    spyGetCourses = jest.spyOn(actionCreators, 'getCourses')
+      .mockImplementation(() => () => {});
+    spyGetTimetable = jest.spyOn(actionCreators, 'getTimetable')
+      .mockImplementation(() => () => {});
+    spyPostTimetable = jest.spyOn(actionCreators, 'postTimetable')
+      .mockImplementation(() => () => {});
+    spyPostCourse = jest.spyOn(actionCreators, 'postCourse')
+      .mockImplementation(() => () => {});
+    // TimetableRecommend.mockClear();
   });
 
   afterEach(() => jest.clearAllMocks());
+
+  it('should call componentDidMount', () => {
+    mount(timetableManagement(stubState));
+    expect(spyGetUser).toBeCalledTimes(1);
+    expect(spyGetTimetables).toBeCalledTimes(1);
+  });
 
   it('should render timetableManagement', () => {
     const component = mount(timetableManagement(stubState));
@@ -55,8 +124,36 @@ describe('verification test', () => {
     expect(component.find('#create-button').length).toBe(1);
     expect(component.find('#timetable-recommend-button').length).toBe(1);
     component.find('#timetable-recommend-button').simulate('click');
-    expect(component.find('#close-button').length).toBe(1);
-    component.find('#close-button').simulate('click');
+  });
+
+  it('should call postTimetable when pressed create-button', () => {
+    const component = mount(timetableManagement(stubState));
+    component.find('#create-button').simulate('click');
+    expect(spyPostTimetable).toBeCalledTimes(1);
+  });
+
+  it('should not call post when pressed postCourse button', () => {
+    const component = mount(timetableManagement(stubState));
+    component.find('.course-list').find('button').simulate('click');
+    expect(spyPostCourse).toBeCalledTimes(0);
+    expect(spyGetTimetables).toBeCalledTimes(1);
+    expect(spyGetTimetable).toBeCalledTimes(0);
+  });
+
+  it('should call post when pressed postCourse button when timetableId !== -1', () => {
+    const component = mount(timetableManagement(stubState));
+    component.find('.timetable-list').find('button').simulate('click');
+    component.find('.result-button').find('button').simulate('click');
+    component.find('.course-list').find('button').simulate('click');
+    expect(spyPostCourse).toBeCalledTimes(1);
+    expect(spyGetTimetables).toBeCalledTimes(2);
+    expect(spyGetTimetable).toBeCalledTimes(2);
+  });
+
+  it('should call show when pressed createTimetable button', () => {
+    const component = mount(timetableManagement(stubState));
+    component.find('.timetable-list').find('button').simulate('click');
+    expect(spyGetTimetable).toBeCalledTimes(1);
   });
 
   it('should call signout when pressed logout button', () => {
@@ -65,6 +162,16 @@ describe('verification test', () => {
     expect(spyGetSignout).toBeCalledTimes(1);
   });
 
+  it('should call search when pressed search button', () => {
+    const component = mount(timetableManagement(stubState));
+    component.find('.search').simulate('click');
+    expect(spyGetCourses).toBeCalledTimes(1);
+  });
+
+  it('should change value when typing in search', () => {
+    const component = mount(timetableManagement(stubState));
+    component.find('#courses').simulate('change', 'asdf');
+  });
   it('should redirect to login when is_authenticated is false', () => {
     const component = mount(timetableManagement(stubStateFalse));
     expect(component.find('.Login').length).toBe(1);

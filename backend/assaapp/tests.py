@@ -5,7 +5,6 @@ from django.utils.encoding import force_bytes
 from django.forms.models import model_to_dict
 from assaapp.models import User, Timetable, Course, CourseColor, CourseTime
 from assaapp.tokens import ACCOUNT_ACTIVATION_TOKEN
-
 class AssaTestCase(TestCase):
     def setUp(self):
         self.client = Client(enforce_csrf_checks=True)
@@ -340,6 +339,27 @@ class AssaTestCase(TestCase):
         response = self.post('/api/timetable/1/')
         self.assertEqual(response.status_code, 405)
 
+    def test_get_timetable_data(self):
+        response = self.get('/api/timetable/data/')
+        self.assertEqual(response.status_code, 401)
+        response = self.post('/api/signin/',
+                             json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
+                             content_type='application/json')
+        response = self.post('/api/timetable/data/', json.dumps({}),
+                             content_type='application/json')
+        self.assertEqual(response.status_code, 405)
+        CourseTime(course=Course.objects.get(id=1),
+                   weekday=0, start_time="17:00", end_time="18:30").save()
+        CourseTime(course=Course.objects.get(id=1),
+                   weekday=2, start_time="17:00", end_time="18:30").save()
+        CourseTime(course=Course.objects.get(id=1),
+                   weekday=3, start_time="18:30", end_time="20:30").save()
+        CourseColor(timetable=Timetable.objects.get(id=1),
+                    course=Course.objects.get(id=1), color="#2468AC").save()
+        response = self.get('/api/timetable/data/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(3, len(json.loads(response.content.decode())))
+
     def test_get_timetable_id(self):
         response = self.get('/api/timetable/1/')
         self.assertEqual(response.status_code, 401)
@@ -357,15 +377,18 @@ class AssaTestCase(TestCase):
         response = self.get('/api/timetable/1/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content.decode(),
-                         '[{"name": "swpp", "weekday": 0, "start_time": 1020,'
+                         '[{"course_id": 1, "course_color_id": 1, "timetable_id": 1,'
+                         ' "title": "swpp", "week_day": 0, "start_time": 1020,'
                          ' "end_time": 1110, "color": "#2468AC",'
                          ' "lecture_number": "001",'
                          ' "course_number": "M1522.002400"},'
-                         ' {"name": "swpp", "weekday": 2, "start_time": 1020,'
+                         ' {"course_id": 1, "course_color_id": 1, "timetable_id": 1,'
+                         ' "title": "swpp", "week_day": 2, "start_time": 1020,'
                          ' "end_time": 1110, "color": "#2468AC",'
                          ' "lecture_number": "001",'
                          ' "course_number": "M1522.002400"},'
-                         ' {"name": "swpp", "weekday": 3, "start_time": 1110,'
+                         ' {"course_id": 1, "course_color_id": 1, "timetable_id": 1,'
+                         ' "title": "swpp", "week_day": 3, "start_time": 1110,'
                          ' "end_time": 1230, "color": "#2468AC",'
                          ' "lecture_number": "001",'
                          ' "course_number": "M1522.002400"}]')
@@ -467,48 +490,25 @@ class AssaTestCase(TestCase):
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
+        response = self.post('/api/course/')
+        self.assertEqual(response.status_code, 405)
         response = self.put('/api/course/')
         self.assertEqual(response.status_code, 405)
         response = self.delete('/api/course/')
         self.assertEqual(response.status_code, 405)
 
     def test_get_course(self):
-        response = self.get('/api/course/')
+        response = self.get('/api/course/?title=asdf')
         self.assertEqual(response.status_code, 401)
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
-        response = self.get('/api/course/')
+        response = self.get('/api/course/?title=asdf')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(0, len(json.loads(response.content.decode())))
+        response = self.get('/api/course/?title=swpp')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(1, len(json.loads(response.content.decode())))
-
-    def test_course_id_not_allowed(self):
-        response = self.post('/api/signin/',
-                             json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
-                             content_type='application/json')
-        response = self.post('/api/course/1/')
-        self.assertEqual(response.status_code, 405)
-
-    def test_get_course_id(self):
-        response = self.get('/api/course/1/')
-        self.assertEqual(response.status_code, 401)
-        response = self.post('/api/signin/',
-                             json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
-                             content_type='application/json')
-        response = self.get('/api/course/101/')
-        self.assertEqual(response.status_code, 404)
-        response = self.get('/api/course/1/')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content.decode()), {
-                        "id":1, "semester":"2019-2", "classification":"전필",
-                        "college":"공과대학", "department":"컴퓨터공학부",
-                        "degree_program":"학사", "academic_year":3,
-                        "course_number":"M1522.002400", "lecture_number":"001",
-                        "title":"swpp", "subtitle":"",
-                        "credit":4, "lecture_credit":2,
-                        "lab_credit":1, "lecture_type":"", "location":"301동",
-                        "professor":"전병곤", "quota":"80", "remark":"소개원실 재미있어요",
-                        "language":"영어", "status":"설강"})
 
     def test_make_course(self):
         req_data = {

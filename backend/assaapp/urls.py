@@ -13,9 +13,10 @@ urlpatterns = [
     path('user/friend/<int:user_id>/', views.api_user_friend_id),
     path('user/friend/search/', views.api_user_search),
     path('timetable/', views.api_timetable),
+    path('timetable/main/<int:timetable_id>', views.api_timetable_main_id),
+    path('timetable/data/', views.api_timetable_data),
     path('timetable/<int:timetable_id>/', views.api_timetable_id, name='timetable_id'),
     path('timetable/<int:timetable_id>/course/',
          views.api_timetable_id_course, name='timetable_id_course'),
-    path('course/', views.api_course, name='course'),
-    path('course/<int:course_id>/', views.api_course_id, name='course_id')
+    path('course/', views.api_course, name='course')
 ]

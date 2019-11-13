@@ -4,9 +4,13 @@ const initialState = {
   user: {
     is_authenticated: null,
   },
+  timetable: [],
+  timetables: [],
+  courses: [],
   friend: [],
   friend_send: [],
   friend_receive: [],
+  timetable_data: [],
   search: {
     exist: false,
     status: '',
@@ -21,9 +25,21 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.GET_AUTH:
       return { ...state, user: { is_authenticated: action.is_authenticated } };
-    case actionTypes.GET_USER:
-      return { ...state, user: { ...action.user, is_authenticated: true } };
-
+    case actionTypes.GET_USER: {
+      const newUser = action.user;
+      newUser.is_authenticated = true;
+      return { ...state, user: newUser };
+    }
+    case actionTypes.GET_TIMETABLES:
+      return { ...state, timetables: action.timetables };
+    case actionTypes.GET_TIMETABLE:
+      return { ...state, timetable: action.timetable };
+    case actionTypes.POST_TIMETABLE:
+      return { ...state, timetables: state.timetables.concat(action.timetable) };
+    case actionTypes.POST_COURSE:
+      return { ...state, timetable: action.timetable };
+    case actionTypes.GET_COURSES:
+      return { ...state, courses: action.courses };
     case actionTypes.GET_FRIEND:
       return {
         ...state,
@@ -67,6 +83,14 @@ const reducer = (state = initialState, action) => {
     case actionTypes.CANCEL_FRIEND:
       return { ...state, friend_send: state.friend_send.filter((user) => user.id !== action.user_id) };
 
+    case actionTypes.GET_TIMETABLE_DATA:
+      return { ...state, timetable_data: action.timetable_list };
+
+    case actionTypes.POST_MAIN_TIMETABLE: {
+      const newuser = state.user;
+      newuser.timetable_main = action.timetable_main;
+      return { ...state, user: newuser };
+    }
     default:
       return { ...state };
   }

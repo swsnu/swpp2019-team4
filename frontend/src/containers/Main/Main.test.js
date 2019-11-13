@@ -10,11 +10,50 @@ import Main from './Main';
 import * as actionCreators from '../../store/actions/user';
 
 const stubState = {
-  user: { is_authenticated: true },
+  user: { is_authenticated: true, timetable_main: 0 },
+  timetable_data: [
+    [
+      {
+        timetable_id: 0,
+        course_id: 0,
+        course_color_id: 0,
+        week_day: 0,
+        start_time: 660,
+        end_time: 690,
+        color: '#FFFFFF',
+        lecture_number: 'LN',
+        course_number: 'CN',
+      },
+    ],
+  ],
 };
 
 const stubStateFalse = {
-  user: { is_authenticated: false },
+  user: { is_authenticated: false, timetable_main: 0 },
+  timetable_data: [
+    [
+      {
+        timetable_id: 0,
+        course_id: 0,
+        course_color_id: 0,
+        week_day: 0,
+        start_time: 660,
+        end_time: 690,
+        color: '#FFFFFF',
+        lecture_number: 'LN',
+        course_number: 'CN',
+      },
+    ],
+  ],
+};
+
+const stubStateNone = {
+  user: { is_authenticated: true, timetable_main: 0 },
+  timetable_data: [[]],
+};
+
+const stubStateUndefined = {
+  user: { is_authenticated: true, timetable_main: 0 },
 };
 
 function window(state) {
@@ -37,6 +76,12 @@ jest.mock('../FriendManagement/FriendManagement', () => jest.fn((props) => (
   </div>
 )));
 
+jest.mock('../../components/TimetableView/TimetableView', () => jest.fn((props) => (
+  <div>
+    {props.courses.map((x) => <button id="fake-course" type="button" key={1}>{x.course_id}</button>)}
+  </div>
+)));
+
 describe('<Main />', () => {
   let spyGetSignout;
 
@@ -54,13 +99,12 @@ describe('<Main />', () => {
     const informationbutton = component.find('#personal-information-button');
     const logoutbutton = component.find('#logout-button');
     const timetable = component.find('#timetable-table');
-    const friendlist = component.find('#friend-list');
     expect(assabutton.length).toBe(4);
     expect(timetablebutton.length).toBe(4);
     expect(informationbutton.length).toBe(1);
     expect(logoutbutton.length).toBe(1);
     expect(timetable.length).toBe(1);
-    expect(friendlist.length).toBe(1);
+    expect(component.find('#fake-course').length).toBe(1);
   });
 
   it('should call friend timetable when pressed friend button', () => {
@@ -86,5 +130,15 @@ describe('<Main />', () => {
     expect(component.find('.FriendManagement').length).toBe(1);
     component.find('#close').simulate('click');
     expect(component.find('.FriendManagement').length).toBe(0);
+  });
+
+  it('should render with empty list', () => {
+    const component = mount(window(stubStateNone));
+    expect(component.find('#fake-course').length).toBe(0);
+  });
+
+  it('should render with undefineds', () => {
+    const component = mount(window(stubStateUndefined));
+    expect(component.find('#fake-course').length).toBe(0);
   });
 });
