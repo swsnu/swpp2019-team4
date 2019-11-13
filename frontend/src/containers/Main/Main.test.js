@@ -16,7 +16,7 @@ const stubState = {
       {
         timetable_id: 0,
         course_id: 0,
-        course_color_id: 0, 
+        course_color_id: 0,
         week_day: 0,
         start_time: 660,
         end_time: 690,
@@ -35,7 +35,7 @@ const stubStateFalse = {
       {
         timetable_id: 0,
         course_id: 0,
-        course_color_id: 0, 
+        course_color_id: 0,
         week_day: 0,
         start_time: 660,
         end_time: 690,
@@ -49,7 +49,7 @@ const stubStateFalse = {
 
 const stubStateNone = {
   user: { is_authenticated: true, timetable_main: 0 },
-  timetable_data: [[],],
+  timetable_data: [[]],
 };
 
 const stubStateUndefined = {
@@ -76,6 +76,12 @@ jest.mock('../FriendManagement/FriendManagement', () => jest.fn((props) => (
   </div>
 )));
 
+jest.mock('../../components/TimetableView/TimetableView', () => jest.fn((props) => (
+  <div>
+    {props.courses.map((x) => <button id="fake-course" type="button" key={1}>{x.course_id}</button>)}
+  </div>
+)));
+
 describe('<Main />', () => {
   let spyGetSignout;
 
@@ -98,6 +104,7 @@ describe('<Main />', () => {
     expect(informationbutton.length).toBe(1);
     expect(logoutbutton.length).toBe(1);
     expect(timetable.length).toBe(1);
+    expect(component.find('#fake-course').length).toBe(1);
   });
 
   it('should call friend timetable when pressed friend button', () => {
@@ -127,9 +134,11 @@ describe('<Main />', () => {
 
   it('should render with empty list', () => {
     const component = mount(window(stubStateNone));
+    expect(component.find('#fake-course').length).toBe(0);
   });
 
   it('should render with undefineds', () => {
     const component = mount(window(stubStateUndefined));
+    expect(component.find('#fake-course').length).toBe(0);
   });
 });
