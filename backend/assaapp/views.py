@@ -317,8 +317,8 @@ def api_course(request):
                 match_text = request.GET.get('title')
                 def is_matched(text):
                     matched = 0
-                    for i in range(len(text)):
-                        if text[i] == match_text[matched]:
+                    for char in text:
+                        if char == match_text[matched]:
                             matched += 1
                         if matched == len(match_text):
                             return True
