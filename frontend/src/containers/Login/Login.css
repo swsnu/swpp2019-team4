@@ -26,6 +26,10 @@
   height: 100% !important;
 }
 
-.Login .invalid-feedback {
-  height: 50px;
+.Login #login-notice {
+  min-height: 1.5em;
+}
+
+.Login #login-area {
+  max-width: 400px !important;
 }
