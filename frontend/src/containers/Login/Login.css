@@ -1,29 +1,31 @@
 .Login {
-  padding: 60px 0;
+  background-image: url('/background.webp');
+  background-size: cover;
+  background-position-x: center;
+  background-position-y: center;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
-.Login Form {
-  margin: 0 auto;
-  max-width: 320px;
+.Login h1 {
+  font-family: 'Major Mono Display', monospace;
 }
 
-#email-input {
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-  border-bottom: 1;
-}
-
-#pw-input {
-  border-top-right-radius: 0;
-  border-top-left-radius: 0;
-  border-top: 1;
-}
-
-#login-notice {
+.Login h1 .first-letter {
   color: #FF0000;
 }
 
-.Login Button {
-  margin: 10px 0;
-  width: 100%;
+.Login .form-control {
+  background-color: #fffa !important;
+}
+
+.Login .row {
+  height: 100% !important;
+}
+
+.Login .invalid-feedback {
+  height: 50px;
 }
