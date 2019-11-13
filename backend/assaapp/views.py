@@ -313,7 +313,7 @@ def api_course(request):
     if request.user.is_authenticated:
         if request.method == 'GET':
             course_list = [course for course in Course.objects.values()]
-            if request.GET.get('title') :
+            if request.GET.get('title'):
                 match_text = request.GET.get('title')
                 def is_matched(text):
                     matched = 0
