@@ -33,6 +33,7 @@ class Signup extends Component {
       department_notice: '',
 
       is_waiting: false,
+      is_finished: false,
     };
   }
 
@@ -76,9 +77,10 @@ class Signup extends Component {
     if (sendValid) {
       this.setState((prevState) => ({ ...prevState, is_waiting: true }));
       this.props.onPostSignup(email, password, username, department, grade)
-        .then(() => {
-          this.props.history.push('/login');
-        })
+        .then(() => this.setState((prevState) => ({
+          ...prevState,
+          is_finished: true,
+        })))
         .catch(() => this.setState((prevState) => ({
           ...prevState,
           email_valid: false,
@@ -96,6 +98,30 @@ class Signup extends Component {
     if (this.props.storedUser.is_authenticated === true) {
       return (
         <Redirect to="/main" />
+      );
+    }
+
+    if (this.state.is_finished) {
+      return (
+        <div className="Signup background">
+          <FrontBar />
+          <div className="fixed-top h-100 d-flex flex-column justify-content-center align-items-center">
+            <div className="oi oi-envelope-open text-dark my-3" style={{ 'font-size': '5em' }} />
+            <h4>
+              {' '}
+              <b>{this.state.email}</b>
+            </h4>
+            <h4> 인증 메일을 보냈습니다.</h4>
+            <button
+              className="btn btn-outline-dark my-3"
+              type="button"
+              id="signup-finish-button"
+              onClick={() => this.goToLogin()}
+            >
+  로그인 화면으로 돌아가기
+            </button>
+          </div>
+        </div>
       );
     }
 
