@@ -124,3 +124,11 @@ class CourseTime(models.Model):
     weekday = models.IntegerField(default=0)
     start_time = models.TimeField()
     end_time = models.TimeField()
+
+class Building(models.Model):
+    name = models.CharField(max_length=8, default='default')
+    x = models.DecimalField(max_digits=16, decimal_places=8)
+    y = models.DecimalField(max_digits=16, decimal_places=8)
+
+    def __str__(self):
+        return self.name
