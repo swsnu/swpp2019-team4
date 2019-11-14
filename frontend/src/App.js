@@ -7,6 +7,7 @@ import Main from './containers/Main/Main';
 import Verify from './containers/Verify/Verify';
 import TimetableManagement from './containers/TimetableManagement/TimetableManagement';
 import '../node_modules/bootstrap/dist/css/bootstrap.css';
+import '../node_modules/open-iconic/font/css/open-iconic-bootstrap.min.css';
 import './App.css';
 
 function App(props) {

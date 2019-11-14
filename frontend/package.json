@@ -61,6 +61,7 @@
     "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-react-hooks": "^1.7.0",
     "identity-obj-proxy": "^3.0.0",
-    "mockdate": "^2.0.5"
+    "mockdate": "^2.0.5",
+    "open-iconic": "^1.1.1"
   }
 }

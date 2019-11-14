@@ -1,10 +1,19 @@
 .FrontBar {
-  max-height: 200px;
   left: 0;
   right: 0;
 }
 
-#image-logo {
-  height: 64px;
-  width: 64px;
+#assa-logo {
+  height: 96px;
+  width: 96px;
+}
+
+#prev-logo {
+  position: absolute;
+  top: 50%;
+  left: 32px;
+}
+
+.Signup .feedback {
+  min-height: 2em;
 }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import FrontBar from '../../components/FrontBar/FrontBar';
 import * as actionCreators from '../../store/actions/index';
 
 import './Signup.css';
@@ -14,7 +15,7 @@ class Signup extends Component {
       password: '',
       password_confirm: '',
       username: '',
-      grade: '1',
+      grade: '',
       department: '컴퓨터공학부',
       email_sending: 0,
     };
@@ -42,12 +43,12 @@ class Signup extends Component {
       );
     }
     const regexValid = /^[^@\s]+@[^.@\s]+[.][^@\s]+$/.exec(this.state.email);
-    const emailValid = (regexValid !== null);
-    const passwordValid = (this.state.password.length >= 8 && this.state.password.length <= 32);
-    const passwordConfirmValid = (this.state.password === this.state.password_confirm);
-    const usernameValid = (this.state.username.length >= 1 && this.state.username.length <= 16);
-    const departmentValid = (this.state.department === '컴퓨터공학부');
-    const gradeValid = (1 * this.state.grade >= 1 && 1 * this.state.grade <= 99);
+    const emailValid = (regexValid !== null || this.state.email_sending != 3);
+    const passwordValid = ((this.state.password.length >= 8 && this.state.password.length <= 32) || this.state.email_sending != 3);
+    const passwordConfirmValid = (this.state.password === this.state.password_confirm || this.state.email_sending != 3);
+    const usernameValid = ((this.state.username.length >= 1 && this.state.username.length <= 16) || this.state.email_sending != 3);
+    const departmentValid = ((this.state.department === '컴퓨터공학부') || this.state.email_sending != 3);
+    const gradeValid = ((1 * this.state.grade >= 1 && 1 * this.state.grade <= 99) || this.state.email_sending != 3);
 
     const emailNotice = (emailValid ? '' : '이메일 형식이 올바르지 않습니다.');
     const passwordNotice = (passwordValid ? '' : '비밀번호는 8자 이상 32자 이하로 구성되어야 합니다.');
@@ -61,100 +62,94 @@ class Signup extends Component {
       '입력한 이메일로 확인 메일을 발송했습니다. 이메일 확인 절차를 마치면 계정이 생성됩니다.',
       '메일을 발송하지 못했습니다. 이메일을 다시 한 번 확인해 주시기 바랍니다.'][this.state.email_sending];
     return (
-      <div className="Signup">
-        <h2>Welcome to ASSA!</h2>
-                이메일:
-        {' '}
-        <input
-          type="text"
-          id="email-input"
-          value={this.state.email}
-          onChange={(event) => this.setState({ email: event.target.value })}
-        />
-        {' '}
-        <br />
-        <p className="violation-notice">{emailNotice}</p>
-                비밀번호:
-        {' '}
-        <input
-          type="password"
-          id="password-input"
-          value={this.state.password}
-          onChange={(event) => this.setState({ password: event.target.value })}
-        />
-        {' '}
-        <br />
-        <p className="violation-notice">{passwordNotice}</p>
-                비밀번호 확인:
-        {' '}
-        <input
-          type="password"
-          id="password-confirm-input"
-          value={this.state.password_confirm}
-          onChange={(event) => this.setState({ password_confirm: event.target.value })}
-        />
-        {' '}
-        <br />
-        <p className="violation-notice">{passwordConfirmNotice}</p>
-                이름:
-        {' '}
-        <input
-          type="text"
-          id="username-input"
-          value={this.state.username}
-          onChange={(event) => this.setState({ username: event.target.value })}
-        />
-        {' '}
-        <br />
-        <p className="violation-notice">{usernameNotice}</p>
-                학과:
-        {' '}
-        <input
-          type="text"
-          id="department-input"
-          value={this.state.department}
-          onChange={(event) => this.setState({ department: event.target.value })}
-        />
-        {' '}
-        <br />
-        <p className="violation-notice">{departmentNotice}</p>
-                학년:
-        {' '}
-        <input
-          type="number"
-          id="grade-input"
-          value={this.state.grade}
-          onChange={(event) => this.setState({ grade: event.target.value })}
-        />
-        {' '}
-        <br />
-        <p className="violation-notice">{gradeNotice}</p>
-        <br />
-        <button
-          type="button"
-          id="to-login-button"
-          disabled={this.state.email_sending === 1}
-          onClick={() => this.goToLogin()}
-        >
+      <div className="Signup background">
+        <FrontBar />
+        <div className="col-4 offset-4">
+          <form>
+            <div className="form-group">
+              <input
+                className={`form-control ${emailValid ? '' : 'is-invalid'}`}
+                type="text"
+                id="email-input"
+                placeholder="Email"
+                value={this.state.email}
+                onChange={(event) => this.setState({ email: event.target.value })}
+              />
+              <div className="small text-left violation-notice feedback">{emailNotice}</div>
+              <input
+                className={`form-control ${passwordValid ? '' : 'is-invalid'}`}
+                type="password"
+                id="password-input"
+                placeholder="Password"
+                value={this.state.password}
+                onChange={(event) => this.setState({ password: event.target.value })}
+              />
+              <div className="small text-left violation-notice feedback">{passwordNotice}</div>
+              <input
+                className={`form-control ${passwordConfirmValid ? '' : 'is-invalid'}`}
+                type="password"
+                id="password-confirm-input"
+                value={this.state.password_confirm}
+                placeholder="Password Confirmation"
+                onChange={(event) => this.setState({ password_confirm: event.target.value })}
+              />
+              <div className="small text-left violation-notice feedback">{passwordConfirmNotice}</div>
+              <input
+                className={`form-control ${usernameValid ? '' : 'is-invalid'}`}
+                type="text"
+                id="username-input"
+                value={this.state.username}
+                placeholder="Username"
+                onChange={(event) => this.setState({ username: event.target.value })}
+              />
+              <div className="small text-left violation-notice feedback">{usernameNotice}</div>
+              <input
+                className={`form-control ${departmentValid ? '' : 'is-invalid'}`}
+                type="text"
+                id="department-input"
+                value={this.state.department}
+                placeholder="Department"
+                onChange={(event) => this.setState({ department: event.target.value })}
+              />
+              <div className="small text-left violation-notice feedback">{departmentNotice}</div>
+              <input
+                className={`form-control ${gradeValid ? '' : 'is-invalid'}`}
+                type="number"
+                id="grade-input"
+                value={this.state.grade}
+                placeholder="Grade"
+                onChange={(event) => this.setState({ grade: event.target.value })}
+              />
+              <div className="small text-left violation-notice feedback">{gradeNotice}</div>
+            </div>
+            <div className="row m-0">
+            <button
+              className="btn btn-outline-dark col mr-1"
+              type="button"
+              id="to-login-button"
+              disabled={this.state.email_sending === 1}
+              onClick={() => this.goToLogin()}
+            >
 뒤로가기
-        </button>
-        <button
-          type="button"
-          id="confirm-signup-button"
-          disabled={
+            </button>
+            <button
+              className="btn btn-dark col ml-1"
+              type="button"
+              id="confirm-signup-button"
+              disabled={
             (this.state.email_sending === 1)
             || !(emailValid && passwordValid && passwordConfirmValid && usernameValid && departmentValid && gradeValid)
           }
-          onClick={() => this.handleSignup(this.state.email,
-            this.state.password,
-            this.state.username,
-            this.state.department,
-            this.state.grade)}
-        >
+              onClick={() => this.handleSignup(this.state.email,
+                this.state.password,
+                this.state.username,
+                this.state.department,
+                this.state.grade)}
+            >
 가입하기
-        </button>
-        <br />
-        {emailSendNotice}
+            </button></div>
+          </form>
+        </div>
       </div>
     );
   }
