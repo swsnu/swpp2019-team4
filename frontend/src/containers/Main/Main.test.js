@@ -70,6 +70,14 @@ function window(state) {
   );
 }
 
+jest.mock('../../components/TopBar/TopBar', () => jest.fn((props) => (
+  <div className="TopBar">
+    <button type="button" className="text-black-50" id="logout-button" onClick={() => props.logout()}>
+      x
+    </button>
+  </div>
+)));
+
 jest.mock('../FriendManagement/FriendManagement', () => jest.fn((props) => (
   <div className="FriendManagement">
     <button id="close" type="button" onClick={props.onClose}> x </button>
@@ -94,15 +102,9 @@ describe('<Main />', () => {
 
   it('Main page render test', () => {
     const component = mount(window(stubState));
-    const assabutton = component.find('#assa-logo-button');
-    const timetablebutton = component.find('#timetable-management-button');
-    const informationbutton = component.find('#personal-information-button');
-    const logoutbutton = component.find('#logout-button');
+    const topbar = component.find('.TopBar');
     const timetable = component.find('#timetable-table');
-    expect(assabutton.length).toBe(4);
-    expect(timetablebutton.length).toBe(4);
-    expect(informationbutton.length).toBe(1);
-    expect(logoutbutton.length).toBe(1);
+    expect(topbar.length).toBe(1);
     expect(timetable.length).toBe(1);
     expect(component.find('#fake-course').length).toBe(1);
   });

@@ -7,10 +7,12 @@ describe('<TimetableView />', () => {
   it('TimetableView render test', () => {
     const component = mount(<BrowserRouter><TopBar logout={() => {}} /></BrowserRouter>);
     const assabutton = component.find('#assa-logo-button');
-    const timetablebutton = component.find('#timetable-management-button');
+    const managementbutton = component.find('#timetable-management-button');
+    const recommendationbutton = component.find('#timetable-recommendation-button');
     const informationbutton = component.find('#personal-information-button');
     expect(assabutton.length).toBe(4);
-    expect(timetablebutton.length).toBe(4);
-    expect(informationbutton.length).toBe(1);
+    expect(managementbutton.length).toBe(4);
+    expect(recommendationbutton.length).toBe(4);
+    expect(informationbutton.length).toBe(4);
   });
 });
