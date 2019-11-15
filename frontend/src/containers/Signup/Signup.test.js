@@ -34,7 +34,7 @@ function signup(state) {
   );
 }
 
-describe('verification test', () => {
+describe('signup test', () => {
   let spyPostSignup;
 
   beforeEach(() => {

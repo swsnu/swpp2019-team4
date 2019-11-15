@@ -24,16 +24,20 @@ const TimetableView = (props) => {
       coursesList[j].push([]);
     }
   }
-  for (let i = 0; props.courses !== undefined && i < props.courses.length; i += 1) {
-    coursesList[props.courses[i].week_day][props.courses[i].start_time / 30 - 16].push(
-      {
-        title: props.text ? props.courses[i].title : '',
-        length: props.courses[i].end_time - props.courses[i].start_time,
-        color: props.courses[i].color,
-        lecnum: props.courses[i].lecture_number,
-        clanum: props.courses[i].course_number,
-      },
-    );
+  if (props.courses !== undefined) {
+    for (let i = 0; i < props.courses.length; i += 1) {
+      for (let j = 0; j < props.courses[i].time.length; j += 1) {
+        coursesList[props.courses[i].time[j].week_day][props.courses[i].time[j].start_time / 30 - 16].push(
+          {
+            title: props.text ? props.courses[i].title : '',
+            length: props.courses[i].time[j].end_time - props.courses[i].time[j].start_time,
+            color: props.courses[i].color,
+            lecnum: props.courses[i].lecture_number,
+            clanum: props.courses[i].course_number,
+          },
+        );
+      }
+    }
   }
   for (let i = 0; i < 7; i += 1) {
     tablehtmlIth.push(<th key={i} height={heightunit} width={widthunit}>{props.text ? tableHeaderString[i] : ''}</th>);
@@ -116,17 +120,17 @@ const TimetableView = (props) => {
 };
 
 TimetableView.propTypes = {
-  courses: PropTypes.arrayOf(
-    PropTypes.shape({
+  courses: PropTypes.arrayOf(PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    color: PropTypes.string.isRequired,
+    lecture_number: PropTypes.string.isRequired,
+    course_number: PropTypes.string.isRequired,
+    time: PropTypes.arrayOf(PropTypes.shape({
       start_time: PropTypes.number.isRequired,
       end_time: PropTypes.number.isRequired,
       week_day: PropTypes.number.isRequired,
-      title: PropTypes.string.isRequired,
-      color: PropTypes.string.isRequired,
-      lecture_number: PropTypes.string.isRequired,
-      course_number: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
+    })),
+  })).isRequired,
   height: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
   text: PropTypes.bool.isRequired,

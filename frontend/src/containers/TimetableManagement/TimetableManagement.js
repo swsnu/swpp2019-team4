@@ -21,9 +21,12 @@ class TimetableManagement extends Component {
   }
 
   componentDidMount() {
-    this.props.onGetUser();
+    this.props.onGetUser()
+      .then(() => {
+        this.setState((prevState) => ({ ...prevState, timetableId: this.props.storedUser.timetable_main }));
+        this.props.onGetTimetable(this.props.storedUser.timetable_main);
+      });
     this.props.onGetTimetables();
-    this.props.onGetTimetableData();
   }
 
   statePopup(value) {
@@ -37,7 +40,6 @@ class TimetableManagement extends Component {
   post(courseId) {
     if (this.state.timetableId !== -1) {
       this.props.onPostCourse(this.state.timetableId, courseId);
-      this.props.onGetTimetables();
       this.props.onGetTimetable(this.state.timetableId);
     }
   }
@@ -82,7 +84,7 @@ class TimetableManagement extends Component {
 
     const courseList = (
       <SideView
-        list={this.state.showCourses ? this.props.courses : this.props.timetable}
+        list={this.state.showCourses ? this.props.courses : this.props.timetable.course}
         className="course-list"
         onClick={(id) => this.post(id)}
       />
@@ -126,7 +128,7 @@ class TimetableManagement extends Component {
             id="timetable-table"
             height={24}
             width={60}
-            courses={this.props.timetable}
+            courses={this.props.timetable.course}
             text
             link
             title=""
@@ -141,7 +143,7 @@ class TimetableManagement extends Component {
           this.state.showPopup
             ? (
               <TimetableRecommend
-                timetable={this.props.timetable_list}
+                timetable={this.props.timetables}
                 closePopup={() => this.statePopup(false)}
               />
             )
@@ -161,28 +163,30 @@ TimetableManagement.propTypes = {
   onGetTimetable: PropTypes.func.isRequired,
   onPostTimetable: PropTypes.func.isRequired,
   onPostCourse: PropTypes.func.isRequired,
-  onGetTimetableData: PropTypes.func.isRequired,
   onPostMainTimetable: PropTypes.func.isRequired,
   timetables: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
+      timetable_main: PropTypes.number.isRequired,
     }),
   ).isRequired,
   courses: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
+      time: PropTypes.arrayOf(PropTypes.shape({
+      })).isRequired,
     }),
   ).isRequired,
-  timetable: PropTypes.arrayOf(
-    PropTypes.shape({
-    }),
-  ).isRequired,
-  timetable_list: PropTypes.arrayOf(
-    PropTypes.shape({
-    }),
-  ).isRequired,
+  timetable: PropTypes.shape({
+    course: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      time: PropTypes.arrayOf(PropTypes.shape({
+      })).isRequired,
+    })),
+  }).isRequired,
   storedUser: PropTypes.shape({
     is_authenticated: PropTypes.bool.isRequired,
+    timetable_main: PropTypes.number.isRequired,
   }).isRequired,
 };
 
@@ -191,18 +195,16 @@ const mapStateToProps = (state) => ({
   timetables: state.user.timetables,
   courses: state.user.courses,
   timetable: state.user.timetable,
-  timetable_list: state.user.timetable_data,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onLogout: () => dispatch(actionCreators.getSignout()),
-  onGetTimetables: () => dispatch(actionCreators.getTimetables()),
   onGetCourses: (searchStrings) => dispatch(actionCreators.getCourses(searchStrings)),
   onGetTimetable: (timetableId) => dispatch(actionCreators.getTimetable(timetableId)),
   onPostTimetable: (timetableName, semester) => dispatch(actionCreators.postTimetable(timetableName, semester)),
   onPostCourse: (title, courseId) => dispatch(actionCreators.postCourse(title, courseId)),
-  onGetTimetableData: () => dispatch(actionCreators.getTimetableData()),
+  onGetTimetables: () => dispatch(actionCreators.getTimetables()),
   onPostMainTimetable: (id) => dispatch(actionCreators.postMainTimetable(id)),
 });
 

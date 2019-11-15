@@ -10,7 +10,6 @@ const initialState = {
   friend: [],
   friend_send: [],
   friend_receive: [],
-  timetable_data: [],
   search: {
     exist: false,
     status: '',
@@ -30,8 +29,6 @@ const reducer = (state = initialState, action) => {
       newUser.is_authenticated = true;
       return { ...state, user: newUser };
     }
-    case actionTypes.GET_TIMETABLES:
-      return { ...state, timetables: action.timetables };
     case actionTypes.GET_TIMETABLE:
       return { ...state, timetable: action.timetable };
     case actionTypes.POST_TIMETABLE:
@@ -83,8 +80,8 @@ const reducer = (state = initialState, action) => {
     case actionTypes.CANCEL_FRIEND:
       return { ...state, friend_send: state.friend_send.filter((user) => user.id !== action.user_id) };
 
-    case actionTypes.GET_TIMETABLE_DATA:
-      return { ...state, timetable_data: action.timetable_list };
+    case actionTypes.GET_TIMETABLES:
+      return { ...state, timetables: action.timetables };
 
     case actionTypes.POST_MAIN_TIMETABLE: {
       const newuser = state.user;

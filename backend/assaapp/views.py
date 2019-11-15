@@ -10,31 +10,8 @@ from django.core.mail import EmailMessage
 from django.forms.models import model_to_dict
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from assaapp.models import User, Timetable, Course, CourseColor, CourseTime
+from assaapp.models import User, Timetable, Course, CourseColor
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
-
-
-def course_data(courses_color):
-    data = []
-    for color_data in courses_color:
-        for course_time in CourseTime.objects.filter(course=color_data.course):
-            data.append(
-                {
-                    'course_id': color_data.course.id,
-                    'course_color_id': color_data.id,
-                    'timetable_id': color_data.timetable.id,
-                    'title': color_data.course.title,
-                    'week_day': course_time.weekday,
-                    'start_time': course_time.start_time.hour*60
-                                  +course_time.start_time.minute,
-                    'end_time': course_time.end_time.hour*60
-                                +course_time.end_time.minute,
-                    'color': color_data.color,
-                    'lecture_number': color_data.course.lecture_number,
-                    'course_number': color_data.course.course_number,
-                }
-            )
-    return data
 
 def api_signup(request):
     if request.method == 'POST':
@@ -210,8 +187,8 @@ def api_user_search(request):
 def api_timetable(request):
     if request.user.is_authenticated:
         if request.method == 'GET':
-            timetables = [timetable for timetable in
-                          Timetable.objects.filter(user__id=request.user.id).values()]
+            timetables = [timetable.data() for timetable in
+                          Timetable.objects.filter(user__id=request.user.id)]
             return JsonResponse(timetables, safe=False)
         if request.method == 'POST':
             try:
@@ -221,7 +198,7 @@ def api_timetable(request):
                 timetable = Timetable(title=timetable_title,
                                       semester=timetable_semester, user=request.user)
                 timetable.save()
-                return JsonResponse(model_to_dict(timetable), status=201)
+                return JsonResponse(timetable.data_small(), status=201)
             except (KeyError, JSONDecodeError):
                 return HttpResponseBadRequest()
         return HttpResponseNotAllowed(['GET', 'POST'])
@@ -243,31 +220,14 @@ def api_timetable_main_id(request, timetable_id):
         return HttpResponseNotAllowed(['POST'])
     return HttpResponse(status=401)
 
-def api_timetable_data(request):
-    if request.user.is_authenticated:
-        if request.method == 'GET':
-            timetables = [timetable for timetable in
-                          Timetable.objects.filter(user__id=request.user.id)]
-            timetable_list = []
-            for timetable in timetables:
-                courses_color = [course for
-                                 course in CourseColor.objects.filter(timetable=timetable)]
-                timetable_list.append(course_data(courses_color))
-            return JsonResponse(timetable_list, safe=False)
-        return HttpResponseNotAllowed(['GET'])
-    return HttpResponse(status=401)
-
-
 def api_timetable_id(request, timetable_id):
     if request.user.is_authenticated:
         if request.method == 'GET':
             try:
-                timetable = model_to_dict(Timetable.objects.get(id=timetable_id))
+                timetable = Timetable.objects.get(id=timetable_id)
             except Timetable.DoesNotExist:
                 return JsonResponse([], status=404, safe=False)
-            courses_color = [course for
-                             course in CourseColor.objects.filter(timetable=timetable_id)]
-            return JsonResponse(course_data(courses_color), safe=False)
+            return JsonResponse(timetable.data(), safe=False)
         if request.method == 'PUT':
             try:
                 body = request.body.decode()
@@ -323,10 +283,7 @@ def api_timetable_id_course(request, timetable_id):
                     course = Course.objects.get(pk=course_id)
                     CourseColor(timetable=timetable, course=course, color=color).save()
                     timetable.save()
-                    courses_color = [course for
-                                     course in CourseColor.objects.filter(timetable=timetable_id)]
-                    courses_data = course_data(courses_color)
-                    return JsonResponse(courses_data, safe=False)
+                    return JsonResponse(timetable.data(), safe=False)
                 except (Timetable.DoesNotExist, Course.DoesNotExist):
                     return HttpResponseNotFound()
             except (KeyError, JSONDecodeError):

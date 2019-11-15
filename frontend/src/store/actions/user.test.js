@@ -196,11 +196,11 @@ describe('user action test', () => {
         done();
       });
   });
-  it('should call getTimetableData', (done) => {
+  it('should call getTimetables', (done) => {
     axios.get = jest.fn(() => new Promise((resolve) => {
       resolve({ status: 204, data: null });
     }));
-    store.dispatch(actionCreators.getTimetableData())
+    store.dispatch(actionCreators.getTimetables())
       .then(() => {
         expect(axios.get).toHaveBeenCalledTimes(1);
         done();

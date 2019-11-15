@@ -26,14 +26,14 @@ class TimetableRecommend extends Component {
           className="recommended-timetable-space"
           role="button"
           tabIndex={0}
-          onClick={() => this.changeview(this.props.timetable[i])}
-          onKeyDown={() => this.changeview(this.props.timetable[i])}
+          onClick={() => this.changeview(this.props.timetable[i].course)}
+          onKeyDown={() => this.changeview(this.props.timetable[i].course)}
         >
           <TimetableView
             id="timetable-one-result"
             height={4}
             width={20}
-            courses={this.props.timetable[i]}
+            courses={this.props.timetable[i].course}
             text={false}
             link={false}
             title=""

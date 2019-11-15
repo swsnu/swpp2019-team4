@@ -18,9 +18,10 @@ const SideView = (props) => {
 };
 
 SideView.propTypes = {
-  list: PropTypes.shape({
-    map: PropTypes.func.isRequired,
-  }).isRequired,
+  list: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+  })).isRequired,
   onClick: PropTypes.func.isRequired,
   className: PropTypes.string.isRequired,
 };

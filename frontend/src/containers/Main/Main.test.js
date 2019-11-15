@@ -11,45 +11,38 @@ import * as actionCreators from '../../store/actions/user';
 
 const stubState = {
   user: { is_authenticated: true, timetable_main: 0 },
-  timetable_data: [
-    [
-      {
-        timetable_id: 0,
-        course_id: 0,
-        course_color_id: 0,
-        week_day: 0,
-        start_time: 660,
-        end_time: 690,
+  timetables: [
+    {
+      id: 0,
+      course: [{
+        id: 0,
         color: '#FFFFFF',
         lecture_number: 'LN',
         course_number: 'CN',
-      },
-    ],
+        time: [
+          {
+            week_day: 0,
+            start_time: 660,
+            end_time: 690,
+          },
+        ],
+      }],
+    },
   ],
 };
 
 const stubStateFalse = {
   user: { is_authenticated: false, timetable_main: 0 },
-  timetable_data: [
-    [
-      {
-        timetable_id: 0,
-        course_id: 0,
-        course_color_id: 0,
-        week_day: 0,
-        start_time: 660,
-        end_time: 690,
-        color: '#FFFFFF',
-        lecture_number: 'LN',
-        course_number: 'CN',
-      },
-    ],
-  ],
+  timetables: [{
+    course: [{ time: [{}] }],
+  }],
 };
 
 const stubStateNone = {
   user: { is_authenticated: true, timetable_main: 0 },
-  timetable_data: [[]],
+  timetables: [{
+    course: [{ time: [{}] }],
+  }],
 };
 
 const stubStateUndefined = {

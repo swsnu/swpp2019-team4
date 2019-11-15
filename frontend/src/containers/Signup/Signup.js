@@ -106,7 +106,7 @@ class Signup extends Component {
         <div className="Signup background">
           <FrontBar />
           <div className="fixed-top h-100 d-flex flex-column justify-content-center align-items-center">
-            <div className="oi oi-envelope-open text-dark my-3" style={{ 'font-size': '5em' }} />
+            <div className="oi oi-envelope-open text-dark my-3" style={{ fontSize: '5em' }} />
             <h4>
               {' '}
               <b>{this.state.email}</b>
