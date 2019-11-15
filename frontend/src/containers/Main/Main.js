@@ -137,7 +137,6 @@ class Main extends Component {
     return (
       <div className="Main">
         <TopBar id="topbar" logout={() => this.handleLogout()} />
-        <br />
         <div className="Content-left">
           <TimetableView id="timetable-table" height={24} width={80} courses={courses} text link title="TIMETABLE" />
         </div>
