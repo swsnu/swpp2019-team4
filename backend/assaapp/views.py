@@ -113,7 +113,7 @@ def api_user(request):
                 for key in plain_keys:
                     if key in req_data:
                         setattr(user, key, req_data[key])
-                
+
                 # But the user must input previous password in order to change password
                 if 'password_prev' in req_data:
                     password_prev = req_data['password_prev']
