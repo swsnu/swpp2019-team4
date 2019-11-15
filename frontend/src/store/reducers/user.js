@@ -4,7 +4,8 @@ const initialState = {
   user: {
     is_authenticated: null,
   },
-  timetable: {}, 
+  timetable: {},
+  timetable_friend: {},
   timetables: [],
   courses: [],
   friend: [],
@@ -31,6 +32,8 @@ const reducer = (state = initialState, action) => {
     }
     case actionTypes.GET_TIMETABLE:
       return { ...state, timetable: action.timetable };
+    case actionTypes.GET_TIMETABLE_FRIEND:
+      return { ...state, timetable_friend: action.timetable };
     case actionTypes.POST_TIMETABLE:
       return { ...state, timetables: state.timetables.concat(action.timetable) };
     case actionTypes.POST_COURSE:

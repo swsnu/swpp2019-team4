@@ -16,10 +16,11 @@ export {
   cancelFriend,
   postUserSearch,
   receiveFriend,
-  getTimetables,
   getCourses,
   postCourse,
   getTimetable,
+  getTimetables,
+  getTimetableFriend,
   postTimetable,
   postMainTimetable,
 } from './user';

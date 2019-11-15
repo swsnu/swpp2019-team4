@@ -49,7 +49,8 @@ describe('Reducer', () => {
       user: {
         is_authenticated: null,
       },
-      timetable: [],
+      timetable: {},
+      timetable_friend: {},
       timetables: [],
       courses: [],
       friend: [],
