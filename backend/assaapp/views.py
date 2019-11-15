@@ -4,7 +4,7 @@ import random
 from django.db.utils import IntegrityError
 from django.http import HttpResponse, HttpResponseNotAllowed, \
     JsonResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseNotFound
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.mail import EmailMessage
 from django.forms.models import model_to_dict
@@ -117,6 +117,7 @@ def api_user(request):
                     if key in req_data:
                         setattr(user, key, req_data[key])
                 user.save()
+                update_session_auth_hash(request, user)
                 return JsonResponse(user.data_large())
             except (KeyError, JSONDecodeError, IntegrityError):
                 return HttpResponseBadRequest()

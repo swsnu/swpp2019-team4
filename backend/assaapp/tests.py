@@ -204,9 +204,6 @@ class AssaTestCase(TestCase):
                             json.dumps({'password_prev': 'cubec', 'password': 'cube3'}),
                             content_type='application/json')
         self.assertEqual(response.status_code, 200)
-        response = self.post('/api/signin/',
-                             json.dumps({'email': 'cubec@gmail.com', 'password': 'cube3'}),
-                             content_type='application/json')
         response = self.put('/api/user/',
                             json.dumps({'password_prv': 'cube3', 'grade': 6}),
                             content_type='application/json')
