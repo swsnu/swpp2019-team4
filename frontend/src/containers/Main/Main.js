@@ -6,7 +6,6 @@ import * as actionCreators from '../../store/actions/index';
 import TimetableView from '../../components/TimetableView/TimetableView';
 import MainPageFriendView from '../../components/MainPageFriendView/MainPageFriendView';
 import TopBar from '../../components/TopBar/TopBar';
-import FriendManagement from '../FriendManagement/FriendManagement';
 import FriendTimetable from '../../components/FriendTimetable/FriendTimetable';
 import './Main.css';
 
@@ -14,7 +13,6 @@ class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showFriendManagement: false,
       showPopup: false,
       showindex: -1,
     };
@@ -27,13 +25,6 @@ class Main extends Component {
 
   handleLogout() {
     this.props.onLogout();
-  }
-
-  toggleFriendManagement() {
-    this.setState((prevState) => ({
-      ...prevState,
-      showFriendManagement: !prevState.showFriendManagement,
-    }));
   }
 
   changePopup(value) {
@@ -115,9 +106,6 @@ class Main extends Component {
           <TimetableView id="timetable-table" height={24} width={80} courses={courses} text link title="TIMETABLE" />
         </div>
         <div className="Content-right">
-          <button type="button" id="friend-manage" onClick={() => this.toggleFriendManagement()}>
-            MANAGE FRIENDS
-          </button>
           {friendListView}
         </div>
         {
@@ -131,9 +119,6 @@ class Main extends Component {
             )
             : null
         }
-        {this.state.showFriendManagement
-          ? <FriendManagement onClose={() => this.toggleFriendManagement()} />
-          : null}
       </div>
     );
   }
