@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const MainPageFriendView = (props) => {
   const { friend } = props;
-  const courses = props.friend.timetable;
+  const courses = friend.timetable[0].course;
   const date = new Date();
   const dateLocal = new Date(date.getTime() + 9 * 60 * 60000); // Hardcoded utc+9
   const weekDay = (dateLocal.getUTCDay() + 6) % 7;
@@ -14,14 +14,17 @@ const MainPageFriendView = (props) => {
   let currentClass = '';
   // let nextClass = '';
   for (let i = 0; i < courses.length; i += 1) {
-    if (courses[i].week_day === weekDay) {
-      if (courses[i].start_time <= time && time < courses[i].end_time) {
-        inClass = true;
-        timeLeft = courses[i].end_time - time;
-        currentClass = courses[i].title;
-      } else if (!inClass && time < courses[i].start_time && timeLeft > courses[i].start_time - time) {
-        timeLeft = courses[i].start_time - time;
+    for (let j = 0; j < courses[i].time.length; j += 1) {
+      const term = courses[i].time[j];
+      if (term.week_day === weekDay) {
+        if (term.start_time <= time && time < term.end_time) {
+          inClass = true;
+          timeLeft = term.end_time - time;
+          currentClass = courses[i].title;
+        } else if (!inClass && time < term.start_time && timeLeft > term.start_time - time) {
+          timeLeft = term.start_time - time;
         // nextClass = courses[i].name;
+        }
       }
     }
   }
@@ -47,14 +50,16 @@ MainPageFriendView.propTypes = {
   friend: PropTypes.shape({
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
-    timetable: PropTypes.arrayOf(
-      PropTypes.shape({
-        week_day: PropTypes.number.isRequired,
-        start_time: PropTypes.number.isRequired,
-        end_time: PropTypes.node.isRequired,
+    timetable: PropTypes.arrayOf(PropTypes.shape({
+      course: PropTypes.arrayOf(PropTypes.shape({
         title: PropTypes.string.isRequired,
-      }).isRequired,
-    ).isRequired,
+        time: PropTypes.arrayOf(PropTypes.shape({
+          week_day: PropTypes.number.isRequired,
+          start_time: PropTypes.number.isRequired,
+          end_time: PropTypes.node.isRequired,
+        })),
+      })).isRequired,
+    })).isRequired,
   }).isRequired,
 };
 
