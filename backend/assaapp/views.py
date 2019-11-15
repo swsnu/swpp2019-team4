@@ -35,6 +35,7 @@ def course_data(courses_color):
                 }
             )
     return data
+
 def api_signup(request):
     if request.method == 'POST':
         try:
@@ -102,7 +103,24 @@ def api_user(request):
     if request.user.is_authenticated:
         if request.method == 'GET':
             return JsonResponse(request.user.data_large())
-        return HttpResponseNotAllowed(['GET'])
+        if request.method == 'PUT':
+            try:
+                user = request.user
+                plain_keys = ['username', 'department', 'grade']
+                req_data = json.loads(request.body.decode())
+                password_prev = req_data['password_prev']
+                if not user.check_password(password_prev):
+                    return HttpResponseForbidden()
+                if 'password' in req_data:
+                    user.set_password(req_data['password'])
+                for key in plain_keys:
+                    if key in req_data:
+                        setattr(user, key, req_data[key])
+                user.save()
+                return JsonResponse(user.data_large())
+            except (KeyError, JSONDecodeError, IntegrityError):
+                return HttpResponseBadRequest()
+        return HttpResponseNotAllowed(['GET', 'PUT'])
     return HttpResponse(status=401)
 
 def api_user_friend(request):
