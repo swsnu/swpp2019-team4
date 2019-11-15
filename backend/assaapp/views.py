@@ -108,14 +108,20 @@ def api_user(request):
                 user = request.user
                 plain_keys = ['username', 'department', 'grade']
                 req_data = json.loads(request.body.decode())
-                password_prev = req_data['password_prev']
-                if not user.check_password(password_prev):
-                    return HttpResponseForbidden()
-                if 'password' in req_data:
-                    user.set_password(req_data['password'])
+
+                # User can change plain keys whenever they want
                 for key in plain_keys:
                     if key in req_data:
                         setattr(user, key, req_data[key])
+                
+                # But the user must input previous password in order to change password
+                if 'password_prev' in req_data:
+                    password_prev = req_data['password_prev']
+                    password = req_data['password']
+                    if not user.check_password(password_prev):
+                        return HttpResponseForbidden()
+                    user.set_password(password)
+
                 user.save()
                 update_session_auth_hash(request, user)
                 return JsonResponse(user.data_large())
