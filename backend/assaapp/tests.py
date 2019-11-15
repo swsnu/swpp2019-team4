@@ -197,25 +197,24 @@ class AssaTestCase(TestCase):
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
         response = self.put('/api/user/',
-                             json.dumps({'password_prev': 'cube2', 'password': 'cube3'}),
-                             content_type='application/json')
+                            json.dumps({'password_prev': 'cube2', 'password': 'cube3'}),
+                            content_type='application/json')
         self.assertEqual(response.status_code, 403)
         response = self.put('/api/user/',
-                             json.dumps({'password_prev': 'cubec', 'password': 'cube3'}),
-                             content_type='application/json')
+                            json.dumps({'password_prev': 'cubec', 'password': 'cube3'}),
+                            content_type='application/json')
         self.assertEqual(response.status_code, 200)
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cube3'}),
                              content_type='application/json')
         response = self.put('/api/user/',
-                             json.dumps({'password_prv': 'cube3', 'grade': 6}),
-                             content_type='application/json')
+                            json.dumps({'password_prv': 'cube3', 'grade': 6}),
+                            content_type='application/json')
         self.assertEqual(response.status_code, 400)
         response = self.put('/api/user/',
-                             json.dumps({'password_prev': 'cube3', 'grade': 6}),
-                             content_type='application/json')
+                            json.dumps({'password_prev': 'cube3', 'grade': 6}),
+                            content_type='application/json')
         self.assertEqual(response.status_code, 200)
-        
 
     def test_get_user_friend(self):
         response = self.get('/api/user/friend/')
