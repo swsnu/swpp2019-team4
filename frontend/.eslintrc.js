@@ -25,6 +25,9 @@ module.exports = {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "max-len": ["error", { "ignoreComments": true, "code" : 120}],
     "react/destructuring-assignment": ["off"],
-    "prefer-promise-reject-errors": ["off"]
+    "prefer-promise-reject-errors": ["off"],
+    "jsx-a11y/label-has-associated-control": [ 2, {
+      "assert": "either",
+    }],
   }
 };

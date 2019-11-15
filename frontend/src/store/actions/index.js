@@ -7,6 +7,7 @@ export {
   postSignup,
   postSignin,
   getUser,
+  putUser,
   getSignout,
   getVerify,
   getFriend,

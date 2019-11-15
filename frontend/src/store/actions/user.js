@@ -13,10 +13,8 @@ export const getUser = () => (dispatch) => axios.get('/api/user/')
   .then((res) => dispatch({ type: actionTypes.GET_USER, user: res.data }))
   .catch(() => dispatch({ type: actionTypes.GET_AUTH, is_authenticated: false }));
 
-  /*
-export const postUser = (prev_password, params) => (dispatch) => axios.post('/api/user/', { ...params, prev_password})
-  .then((res) =>
-  */
+export const putUser = (params) => (dispatch) => axios.put('/api/user/', params)
+  .then((res) => dispatch({ type: actionTypes.GET_USER, user: res.data }));
 
 export const getSignout = () => (dispatch) => axios.get('/api/signout/')
   .then(() => dispatch({ type: actionTypes.GET_AUTH, is_authenticated: false }))

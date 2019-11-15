@@ -4,7 +4,6 @@
 }
 
 .TopBar button {
-  font-family: 'Noto Sans KR', sans-serif;
   letter-spacing: 0.05em;
   background: none;
   border: none;
@@ -26,7 +25,7 @@
   bottom: 3px;
   content: "";
   display: block;
-  height: 1px;
+  height: 2px;
   position: absolute;
   background: #000;
   width: 100%;
@@ -38,7 +37,7 @@
   bottom: 3px;
   content: "";
   display: block;
-  height: 1px;
+  height: 2px;
   left: 50%;
   position: absolute;
   transition: width 0.2s ease 0s, left 0.2s ease 0s;

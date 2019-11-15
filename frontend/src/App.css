@@ -37,3 +37,7 @@
 .form-control {
   background-color: #fff8 !important;
 }
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+}
