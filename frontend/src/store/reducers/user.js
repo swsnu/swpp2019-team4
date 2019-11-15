@@ -4,7 +4,7 @@ const initialState = {
   user: {
     is_authenticated: null,
   },
-  timetable: [],
+  timetable: {}, 
   timetables: [],
   courses: [],
   friend: [],
