@@ -7,28 +7,23 @@ describe('<TimetableView />', () => {
     const trueobject = true;
     const courses = [
       {
-        week_day: 0,
-        start_time: 660,
-        end_time: 750,
-        name: '자료구조',
-        color: '#2BC366',
-        course_number: 'M1522.000900',
-        lecture_number: '001',
-      },
-      {
-        week_day: 2,
-        start_time: 660,
-        end_time: 750,
-        name: '자료구조',
-        color: '#2BC366',
-        course_number: 'M1522.000900',
-        lecture_number: '001',
-      },
-      {
-        week_day: 4,
-        start_time: 840,
-        end_time: 960,
-        name: '자료구조',
+        time: [{
+          week_day: 0,
+          start_time: 660,
+          end_time: 750,
+        },
+        {
+          week_day: 2,
+          start_time: 660,
+          end_time: 750,
+        },
+        {
+          week_day: 4,
+          start_time: 840,
+          end_time: 960,
+        },
+        ],
+        title: '자료구조',
         color: '#2BC366',
         course_number: 'M1522.000900',
         lecture_number: '001',

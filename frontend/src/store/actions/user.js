@@ -13,6 +13,9 @@ export const getUser = () => (dispatch) => axios.get('/api/user/')
   .then((res) => dispatch({ type: actionTypes.GET_USER, user: res.data }))
   .catch(() => dispatch({ type: actionTypes.GET_AUTH, is_authenticated: false }));
 
+export const putUser = (params) => (dispatch) => axios.put('/api/user/', params)
+  .then((res) => dispatch({ type: actionTypes.GET_USER, user: res.data }));
+
 export const getSignout = () => (dispatch) => axios.get('/api/signout/')
   .then(() => dispatch({ type: actionTypes.GET_AUTH, is_authenticated: false }))
   .catch(() => {});
@@ -23,12 +26,12 @@ export const getFriend = () => (dispatch) => axios.get('/api/user/friend/')
   .then((res) => dispatch({ type: actionTypes.GET_FRIEND, user: res.data }))
   .catch(() => {});
 
-export const getTimetables = () => (dispatch) => axios.get('/api/timetable/')
-  .then((res) => dispatch({ type: actionTypes.GET_TIMETABLES, timetables: res.data }))
-  .catch(() => {});
-
 export const getTimetable = (timetableId) => (dispatch) => axios.get(`/api/timetable/${timetableId}/`)
   .then((res) => dispatch({ type: actionTypes.GET_TIMETABLE, timetable: res.data }))
+  .catch(() => {});
+
+export const getTimetableFriend = (timetableId) => (dispatch) => axios.get(`/api/timetable/${timetableId}/`)
+  .then((res) => dispatch({ type: actionTypes.GET_TIMETABLE_FRIEND, timetable: res.data }))
   .catch(() => {});
 
 export const getCourses = (searchStrings) => (dispatch) => axios.get(`/api/course/?title=${searchStrings}`)
@@ -69,8 +72,8 @@ export const cancelFriend = (id) => (dispatch) => axios.delete(`/api/user/friend
   .then(() => dispatch({ type: actionTypes.CANCEL_FRIEND, user_id: id }))
   .catch(() => {});
 
-export const getTimetableData = () => (dispatch) => axios.get('/api/timetable/data/')
-  .then((res) => dispatch({ type: actionTypes.GET_TIMETABLE_DATA, timetable_list: res.data }))
+export const getTimetables = () => (dispatch) => axios.get('/api/timetable/')
+  .then((res) => dispatch({ type: actionTypes.GET_TIMETABLES, timetables: res.data }))
   .catch(() => {});
 
 export const postMainTimetable = (id) => (dispatch) => axios.post(`/api/timetable/main/${id}`)

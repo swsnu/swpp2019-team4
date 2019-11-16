@@ -11,54 +11,44 @@ import * as actionCreators from '../../store/actions/user';
 
 jest.mock('../TimetableRecommend/TimetableRecommend');
 const stubState = {
-  user: { is_authenticated: true },
+  user: {
+    is_authenticated: true,
+    timetable_main: 1,
+  },
   timetables: [
     {
       id: 1,
       title: 'my timetable',
       semester: '2019-2',
-      user_id: 2,
+      course: [],
     },
   ],
-  courses: [
-    {
-      id: 0,
+  courses: [{
+    id: 0,
+    title: '자료구조',
+    color: '#2BC366',
+    course_number: 'M1522.000900',
+    lecture_number: '001',
+    time: [{
       week_day: 0,
       start_time: 660,
       end_time: 750,
-      title: '자료구조',
-      color: '#2BC366',
-      course_number: 'M1522.000900',
-      lecture_number: '001',
-    },
-  ],
-  timetable: [],
-  timetable_list: [],
+    }],
+  }],
+  timetable: {
+    course: [],
+  },
 };
 const stubStateFalse = {
-  user: { is_authenticated: false },
-  timetables: [
-    {
-      id: 1,
-      title: 'my timetable',
-      semester: '2019-2',
-      user_id: 2,
-    },
-  ],
-  courses: [
-    {
-      id: 0,
-      week_day: 0,
-      start_time: 660,
-      end_time: 750,
-      title: '자료구조',
-      color: '#2BC366',
-      course_number: 'M1522.000900',
-      lecture_number: '001',
-    },
-  ],
-  timetable: [],
-  timetable_list: [],
+  user: {
+    is_authenticated: false,
+    timetable_main: 0,
+  },
+  timetables: [],
+  courses: [],
+  timetable: {
+    courses: [],
+  },
 };
 function timetableManagement(state) {
   const mockStore = getMockStore(state);
@@ -79,7 +69,7 @@ function timetableManagement(state) {
   );
 }
 
-describe('verification test', () => {
+describe('TimetableManagement test', () => {
   let spyGetUser;
   let spyGetSignout;
   let spyGetTimetables;
@@ -89,7 +79,7 @@ describe('verification test', () => {
   let spyPostCourse;
   beforeEach(() => {
     spyGetUser = jest.spyOn(actionCreators, 'getUser')
-      .mockImplementation(() => () => {});
+      .mockImplementation(() => () => Promise.resolve(null));
     spyGetSignout = jest.spyOn(actionCreators, 'getSignout')
       .mockImplementation(() => () => {});
     spyGetTimetables = jest.spyOn(actionCreators, 'getTimetables')
@@ -140,14 +130,14 @@ describe('verification test', () => {
     expect(spyGetTimetable).toBeCalledTimes(0);
   });
 
-  it('should call post when pressed postCourse button when timetableId !== -1', () => {
-    const component = mount(timetableManagement(stubState));
+  it('should call post when pressed postCourse button', async () => {
+    const component = await mount(timetableManagement(stubState));
     component.find('.timetable-list').find('button').simulate('click');
     component.find('.result-button').find('button').simulate('click');
     component.find('.course-list').find('button').simulate('click');
     expect(spyPostCourse).toBeCalledTimes(1);
-    expect(spyGetTimetables).toBeCalledTimes(2);
-    expect(spyGetTimetable).toBeCalledTimes(2);
+    expect(spyGetTimetables).toBeCalledTimes(1);
+    expect(spyGetTimetable).toBeCalledTimes(3);
   });
 
   it('should call show when pressed createTimetable button', () => {

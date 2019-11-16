@@ -11,45 +11,38 @@ import * as actionCreators from '../../store/actions/user';
 
 const stubState = {
   user: { is_authenticated: true, timetable_main: 0 },
-  timetable_data: [
-    [
-      {
-        timetable_id: 0,
-        course_id: 0,
-        course_color_id: 0,
-        week_day: 0,
-        start_time: 660,
-        end_time: 690,
+  timetables: [
+    {
+      id: 0,
+      course: [{
+        id: 0,
         color: '#FFFFFF',
         lecture_number: 'LN',
         course_number: 'CN',
-      },
-    ],
+        time: [
+          {
+            week_day: 0,
+            start_time: 660,
+            end_time: 690,
+          },
+        ],
+      }],
+    },
   ],
 };
 
 const stubStateFalse = {
   user: { is_authenticated: false, timetable_main: 0 },
-  timetable_data: [
-    [
-      {
-        timetable_id: 0,
-        course_id: 0,
-        course_color_id: 0,
-        week_day: 0,
-        start_time: 660,
-        end_time: 690,
-        color: '#FFFFFF',
-        lecture_number: 'LN',
-        course_number: 'CN',
-      },
-    ],
-  ],
+  timetables: [{
+    course: [{ time: [{}] }],
+  }],
 };
 
 const stubStateNone = {
   user: { is_authenticated: true, timetable_main: 0 },
-  timetable_data: [[]],
+  timetables: [{
+    course: [{ time: [{}] }],
+  }],
 };
 
 const stubStateUndefined = {
@@ -70,9 +63,11 @@ function window(state) {
   );
 }
 
-jest.mock('../FriendManagement/FriendManagement', () => jest.fn((props) => (
-  <div className="FriendManagement">
-    <button id="close" type="button" onClick={props.onClose}> x </button>
+jest.mock('../../components/TopBar/TopBar', () => jest.fn((props) => (
+  <div className="TopBar">
+    <button type="button" className="text-black-50" id="logout-button" onClick={() => props.logout()}>
+      x
+    </button>
   </div>
 )));
 
@@ -94,15 +89,9 @@ describe('<Main />', () => {
 
   it('Main page render test', () => {
     const component = mount(window(stubState));
-    const assabutton = component.find('#assa-logo-button');
-    const timetablebutton = component.find('#timetable-management-button');
-    const informationbutton = component.find('#personal-information-button');
-    const logoutbutton = component.find('#logout-button');
+    const topbar = component.find('.TopBar');
     const timetable = component.find('#timetable-table');
-    expect(assabutton.length).toBe(4);
-    expect(timetablebutton.length).toBe(4);
-    expect(informationbutton.length).toBe(1);
-    expect(logoutbutton.length).toBe(1);
+    expect(topbar.length).toBe(1);
     expect(timetable.length).toBe(1);
     expect(component.find('#fake-course').length).toBe(1);
   });
@@ -122,14 +111,6 @@ describe('<Main />', () => {
   it('should redirect to login when is_authenticated is false', () => {
     const component = mount(window(stubStateFalse));
     expect(component.find('.Login').length).toBe(1);
-  });
-
-  it('should popup FriendManagement view when friend-manage button is clicked', () => {
-    const component = mount(window(stubState));
-    component.find('#friend-manage').simulate('click');
-    expect(component.find('.FriendManagement').length).toBe(1);
-    component.find('#close').simulate('click');
-    expect(component.find('.FriendManagement').length).toBe(0);
   });
 
   it('should render with empty list', () => {

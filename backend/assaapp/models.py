@@ -102,6 +102,22 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
+    def data(self):
+        course_time_data = [{
+            'week_day': course_time.weekday,
+            'start_time': course_time.start_time.hour*60
+                          +course_time.start_time.minute,
+            'end_time': course_time.end_time.hour*60
+                        +course_time.end_time.minute
+        } for course_time in CourseTime.objects.filter(course=self)]
+        return {
+            'id': self.id,
+            'title': self.title,
+            'lecture_number': self.lecture_number,
+            'course_number': self.course_number,
+            'time': course_time_data,
+        }
+
 class Timetable(models.Model):
     title = models.CharField(max_length=64)
     semester = models.CharField(max_length=8, default="")
@@ -110,6 +126,23 @@ class Timetable(models.Model):
 
     def __str__(self):
         return self.title
+
+    def data(self):
+        '''
+        Format of data is
+        {id, title, semester, course: [{id, title, color, lecture_number, course_number,
+        time: [week_day, start_time, end_time]}]}
+        '''
+        course_data = []
+        for course_color in CourseColor.objects.filter(timetable=self):
+            data = course_color.course.data()
+            data['color'] = course_color.color
+            course_data.append(data)
+        return {'id': self.id, 'title': self.title,
+                'semester': self.semester, 'course': course_data}
+
+    def data_small(self):
+        return {'id': self.id, 'title': self.title, 'semester': self.semester}
 
 class CourseColor(models.Model):
     timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)

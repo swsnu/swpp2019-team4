@@ -5,35 +5,42 @@ import MainPageFriendView from './MainPageFriendView';
 const friend = {
   id: 1,
   name: 'KOO',
-  timetable: [
-    {
+  timetable: [{
+    course: [{
       title: 'SWPP',
-      week_day: 2,
-      start_time: 1020,
-      end_time: 1110,
+      time: [{
+        week_day: 2,
+        start_time: 1020,
+        end_time: 1110,
+      }],
       course_number: 'M1522.002400',
       lecture_number: '001',
       color: '#FF0000',
     },
     {
       title: 'SWPP2',
-      week_day: 3,
-      start_time: 1020,
-      end_time: 1110,
+      time: [{
+        week_day: 3,
+        start_time: 1020,
+        end_time: 1110,
+      }],
       course_number: 'M1522.002400',
       lecture_number: '001',
       color: '#FF0000',
     },
     {
       title: 'SWPP3',
-      week_day: 3,
-      start_time: 1120,
-      end_time: 1210,
+      time: [{
+        week_day: 3,
+        start_time: 1120,
+        end_time: 1210,
+      }],
       course_number: 'M1522.002400',
       lecture_number: '001',
       color: '#FF0000',
     },
-  ],
+    ],
+  }],
 };
 
 const mockDate = require('mockdate');

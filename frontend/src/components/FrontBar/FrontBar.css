@@ -1,0 +1,15 @@
+.FrontBar {
+  left: 0;
+  right: 0;
+}
+
+#assa-logo {
+  height: 96px;
+  width: 96px;
+}
+
+#prev-logo {
+  position: absolute;
+  top: 50%;
+  left: 32px;
+}

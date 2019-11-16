@@ -6,7 +6,6 @@ import * as actionCreators from '../../store/actions/index';
 import TimetableView from '../../components/TimetableView/TimetableView';
 import MainPageFriendView from '../../components/MainPageFriendView/MainPageFriendView';
 import TopBar from '../../components/TopBar/TopBar';
-import FriendManagement from '../FriendManagement/FriendManagement';
 import FriendTimetable from '../../components/FriendTimetable/FriendTimetable';
 import './Main.css';
 
@@ -14,7 +13,6 @@ class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showFriendManagement: false,
       showPopup: false,
       showindex: -1,
     };
@@ -22,18 +20,11 @@ class Main extends Component {
 
   componentDidMount() {
     this.props.onGetUser();
-    this.props.onGetTimetableData();
+    this.props.onGetTimetables();
   }
 
   handleLogout() {
     this.props.onLogout();
-  }
-
-  toggleFriendManagement() {
-    this.setState((prevState) => ({
-      ...prevState,
-      showFriendManagement: !prevState.showFriendManagement,
-    }));
   }
 
   changePopup(value) {
@@ -62,72 +53,46 @@ class Main extends Component {
       {
         id: 0,
         name: '정재윤',
-        timetable: [
-          {
+        timetable: [{
+          course: [{
             title: '소개원실 (테스트용)',
-            week_day: 3,
-            start_time: 1110,
-            end_time: 1170,
             course_number: 'M1522.002400',
             lecture_number: '001',
             color: '#FF0000',
-          },
-        ],
+            time: [{
+              week_day: 3,
+              start_time: 1110,
+              end_time: 1170,
+            }],
+          }],
+        }],
       },
       {
         id: 1,
         name: '구준서',
-        timetable: [
-          {
+        timetable: [{
+          course: [{
             title: '소개원실 (테스트용)',
-            week_day: 3,
-            start_time: 1020,
-            end_time: 1110,
             course_number: 'M1522.002400',
             lecture_number: '001',
             color: '#FF0000',
-          },
-        ],
-      },
-      {
-        id: 2,
-        name: '김영찬',
-        timetable: [
-          {
-            title: '소개원실 (테스트용)',
-            week_day: 3,
-            start_time: 1170,
-            end_time: 1230,
-            course_number: 'M1522.002400',
-            lecture_number: '001',
-            color: '#FF0000',
-          },
-        ],
-      },
-      {
-        id: 3,
-        name: '김현수',
-        timetable: [
-          {
-            title: '소개원실 (테스트용)',
-            week_day: 4,
-            start_time: 480,
-            end_time: 1440,
-            course_number: 'M1522.002400',
-            lecture_number: '001',
-            color: '#FF0000',
-          },
-        ],
+            time: [{
+              week_day: 3,
+              start_time: 1020,
+              end_time: 1110,
+            }],
+          }],
+        }],
       },
     ];
 
     let courses = [];
-    if (this.props.timetable_list !== undefined && this.props.storedUser.timetable_main !== undefined) {
-      const filtered = this.props.timetable_list.filter(
-        (x) => x.length !== 0 && x[0].timetable_id === this.props.storedUser.timetable_main,
+    if (this.props.timetables !== undefined && this.props.storedUser.timetable_main !== undefined) {
+      const timetable = this.props.timetables.find(
+        (table) => table.id === this.props.storedUser.timetable_main,
       );
-      if (filtered.length !== 0) {
-        [courses] = filtered;
+      if (timetable !== undefined) {
+        courses = timetable.course;
       }
     }
 
@@ -137,14 +102,10 @@ class Main extends Component {
     return (
       <div className="Main">
         <TopBar id="topbar" logout={() => this.handleLogout()} />
-        <br />
         <div className="Content-left">
           <TimetableView id="timetable-table" height={24} width={80} courses={courses} text link title="TIMETABLE" />
         </div>
         <div className="Content-right">
-          <button type="button" id="friend-manage" onClick={() => this.toggleFriendManagement()}>
-            MANAGE FRIENDS
-          </button>
           {friendListView}
         </div>
         {
@@ -158,9 +119,6 @@ class Main extends Component {
             )
             : null
         }
-        {this.state.showFriendManagement
-          ? <FriendManagement onClose={() => this.toggleFriendManagement()} />
-          : null}
       </div>
     );
   }
@@ -169,34 +127,37 @@ class Main extends Component {
 Main.propTypes = {
   onGetUser: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
-  onGetTimetableData: PropTypes.func.isRequired,
+  onGetTimetables: PropTypes.func.isRequired,
   storedUser: PropTypes.shape({
     is_authenticated: PropTypes.bool.isRequired,
     timetable_main: PropTypes.number.isRequired,
   }).isRequired,
-  timetable_list: PropTypes.arrayOf(
-    PropTypes.arrayOf(
-      PropTypes.shape({
+  timetables: PropTypes.arrayOf(PropTypes.shape({
+    course: PropTypes.arrayOf(PropTypes.shape({
+      /*
+      title: PropTypes.string.isRequired,
+      color: PropTypes.string.isRequired,
+      lecture_number: PropTypes.string.isRequired,
+      course_number: PropTypes.string.isRequired,
+      time: PropTypes.arrayOf(PropTypes.shape({
         start_time: PropTypes.number.isRequired,
         end_time: PropTypes.number.isRequired,
         week_day: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired,
-        color: PropTypes.string.isRequired,
-        lecture_number: PropTypes.string.isRequired,
-        course_number: PropTypes.string.isRequired,
-      }),
-    ),
-  ).isRequired,
+      })),
+      */
+    })),
+  })).isRequired,
 };
+
 const mapStateToProps = (state) => ({
   storedUser: state.user.user,
-  timetable_list: state.user.timetable_data,
+  timetables: state.user.timetables,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onLogout: () => dispatch(actionCreators.getSignout()),
-  onGetTimetableData: () => dispatch(actionCreators.getTimetableData()),
+  onGetTimetables: () => dispatch(actionCreators.getTimetables()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

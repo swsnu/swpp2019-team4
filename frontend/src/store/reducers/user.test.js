@@ -49,13 +49,13 @@ describe('Reducer', () => {
       user: {
         is_authenticated: null,
       },
-      timetable: [],
+      timetable: {},
+      timetable_friend: {},
       timetables: [],
       courses: [],
       friend: [],
       friend_send: [],
       friend_receive: [],
-      timetable_data: [],
       search: {
         exist: false,
         status: '',
@@ -162,21 +162,6 @@ describe('Reducer', () => {
       user_id: 2,
     });
     expect(newState.friend_receive.length).toBe(0);
-  });
-
-  it('should get timetables', () => {
-    const newState = reducer(stubState, {
-      type: actionTypes.GET_TIMETABLES,
-      timetables: [
-        {
-          id: 1,
-          title: 'my timetable',
-          semester: '2019-2',
-          user_id: 2,
-        },
-      ],
-    });
-    expect(newState.timetables.length).toBe(1);
   });
 
   it('should get timetable', () => {

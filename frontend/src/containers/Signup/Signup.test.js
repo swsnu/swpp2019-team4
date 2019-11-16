@@ -34,7 +34,7 @@ function signup(state) {
   );
 }
 
-describe('verification test', () => {
+describe('signup test', () => {
   let spyPostSignup;
 
   beforeEach(() => {
@@ -60,12 +60,14 @@ describe('verification test', () => {
     expect(component.find('.Login').length).toBe(1);
   });
 
+  /*
   it('confirm-signup-button should be disable when the information is wrong', () => {
     const component = mount(signup(stubState));
     component.find('#department-input').simulate('change', { target: { value: '바비든든' } });
     component.find('#grade-input').simulate('change', { target: { value: '1234' } });
     expect(component.find('#confirm-signup-button').props().disabled).toBe(true);
   });
+  */
 
   it('postSignup should be called when signup process is successfully done', () => {
     const component = mount(signup(stubState));

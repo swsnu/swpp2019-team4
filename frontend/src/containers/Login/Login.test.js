@@ -53,9 +53,9 @@ describe('<Login />', () => {
     const email = 'cubec@snu.ac.kr';
     const password = 'cubec';
     const component = mount(login(stubState));
-    component.find('FormControl#email-input').simulate('change', { target: { value: email } });
-    component.find('FormControl#pw-input').simulate('change', { target: { value: password } });
-    await component.find('Button#login-button').simulate('click');
+    component.find('#email-input').simulate('change', { target: { value: email } });
+    component.find('#pw-input').simulate('change', { target: { value: password } });
+    await component.find('#login-button').simulate('click');
     expect(spyPostSignin).toBeCalledTimes(1);
   });
 
@@ -66,7 +66,7 @@ describe('<Login />', () => {
 
   it('should redirect to /signup when to-signup-button is clicked', () => {
     const component = mount(login(stubState));
-    component.find('Button#to-signup-button').simulate('click');
+    component.find('#to-signup-button').simulate('click');
     expect(component.find('.Signup').length).toBe(1);
   });
 });
