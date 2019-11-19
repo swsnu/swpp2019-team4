@@ -30,9 +30,9 @@ class TimetableView extends Component {
 
     /* temporary color palette from https://clrs.cc
     * 11 colors (excluding 3 grayscale colors and 2 dark colors)
-    */
     const colors = ['#FF851B', '#FFDC00', '#39CCCC', '#01FF70', '#F012BE', '#FF4136', '#7FDBFF',
       '#3D9970', '#B10DC9', '#2ECC40', '#0074D9'];
+    */
 
     const tableHeaderString = ['', 'M', 'T', 'W', 'T', 'F', 'S'];
     const coursesList = [[], [], [], [], [], []];
@@ -53,8 +53,8 @@ class TimetableView extends Component {
               index: i,
               title: this.props.text ? this.props.courses[i].title : '',
               length: (parseInt((segment.end_time - segment.start_time) / 30, 10) + 1) * heightunit,
-              // color: props.courses[i].color,
-              color: colors[i % colors.length],
+              color: this.props.courses[i].color,
+              //color: colors[i % colors.length],
             },
           );
         }
