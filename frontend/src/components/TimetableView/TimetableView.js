@@ -7,13 +7,17 @@ class TimetableView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: '',
-      href: '',
+      course: {
+        title: '',
+        color: '',
+        lecture_number: '',
+        course_number: '',
+      },
     };
   }
 
-  openCourseDetail(title, href) {
-    this.setState((prevState) => ({ ...prevState, title, href }));
+  openCourseDetail(course) {
+    this.setState((prevState) => ({ ...prevState, course }));
   }
 
   render() {
@@ -46,12 +50,11 @@ class TimetableView extends Component {
           const segment = this.props.courses[i].time[j];
           coursesList[segment.week_day][segment.start_time / 30 - 16].push(
             {
+              index: i,
               title: this.props.text ? this.props.courses[i].title : '',
               length: (parseInt((segment.end_time - segment.start_time) / 30, 10) + 1) * heightunit,
               // color: props.courses[i].color,
               color: colors[i % colors.length],
-              lecnum: this.props.courses[i].lecture_number,
-              clanum: this.props.courses[i].course_number,
             },
           );
         }
@@ -83,10 +86,6 @@ class TimetableView extends Component {
               {
                 coursesList[j][i].map(
                   (course) => {
-                    const href = 'http://sugang.snu.ac.kr/sugang/cc/cc101.action?'
-                      + 'openSchyy=2019&openShtmFg=U000200002&openDetaShtmFg='
-                      + `U000300001&sbjtCd=${course.clanum}`
-                      + `&ltNo=${course.lecnum}&sugangFlag=P`;
                     const dataTarget = this.props.link ? '#course-detail' : '';
                     return (
                       <div
@@ -100,8 +99,8 @@ class TimetableView extends Component {
                         tabIndex="0"
                         data-toggle="modal"
                         data-target={dataTarget}
-                        onClick={() => this.openCourseDetail(course.title, href)}
-                        onKeyDown={() => this.openCourseDetail(course.title, href)}
+                        onClick={() => this.openCourseDetail(this.props.courses[course.index])}
+                        onKeyDown={() => this.openCourseDetail(this.props.courses[course.index])}
                       >
                         <div className="title px-1 text-black">
                           <b>{course.title}</b>
@@ -135,7 +134,7 @@ class TimetableView extends Component {
             {tablehtml}
           </tbody>
         </table>
-        <CourseDetail id="course-detail" href={this.state.href} title={this.state.title} />
+        <CourseDetail id="course-detail" course={this.state.course} />
       </div>
     );
   }

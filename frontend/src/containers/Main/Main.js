@@ -133,19 +133,7 @@ Main.propTypes = {
     timetable_main: PropTypes.number.isRequired,
   }).isRequired,
   timetables: PropTypes.arrayOf(PropTypes.shape({
-    course: PropTypes.arrayOf(PropTypes.shape({
-      /*
-      title: PropTypes.string.isRequired,
-      color: PropTypes.string.isRequired,
-      lecture_number: PropTypes.string.isRequired,
-      course_number: PropTypes.string.isRequired,
-      time: PropTypes.arrayOf(PropTypes.shape({
-        start_time: PropTypes.number.isRequired,
-        end_time: PropTypes.number.isRequired,
-        week_day: PropTypes.number.isRequired,
-      })),
-      */
-    })),
+    course: PropTypes.arrayOf(PropTypes.shape({})),
   })).isRequired,
 };
 
