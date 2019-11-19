@@ -8,6 +8,7 @@
     bottom: 0;
     margin: auto;
     background-color: rgba(0,0,0, 0.5);
+    z-index: 1000;
 }
 .popup_inner {
     position: absolute;

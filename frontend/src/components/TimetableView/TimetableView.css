@@ -15,6 +15,9 @@
   border-bottom: 0px;
   border-top-width: 1px;
   border-top-style: solid;
+  position: relative;
+  vertical-align: top;
+  padding: 0px;
 }
 
 .TimetableView tr:nth-child(even) td {
@@ -25,18 +28,14 @@
   border-top-color: #FFFFFF;
 }
 
-.TimetableView td {
-  position: relative;
-  vertical-align: top;
-  padding: 0px;
-}
-
 .TimetableView .square {
   position: absolute;
   width: 100%;
   top: -1px;
   padding: 0px;
   margin: auto;
+  z-index: 500;
+  cursor: pointer;
 }
 
 .TimetableView .square .title {

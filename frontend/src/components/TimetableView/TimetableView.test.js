@@ -2,6 +2,12 @@ import { mount } from 'enzyme';
 import React from 'react';
 import TimetableView from './TimetableView';
 
+jest.mock('../../containers/CourseDetail/CourseDetail', () => jest.fn((props) => (
+  <div className="CourseDetail" id={props.id}>
+    HELLO
+  </div>
+)));
+
 describe('<TimetableView />', () => {
   it('TimetableView render test', () => {
     const trueobject = true;
