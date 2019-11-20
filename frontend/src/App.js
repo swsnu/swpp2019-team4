@@ -9,6 +9,7 @@ import Verify from './containers/Verify/Verify';
 import Friend from './containers/Friend/Friend';
 import TimetableManagement from './containers/TimetableManagement/TimetableManagement';
 import '../node_modules/bootstrap/dist/css/bootstrap.css';
+import '../node_modules/bootstrap/dist/js/bootstrap';
 import '../node_modules/open-iconic/font/css/open-iconic-bootstrap.min.css';
 import './App.css';
 

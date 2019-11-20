@@ -1,16 +1,47 @@
-table {
-    border: 3px solid #444444;
-    border-collapse: collapse;
+.TimetableView #timetable {
+  width: 100%;
+  border: 0px;
+  border-collapse: collapse;
 }
 
-th {
-    border: 1px;
+.TimetableView #timetable th {
+  border: 0px;
+  font-weight: 400;
 }
 
-td {
-    vertical-align: top;
+.TimetableView #timetable tr td {
+  border-left: 0px;
+  border-right: 0px;
+  border-bottom: 0px;
+  border-top-width: 1px;
+  border-top-style: solid;
+  position: relative;
+  vertical-align: top;
+  padding: 0px;
 }
 
-.square{
-    position: absolute;
+.TimetableView #timetable tr:nth-child(even) td {
+  border-top-color: #DDDDDD;
+}
+
+.TimetableView #timetable tr:nth-child(odd) td {
+  border-top-color: #FFFFFF;
+}
+
+.TimetableView .square {
+  position: absolute;
+  width: 100%;
+  top: -1px;
+  padding: 0px;
+  margin: auto;
+  z-index: 500;
+  cursor: pointer;
+}
+
+.TimetableView .square .title {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
