@@ -54,7 +54,7 @@ class TimetableView extends Component {
               title: this.props.text ? this.props.courses[i].title : '',
               length: (parseInt((segment.end_time - segment.start_time) / 30, 10) + 1) * heightunit,
               color: this.props.courses[i].color,
-              //color: colors[i % colors.length],
+              // color: colors[i % colors.length],
             },
           );
         }
