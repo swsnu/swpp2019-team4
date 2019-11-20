@@ -68,6 +68,12 @@ class TimetableManagement extends Component {
     this.showCoursesInSearch();
   }
 
+  enterKey() {
+    if(window.event.keyCode == 13) {
+      this.search();
+    }
+  }
+
   render() {
     if (this.props.storedUser.is_authenticated === false) {
       return (
@@ -106,6 +112,7 @@ class TimetableManagement extends Component {
               type="text"
               value={this.state.searchStrings}
               onChange={(event) => this.setState({ searchStrings: event.target.value })}
+              onKeyDown={() => this.enterKey()}
             />
             <button type="button" className="search" onClick={() => this.search()}>검색</button>
           </label>

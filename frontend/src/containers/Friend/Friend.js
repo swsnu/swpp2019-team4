@@ -35,6 +35,12 @@ class Friend extends Component {
       });
   }
 
+  enterKey() {
+    if(window.event.keyCode == 13) {
+      this.handleSearch();
+    }
+  }
+
   handleSearch() {
     this.props.onPostSearch(this.state.email)
       .then(() => {
@@ -189,6 +195,7 @@ class Friend extends Component {
                   value={this.state.email}
                   placeholder="Email"
                   onChange={(event) => this.setState({ email: event.target.value, message: '' })}
+                  onKeyDown={() => this.enterKey()}
                 />
               </div>
               <div className="p-2">

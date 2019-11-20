@@ -30,6 +30,11 @@ class Login extends Component {
     this.props.history.push('/signup');
   }
 
+  enterKey() {
+    if(window.event.keyCode == 13) {
+      this.handleLogin();
+    }
+  }
   render() {
     if (this.props.storedUser.is_authenticated === true) {
       return (
@@ -87,9 +92,10 @@ pplication
                   className={`form-control ${this.state.login_failed ? 'is-invalid' : ''}`}
                   type="password"
                   id="pw-input"
-                  value={this.state.pasword}
+                  value={this.state.password}
                   placeholder="Password"
                   onChange={(event) => this.setState({ password: event.target.value })}
+                  onKeyDown={() => this.enterKey()}
                 />
                 <div className="small text-danger text-left" id="login-notice"><b>{loginNotice}</b></div>
               </div>
