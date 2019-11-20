@@ -8,12 +8,7 @@ class CourseDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: true,
     };
-  }
-
-  toggle() {
-    this.setState((prevState) => ({ ...prevState, isOpen: !prevState.isOpen }));
   }
 
   render() {
