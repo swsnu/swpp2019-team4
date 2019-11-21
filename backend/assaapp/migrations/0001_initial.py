@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='CourseColor',
+            name='CustomCourse',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('color', models.CharField(default='default', max_length=8)),
@@ -72,7 +72,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=64)),
                 ('semester', models.CharField(default='', max_length=8)),
-                ('courses', models.ManyToManyField(related_name='timetables', through='assaapp.CourseColor', to='assaapp.Course')),
+                ('courses', models.ManyToManyField(related_name='timetables', through='assaapp.CustomCourse', to='assaapp.Course')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
@@ -87,7 +87,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.AddField(
-            model_name='coursecolor',
+            model_name='CustomCourse',
             name='timetable',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='assaapp.Timetable'),
         ),

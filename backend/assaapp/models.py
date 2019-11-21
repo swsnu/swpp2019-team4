@@ -121,7 +121,7 @@ class Course(models.Model):
 class Timetable(models.Model):
     title = models.CharField(max_length=64)
     semester = models.CharField(max_length=8, default="")
-    courses = models.ManyToManyField(Course, related_name='timetables', through='CourseColor')
+    courses = models.ManyToManyField(Course, related_name='timetables', through='CustomCourse')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -134,9 +134,9 @@ class Timetable(models.Model):
         time: [week_day, start_time, end_time]}]}
         '''
         course_data = []
-        for course_color in CourseColor.objects.filter(timetable=self):
-            data = course_color.course.data()
-            data['color'] = course_color.color
+        for custom_course in CustomCourse.objects.filter(timetable=self):
+            data = custom_course.course.data()
+            data['color'] = custom_course.color
             course_data.append(data)
         return {'id': self.id, 'title': self.title,
                 'semester': self.semester, 'course': course_data}
@@ -144,9 +144,10 @@ class Timetable(models.Model):
     def data_small(self):
         return {'id': self.id, 'title': self.title, 'semester': self.semester}
 
-class CourseColor(models.Model):
+class CustomCourse(models.Model):
     timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    ''' User modifiable data '''
     color = models.CharField(max_length=8, default='default')
 
     def __str__(self):

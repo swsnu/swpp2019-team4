@@ -10,7 +10,7 @@ from django.core.mail import EmailMessage
 from django.forms.models import model_to_dict
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from assaapp.models import User, Timetable, Course, CourseColor
+from assaapp.models import User, Timetable, Course, CustomCourse
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
 
 def api_signup(request):
@@ -281,7 +281,7 @@ def api_timetable_id_course(request, timetable_id):
                 try:
                     timetable = Timetable.objects.get(pk=timetable_id)
                     course = Course.objects.get(pk=course_id)
-                    CourseColor(timetable=timetable, course=course, color=color).save()
+                    CustomCourse(timetable=timetable, course=course, color=color).save()
                     timetable.save()
                     return JsonResponse(timetable.data(), safe=False)
                 except (Timetable.DoesNotExist, Course.DoesNotExist):

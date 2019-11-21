@@ -3,7 +3,7 @@ from django.test import TestCase, Client
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.forms.models import model_to_dict
-from assaapp.models import User, Timetable, Course, CourseColor, CourseTime
+from assaapp.models import User, Timetable, Course, CustomCourse, CourseTime
 from assaapp.tokens import ACCOUNT_ACTIVATION_TOKEN
 class AssaTestCase(TestCase):
     def setUp(self):
@@ -339,7 +339,7 @@ class AssaTestCase(TestCase):
                    weekday=2, start_time="17:00", end_time="18:30").save()
         CourseTime(course=Course.objects.get(id=1),
                    weekday=3, start_time="18:30", end_time="20:30").save()
-        CourseColor(timetable=Timetable.objects.get(id=1),
+        CustomCourse(timetable=Timetable.objects.get(id=1),
                     course=Course.objects.get(id=1), color="#2468AC").save()
         response = self.get('/api/timetable/')
         self.assertEqual(response.status_code, 200)
@@ -380,22 +380,22 @@ class AssaTestCase(TestCase):
                    weekday=2, start_time="17:00", end_time="18:30").save()
         CourseTime(course=Course.objects.get(id=1),
                    weekday=3, start_time="18:30", end_time="20:30").save()
-        CourseColor(timetable=Timetable.objects.get(id=1),
+        CustomCourse(timetable=Timetable.objects.get(id=1),
                     course=Course.objects.get(id=1), color="#2468AC").save()
         response = self.get('/api/timetable/1/')
         self.assertEqual(response.status_code, 200)
         #self.assertEqual(response.content.decode(),
-        #                 '[{"course_id": 1, "course_color_id": 1, "timetable_id": 1,'
+        #                 '[{"course_id": 1, "custom_course_id": 1, "timetable_id": 1,'
         #                 ' "title": "swpp", "week_day": 0, "start_time": 1020,'
         #                 ' "end_time": 1110, "color": "#2468AC",'
         #                 ' "lecture_number": "001",'
         #                 ' "course_number": "M1522.002400"},'
-        #                 ' {"course_id": 1, "course_color_id": 1, "timetable_id": 1,'
+        #                 ' {"course_id": 1, "custom_course_id": 1, "timetable_id": 1,'
         #                 ' "title": "swpp", "week_day": 2, "start_time": 1020,'
         #                 ' "end_time": 1110, "color": "#2468AC",'
         #                 ' "lecture_number": "001",'
         #                 ' "course_number": "M1522.002400"},'
-        #                 ' {"course_id": 1, "course_color_id": 1, "timetable_id": 1,'
+        #                 ' {"course_id": 1, "custom_course_id": 1, "timetable_id": 1,'
         #                 ' "title": "swpp", "week_day": 3, "start_time": 1110,'
         #                 ' "end_time": 1230, "color": "#2468AC",'
         #                 ' "lecture_number": "001",'
