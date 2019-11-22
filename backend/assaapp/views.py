@@ -261,13 +261,6 @@ def api_timetable_id(request, timetable_id):
 
 def api_timetable_id_course(request, timetable_id):
     if request.user.is_authenticated:
-        if request.method == 'GET':
-            try:
-                timetable = Timetable.objects.get(pk=timetable_id)
-                courses = [course for course in timetable.courses.all().values()]
-                return JsonResponse(courses, status=200, safe=False)
-            except Timetable.DoesNotExist:
-                return HttpResponseNotFound()
         if request.method == 'POST':
             try:
                 string_pool = "89ABCDEF"
@@ -281,14 +274,45 @@ def api_timetable_id_course(request, timetable_id):
                 try:
                     timetable = Timetable.objects.get(pk=timetable_id)
                     course = Course.objects.get(pk=course_id)
-                    CustomCourse(timetable=timetable, course=course, color=color).save()
+                    courseTime_list = CourseTime.objects.filter(course=course)
+                    customCourse = CustomCourse(timetable=timetable, course=course, color=color)
+                    for courseTime in courseTime_list:
+                        CustomCourseTime(course=customCourse, weekday=courseTime.weekday, start_time=courseTime.start_time, end_time=courseTime.end_time).save()
+                    customCourse.save()
                     timetable.save()
                     return JsonResponse(timetable.data(), safe=False)
                 except (Timetable.DoesNotExist, Course.DoesNotExist):
                     return HttpResponseNotFound()
             except (KeyError, JSONDecodeError):
                 return HttpResponseBadRequest()
-        return HttpResponseNotAllowed(['GET', 'POST'])
+        return HttpResponseNotAllowed(['POST'])
+    return HttpResponse(status=401)
+
+def api_timetable_id_customCourse(request, timetable_id):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            try:
+                body = request.body.decode()
+                title = json.loads(body)['title']
+                color = json.loads(body)['color']
+                weekday = json.loads(body)['weekday']
+                start_time = json.loads(body)['start_time']
+                end_time = json.loads(body)['end_time']
+                time_list = zip(weekday, start_time, end_time)
+                
+                try:
+                    timetable = Timetable.objects.get(pk=timetable_id)
+                    customCourse = CustomCourse(timetable=timetable, color=color, title=title)
+                    for time in time_list:
+                        CustomCourseTime.save(course=customCourse, weekday=time[0], start_time=time[1], end_time=time[2])
+                    customCourse.save()
+                    timetable.save()
+                    return JsonResponse(timetable.data(), safe=False)
+                except (Timetable.DoesNotExist):
+                    return HttpResponseNotFound()
+            except (KeyError, JSONDecodeError):
+                return HttpResponseBadRequest()
+        return HttpResponseNotAllowed(['POST'])
     return HttpResponse(status=401)
 
 def api_course(request):
