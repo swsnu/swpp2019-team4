@@ -102,26 +102,9 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
-    def data(self):
-        course_time_data = [{
-            'week_day': course_time.weekday,
-            'start_time': course_time.start_time.hour*60
-                          +course_time.start_time.minute,
-            'end_time': course_time.end_time.hour*60
-                        +course_time.end_time.minute
-        } for course_time in CourseTime.objects.filter(course=self)]
-        return {
-            'id': self.id,
-            'title': self.title,
-            'lecture_number': self.lecture_number,
-            'course_number': self.course_number,
-            'time': course_time_data,
-        }
-
 class Timetable(models.Model):
     title = models.CharField(max_length=64)
     semester = models.CharField(max_length=8, default="")
-    courses = models.ManyToManyField(Course, related_name='timetables', through='CourseColor')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -134,9 +117,9 @@ class Timetable(models.Model):
         time: [week_day, start_time, end_time]}]}
         '''
         course_data = []
-        for course_color in CourseColor.objects.filter(timetable=self):
-            data = course_color.course.data()
-            data['color'] = course_color.color
+        for custom_course in CustomCourse.objects.filter(timetable=self):
+            data = custom_course.data()
+            data['color'] = custom_course.color
             course_data.append(data)
         return {'id': self.id, 'title': self.title,
                 'semester': self.semester, 'course': course_data}
@@ -144,13 +127,12 @@ class Timetable(models.Model):
     def data_small(self):
         return {'id': self.id, 'title': self.title, 'semester': self.semester}
 
-class CourseColor(models.Model):
-    timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    color = models.CharField(max_length=8, default='default')
-
-    def __str__(self):
-        return self.color
+class CustomCourseTime(models.Model):
+    timetable = models.ForeignKey('Timetable', on_delete=models.CASCADE)
+    course = models.ForeignKey('CustomCourse', on_delete=models.CASCADE)
+    weekday = models.IntegerField(default=0)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
 
 class CourseTime(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -165,3 +147,47 @@ class Building(models.Model):
 
     def __str__(self):
         return self.name
+
+class CustomCourse(models.Model):
+    timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
+    ''' User modifiable data '''
+    title = models.CharField(max_length=128, default='default')
+    color = models.CharField(max_length=8, default='default')
+
+    def set_course_time(self):
+        course_time_list = CourseTime.objects.filter(course=self.course)
+        for course_time in course_time_list:
+            CustomCourseTime(timetable=self.timetable, course=self,
+                             weekday=course_time.weekday,
+                             start_time=course_time.start_time,
+                             end_time=course_time.end_time).save()
+
+    def data(self):
+        course_time_data = [{
+            'week_day': course_time.weekday,
+            'start_time': course_time.start_time.hour*60
+                          +course_time.start_time.minute,
+            'end_time': course_time.end_time.hour*60
+                        +course_time.end_time.minute
+        } for course_time in CustomCourseTime.objects.filter(course=self, timetable=self.timetable)]
+
+        if self.course is None:
+            return {
+                'id': self.id,
+                'title': self.title,
+                'lecture_number': '000',
+                'course_number': '000',
+                'time': course_time_data,
+            }
+        course = Course.objects.get(pk=self.course.id)
+        return {
+            'id': self.id,
+            'title': course.title,
+            'lecture_number': course.lecture_number,
+            'course_number': course.course_number,
+            'time': course_time_data,
+        }
+
+    def __str__(self):
+        return self.color

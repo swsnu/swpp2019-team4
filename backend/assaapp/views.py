@@ -10,7 +10,7 @@ from django.core.mail import EmailMessage
 from django.forms.models import model_to_dict
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from assaapp.models import User, Timetable, Course, CourseColor
+from assaapp.models import User, Timetable, Course, CustomCourse, CustomCourseTime
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
 
 def api_signup(request):
@@ -261,13 +261,6 @@ def api_timetable_id(request, timetable_id):
 
 def api_timetable_id_course(request, timetable_id):
     if request.user.is_authenticated:
-        if request.method == 'GET':
-            try:
-                timetable = Timetable.objects.get(pk=timetable_id)
-                courses = [course for course in timetable.courses.all().values()]
-                return JsonResponse(courses, status=200, safe=False)
-            except Timetable.DoesNotExist:
-                return HttpResponseNotFound()
         if request.method == 'POST':
             try:
                 string_pool = "89ABCDEF"
@@ -281,20 +274,50 @@ def api_timetable_id_course(request, timetable_id):
                 try:
                     timetable = Timetable.objects.get(pk=timetable_id)
                     course = Course.objects.get(pk=course_id)
-                    CourseColor(timetable=timetable, course=course, color=color).save()
-                    timetable.save()
+                    custom_course = CustomCourse(timetable=timetable, course=course, color=color)
+                    custom_course.save()
+                    custom_course.set_course_time()
                     return JsonResponse(timetable.data(), safe=False)
                 except (Timetable.DoesNotExist, Course.DoesNotExist):
                     return HttpResponseNotFound()
             except (KeyError, JSONDecodeError):
                 return HttpResponseBadRequest()
-        return HttpResponseNotAllowed(['GET', 'POST'])
+        return HttpResponseNotAllowed(['POST'])
+    return HttpResponse(status=401)
+
+def api_timetable_id_custom_course(request, timetable_id):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            try:
+                body = request.body.decode()
+                title = json.loads(body)['title']
+                color = json.loads(body)['color']
+                weekday = json.loads(body)['weekday']
+                start_time = json.loads(body)['start_time']
+                end_time = json.loads(body)['end_time']
+                time_list = zip(weekday, start_time, end_time)
+                try:
+                    timetable = Timetable.objects.get(pk=timetable_id)
+                    custom_course = CustomCourse(timetable=timetable, color=color, title=title)
+                    custom_course.save()
+                    for time in time_list:
+                        CustomCourseTime(timetable=timetable,
+                                         course=custom_course,
+                                         weekday=time[0],
+                                         start_time=time[1],
+                                         end_time=time[2]).save()
+                    return JsonResponse(timetable.data(), safe=False)
+                except Timetable.DoesNotExist:
+                    return HttpResponseNotFound()
+            except (KeyError, JSONDecodeError):
+                return HttpResponseBadRequest()
+        return HttpResponseNotAllowed(['POST'])
     return HttpResponse(status=401)
 
 def api_course(request):
     if request.user.is_authenticated:
         if request.method == 'GET':
-            course_list = [course for course in Course.objects.values()]
+            course_list = Course.objects.values()
             if request.GET.get('title'):
                 match_text = request.GET.get('title')
                 def is_matched(text):
