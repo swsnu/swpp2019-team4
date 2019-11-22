@@ -10,6 +10,7 @@ import './Account.css';
 class Account extends Component {
   constructor(props) {
     super(props);
+    this.is_mount = true;
     this.state = {
       show_modal: false,
 
@@ -41,13 +42,20 @@ class Account extends Component {
 
   componentDidMount() {
     this.props.onGetUser().then(() => {
-      this.setState((prevState) => ({
-        ...prevState,
-        username: this.props.storedUser.username,
-        grade: this.props.storedUser.grade,
-        department: this.props.storedUser.department,
-      }));
-    });
+      if (this.is_mount) {
+        this.setState((prevState) => ({
+          ...prevState,
+          username: this.props.storedUser.username,
+          grade: this.props.storedUser.grade,
+          department: this.props.storedUser.department,
+        }));
+      }
+    })
+      .catch(() => {});
+  }
+
+  componentWillUnmount() {
+    this.is_mount = false;
   }
 
   handleLogout() {
