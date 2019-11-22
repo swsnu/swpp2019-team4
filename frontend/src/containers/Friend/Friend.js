@@ -36,7 +36,7 @@ class Friend extends Component {
   }
 
   enterKey() {
-    if(window.event.keyCode == 13) {
+    if (window.event.keyCode === 13) {
       this.handleSearch();
     }
   }

@@ -128,6 +128,7 @@ class Timetable(models.Model):
         return {'id': self.id, 'title': self.title, 'semester': self.semester}
 
 class CustomCourseTime(models.Model):
+    timetable = models.ForeignKey('Timetable', on_delete=models.CASCADE)
     course = models.ForeignKey('CustomCourse', on_delete=models.CASCADE)
     weekday = models.IntegerField(default=0)
     start_time = models.TimeField()
@@ -149,15 +150,18 @@ class Building(models.Model):
 
 class CustomCourse(models.Model):
     timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
     ''' User modifiable data '''
     title = models.CharField(max_length=128, default='default')
     color = models.CharField(max_length=8, default='default')
 
     def set_course_time(self):
-        courseTime_list=CourseTime.objects.filter(course=self.course)
-        for courseTime in courseTime_list:
-            CustomCourseTime(course=self, weekday=courseTime.weekday, start_time=courseTime.start_time, end_time=courseTime.end_time).save()
+        course_time_list = CourseTime.objects.filter(course=self.course)
+        for course_time in course_time_list:
+            CustomCourseTime(timetable=self.timetable, course=self,
+                             weekday=course_time.weekday,
+                             start_time=course_time.start_time,
+                             end_time=course_time.end_time).save()
 
     def data(self):
         course_time_data = [{
@@ -166,7 +170,16 @@ class CustomCourse(models.Model):
                           +course_time.start_time.minute,
             'end_time': course_time.end_time.hour*60
                         +course_time.end_time.minute
-        } for course_time in CustomCourseTime.objects.filter(course=self)]
+        } for course_time in CustomCourseTime.objects.filter(course=self, timetable=self.timetable)]
+
+        if self.course is None:
+            return {
+                'id': self.id,
+                'title': self.title,
+                'lecture_number': '000',
+                'course_number': '000',
+                'time': course_time_data,
+            }
         course = Course.objects.get(pk=self.course.id)
         return {
             'id': self.id,

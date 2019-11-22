@@ -10,7 +10,7 @@ from django.core.mail import EmailMessage
 from django.forms.models import model_to_dict
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from assaapp.models import User, Timetable, Course, CustomCourse
+from assaapp.models import User, Timetable, Course, CustomCourse, CustomCourseTime
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
 
 def api_signup(request):
@@ -274,9 +274,9 @@ def api_timetable_id_course(request, timetable_id):
                 try:
                     timetable = Timetable.objects.get(pk=timetable_id)
                     course = Course.objects.get(pk=course_id)
-                    customCourse = CustomCourse(timetable=timetable, course=course, color=color)
-                    customCourse.save()
-                    customCourse.set_course_time()
+                    custom_course = CustomCourse(timetable=timetable, course=course, color=color)
+                    custom_course.save()
+                    custom_course.set_course_time()
                     return JsonResponse(timetable.data(), safe=False)
                 except (Timetable.DoesNotExist, Course.DoesNotExist):
                     return HttpResponseNotFound()
@@ -285,7 +285,7 @@ def api_timetable_id_course(request, timetable_id):
         return HttpResponseNotAllowed(['POST'])
     return HttpResponse(status=401)
 
-def api_timetable_id_customCourse(request, timetable_id):
+def api_timetable_id_custom_course(request, timetable_id):
     if request.user.is_authenticated:
         if request.method == 'POST':
             try:
@@ -296,16 +296,18 @@ def api_timetable_id_customCourse(request, timetable_id):
                 start_time = json.loads(body)['start_time']
                 end_time = json.loads(body)['end_time']
                 time_list = zip(weekday, start_time, end_time)
-                
                 try:
                     timetable = Timetable.objects.get(pk=timetable_id)
-                    customCourse = CustomCourse(timetable=timetable, color=color, title=title)
+                    custom_course = CustomCourse(timetable=timetable, color=color, title=title)
+                    custom_course.save()
                     for time in time_list:
-                        CustomCourseTime.save(course=customCourse, weekday=time[0], start_time=time[1], end_time=time[2])
-                    customCourse.save()
-                    timetable.save()
+                        CustomCourseTime(timetable=timetable,
+                                         course=custom_course,
+                                         weekday=time[0],
+                                         start_time=time[1],
+                                         end_time=time[2]).save()
                     return JsonResponse(timetable.data(), safe=False)
-                except (Timetable.DoesNotExist):
+                except Timetable.DoesNotExist:
                     return HttpResponseNotFound()
             except (KeyError, JSONDecodeError):
                 return HttpResponseBadRequest()
@@ -315,7 +317,7 @@ def api_timetable_id_customCourse(request, timetable_id):
 def api_course(request):
     if request.user.is_authenticated:
         if request.method == 'GET':
-            course_list = [course for course in Course.objects.values()]
+            course_list = Course.objects.values()
             if request.GET.get('title'):
                 match_text = request.GET.get('title')
                 def is_matched(text):

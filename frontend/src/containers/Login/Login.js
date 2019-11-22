@@ -31,10 +31,11 @@ class Login extends Component {
   }
 
   enterKey() {
-    if(window.event.keyCode == 13) {
+    if (window.event.keyCode === 13) {
       this.handleLogin();
     }
   }
+
   render() {
     if (this.props.storedUser.is_authenticated === true) {
       return (
