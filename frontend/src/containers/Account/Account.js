@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { Modal } from 'reactstrap';
 import TopBar from '../../components/TopBar/TopBar';
 import * as actionCreators from '../../store/actions/index';
 import './Account.css';
@@ -10,6 +11,8 @@ class Account extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      show_modal: false,
+
       password_prev: '',
       password: '',
       password_confirm: '',
@@ -49,6 +52,10 @@ class Account extends Component {
 
   handleLogout() {
     this.props.onLogout();
+  }
+
+  toggleModal() {
+    this.setState((prevState) => ({ ...prevState, show_modal: !prevState.show_modal }));
   }
 
   handleChange(passwordPrev, password, passwordConfirm, username, department, grade) {
@@ -92,6 +99,10 @@ class Account extends Component {
         .then(() => this.setState((prevState) => ({
           ...prevState,
           is_waiting: false,
+          show_modal: true,
+          password_prev: '',
+          password: '',
+          password_confirm: '',
         })))
         .catch(() => this.setState((prevState) => ({
           ...prevState,
@@ -125,7 +136,7 @@ class Account extends Component {
                   <td className="text-right">
                     Email
                   </td>
-                  <td className="text-left pl-3">
+                  <td className="text-left pl-3 pt-1 align-top">
                     {this.props.storedUser.email}
                   </td>
                 </tr>
@@ -248,6 +259,17 @@ class Account extends Component {
         >
           수정하기
         </button>
+        <Modal isOpen={this.state.show_modal} id="account-change-message" centered>
+          <div className="modal-title w-100">
+            <div className="oi oi-check w-100 text-success text-center m-3" style={{ fontSize: '5em' }} />
+            <h4 className="text-center m-3"> 내용이 변경되었습니다. </h4>
+          </div>
+          <div className="modal-footer w-100">
+            <button type="button" className="btn btn-outline-dark mx-auto" onClick={() => this.toggleModal()}>
+              닫기
+            </button>
+          </div>
+        </Modal>
       </div>
     );
   }
