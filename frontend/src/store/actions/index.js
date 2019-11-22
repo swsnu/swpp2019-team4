@@ -23,4 +23,5 @@ export {
   getTimetableFriend,
   postTimetable,
   postMainTimetable,
+  postCustomCourse,
 } from './user';

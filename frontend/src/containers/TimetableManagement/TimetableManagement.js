@@ -38,10 +38,17 @@ class TimetableManagement extends Component {
   }
 
   post(courseId) {
-    if (this.state.timetableId !== -1) {
-      this.props.onPostCourse(this.state.timetableId, courseId);
-      this.props.onGetTimetable(this.state.timetableId);
+    this.props.onPostCourse(this.state.timetableId, courseId);
+  }
+
+  post_custom(courseData, courseTime) {
+    var courseTimes = courseTime.split('/')
+    console.log(courseTimes)
+    var splitedCourseTime = []
+    for (var i=0, item; item=courseTimes[i]; i++) {
+      splitedCourseTime.push(item.split('-'))
     }
+    this.props.onPostCustomCourse(this.state.timetableId, courseData, splitedCourseTime)
   }
 
   show(timetableId) {
@@ -150,6 +157,7 @@ class TimetableManagement extends Component {
             this.state.showPopup ?
             (<CustomCourse
               closePopup={() => this.statePopup(false)}
+              postCustomCourse={(courseData, courseTime) => this.post_custom(courseData, courseTime)}
             />)
             :null
           }
@@ -210,6 +218,7 @@ const mapDispatchToProps = (dispatch) => ({
   onPostCourse: (title, courseId) => dispatch(actionCreators.postCourse(title, courseId)),
   onGetTimetables: () => dispatch(actionCreators.getTimetables()),
   onPostMainTimetable: (id) => dispatch(actionCreators.postMainTimetable(id)),
+  onPostCustomCourse: (timetableId, courseInfo, courseTime) => dispatch(actionCreators.postCustomCourse(timetableId, courseInfo, courseTime)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableManagement);
