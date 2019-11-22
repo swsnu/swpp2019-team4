@@ -6,7 +6,7 @@ import * as actionCreators from '../../store/actions/index';
 import TimetableView from '../../components/TimetableView/TimetableView';
 import SideView from '../../components/SideView/SideView';
 import TopBar from '../../components/TopBar/TopBar';
-import TimetableRecommend from '../TimetableRecommend/TimetableRecommend';
+import CustomCourse from '../../components/CustomCourse/CustomCourse';
 import './TimetableManagement.css';
 
 class TimetableManagement extends Component {
@@ -145,17 +145,14 @@ class TimetableManagement extends Component {
         <div className="manage-timetable-buttons">
           <button type="button" id="delete-button">DELETE</button>
           <button type="button" id="create-button" onClick={() => this.createEmptyTimetable()}>CREATE</button>
-          <button type="button" id="timetable-recommend-button" onClick={() => this.statePopup(true)}>RECOMMEND</button>
+          <button type="button" id="custom-course-button" onClick={() => this.statePopup(true)}>ADD CUSTOM</button>
           {
-          this.state.showPopup
-            ? (
-              <TimetableRecommend
-                timetable={this.props.timetables}
-                closePopup={() => this.statePopup(false)}
-              />
-            )
-            : null
-        }
+            this.state.showPopup ?
+            (<CustomCourse
+              closePopup={() => this.statePopup(false)}
+            />)
+            :null
+          }
         </div>
       </div>
     );
