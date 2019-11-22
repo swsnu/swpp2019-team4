@@ -41,6 +41,9 @@ class TimetableManagement extends Component {
     this.props.onPostCourse(this.state.timetableId, courseId);
   }
 
+  delete(courseId) {
+    this.props.onDeleteCourse(this.state.timetableId, courseId)
+  }
   post_custom(courseData, courseTime) {
     var courseTimes = courseTime.split('/')
     console.log(courseTimes)
@@ -49,6 +52,7 @@ class TimetableManagement extends Component {
       splitedCourseTime.push(item.split('-'))
     }
     this.props.onPostCustomCourse(this.state.timetableId, courseData, splitedCourseTime)
+    this.statePopup(false);
   }
 
   show(timetableId) {
@@ -99,7 +103,7 @@ class TimetableManagement extends Component {
       <SideView
         list={this.state.showCourses ? this.props.courses : this.props.timetable.course}
         className="course-list"
-        onClick={(id) => this.post(id)}
+        onClick={this.state.showCourses ? (id) => this.post(id):(id) => this.delete(id)}
       />
     );
     return (
@@ -219,6 +223,7 @@ const mapDispatchToProps = (dispatch) => ({
   onGetTimetables: () => dispatch(actionCreators.getTimetables()),
   onPostMainTimetable: (id) => dispatch(actionCreators.postMainTimetable(id)),
   onPostCustomCourse: (timetableId, courseInfo, courseTime) => dispatch(actionCreators.postCustomCourse(timetableId, courseInfo, courseTime)),
+  onDeleteCourse: (timetableId, courseId) => dispatch(actionCreators.deleteCourse(timetableId, courseId))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableManagement);

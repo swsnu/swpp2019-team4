@@ -40,6 +40,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, timetable: action.timetable };
     case actionTypes.POST_CUSTOM_COURSE:
       return { ...state, timetable: action.timetable };
+    case actionTypes.DELETE_COURSE: 
+      return { ...state, timetable: action.timetable, courses: state.courses.filter((course) => course.id !== action.courseId) };
     case actionTypes.GET_COURSES:
       return { ...state, courses: action.courses };
     case actionTypes.GET_FRIEND:

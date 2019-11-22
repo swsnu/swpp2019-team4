@@ -270,6 +270,7 @@ def api_timetable_id_course(request, timetable_id):
                     color += random.choice(string_pool)
                     i += 1
                 body = request.body.decode()
+                print(body)
                 course_id = json.loads(body)['course_id']
                 try:
                     timetable = Timetable.objects.get(pk=timetable_id)
@@ -283,6 +284,18 @@ def api_timetable_id_course(request, timetable_id):
             except (KeyError, JSONDecodeError):
                 return HttpResponseBadRequest()
         return HttpResponseNotAllowed(['POST'])
+    return HttpResponse(status=401)
+
+def api_timetable_id_custom_course_id(request, timetable_id, custom_course_id):
+    if request.user.is_authenticated:
+        if request.method == 'DELETE':
+            try:
+                timetable = Timetable.objects.get(pk=timetable_id)
+                CustomCourse.objects.get(pk=custom_course_id).delete()
+                return JsonResponse(timetable.data(), safe=False)
+            except (CustomCourse.DoesNotExist, Timetable.DoesNotExist):
+                return HttpResponseNotFound()
+        return HttpResponseNotAllowed(['DELETE'])
     return HttpResponse(status=401)
 
 def api_timetable_id_custom_course(request, timetable_id):
