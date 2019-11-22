@@ -118,7 +118,7 @@ class Timetable(models.Model):
         '''
         course_data = []
         for custom_course in CustomCourse.objects.filter(timetable=self):
-            data = custom_course.course.data()
+            data = custom_course.data()
             data['color'] = custom_course.color
             course_data.append(data)
         return {'id': self.id, 'title': self.title,
@@ -127,35 +127,8 @@ class Timetable(models.Model):
     def data_small(self):
         return {'id': self.id, 'title': self.title, 'semester': self.semester}
 
-class CustomCourse(models.Model):
-    timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    ''' User modifiable data '''
-    title = models.CharField(max_length=128, default='default')
-    color = models.CharField(max_length=8, default='default')
-
-    def data(self):
-        course_time_data = [{
-            'week_day': course_time.weekday,
-            'start_time': course_time.start_time.hour*60
-                          +course_time.start_time.minute,
-            'end_time': course_time.end_time.hour*60
-                        +course_time.end_time.minute
-        } for course_time in CustomCourseTime.objects.filter(course=self)]
-        course = Course.objects.get(course=course)
-        return {
-            'id': self.id,
-            'title': course.title,
-            'lecture_number': course.lecture_number,
-            'course_number': course.course_number,
-            'time': course_time_data,
-        }
-
-    def __str__(self):
-        return self.color
-
 class CustomCourseTime(models.Model):
-    course = models.ForeignKey(CustomCourse, on_delete=models.CASCADE)
+    course = models.ForeignKey('CustomCourse', on_delete=models.CASCADE)
     weekday = models.IntegerField(default=0)
     start_time = models.TimeField()
     end_time = models.TimeField()
@@ -173,3 +146,35 @@ class Building(models.Model):
 
     def __str__(self):
         return self.name
+
+class CustomCourse(models.Model):
+    timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    ''' User modifiable data '''
+    title = models.CharField(max_length=128, default='default')
+    color = models.CharField(max_length=8, default='default')
+
+    def set_course_time(self):
+        courseTime_list=CourseTime.objects.filter(course=self.course)
+        for courseTime in courseTime_list:
+            CustomCourseTime(course=self, weekday=courseTime.weekday, start_time=courseTime.start_time, end_time=courseTime.end_time).save()
+
+    def data(self):
+        course_time_data = [{
+            'week_day': course_time.weekday,
+            'start_time': course_time.start_time.hour*60
+                          +course_time.start_time.minute,
+            'end_time': course_time.end_time.hour*60
+                        +course_time.end_time.minute
+        } for course_time in CustomCourseTime.objects.filter(course=self)]
+        course = Course.objects.get(pk=self.course.id)
+        return {
+            'id': self.id,
+            'title': course.title,
+            'lecture_number': course.lecture_number,
+            'course_number': course.course_number,
+            'time': course_time_data,
+        }
+
+    def __str__(self):
+        return self.color
