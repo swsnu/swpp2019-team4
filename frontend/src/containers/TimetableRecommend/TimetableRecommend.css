@@ -5,3 +5,58 @@
   left: 0;
   right: 0;
 }
+
+#recommend-progress .bar {
+  margin-bottom: -1px;
+  width: 3px;
+  height: 80px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#recommend-progress table {
+  width: 100%;
+  margin-left: 3rem;
+}
+
+#recommend-progress td:nth-child(odd) {
+  width: 60px;
+}
+
+#recommend-progress td:nth-child(even) {
+  text-align: left;
+  font-weight: 700;
+}
+
+#recommend-progress .oi {
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  line-height: 35px;
+  border-radius: 50%;
+  text-align: center;
+  border: 3px solid;
+}
+
+#recommend-progress .progress-past {
+  color: #00B000;
+  border-color: #00B000;
+}
+
+#recommend-progress .progress-working {
+  color: #B00000;
+  border-color: #B00000;
+}
+
+#recommend-progress .progress-future {
+  color: #808080;
+  border-color: #808080;
+}
+
+#recommend-progress .progress-past .bar {
+  background-color: #00B000;
+}
+
+#recommend-progress .progress-future .bar {
+  background-color: #808080;
+}

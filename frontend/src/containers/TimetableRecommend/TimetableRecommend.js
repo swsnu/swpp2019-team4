@@ -14,6 +14,7 @@ class TimetableRecommend extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      valid: true,
       index: 0,
     };
   }
@@ -24,6 +25,10 @@ class TimetableRecommend extends Component {
 
   handleLogout() {
     this.props.onLogout();
+  }
+
+  handleValid(value) {
+    this.setState({ valid: value });
   }
 
   movePage(offset) {
@@ -40,13 +45,13 @@ class TimetableRecommend extends Component {
     let content;
     switch (this.state.index) {
       case 0:
-        content = (<RecommendConstraint />);
+        content = (<RecommendConstraint handleValid={(value) => this.handleValid(value)} />);
         break;
       case 1:
-        content = (<RecommendTime />);
+        content = (<RecommendTime handleValid={(value) => this.handleValid(value)} />);
         break;
       case 2:
-        content = (<RecommendCourse />);
+        content = (<RecommendCourse handleValid={(value) => this.handleValid(value)} />);
         break;
       case 3:
         content = (<RecommendResult timetable={[{ course: [] }, { course: [] }]} />);
@@ -56,12 +61,52 @@ class TimetableRecommend extends Component {
         break;
     }
 
+    const progressStatus = [];
+    for (let i = 0; i < 4; i += 1) {
+      if (i < this.state.index) {
+        progressStatus.push('progress-past');
+      } else if (i === this.state.index) {
+        progressStatus.push('progress-working');
+      } else progressStatus.push('progress-future');
+    }
+
     return (
       <div className="TimetableRecommend d-flex flex-column">
         <TopBar id="topbar" logout={() => this.handleLogout()} />
         <div className="row flex-grow-1" style={{ minHeight: 0 }}>
-          <div className="col-2">
-            HELLO
+          <div className="col-2 d-flex flex-column justify-content-center" id="recommend-progress">
+            <table>
+              <tbody>
+                <tr className={progressStatus[0]}>
+                  <td><div className="oi oi-link-intact" /></td>
+                  <td className="small">{this.state.index === 0 ? '조건 선택' : ''}</td>
+                </tr>
+                <tr className={this.state.index > 0 ? 'progress-past' : 'progress-future'}>
+                  <td><div className="bar" /></td>
+                  <td />
+                </tr>
+                <tr className={progressStatus[1]}>
+                  <td><div className="oi oi-clock" /></td>
+                  <td className="small">{this.state.index === 1 ? '시간 선택' : ''}</td>
+                </tr>
+                <tr className={this.state.index > 1 ? 'progress-past' : 'progress-future'}>
+                  <td><div className="bar" /></td>
+                  <td />
+                </tr>
+                <tr className={progressStatus[2]}>
+                  <td><div className="oi oi-book" /></td>
+                  <td className="small">{this.state.index === 2 ? '과목 선택' : ''}</td>
+                </tr>
+                <tr className={this.state.index > 2 ? 'progress-past' : 'progress-future'}>
+                  <td><div className="bar" /></td>
+                  <td />
+                </tr>
+                <tr className={progressStatus[3]}>
+                  <td><div className="oi oi-calendar" /></td>
+                  <td className="small">{this.state.index === 3 ? '결과 확인' : ''}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
           <div className="col-10 h-100 d-flex flex-column">
             <div className="recommend-content flex-grow-1 overflow-auto" style={{ minHeight: 0 }}>
@@ -80,14 +125,19 @@ class TimetableRecommend extends Component {
                   </button>
                 )
                 : null}
-              <button
-                type="button"
-                className="btn btn-dark"
-                style={{ width: '100px' }}
-                onClick={() => this.movePage(1)}
-              >
+              {this.state.index !== 3
+                ? (
+                  <button
+                    type="button"
+                    className="btn btn-dark"
+                    disabled={!this.state.valid}
+                    style={{ width: '100px' }}
+                    onClick={() => this.movePage(1)}
+                  >
 다음
-              </button>
+                  </button>
+                )
+                : null}
             </div>
           </div>
         </div>
