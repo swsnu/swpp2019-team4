@@ -67,7 +67,7 @@ const reducer = (state = initialState, action) => {
       return { ...state, search: stateSearch };
 
     case actionTypes.RECEIVE_FRIEND:
-      stateFriend.push(state.friend_receive.find((user) => user.id === action.user.id));
+      stateFriend.push(action.user);
       return {
         ...state,
         friend_receive: state.friend_receive.filter((user) => user.id !== action.user.id),

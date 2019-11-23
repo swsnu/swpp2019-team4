@@ -120,7 +120,6 @@ class TimetableView extends Component {
     return (
       <div className="TimetableView">
         <table id="timetable" border="1" bordercolor="black">
-          <caption>{this.props.title}</caption>
           <colgroup>
             <col span="1" style={{ width: '10%' }} />
             <col span="1" style={{ width: '15%' }} />
@@ -155,6 +154,5 @@ TimetableView.propTypes = {
   height: PropTypes.number.isRequired,
   text: PropTypes.bool.isRequired,
   link: PropTypes.bool.isRequired,
-  title: PropTypes.string.isRequired,
 };
 export default TimetableView;
