@@ -111,7 +111,7 @@ class TimetableManagement extends Component {
         <div className="button-container">
           <li key={this.state.timetableId}>
             <button type="button" className="timetable-main">
-              title
+              {this.props.timetable.title}
             </button>
           </li>
           {timetableView}
