@@ -41,7 +41,7 @@ class TimetableManagement extends Component {
     this.props.onPostCourse(this.state.timetableId, courseId);
   }
 
-  delete(courseId) {
+  deleteCourse(courseId) {
     this.props.onDeleteCourse(this.state.timetableId, courseId)
   }
   post_custom(courseData, courseTime) {
@@ -103,7 +103,7 @@ class TimetableManagement extends Component {
       <SideView
         list={this.state.showCourses ? this.props.courses : this.props.timetable.course}
         className="course-list"
-        onClick={this.state.showCourses ? (id) => this.post(id):(id) => this.delete(id)}
+        onClick={this.state.showCourses ? (id) => this.post(id):(id) => this.deleteCourse(id)}
       />
     );
     return (
@@ -156,15 +156,15 @@ class TimetableManagement extends Component {
           <button type="button" id="delete-button">DELETE</button>
           <button type="button" id="create-button" onClick={() => this.createEmptyTimetable()}>CREATE</button>
           <button type="button" id="custom-course-button" onClick={() => this.statePopup(true)}>ADD CUSTOM</button>
-          {
-            this.state.showPopup ?
-            (<CustomCourse
-              closePopup={() => this.statePopup(false)}
-              postCustomCourse={(courseData, courseTime) => this.post_custom(courseData, courseTime)}
-            />)
-            :null
-          }
         </div>
+        {
+          this.state.showPopup ?
+          (<CustomCourse
+            closePopup={() => this.statePopup(false)}
+            postCustomCourse={(courseData, courseTime) => this.post_custom(courseData, courseTime)}
+          />)
+          :null
+        }
       </div>
     );
   }
