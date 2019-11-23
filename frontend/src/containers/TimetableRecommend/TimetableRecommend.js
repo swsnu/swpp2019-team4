@@ -1,78 +1,93 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
-// import * as actionCreators from '../../store/actions/index';
-import TimetableView from '../../components/TimetableView/TimetableView';
+import * as actionCreators from '../../store/actions/index';
+import TopBar from '../../components/TopBar/TopBar';
+import RecommendConstraint from './RecommendConstraint/RecommendConstraint';
+import RecommendResult from './RecommendResult/RecommendResult';
+import RecommendTime from './RecommendTime/RecommendTime';
+import RecommendCourse from './RecommendCourse/RecommendCourse';
 import './TimetableRecommend.css';
 
 class TimetableRecommend extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      courses: [],
+      index: 0,
     };
   }
 
-  changeview(newcourses) {
-    this.setState((prevState) => ({ ...prevState, courses: newcourses }));
+  componentDidMount() {
+    this.props.onGetUser();
+  }
+
+  handleLogout() {
+    this.props.onLogout();
+  }
+
+  movePage(offset) {
+    this.setState((prevState) => ({ ...prevState, index: prevState.index + offset }));
   }
 
   render() {
-    const tableviewlist = [];
-    for (let i = 0; i < this.props.timetable.length; i += 1) {
-      tableviewlist.push(
-        <div
-          key={i}
-          className="recommended-timetable-space"
-          role="button"
-          tabIndex={0}
-          onClick={() => this.changeview(this.props.timetable[i].course)}
-          onKeyDown={() => this.changeview(this.props.timetable[i].course)}
-        >
-          <TimetableView
-            id="timetable-one-result"
-            height={4}
-            width={20}
-            courses={this.props.timetable[i].course}
-            text={false}
-            link={false}
-            title=""
-          />
-        </div>,
+    if (this.props.storedUser.is_authenticated === false) {
+      return (
+        <Redirect to="/login" />
       );
     }
+
+    let content;
+    switch (this.state.index) {
+      case 0:
+        content = (<RecommendConstraint />);
+        break;
+      case 1:
+        content = (<RecommendTime />);
+        break;
+      case 2:
+        content = (<RecommendCourse />);
+        break;
+      case 3:
+        content = (<RecommendResult timetable={[{ course: [] }, { course: [] }]} />);
+        break;
+      default:
+        content = null;
+        break;
+    }
+
     return (
-      <div className="popup">
-        <div className="popup_inner">
-          <div className="recommended-result-list">
-            {tableviewlist}
+      <div className="TimetableRecommend d-flex flex-column">
+        <TopBar id="topbar" logout={() => this.handleLogout()} />
+        <div className="row flex-grow-1" style={{ minHeight: 0 }}>
+          <div className="col-2">
+            HELLO
           </div>
-          <div className="timetable-result-space">
-            <div className="timetable-result">
-              <TimetableView
-                id="timetable-resultview"
-                height={20}
-                width={80}
-                courses={this.state.courses}
-                text
-                link={false}
-                title=""
-              />
+          <div className="col-10 h-100 d-flex flex-column">
+            <div className="recommend-content flex-grow-1 overflow-auto" style={{ minHeight: 0 }}>
+              {content}
             </div>
-            <div className="buttons">
-              <div className="save-space">
-                <button type="button" id="save-button" style={{ width: '100%' }}>SAVE</button>
-              </div>
-              <div className="close-space">
-                <button
-                  type="button"
-                  id="close-button"
-                  style={{ width: '100%' }}
-                  onClick={this.props.closePopup}
-                >
-CLOSE
-                </button>
-              </div>
+            <div className="pt-2 pb-4 d-flex justify-content-around">
+              {this.state.index !== 0
+                ? (
+                  <button
+                    type="button"
+                    className="btn btn-outline-dark"
+                    style={{ width: '100px' }}
+                    onClick={() => this.movePage(-1)}
+                  >
+이전
+                  </button>
+                )
+                : null}
+              <button
+                type="button"
+                className="btn btn-dark"
+                style={{ width: '100px' }}
+                onClick={() => this.movePage(1)}
+              >
+다음
+              </button>
             </div>
           </div>
         </div>
@@ -82,20 +97,13 @@ CLOSE
 }
 
 TimetableRecommend.propTypes = {
-  closePopup: PropTypes.func.isRequired,
-  timetable: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string,
-    weekday: PropTypes.number,
-    start_time: PropTypes.number,
-    end_time: PropTypes.number,
-    color: PropTypes.string,
-    lecture_number: PropTypes.string,
-    course_number: PropTypes.string,
-  }))).isRequired,
+  onGetUser: PropTypes.func.isRequired,
+  onLogout: PropTypes.func.isRequired,
+  storedUser: PropTypes.shape({
+    is_authenticated: PropTypes.bool,
+  }).isRequired,
 };
 
-export default connect(null, null)(TimetableRecommend);
-/*
 const mapStateToProps = (state) => ({
   storedUser: state.user.user,
 });
@@ -106,4 +114,3 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableRecommend);
-*/

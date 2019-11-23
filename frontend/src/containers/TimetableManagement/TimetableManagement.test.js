@@ -112,8 +112,6 @@ describe('TimetableManagement test', () => {
     expect(component.find('#timetable-table').length).toBe(1);
     expect(component.find('#delete-button').length).toBe(1);
     expect(component.find('#create-button').length).toBe(1);
-    expect(component.find('#timetable-recommend-button').length).toBe(1);
-    component.find('#timetable-recommend-button').simulate('click');
   });
 
   it('should call postTimetable when pressed create-button', () => {

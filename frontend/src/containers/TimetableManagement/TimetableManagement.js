@@ -6,14 +6,12 @@ import * as actionCreators from '../../store/actions/index';
 import TimetableView from '../../components/TimetableView/TimetableView';
 import SideView from '../../components/SideView/SideView';
 import TopBar from '../../components/TopBar/TopBar';
-import TimetableRecommend from '../TimetableRecommend/TimetableRecommend';
 import './TimetableManagement.css';
 
 class TimetableManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showPopup: false,
       showCourses: true,
       searchStrings: '',
       timetableId: -1,
@@ -144,17 +142,6 @@ class TimetableManagement extends Component {
         <div className="manage-timetable-buttons">
           <button type="button" id="delete-button">DELETE</button>
           <button type="button" id="create-button" onClick={() => this.createEmptyTimetable()}>CREATE</button>
-          <button type="button" id="timetable-recommend-button" onClick={() => this.statePopup(true)}>RECOMMEND</button>
-          {
-          this.state.showPopup
-            ? (
-              <TimetableRecommend
-                timetable={this.props.timetables}
-                closePopup={() => this.statePopup(false)}
-              />
-            )
-            : null
-        }
         </div>
       </div>
     );
