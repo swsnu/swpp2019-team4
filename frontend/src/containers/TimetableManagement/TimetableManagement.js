@@ -149,7 +149,6 @@ class TimetableManagement extends Component {
             courses={this.props.timetable.course}
             text
             link
-            title=""
           />
         </div>
         {timetableList}

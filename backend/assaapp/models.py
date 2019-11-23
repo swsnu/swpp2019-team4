@@ -72,7 +72,8 @@ class User(AbstractBaseUser):
 
     def data_medium(self):
         return {'id': self.id, 'email': self.email, 'username': self.username,
-                'timetable_main': self.timetable_main.id}
+                'grade': self.grade, 'department': self.department,
+                'timetable_main': self.timetable_main.data()}
 
     def data_small(self):
         return {'id': self.id, 'email': self.email, 'username': self.username}
@@ -116,11 +117,8 @@ class Timetable(models.Model):
         {id, title, semester, course: [{id, title, color, lecture_number, course_number,
         time: [week_day, start_time, end_time]}]}
         '''
-        course_data = []
-        for custom_course in CustomCourse.objects.filter(timetable=self):
-            data = custom_course.data()
-            data['color'] = custom_course.color
-            course_data.append(data)
+        course_data = [custom_course.data()
+                       for custom_course in CustomCourse.objects.filter(timetable=self)]
         return {'id': self.id, 'title': self.title,
                 'semester': self.semester, 'course': course_data}
 
@@ -176,6 +174,7 @@ class CustomCourse(models.Model):
             return {
                 'id': self.id,
                 'title': self.title,
+                'color': self.color,
                 'lecture_number': '000',
                 'course_number': '000',
                 'time': course_time_data,
@@ -184,6 +183,7 @@ class CustomCourse(models.Model):
         return {
             'id': self.id,
             'title': course.title,
+            'color': self.color,
             'lecture_number': course.lecture_number,
             'course_number': course.course_number,
             'time': course_time_data,

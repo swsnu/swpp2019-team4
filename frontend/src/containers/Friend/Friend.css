@@ -1,3 +1,18 @@
 .Friend .right-content button {
-    min-width: 45px;
+  min-width: 45px;
+}
+
+.Friend .clickable {
+  cursor: pointer;
+}
+
+.Friend .circle {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  font-size: 10px;
+  border-radius: 50%;
+  color: #FFFFFF;
+  text-align: center;
+  background-color: #B04040;
 }

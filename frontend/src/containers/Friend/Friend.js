@@ -10,16 +10,27 @@ import './Friend.css';
 class Friend extends Component {
   constructor(props) {
     super(props);
+    this.is_mount = true;
     this.state = {
       email: '',
       message: '',
-      id_focus: -1,
+      friend_id: 0,
     };
   }
 
   componentDidMount() {
     this.props.onGetUser();
     this.props.onGetFriend();
+    const anchor = parseInt(this.props.location.hash.replace('#', ''), 10);
+    if (!Number.isNaN(anchor)) {
+      this.setState((prevState) => (
+        { ...prevState, friend_id: anchor }
+      ));
+    }
+  }
+
+  componentWillUnmount() {
+    this.is_mount = false;
   }
 
   handleLogout() {
@@ -27,12 +38,20 @@ class Friend extends Component {
   }
 
   handleTimetable(friend) {
-    this.props.onGetTimetableFriend(friend.timetable_main)
-      .then(() => {
+    const id = friend === null ? 0 : friend.id;
+    this.setState((prevState) => ({
+      ...prevState, friend_id: prevState.friend_id === id ? 0 : id,
+    }));
+  }
+
+  handleDeleteFriend(friend) {
+    this.props.onDeleteFriend(friend.id).then(() => {
+      if (this.is_mount && this.state.friend_id === friend.id) {
         this.setState((prevState) => ({
-          ...prevState, id_focus: friend.timetable_main,
+          ...prevState, friend_id: 0,
         }));
-      });
+      }
+    });
   }
 
   enterKey() {
@@ -75,6 +94,8 @@ class Friend extends Component {
   }
 
   render() {
+    const currentFriend = this.props.storedFriend.find((friend) => friend.id === this.state.friend_id);
+
     if (this.props.storedUser.is_authenticated === false) {
       return (
         <Redirect to="/login" />
@@ -85,10 +106,6 @@ class Friend extends Component {
       <div
         className="d-flex flex-row p-2"
         key={friend.id}
-        onClick={() => this.handleTimetable(friend)}
-        role="button"
-        tabIndex="0"
-        onKeyDown={() => {}}
       >
         <div className="text-left px-2">
           {' '}
@@ -102,10 +119,20 @@ class Friend extends Component {
         </div>
         <div className="px-2">
           <button
+            className={`btn btn-sm ${friend.id !== this.state.friend_id ? 'btn-outline-primary' : 'btn-primary'}`}
+            id="friend-view"
+            type="button"
+            onClick={() => this.handleTimetable(friend)}
+          >
+            보기
+          </button>
+        </div>
+        <div className="px-2">
+          <button
             className="btn btn-outline-danger btn-sm"
             id="friend-cancel"
             type="button"
-            onClick={() => this.props.onDeleteFriend(friend.id)}
+            onClick={() => this.handleDeleteFriend(friend)}
           >
             삭제
           </button>
@@ -173,19 +200,37 @@ class Friend extends Component {
       </div>
     ));
 
-    let courses = [];
-    if (this.state.id_focus >= 0) {
-      courses = this.props.storedTimetableFriend.course;
-    }
-
     return (
       <div className="Friend">
         <TopBar logout={() => this.handleLogout()} />
         <div className="row w-100">
-          <div className="left-content col-6 offset-1">
-            <TimetableView id="timetable-table" height={24} width={80} courses={courses} text link title="TIMETABLE" />
+          <div className="left-content col-7 pl-5">
+            {
+              currentFriend !== undefined
+                ? (
+                  <div>
+                    <div style={{ height: '30px' }}>
+                      <b>{currentFriend.username}</b>
+                      님의 시간표
+                    </div>
+                    <TimetableView
+                      id="timetable-table"
+                      height={20}
+                      courses={currentFriend.timetable_main.course}
+                      text
+                      link
+                    />
+                  </div>
+                )
+                : (
+                  <div>
+                    <div style={{ height: '30px' }} />
+                    <TimetableView id="timetable-table" height={20} courses={[]} text link />
+                  </div>
+                )
+            }
           </div>
-          <div className="right-content col-4">
+          <div className="right-content col-5 pr-5">
             <div className="d-flex flex-row rounded-sm">
               <div className="flex-grow-1 p-2">
                 <input
@@ -212,17 +257,51 @@ class Friend extends Component {
             <div style={{ height: `${2}em` }}>{message}</div>
             <hr className="m-1" />
             <div className="overflow-auto">
-              <div>RECEIVED</div>
+
+              <div
+                className="d-flex justify-content-between align-items-center clickable px-3"
+                data-toggle="collapse"
+                data-target="#friend-receive-list"
+              >
+                <div className="small font-weight-bold">받은 신청</div>
+                {friendsReceive.length !== 0
+                  ? <div className="circle">{friendsReceive.length}</div> : null}
+              </div>
               <hr className="m-1" />
-              {friendsReceive}
+              <div className="collapse" id="friend-receive-list">
+                {friendsReceive}
+              </div>
               <hr className="m-1" />
-              <div>SENT</div>
+
+              <div
+                className="d-flex justify-content-between align-items-center clickable px-3"
+                data-toggle="collapse"
+                data-target="#friend-send-list"
+              >
+                <div className="small font-weight-bold">보낸 신청</div>
+                {friendsSend.length !== 0
+                  ? <div className="circle">{friendsSend.length}</div> : null}
+              </div>
               <hr className="m-1" />
-              {friendsSend}
+              <div className="collapse" id="friend-send-list">
+                {friendsSend}
+              </div>
               <hr className="m-1" />
-              <div>FRIENDS</div>
+
+              <div
+                className="d-flex justify-content-between align-items-center clickable px-3"
+                data-toggle="collapse"
+                data-target="#friend-list"
+              >
+                <div className="small font-weight-bold">친구</div>
+                {friends.length !== 0
+                  ? <div className="circle">{friends.length}</div> : null}
+              </div>
               <hr className="m-1" />
-              {friends}
+              <div className="collapse show" id="friend-list">
+                {friends}
+              </div>
+              <hr className="m-1" />
             </div>
           </div>
         </div>
@@ -232,14 +311,14 @@ class Friend extends Component {
 }
 
 Friend.propTypes = {
+  location: PropTypes.shape({
+    hash: PropTypes.string,
+  }).isRequired,
   onGetUser: PropTypes.func.isRequired,
   onGetFriend: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
   storedUser: PropTypes.shape({
     is_authenticated: PropTypes.bool,
-  }).isRequired,
-  storedTimetableFriend: PropTypes.shape({
-    course: PropTypes.arrayOf(),
   }).isRequired,
   storedFriend: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   storedFriendSend: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
@@ -249,7 +328,6 @@ Friend.propTypes = {
     status: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,
   }).isRequired,
-  onGetTimetableFriend: PropTypes.func.isRequired,
   onReceiveFriend: PropTypes.func.isRequired,
   onDeleteFriend: PropTypes.func.isRequired,
   onCancelFriend: PropTypes.func.isRequired,
@@ -262,7 +340,6 @@ const mapStateToProps = (state) => ({
   storedFriend: state.user.friend,
   storedFriendSend: state.user.friend_send,
   storedFriendReceive: state.user.friend_receive,
-  storedTimetableFriend: state.user.timetable_friend,
   storedSearch: state.user.search,
 });
 
@@ -270,7 +347,6 @@ const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onGetFriend: () => dispatch(actionCreators.getFriend()),
   onLogout: () => dispatch(actionCreators.getSignout()),
-  onGetTimetableFriend: (id) => dispatch(actionCreators.getTimetableFriend(id)),
   onPostSearch: (email) => dispatch(actionCreators.postUserSearch(email)),
   onReceiveFriend: (id) => dispatch(actionCreators.receiveFriend(id)),
   onDeleteFriend: (id) => dispatch(actionCreators.deleteFriend(id)),

@@ -42,7 +42,6 @@ describe('<TimetableView />', () => {
         height={24}
         text={false}
         link={trueobject}
-        title=""
       />,
     );
     const componentTF = mount(
@@ -51,7 +50,6 @@ describe('<TimetableView />', () => {
         height={24}
         text={trueobject}
         link={false}
-        title=""
       />,
     );
     const datastructureFT = componentFT.find('.square');
@@ -67,7 +65,6 @@ describe('<TimetableView />', () => {
         height={24}
         text={false}
         link
-        title=""
       />,
     );
     const button = component.find('.square').at(0);
@@ -82,7 +79,6 @@ describe('<TimetableView />', () => {
         height={24}
         text={false}
         link
-        title=""
       />,
     );
     const button = component.find('.square').at(0);
