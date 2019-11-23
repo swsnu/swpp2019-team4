@@ -174,7 +174,18 @@ class TimetableManagement extends Component {
         <div className="manage-timetable-buttons">
           <button type="button" id="delete-button" onClick={() => this.deleteTimetable()}>DELETE</button>
           <button type="button" id="create-button" onClick={() => this.createEmptyTimetable()}>CREATE</button>
+          <button type="button" id="custom-course-button" onClick={() => this.statePopup(true)}>ADD CUSTOM</button>
         </div>
+        {
+          this.state.showPopup
+            ? (
+              <CustomCourse
+                closePopup={() => this.statePopup(false)}
+                postCustomCourse={(courseData, courseTime) => this.postCustom(courseData, courseTime)}
+              />
+            )
+            : null
+        }
       </div>
     );
   }
