@@ -285,6 +285,18 @@ def api_timetable_id_course(request, timetable_id):
         return HttpResponseNotAllowed(['POST'])
     return HttpResponse(status=401)
 
+def api_timetable_id_custom_course_id(request, timetable_id, custom_course_id):
+    if request.user.is_authenticated:
+        if request.method == 'DELETE':
+            try:
+                timetable = Timetable.objects.get(pk=timetable_id)
+                CustomCourse.objects.get(pk=custom_course_id).delete()
+                return JsonResponse(timetable.data(), safe=False)
+            except (CustomCourse.DoesNotExist, Timetable.DoesNotExist):
+                return HttpResponseNotFound()
+        return HttpResponseNotAllowed(['DELETE'])
+    return HttpResponse(status=401)
+
 def api_timetable_id_custom_course(request, timetable_id):
     if request.user.is_authenticated:
         if request.method == 'POST':
@@ -292,10 +304,7 @@ def api_timetable_id_custom_course(request, timetable_id):
                 body = request.body.decode()
                 title = json.loads(body)['title']
                 color = json.loads(body)['color']
-                weekday = json.loads(body)['weekday']
-                start_time = json.loads(body)['start_time']
-                end_time = json.loads(body)['end_time']
-                time_list = zip(weekday, start_time, end_time)
+                time_list = json.loads(body)['courseTime']
                 try:
                     timetable = Timetable.objects.get(pk=timetable_id)
                     custom_course = CustomCourse(timetable=timetable, color=color, title=title)

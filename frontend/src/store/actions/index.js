@@ -23,4 +23,7 @@ export {
   getTimetableFriend,
   postTimetable,
   postMainTimetable,
+  postCustomCourse,
+  deleteCourse,
+  deleteTimetable,
 } from './user';
