@@ -11,6 +11,64 @@ import * as actionCreators from '../../store/actions/user';
 
 const stubState = {
   user: { is_authenticated: true, timetable_main: 0 },
+  friend: [
+    {
+      id: 0,
+      name: '정재윤',
+      timetable_main:
+        {
+          title: '소개원실 (테스트용)',
+          week_day: 3,
+          start_time: 1110,
+          end_time: 1170,
+          course_number: 'M1522.002400',
+          lecture_number: '001',
+          color: '#FF0000',
+        },
+    },
+    {
+      id: 1,
+      name: '구준서',
+      timetable_main:
+        {
+          title: '소개원실 (테스트용)',
+          week_day: 3,
+          start_time: 1020,
+          end_time: 1110,
+          course_number: 'M1522.002400',
+          lecture_number: '001',
+          color: '#FF0000',
+        },
+    },
+    {
+      id: 2,
+      name: '김영찬',
+      timetable_main:
+        {
+          title: '소개원실 (테스트용)',
+          week_day: 3,
+          start_time: 1170,
+          end_time: 1230,
+          course_number: 'M1522.002400',
+          lecture_number: '001',
+          color: '#FF0000',
+        },
+    },
+    {
+      id: 3,
+      name: '김현수',
+      timetable_main:
+        {
+          title: '소개원실 (테스트용)',
+          week_day: 4,
+          start_time: 480,
+          end_time: 1440,
+          course_number: 'M1522.002400',
+          lecture_number: '001',
+          color: '#FF0000',
+        },
+    },
+  ],
   timetables: [
     {
       id: 0,
@@ -33,6 +91,7 @@ const stubState = {
 
 const stubStateFalse = {
   user: { is_authenticated: false, timetable_main: 0 },
+  friend: [],
   timetables: [{
     course: [{ time: [{}] }],
   }],
@@ -40,6 +99,7 @@ const stubStateFalse = {
 
 const stubStateNone = {
   user: { is_authenticated: true, timetable_main: 0 },
+  friend: [],
   timetables: [{
     course: [{ time: [{}] }],
   }],
@@ -47,6 +107,7 @@ const stubStateNone = {
 
 const stubStateUndefined = {
   user: { is_authenticated: true, timetable_main: 0 },
+  friend: [],
 };
 
 function window(state) {
@@ -57,6 +118,7 @@ function window(state) {
         <Switch>
           <Route path="/" exact component={Main} />
           <Route path="/login" exact render={() => <div className="Login" />} />
+          <Route path="/friend" exact render={() => <div className="Friend" />} />
         </Switch>
       </ConnectedRouter>
     </Provider>
@@ -74,6 +136,19 @@ jest.mock('../../components/TopBar/TopBar', () => jest.fn((props) => (
 jest.mock('../../components/TimetableView/TimetableView', () => jest.fn((props) => (
   <div>
     {props.courses.map((x) => <button id="fake-course" type="button" key={1}>{x.course_id}</button>)}
+  </div>
+)));
+
+jest.mock('../../components/MainPageFriendView/MainPageFriendView', () => jest.fn((props) => (
+  <div className="MainPageFriendView" key={props.id} style={{ height: '100px', width: '100%' }}>
+    <button
+      type="button"
+      id="friend-status"
+      style={{ height: '100%', width: '100%' }}
+      onClick={props.onClick}
+    >
+      {props.username}
+    </button>
   </div>
 )));
 
@@ -96,10 +171,10 @@ describe('<Main />', () => {
     expect(component.find('#fake-course').length).toBe(1);
   });
 
-  it('should call friend timetable when pressed friend button', () => {
+  it('should redirect to friend page when pressed friend button', () => {
     const component = mount(window(stubState));
     component.find('#friend-status').at(0).simulate('click');
-    component.find('#close-button').at(0).simulate('click');
+    expect(component.find('.Friend').length).toBe(1);
   });
 
   it('should call signout when pressed logout button', () => {

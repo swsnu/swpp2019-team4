@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import './MainPageFriendView.css';
 
 const MainPageFriendView = (props) => {
   const { friend } = props;
-  const courses = friend.timetable[0].course;
+  const courses = friend.timetable_main.course;
   const date = new Date();
   const dateLocal = new Date(date.getTime() + 9 * 60 * 60000); // Hardcoded utc+9
   const weekDay = (dateLocal.getUTCDay() + 6) % 7;
@@ -29,18 +30,32 @@ const MainPageFriendView = (props) => {
     }
   }
   return (
-    <div className="FriendSummary" key={friend.id} style={{ height: '100px', width: '100%' }}>
-      <button
-        type="button"
-        id="friend-status"
-        style={{ height: '100%', width: '100%' }}
-        onClick={() => props.onClick(friend.id)}
-      >
-        {friend.name}
-        <br />
-        {inClass ? `${currentClass}\n${timeLeft}분 남음` : `공강\n${timeLeft < 240 ? `${timeLeft}분 남음` : ''}`}
-      </button>
-      <br />
+    <div
+      className="MainPageFriendView w-100"
+      key={friend.id}
+      onClick={props.onClick}
+      onKeyDown={props.onClick}
+      role="button"
+      tabIndex="-1"
+    >
+      <hr className="m-0" />
+      <div className="d-flex flex-column justify-content-center h-100">
+        <div className="d-flex flex-row">
+          <div className="text-left px-2">
+            {' '}
+            {friend.username}
+            {' '}
+          </div>
+          <div className="flex-grow-1 text-black-50 text-left px-2">
+            <small>
+              {`${friend.department} | ${friend.grade}학년`}
+            </small>
+          </div>
+        </div>
+        <div className={`small px-2 text-left ${inClass ? 'text-danger' : 'text-success'}`}>
+          {inClass ? `${currentClass}\n${timeLeft}분 남음` : `공강\n${timeLeft < 240 ? `${timeLeft}분 남음` : ''}`}
+        </div>
+      </div>
     </div>
   );
 };
@@ -48,18 +63,20 @@ const MainPageFriendView = (props) => {
 MainPageFriendView.propTypes = {
   onClick: PropTypes.func.isRequired,
   friend: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-    timetable: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number,
+    username: PropTypes.string,
+    department: PropTypes.string,
+    grade: PropTypes.number,
+    timetable_main: PropTypes.shape({
       course: PropTypes.arrayOf(PropTypes.shape({
-        title: PropTypes.string.isRequired,
+        title: PropTypes.string,
         time: PropTypes.arrayOf(PropTypes.shape({
-          week_day: PropTypes.number.isRequired,
-          start_time: PropTypes.number.isRequired,
-          end_time: PropTypes.node.isRequired,
+          week_day: PropTypes.number,
+          start_time: PropTypes.number,
+          end_time: PropTypes.number,
         })),
-      })).isRequired,
-    })).isRequired,
+      })),
+    }),
   }).isRequired,
 };
 
