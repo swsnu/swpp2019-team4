@@ -46,7 +46,11 @@ export const postCourse = (timetableId, courseId) => (dispatch) => axios.post(
 
 export const deleteCourse = (timetableId, courseId) => (dispatch) => axios.delete(`/api/timetable/${timetableId}/customCourse/${courseId}`)
   .then((res) => dispatch({ type: actionTypes.DELETE_COURSE, timetable: res.data, courseId: courseId}))
-  .catch(() => {console.log(timetableId, courseId) });
+  .catch(() => {});
+
+export const deleteTimetable = (timetableId) => (dispatch) => axios.delete(`/api/timetable/${timetableId}`)
+  .then((res) => dispatch({ type: actionTypes.DELETE_TIMETABLE, deletedTimetable: timetableId}))
+  .catch(() => {})
 
 export const postCustomCourse = (timetableId, courseInfo, courseTime) => (dispatch) => axios.post(
   `/api/timetable/${timetableId}/customCourse/`,

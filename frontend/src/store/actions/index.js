@@ -25,4 +25,5 @@ export {
   postMainTimetable,
   postCustomCourse,
   deleteCourse,
+  deleteTimetable,
 } from './user';
