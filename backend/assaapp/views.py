@@ -270,7 +270,6 @@ def api_timetable_id_course(request, timetable_id):
                     color += random.choice(string_pool)
                     i += 1
                 body = request.body.decode()
-                print(body)
                 course_id = json.loads(body)['course_id']
                 try:
                     timetable = Timetable.objects.get(pk=timetable_id)
