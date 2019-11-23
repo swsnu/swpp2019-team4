@@ -52,7 +52,7 @@ class TimetableManagement extends Component {
   postCustom(courseData, courseTime) {
     const courseTimes = courseTime.split('/');
     const splitedCourseTime = [];
-    for (let i = 0; i < courseTimes.length(); i += 1) {
+    for (let i = 0; i < courseTimes.length; i += 1) {
       splitedCourseTime.push(courseTimes[i].split('-'));
     }
     this.props.onPostCustomCourse(this.state.timetableId, courseData, splitedCourseTime);
