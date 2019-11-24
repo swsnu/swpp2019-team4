@@ -8,6 +8,8 @@ class RecommendConstraint extends Component {
     this.state = {
       credit_min: 15,
       credit_max: 18,
+      credit_min_valid: true,
+      credit_max_valid: true,
       credit_valid: true,
       days_per_week: 5,
       days_per_week_valid: true,
@@ -17,23 +19,26 @@ class RecommendConstraint extends Component {
   handleDaysPerWeek(value) {
     const valid = (value <= 6 && value >= 1);
     this.setState({ days_per_week: value, days_per_week_valid: valid });
-    this.props.handleValid(this.state.credit_valid && valid);
+    this.props.handleValid(this.state.credit_valid && this.state.credit_min_valid
+      && this.state.credit_max_valid && valid);
   }
 
   handleCreditMin(value) {
     const minValue = Number(value);
     const maxValue = this.state.credit_max;
-    const valid = (minValue >= 1 && minValue <= 21 && maxValue >= 1 && maxValue <= 21 && minValue <= maxValue);
-    this.setState({ credit_min: value, credit_valid: valid });
-    this.props.handleValid(this.state.days_per_week_valid && valid);
+    const minValid = (minValue >= 1 && minValue <= 21);
+    const valid = minValue <= maxValue;
+    this.setState({ credit_min: value, credit_valid: valid, credit_min_valid: minValid });
+    this.props.handleValid(this.state.days_per_week_valid && valid && minValid && this.state.credit_max_valid);
   }
 
   handleCreditMax(value) {
     const minValue = this.state.credit_min;
     const maxValue = Number(value);
-    const valid = (minValue >= 1 && minValue <= 21 && maxValue >= 1 && maxValue <= 21 && minValue <= maxValue);
-    this.setState({ credit_max: maxValue, credit_valid: valid });
-    this.props.handleValid(this.state.days_per_week_valid && valid);
+    const maxValid = (maxValue >= 1 && maxValue <= 21);
+    const valid = minValue <= maxValue;
+    this.setState({ credit_max: maxValue, credit_valid: valid, credit_max_valid: maxValid });
+    this.props.handleValid(this.state.days_per_week_valid && valid && this.state.credit_min_valid && maxValid);
   }
 
   render() {
@@ -56,7 +61,8 @@ class RecommendConstraint extends Component {
           <div className="col-2">
             <input
               type="number"
-              className={`form-control ${this.state.credit_valid ? 'is-valid' : 'is-invalid'}`}
+              className={`form-control ${this.state.credit_valid
+                && this.state.credit_min_valid ? 'is-valid' : 'is-invalid'}`}
               id="credit-min-input"
               value={this.state.credit_min}
               onChange={(event) => this.handleCreditMin(event.target.value)}
@@ -65,7 +71,8 @@ class RecommendConstraint extends Component {
           <div className="col-2">
             <input
               type="number"
-              className={`form-control ${this.state.credit_valid ? 'is-valid' : 'is-invalid'}`}
+              className={`form-control ${this.state.credit_valid
+                && this.state.credit_max_valid ? 'is-valid' : 'is-invalid'}`}
               id="credit-max-input"
               value={this.state.credit_max}
               onChange={(event) => this.handleCreditMax(event.target.value)}
