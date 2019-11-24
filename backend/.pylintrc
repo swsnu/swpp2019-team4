@@ -20,4 +20,5 @@ disable=
     unsubscriptable-object,
     unbalanced-tuple-unpacking,
     undefined-variable,
-    not-context-manager
+    not-context-manager,
+    superfluous-parens
