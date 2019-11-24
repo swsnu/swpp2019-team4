@@ -10,19 +10,28 @@ from django.forms.models import model_to_dict
 
 def collaborative_filtering(user):
     division_error=1.0/1048576.0
+    all_course=[course for course in Course.objects.all()]
     score_sum={}
     user_count={}
     score_average={}
     relation={}
-    all_course=[course for course in Course.objects.all()]
+    score_weighted_sum={}
+    relation_sum={}
+    score_result_dict={}
     score_result=[]
+    print('A')
     for course in all_course:
         score_sum[course.id]=0.0
         user_count[course.id]=0.0
-        for score_data in CoursePref.objects.filter(course=course):
-            user_count[course.id]=user_count[course.id]+1.0
-            score_sum[course.id]=score_sum[course.id]+score_data.score
+        score_weighted_sum[course.id]=0.0
+        relation_sum[course.id]=0.0
+    for score_data in CoursePref.objects.all():
+        score_sum[score_data.course.id]+=score_data.score
+        user_count[score_data.course.id]+=1.0
+    print('B')
+    for course in all_course:
         score_average[course.id]=(score_sum[course.id]-5.0*user_count[course.id])/(user_count[course.id]+division_error)+5.0
+    print('C')
     for person in User.objects.all():
         user_sum=0.0
         person_sum=0.0
@@ -39,16 +48,20 @@ def collaborative_filtering(user):
             except CoursePref.DoesNotExist:
                 continue
         relation[person.id]=user_person_sum/(math.sqrt(user_sum*person_sum)+division_error)
+    print('D')
+    for score_data in CoursePref.objects.all():
+        relation_sum[score_data.course.id]+=relation[score_data.user.id]
+        score_weighted_sum[score_data.course.id]+=score_data.score*relation[score_data.user.id]
+    print('E')
     for course in all_course:
-        try:
-            score_result.append({'course':course.id,'score':CoursePref.objects.get(user=user,course=course).score})
-        except CoursePref.DoesNotExist:
-            score_sum=0.0
-            relation_sum=0.0
-            for score_data in CoursePref.objects.filter(course=course):
-                relation_sum=relation_sum+relation[score_data.user.id]
-                score_sum=score_sum+score_data.score*relation[score_data.user.id]
-            score_result.append({'course':course.id,'score':(score_sum-5.0*relation_sum)/(relation_sum+division_error)+5.0})
+        score_result_dict[course.id]=(score_weighted_sum[course.id]-5.0*relation_sum[course.id])/(relation_sum[course.id]+division_error)+5.0
+    print('F')
+    for score_data in CoursePref.objects.filter(user=user):
+        score_result_dict[score_data.course.id]=score_data.score
+    print('G')
+    for course in all_course:
+        score_result.append({'course':course.id,'score':score_result_dict[course.id]})
+    print('H')
     return score_result
 
 def api_course_pref(request):
