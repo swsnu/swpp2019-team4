@@ -65,7 +65,7 @@ def collaborative_filtering(user):
     print('I')
     for course in all_course:
         if score_result_dict[course.id]<-1:
-            score_result_dict[course.id]=(score_weighted_sum[course.id]-5.0*relation_sum[course.id])/(relation_sum[course.id]+division_error)+5.0
+            score_result_dict[course.id]=(score_weighted_sum[course.id]-score_average[course.id]*relation_sum[course.id])/(relation_sum[course.id]+division_error)+score_average[course.id]
     print('J')
     for course in all_course:
         score_result.append({'course':course.id,'score':score_result_dict[course.id]})
