@@ -16,27 +16,29 @@ class RecommendTime extends Component {
       color: 0,
       color_table: colorTable,
     };
+    this.mouseUpListener = this.mouseUpListener.bind(this);
+    this.mouseDownListener = this.mouseDownListener.bind(this);
   }
 
   componentDidMount() {
     this.is_mount = true;
     this.props.handleValid(true);
-    document.addEventListener('mousedown', (e) => this.mouseDownListener(e), true);
+    document.addEventListener('mouseup', this.mouseUpListener, true);
+    document.addEventListener('mousedown', this.mouseDownListener, true);
   }
 
   componentWillUnmount() {
     this.is_mount = false;
-    document.removeEventListener('mousedown', (e) => this.mouseDownListener(e), true);
+    document.removeEventListener('mouseup', this.mouseUpListener, true);
+    document.removeEventListener('mousedown', this.mouseDownListener, true);
   }
 
   mouseDownListener(event) {
-    document.addEventListener('mouseup', () => this.mouseUpListener(), true);
     event.preventDefault();
     if (this.is_mount) this.setState({ mouse_down: true });
   }
 
   mouseUpListener() {
-    document.removeEventListener('mouseup', () => this.mouseUpListener(), true);
     if (this.is_mount) this.setState({ mouse_down: false });
   }
 
@@ -81,7 +83,7 @@ class RecommendTime extends Component {
       for (let j = 0; j < 6; j += 1) {
         const color = colorArray[this.state.color_table[i][j]];
         tablehtmlIth.push(
-          <td key={1000 * i + j} style={{ backgroundColor: color }}>
+          <td key={1000 * i + j} style={{ backgroundColor: color, cursor: 'crosshair' }}>
             <div
               style={{ height: '15px' }}
               role="button"
