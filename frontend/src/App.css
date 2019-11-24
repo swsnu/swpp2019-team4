@@ -41,3 +41,8 @@
 body {
   font-family: 'Noto Sans KR', sans-serif;
 }
+
+.overflow-y-auto {
+  overflow-y: auto;
+  overflow-x: hidden;
+}

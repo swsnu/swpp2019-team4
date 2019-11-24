@@ -15,7 +15,7 @@ class TimetableRecommend extends Component {
     super(props);
     this.state = {
       valid: true,
-      index: 0,
+      index: 2,
     };
   }
 
