@@ -12,6 +12,7 @@ import './TimetableManagement.css';
 class TimetableManagement extends Component {
   constructor(props) {
     super(props);
+    this.is_mount = false;
     this.state = {
       showCourses: true,
       searchStrings: '',
@@ -20,12 +21,19 @@ class TimetableManagement extends Component {
   }
 
   componentDidMount() {
+    this.is_mount = true;
     this.props.onGetUser()
       .then(() => {
-        this.setState((prevState) => ({ ...prevState, timetableId: this.props.storedUser.timetable_main }));
-        this.props.onGetTimetable(this.props.storedUser.timetable_main);
+        if (this.is_mount) {
+          this.setState((prevState) => ({ ...prevState, timetableId: this.props.storedUser.timetable_main }));
+          this.props.onGetTimetable(this.props.storedUser.timetable_main);
+        }
       });
     this.props.onGetTimetables();
+  }
+
+  componentWillUnmount() {
+    this.is_mount = false;
   }
 
   statePopup(value) {
