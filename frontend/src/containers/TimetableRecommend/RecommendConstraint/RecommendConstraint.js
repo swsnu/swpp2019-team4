@@ -40,7 +40,7 @@ class RecommendConstraint extends Component {
     return (
       <div className="RecommendConstraint h-100 d-flex flex-column justify-content-center">
         <div className="form-group row mx-0 my-2">
-          <label htmlFor="days-range-input" className="col-1 offset-3 col-form-label"><b>주 N회</b></label>
+          <label htmlFor="days-range-input" className="col-2 offset-2 text-right col-form-label"><b>주 N회</b></label>
           <div className="col-4">
             <input
               type="number"
@@ -52,7 +52,7 @@ class RecommendConstraint extends Component {
           </div>
         </div>
         <div className="form-group row mx-0 my-2">
-          <label className="col-1 offset-3 col-form-label" htmlFor="credit-min-input"><b>학점</b></label>
+          <label className="col-2 offset-2 text-right col-form-label" htmlFor="credit-min-input"><b>학점 범위</b></label>
           <div className="col-2">
             <input
               type="number"
