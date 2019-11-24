@@ -216,11 +216,7 @@ TimetableManagement.propTypes = {
     }),
   ).isRequired,
   timetable: PropTypes.shape({
-<<<<<<< HEAD
-    title: PropTypes.string.isRequired,
-=======
     title: PropTypes.string,
->>>>>>> dev-master
     course: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number.isRequired,
       time: PropTypes.arrayOf(PropTypes.shape({
