@@ -6,7 +6,7 @@ import * as actionCreators from '../../store/actions/index';
 import TimetableView from '../../components/TimetableView/TimetableView';
 import SideView from '../../components/SideView/SideView';
 import TopBar from '../../components/TopBar/TopBar';
-import CustomCourse from '../../components/CustomCourse/CustomCourse';
+import CustomCourse from '../CustomCourse/CustomCourse';
 import './TimetableManagement.css';
 
 class TimetableManagement extends Component {
@@ -218,6 +218,7 @@ TimetableManagement.propTypes = {
     }),
   ).isRequired,
   timetable: PropTypes.shape({
+    title: PropTypes.string.isRequired,
     course: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number.isRequired,
       time: PropTypes.arrayOf(PropTypes.shape({
