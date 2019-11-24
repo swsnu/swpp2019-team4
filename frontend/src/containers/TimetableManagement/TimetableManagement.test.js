@@ -18,7 +18,8 @@ const stubState = {
   timetables: [
     {
       id: 1,
-      title: 'my timetable',}
+      title: 'my timetable',
+    },
   ],
   courses: [{
     id: 0,
@@ -56,7 +57,7 @@ const stubStateFalse = {
   timetables: [],
   courses: [],
   timetable: {
-    title:'',
+    title: '',
     courses: [],
   },
 };
@@ -182,24 +183,24 @@ describe('TimetableManagement test', () => {
     component.find('.timetable-button').simulate('click');
     component.find('.course-list').find('button').simulate('click');
     expect(spyDeleteCourse).toBeCalledTimes(1);
-  })
+  });
 
   it('should call deleteTimetable when pressed [X] button', () => {
     const component = mount(timetableManagement(stubState));
     component.find('.timetable-list').find('.delete-button').simulate('click');
     expect(spyDeleteTimetable).toBeCalledTimes(1);
-  })
+  });
 
   it('should call postCustomCourse when pressed post-button', () => {
     const component = mount(timetableManagement(stubState));
     component.find('#custom-course-button').simulate('click');
     component.find('.post-button').simulate('click');
     expect(spyPostCustomCourse).toBeCalledTimes(1);
-  })
+  });
 
   it('should close popup when pressed close button', () => {
     const component = mount(timetableManagement(stubState));
     component.find('#custom-course-button').simulate('click');
     component.find('.close-button').simulate('click');
-  })
+  });
 });
