@@ -207,7 +207,6 @@ TimetableManagement.propTypes = {
   timetables: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
-      timetable_main: PropTypes.number.isRequired,
     }),
   ).isRequired,
   courses: PropTypes.arrayOf(

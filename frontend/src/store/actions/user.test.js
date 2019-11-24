@@ -277,7 +277,7 @@ describe('user action test', () => {
         expect(axios.delete).toHaveBeenCalledTimes(1);
         done();
       });
-  })
+  });
 
   it('should call deleteCourse that can be failed', (done) => {
     axios.delete = jest.fn(() => new Promise((resolve, reject) => {
@@ -288,15 +288,15 @@ describe('user action test', () => {
         expect(axios.delete).toHaveBeenCalledTimes(1);
         done();
       });
-  })
+  });
 
   it('should call postCustomCourse', (done) => {
     const courseInfo = {
-      title:"swpp",
-      color:"#FF0000"
-    }
-    const courseTime = [[0, "15:00", "20:00"]]
-    
+      title: 'swpp',
+      color: '#FF0000',
+    };
+    const courseTime = [[0, '15:00', '20:00']];
+
     axios.post = jest.fn(() => new Promise((resolve) => {
       resolve({ status: 204, data: null });
     }));
@@ -309,11 +309,11 @@ describe('user action test', () => {
 
   it('should call postCustomCourse that can be failed', (done) => {
     const courseInfo = {
-      title:"swpp",
-      color:"#FF0000"
-    }
-    const courseTime = [[0, "15:00", "20:00"]]
-    
+      title: 'swpp',
+      color: '#FF0000',
+    };
+    const courseTime = [[0, '15:00', '20:00']];
+
     axios.post = jest.fn(() => new Promise((resolve, reject) => {
       reject(new Error(''));
     }));

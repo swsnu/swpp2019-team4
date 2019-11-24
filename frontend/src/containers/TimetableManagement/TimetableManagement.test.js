@@ -18,10 +18,7 @@ const stubState = {
   timetables: [
     {
       id: 1,
-      title: 'my timetable',
-      semester: '2019-2',
-      course: [],
-    },
+      title: 'my timetable',}
   ],
   courses: [{
     id: 0,
@@ -36,7 +33,19 @@ const stubState = {
     }],
   }],
   timetable: {
-    course: [],
+    title: '',
+    course: [{
+      id: 0,
+      title: '자료구조',
+      color: '#2BC366',
+      course_number: 'M1522.000900',
+      lecture_number: '001',
+      time: [{
+        week_day: 0,
+        start_time: 660,
+        end_time: 750,
+      }],
+    }],
   },
 };
 const stubStateFalse = {
@@ -47,6 +56,7 @@ const stubStateFalse = {
   timetables: [],
   courses: [],
   timetable: {
+    title:'',
     courses: [],
   },
 };
@@ -77,6 +87,10 @@ describe('TimetableManagement test', () => {
   let spyGetTimetable;
   let spyPostTimetable;
   let spyPostCourse;
+  let spyPostCustomCourse;
+  let spyPostMainTimetable;
+  let spyDeleteCourse;
+  let spyDeleteTimetable;
   beforeEach(() => {
     spyGetUser = jest.spyOn(actionCreators, 'getUser')
       .mockImplementation(() => () => Promise.resolve(null));
@@ -91,6 +105,14 @@ describe('TimetableManagement test', () => {
     spyPostTimetable = jest.spyOn(actionCreators, 'postTimetable')
       .mockImplementation(() => () => {});
     spyPostCourse = jest.spyOn(actionCreators, 'postCourse')
+      .mockImplementation(() => () => {});
+    spyPostMainTimetable = jest.spyOn(actionCreators, 'postMainTimetable')
+      .mockImplementation(() => () => {});
+    spyPostCustomCourse = jest.spyOn(actionCreators, 'postCustomCourse')
+      .mockImplementation(() => () => {});
+    spyDeleteCourse = jest.spyOn(actionCreators, 'deleteCourse')
+      .mockImplementation(() => () => {});
+    spyDeleteTimetable = jest.spyOn(actionCreators, 'deleteTimetable')
       .mockImplementation(() => () => {});
     // TimetableRecommend.mockClear();
   });
@@ -112,8 +134,6 @@ describe('TimetableManagement test', () => {
     expect(component.find('#timetable-table').length).toBe(1);
     expect(component.find('#delete-button').length).toBe(1);
     expect(component.find('#create-button').length).toBe(1);
-    expect(component.find('#timetable-recommend-button').length).toBe(1);
-    component.find('#timetable-recommend-button').simulate('click');
   });
 
   it('should call postTimetable when pressed create-button', () => {
@@ -122,28 +142,17 @@ describe('TimetableManagement test', () => {
     expect(spyPostTimetable).toBeCalledTimes(1);
   });
 
-  it('should not call post when pressed postCourse button', () => {
+  it('should call post when pressed postCourse button', () => {
     const component = mount(timetableManagement(stubState));
     component.find('.course-list').find('button').simulate('click');
-    expect(spyPostCourse).toBeCalledTimes(0);
-    expect(spyGetTimetables).toBeCalledTimes(1);
-    expect(spyGetTimetable).toBeCalledTimes(0);
-  });
-
-  it('should call post when pressed postCourse button', async () => {
-    const component = await mount(timetableManagement(stubState));
-    component.find('.timetable-list').find('button').simulate('click');
-    component.find('.result-button').find('button').simulate('click');
-    component.find('.course-list').find('button').simulate('click');
     expect(spyPostCourse).toBeCalledTimes(1);
-    expect(spyGetTimetables).toBeCalledTimes(1);
-    expect(spyGetTimetable).toBeCalledTimes(3);
   });
 
   it('should call show when pressed createTimetable button', () => {
     const component = mount(timetableManagement(stubState));
-    component.find('.timetable-list').find('button').simulate('click');
+    component.find('.timetable-list').find('.timetable').simulate('click');
     expect(spyGetTimetable).toBeCalledTimes(1);
+    expect(spyPostMainTimetable).toBeCalledTimes(1);
   });
 
   it('should call signout when pressed logout button', () => {
@@ -166,4 +175,31 @@ describe('TimetableManagement test', () => {
     const component = mount(timetableManagement(stubStateFalse));
     expect(component.find('.Login').length).toBe(1);
   });
+
+  it('should call deleteCourse when pressed course button in course-list', () => {
+    const component = mount(timetableManagement(stubState));
+    component.find('.timetable-list').find('.timetable').simulate('click');
+    component.find('.timetable-button').simulate('click');
+    component.find('.course-list').find('button').simulate('click');
+    expect(spyDeleteCourse).toBeCalledTimes(1);
+  })
+
+  it('should call deleteTimetable when pressed [X] button', () => {
+    const component = mount(timetableManagement(stubState));
+    component.find('.timetable-list').find('.delete-button').simulate('click');
+    expect(spyDeleteTimetable).toBeCalledTimes(1);
+  })
+
+  it('should call postCustomCourse when pressed post-button', () => {
+    const component = mount(timetableManagement(stubState));
+    component.find('#custom-course-button').simulate('click');
+    component.find('.post-button').simulate('click');
+    expect(spyPostCustomCourse).toBeCalledTimes(1);
+  })
+
+  it('should close popup when pressed close button', () => {
+    const component = mount(timetableManagement(stubState));
+    component.find('#custom-course-button').simulate('click');
+    component.find('.close-button').simulate('click');
+  })
 });
