@@ -13,6 +13,13 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from assaapp.models import User, Timetable, Course, CustomCourse, CustomCourseTime
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
 
+def auth_func(func):
+    def wrapper_function(*args, **kwargs):
+        if (args[0].user.is_authenticated):
+            return func(*args, **kwargs)
+        return HttpResponse(status=401)
+    return wrapper_function
+
 def api_signup(request):
     if request.method == 'POST':
         try:
@@ -68,57 +75,55 @@ def api_signin(request):
         return HttpResponse(status=401)
     return HttpResponseNotAllowed(['POST'])
 
+@auth_func
 def api_signout(request):
     if request.method == 'GET':
-        if request.user.is_authenticated:
-            logout(request)
-            return HttpResponse(status=204)
-        return HttpResponse(status=401)
+        logout(request)
+        return HttpResponse(status=204)
     return HttpResponseNotAllowed(['GET'])
 
+@auth_func
 def api_user(request):
-    if request.user.is_authenticated:
-        if request.method == 'GET':
-            return JsonResponse(request.user.data_large())
-        if request.method == 'PUT':
-            try:
-                user = request.user
-                plain_keys = ['username', 'department', 'grade']
-                req_data = json.loads(request.body.decode())
+    if request.method == 'GET':
+        return JsonResponse(request.user.data_large())
+    if request.method == 'PUT':
+        try:
+            user = request.user
+            plain_keys = ['username', 'department', 'grade']
+            req_data = json.loads(request.body.decode())
 
-                # User can change plain keys whenever they want
-                for key in plain_keys:
-                    if key in req_data:
-                        setattr(user, key, req_data[key])
+            # User can change plain keys whenever they want
+            for key in plain_keys:
+                if key in req_data:
+                    setattr(user, key, req_data[key])
 
-                # But the user must input previous password in order to change password
-                if 'password_prev' in req_data:
-                    password_prev = req_data['password_prev']
-                    password = req_data['password']
-                    if not user.check_password(password_prev):
-                        return HttpResponseForbidden()
-                    user.set_password(password)
+            # But the user must input previous password in order to change password
+            if 'password_prev' in req_data:
+                password_prev = req_data['password_prev']
+                password = req_data['password']
+                if not user.check_password(password_prev):
+                    return HttpResponseForbidden()
+                user.set_password(password)
 
-                user.save()
-                update_session_auth_hash(request, user)
-                return JsonResponse(user.data_large())
-            except (KeyError, JSONDecodeError, IntegrityError):
-                return HttpResponseBadRequest()
-        return HttpResponseNotAllowed(['GET', 'PUT'])
-    return HttpResponse(status=401)
+            user.save()
+            update_session_auth_hash(request, user)
+            return JsonResponse(user.data_large())
+        except (KeyError, JSONDecodeError, IntegrityError):
+            return HttpResponseBadRequest()
+    return HttpResponseNotAllowed(['GET', 'PUT'])
 
+@auth_func
 def api_user_friend(request):
-    if request.user.is_authenticated:
-        if request.method == 'GET':
-            friend = [user.data_medium() for user in request.user.friends.all()]
-            friend_receive = [user.data_small() for user in request.user.friends_request.all()]
-            friend_send = [user.data_small() for user in
-                           User.objects.filter(friends_request__in=[request.user.id])]
-            return JsonResponse({'friend': friend, 'friend_send': friend_send,
-                                 'friend_receive': friend_receive})
-        return HttpResponseNotAllowed(['GET'])
-    return HttpResponse(status=401)
+    if request.method == 'GET':
+        friend = [user.data_medium() for user in request.user.friends.all()]
+        friend_receive = [user.data_small() for user in request.user.friends_request.all()]
+        friend_send = [user.data_small() for user in
+                       User.objects.filter(friends_request__in=[request.user.id])]
+        return JsonResponse({'friend': friend, 'friend_send': friend_send,
+                             'friend_receive': friend_receive})
+    return HttpResponseNotAllowed(['GET'])
 
+@auth_func
 def api_user_friend_id(request, user_id):
     '''
     POST :
@@ -131,27 +136,26 @@ def api_user_friend_id(request, user_id):
     If a user is a friend of (user_id)
     just delete a user from the friend list.
     '''
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            try:
-                friend = request.user.friends_request.get(id=user_id)
-                request.user.friends_request.remove(friend)
-                request.user.friends.add(friend)
-            except User.DoesNotExist:
-                return HttpResponseNotFound()
-            return JsonResponse(friend.data_medium())
-        if request.method == 'DELETE':
-            try:
-                friend = User.objects.get(id=user_id)
-            except User.DoesNotExist:
-                return HttpResponseNotFound()
-            request.user.friends.remove(friend)
+    if request.method == 'POST':
+        try:
+            friend = request.user.friends_request.get(id=user_id)
             request.user.friends_request.remove(friend)
-            friend.friends_request.remove(request.user)
-            return HttpResponse(status=204)
-        return HttpResponseNotAllowed(['POST', 'DELETE'])
-    return HttpResponse(status=401)
+            request.user.friends.add(friend)
+        except User.DoesNotExist:
+            return HttpResponseNotFound()
+        return JsonResponse(friend.data_medium())
+    if request.method == 'DELETE':
+        try:
+            friend = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return HttpResponseNotFound()
+        request.user.friends.remove(friend)
+        request.user.friends_request.remove(friend)
+        friend.friends_request.remove(request.user)
+        return HttpResponse(status=204)
+    return HttpResponseNotAllowed(['POST', 'DELETE'])
 
+@auth_func
 def api_user_search(request):
     '''
     This api is to send friend request to the opponent using email address.
@@ -160,187 +164,179 @@ def api_user_search(request):
     If the user already sent a request, then the api fails with SENT error.
     If the user is already a friend of the opponent, then the api fails with FRIEND error.
     '''
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            try:
-                req_data = json.loads(request.body.decode())
-                email = req_data['email']
-                friend = User.objects.get(email=email)
-            except (KeyError, JSONDecodeError, User.DoesNotExist):
-                return HttpResponseNotFound(content='NULL')
-            user = request.user
-            if user == friend:
-                return HttpResponseBadRequest(content='USER')
-            if user.friends.filter(id=friend.id).count() == 1:
-                return HttpResponseBadRequest(content='FRIEND')
-            if friend.friends_request.filter(id=user.id).count() == 1:
-                return HttpResponseBadRequest(content='SENT')
-            if user.friends_request.filter(id=friend.id).count() == 1:
-                user.friends_request.remove(friend)
-                user.friends.add(friend)
-                return JsonResponse({'user': friend.data_medium(), 'status': 'FRIEND'})
-            friend.friends_request.add(user)
-            return JsonResponse({'user': friend.data_medium(), 'status': 'PENDING'})
-        return HttpResponseNotAllowed(['POST'])
-    return HttpResponse(status=401)
+    if request.method == 'POST':
+        try:
+            req_data = json.loads(request.body.decode())
+            email = req_data['email']
+            friend = User.objects.get(email=email)
+        except (KeyError, JSONDecodeError, User.DoesNotExist):
+            return HttpResponseNotFound(content='NULL')
+        user = request.user
+        if user == friend:
+            return HttpResponseBadRequest(content='USER')
+        if user.friends.filter(id=friend.id).count() == 1:
+            return HttpResponseBadRequest(content='FRIEND')
+        if friend.friends_request.filter(id=user.id).count() == 1:
+            return HttpResponseBadRequest(content='SENT')
+        if user.friends_request.filter(id=friend.id).count() == 1:
+            user.friends_request.remove(friend)
+            user.friends.add(friend)
+            return JsonResponse({'user': friend.data_medium(), 'status': 'FRIEND'})
+        friend.friends_request.add(user)
+        return JsonResponse({'user': friend.data_medium(), 'status': 'PENDING'})
+    return HttpResponseNotAllowed(['POST'])
 
+@auth_func
 def api_timetable(request):
-    if request.user.is_authenticated:
-        if request.method == 'GET':
-            timetables = [timetable.data() for timetable in
-                          Timetable.objects.filter(user__id=request.user.id)]
-            return JsonResponse(timetables, safe=False)
-        if request.method == 'POST':
-            try:
-                req_data = json.loads(request.body.decode())
-                timetable_title = req_data['title']
-                timetable_semester = req_data['semester']
-                timetable = Timetable(title=timetable_title,
-                                      semester=timetable_semester, user=request.user)
-                timetable.save()
-                return JsonResponse(timetable.data_small(), status=201)
-            except (KeyError, JSONDecodeError):
-                return HttpResponseBadRequest()
-        return HttpResponseNotAllowed(['GET', 'POST'])
-    return HttpResponse(status=401)
+    if request.method == 'GET':
+        timetables = [timetable.data() for timetable in
+                      Timetable.objects.filter(user__id=request.user.id)]
+        return JsonResponse(timetables, safe=False)
+    if request.method == 'POST':
+        try:
+            req_data = json.loads(request.body.decode())
+            timetable_title = req_data['title']
+            timetable_semester = req_data['semester']
+            timetable = Timetable(title=timetable_title,
+                                  semester=timetable_semester, user=request.user)
+            timetable.save()
+            return JsonResponse(timetable.data_small(), status=201)
+        except (KeyError, JSONDecodeError):
+            return HttpResponseBadRequest()
+    return HttpResponseNotAllowed(['GET', 'POST'])
 
+@auth_func
 def api_timetable_main_id(request, timetable_id):
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            try:
-                timetable = Timetable.objects.get(id=timetable_id)
-            except Timetable.DoesNotExist:
-                return JsonResponse({'id':request.user.timetable_main.id}, status=404, safe=False)
-            if timetable.user.id != request.user.id:
-                return JsonResponse({'id':request.user.timetable_main.id}, status=405, safe=False)
-            newuser = request.user
-            newuser.timetable_main = timetable
-            newuser.save()
-            return JsonResponse({'id':timetable_id}, status=201, safe=False)
-        return HttpResponseNotAllowed(['POST'])
-    return HttpResponse(status=401)
+    if request.method == 'POST':
+        try:
+            timetable = Timetable.objects.get(id=timetable_id)
+        except Timetable.DoesNotExist:
+            return JsonResponse({'id':request.user.timetable_main.id}, status=404, safe=False)
+        if timetable.user.id != request.user.id:
+            return JsonResponse({'id':request.user.timetable_main.id}, status=405, safe=False)
+        newuser = request.user
+        newuser.timetable_main = timetable
+        newuser.save()
+        return JsonResponse({'id':timetable_id}, status=201, safe=False)
+    return HttpResponseNotAllowed(['POST'])
 
+@auth_func
 def api_timetable_id(request, timetable_id):
-    if request.user.is_authenticated:
-        if request.method == 'GET':
-            try:
-                timetable = Timetable.objects.get(id=timetable_id)
-            except Timetable.DoesNotExist:
-                return JsonResponse([], status=404, safe=False)
-            return JsonResponse(timetable.data(), safe=False)
-        if request.method == 'PUT':
-            try:
-                body = request.body.decode()
-                timetable_title = json.loads(body)['title']
-                timetable_semester = json.loads(body)['semester']
-                try:
-                    timetable = Timetable.objects.get(id=timetable_id)
-                    if timetable.user == request.user:
-                        timetable.title = timetable_title
-                        timetable.semester = timetable_semester
-                        timetable.save()
-                        return JsonResponse(model_to_dict(timetable), status=200)
-                    return HttpResponseForbidden()
-                except Timetable.DoesNotExist:
-                    return HttpResponseNotFound()
-            except (KeyError, JSONDecodeError):
-                return HttpResponseBadRequest()
-        if request.method == 'DELETE':
-            if timetable_id == request.user.timetable_main.id:
-                return HttpResponseBadRequest()
+    if request.method == 'GET':
+        try:
+            timetable = Timetable.objects.get(id=timetable_id)
+        except Timetable.DoesNotExist:
+            return JsonResponse([], status=404, safe=False)
+        return JsonResponse(timetable.data(), safe=False)
+    if request.method == 'PUT':
+        try:
+            body = request.body.decode()
+            timetable_title = json.loads(body)['title']
+            timetable_semester = json.loads(body)['semester']
             try:
                 timetable = Timetable.objects.get(id=timetable_id)
                 if timetable.user == request.user:
-                    timetable.delete()
-                    return HttpResponse(status=200)
+                    timetable.title = timetable_title
+                    timetable.semester = timetable_semester
+                    timetable.save()
+                    return JsonResponse(model_to_dict(timetable), status=200)
                 return HttpResponseForbidden()
             except Timetable.DoesNotExist:
                 return HttpResponseNotFound()
-        return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
-    return HttpResponse(status=401)
+        except (KeyError, JSONDecodeError):
+            return HttpResponseBadRequest()
+    if request.method == 'DELETE':
+        if timetable_id == request.user.timetable_main.id:
+            return HttpResponseBadRequest()
+        try:
+            timetable = Timetable.objects.get(id=timetable_id)
+            if timetable.user == request.user:
+                timetable.delete()
+                return HttpResponse(status=200)
+            return HttpResponseForbidden()
+        except Timetable.DoesNotExist:
+            return HttpResponseNotFound()
+    return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
 
+@auth_func
 def api_timetable_id_course(request, timetable_id):
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            try:
-                string_pool = "89ABCDEF"
-                color = "#"
-                i = 1
-                while i <= 6:
-                    color += random.choice(string_pool)
-                    i += 1
-                body = request.body.decode()
-                course_id = json.loads(body)['course_id']
-                try:
-                    timetable = Timetable.objects.get(pk=timetable_id)
-                    course = Course.objects.get(pk=course_id)
-                    custom_course = CustomCourse(timetable=timetable, course=course, color=color)
-                    custom_course.save()
-                    custom_course.set_course_time()
-                    return JsonResponse(timetable.data(), safe=False)
-                except (Timetable.DoesNotExist, Course.DoesNotExist):
-                    return HttpResponseNotFound()
-            except (KeyError, JSONDecodeError):
-                return HttpResponseBadRequest()
-        return HttpResponseNotAllowed(['POST'])
-    return HttpResponse(status=401)
-
-def api_timetable_id_custom_course_id(request, timetable_id, custom_course_id):
-    if request.user.is_authenticated:
-        if request.method == 'DELETE':
+    if request.method == 'POST':
+        try:
+            string_pool = "89ABCDEF"
+            color = "#"
+            i = 1
+            while i <= 6:
+                color += random.choice(string_pool)
+                i += 1
+            body = request.body.decode()
+            course_id = json.loads(body)['course_id']
             try:
                 timetable = Timetable.objects.get(pk=timetable_id)
-                CustomCourse.objects.get(pk=custom_course_id).delete()
+                course = Course.objects.get(pk=course_id)
+                custom_course = CustomCourse(timetable=timetable, course=course, color=color)
+                custom_course.save()
+                custom_course.set_course_time()
                 return JsonResponse(timetable.data(), safe=False)
-            except (CustomCourse.DoesNotExist, Timetable.DoesNotExist):
+            except (Timetable.DoesNotExist, Course.DoesNotExist):
                 return HttpResponseNotFound()
-        return HttpResponseNotAllowed(['DELETE'])
-    return HttpResponse(status=401)
+        except (KeyError, JSONDecodeError):
+            return HttpResponseBadRequest()
+    return HttpResponseNotAllowed(['POST'])
 
+@auth_func
+def api_timetable_id_custom_course_id(request, timetable_id, custom_course_id):
+    if request.method == 'DELETE':
+        try:
+            timetable = Timetable.objects.get(pk=timetable_id)
+            CustomCourse.objects.get(pk=custom_course_id).delete()
+            return JsonResponse(timetable.data(), safe=False)
+        except (CustomCourse.DoesNotExist, Timetable.DoesNotExist):
+            return HttpResponseNotFound()
+    return HttpResponseNotAllowed(['DELETE'])
+
+@auth_func
 def api_timetable_id_custom_course(request, timetable_id):
-    if request.user.is_authenticated:
-        if request.method == 'POST':
+    if request.method == 'POST':
+        try:
+            body = request.body.decode()
+            title = json.loads(body)['title']
+            color = json.loads(body)['color']
+            time_list = json.loads(body)['courseTime']
             try:
-                body = request.body.decode()
-                title = json.loads(body)['title']
-                color = json.loads(body)['color']
-                time_list = json.loads(body)['courseTime']
-                try:
-                    timetable = Timetable.objects.get(pk=timetable_id)
-                    custom_course = CustomCourse(timetable=timetable, color=color, title=title)
-                    custom_course.save()
-                    for time in time_list:
-                        CustomCourseTime(timetable=timetable,
-                                         course=custom_course,
-                                         weekday=time[0],
-                                         start_time=time[1],
-                                         end_time=time[2]).save()
-                    return JsonResponse(timetable.data(), safe=False)
-                except Timetable.DoesNotExist:
-                    return HttpResponseNotFound()
-            except (KeyError, JSONDecodeError):
-                return HttpResponseBadRequest()
-        return HttpResponseNotAllowed(['POST'])
-    return HttpResponse(status=401)
+                timetable = Timetable.objects.get(pk=timetable_id)
+                custom_course = CustomCourse(timetable=timetable, color=color, title=title)
+                custom_course.save()
+                for time in time_list:
+                    CustomCourseTime(timetable=timetable,
+                                     course=custom_course,
+                                     weekday=time[0],
+                                     start_time=time[1],
+                                     end_time=time[2]).save()
+                return JsonResponse(timetable.data(), safe=False)
+            except Timetable.DoesNotExist:
+                return HttpResponseNotFound()
+        except (KeyError, JSONDecodeError):
+            return HttpResponseBadRequest()
+    return HttpResponseNotAllowed(['POST'])
 
+@auth_func
 def api_course(request):
-    if request.user.is_authenticated:
-        if request.method == 'GET':
-            course_list = Course.objects.values()
-            if request.GET.get('title'):
-                match_text = request.GET.get('title')
-                def is_matched(text):
-                    matched = 0
-                    for char in text:
-                        if char == match_text[matched]:
-                            matched += 1
-                        if matched == len(match_text):
-                            return True
-                    return False
-                course_list = list(filter(lambda x: is_matched(x['title']), course_list))
+    if request.method == 'GET':
+        course_list = Course.objects.values()
+        if request.GET.get('title'):
+            match_text = request.GET.get('title')
+            def is_matched(text):
+                matched = 0
+                for char in text:
+                    if char == match_text[matched]:
+                        matched += 1
+                    if matched == len(match_text):
+                        return True
+                return False
+            course_list = list(filter(lambda x: is_matched(x['title']), course_list))
             return JsonResponse(course_list, safe=False)
-        return HttpResponseNotAllowed(['GET'])
-    return HttpResponse(status=401)
+        return HttpResponseBadRequest()
+    return HttpResponseNotAllowed(['GET'])
 
 @ensure_csrf_cookie
 def api_token(request):
