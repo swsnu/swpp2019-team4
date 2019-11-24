@@ -11,6 +11,9 @@ from django.forms.models import model_to_dict
 def collaborative_filtering(user):
     division_error=1.0/1048576.0
     all_course=[course for course in Course.objects.all()]
+    all_coursepref=[score_data for score_data in CoursePref.objects.all()]
+    user_coursepref=[score_data for score_data in CoursePref.objects.filter(user=user)]
+    all_user=[person for person in User.objects.all()]
     score_sum={}
     user_count={}
     score_average={}
@@ -30,22 +33,22 @@ def collaborative_filtering(user):
         relation_sum[course.id]=0.0
         score_result_dict[course.id]=-2.0
     print('B')
-    for person in User.objects.all():
+    for person in all_user:
         user_sum[person.id]=0.0
         person_sum[person.id]=0.0
         user_person_sum[person.id]=0.0
     print('C')
-    for score_data in CoursePref.objects.all():
+    for score_data in all_coursepref:
         score_sum[score_data.course.id]+=score_data.score
         user_count[score_data.course.id]+=1.0
     print('D')
     for course in all_course:
         score_average[course.id]=(score_sum[course.id]-5.0*user_count[course.id])/(user_count[course.id]+division_error)+5.0
     print('E')
-    for score_data in CoursePref.objects.filter(user=user):
+    for score_data in user_coursepref:
         score_result_dict[score_data.course.id]=score_data.score
     print('F')
-    for score_data in CoursePref.objects.all():
+    for score_data in all_coursepref:
         course=score_data.course
         score=score_result_dict[course.id]
         person=score_data.user
@@ -56,10 +59,10 @@ def collaborative_filtering(user):
             person_sum[person.id]+=person_delta*person_delta
             user_person_sum[person.id]+=user_delta*person_delta
     print('G')
-    for person in User.objects.all():
+    for person in all_user:
         relation[person.id]=user_person_sum[person.id]/(math.sqrt(user_sum[person.id]*person_sum[person.id])+division_error)
     print('H')
-    for score_data in CoursePref.objects.all():
+    for score_data in all_coursepref:
         relation_sum[score_data.course.id]+=relation[score_data.user.id]
         score_weighted_sum[score_data.course.id]+=score_data.score*relation[score_data.user.id]
     print('I')
