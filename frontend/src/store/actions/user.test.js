@@ -87,6 +87,17 @@ describe('user action test', () => {
       });
   });
 
+  it('should call putUser', (done) => {
+    axios.put = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 200, data: null });
+    }));
+    store.dispatch(actionCreators.putUser())
+      .then(() => {
+        expect(axios.put).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
   it('should call getUser that can be failed', (done) => {
     axios.get = jest.fn(() => new Promise((resolve, reject) => {
       reject(new Error(''));
@@ -153,6 +164,26 @@ describe('user action test', () => {
       });
   });
 
+  it('should call getTimetableFriend', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 204, data: null });
+    }));
+    store.dispatch(actionCreators.getTimetableFriend())
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+  it('should call getTimetableFriend that can be failed', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.getTimetableFriend())
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
   it('should call getCourses', (done) => {
     axios.get = jest.fn(() => new Promise((resolve) => {
       resolve({ status: 204, data: null });
@@ -185,7 +216,16 @@ describe('user action test', () => {
         done();
       });
   });
-
+  it('should call postCourse that can be failed', (done) => {
+    axios.post = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.postCourse())
+      .then(() => {
+        expect(axios.post).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
   it('should call postTimetable', (done) => {
     axios.post = jest.fn(() => new Promise((resolve) => {
       resolve({ status: 204, data: null });
@@ -193,16 +233,6 @@ describe('user action test', () => {
     store.dispatch(actionCreators.postTimetable())
       .then(() => {
         expect(axios.post).toHaveBeenCalledTimes(1);
-        done();
-      });
-  });
-  it('should call getTimetables', (done) => {
-    axios.get = jest.fn(() => new Promise((resolve) => {
-      resolve({ status: 204, data: null });
-    }));
-    store.dispatch(actionCreators.getTimetables())
-      .then(() => {
-        expect(axios.get).toHaveBeenCalledTimes(1);
         done();
       });
   });
@@ -216,7 +246,124 @@ describe('user action test', () => {
         done();
       });
   });
+  it('should call postMainTimetable', (done) => {
+    axios.post = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 204, data: null });
+    }));
+    store.dispatch(actionCreators.postMainTimetable())
+      .then(() => {
+        expect(axios.post).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
 
+  it('should call postMainTimetable that can be failed', (done) => {
+    axios.post = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.postMainTimetable())
+      .then(() => {
+        expect(axios.post).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  it('should call deleteCourse', (done) => {
+    axios.delete = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 204, data: null });
+    }));
+    store.dispatch(actionCreators.deleteCourse(1, 1))
+      .then(() => {
+        expect(axios.delete).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  it('should call deleteCourse that can be failed', (done) => {
+    axios.delete = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.deleteCourse(1, 1))
+      .then(() => {
+        expect(axios.delete).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  it('should call postCustomCourse', (done) => {
+    const courseInfo = {
+      title: 'swpp',
+      color: '#FF0000',
+    };
+    const courseTime = [[0, '15:00', '20:00']];
+
+    axios.post = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 204, data: null });
+    }));
+    store.dispatch(actionCreators.postCustomCourse(1, courseInfo, courseTime))
+      .then(() => {
+        expect(axios.post).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  it('should call postCustomCourse that can be failed', (done) => {
+    const courseInfo = {
+      title: 'swpp',
+      color: '#FF0000',
+    };
+    const courseTime = [[0, '15:00', '20:00']];
+
+    axios.post = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.postCustomCourse(1, courseInfo, courseTime))
+      .then(() => {
+        expect(axios.post).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  it('should call deleteTimetable', (done) => {
+    axios.delete = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 204, data: null });
+    }));
+    store.dispatch(actionCreators.deleteTimetable(1))
+      .then(() => {
+        expect(axios.delete).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+  it('should call deleteTimetable', (done) => {
+    axios.delete = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.deleteTimetable(1))
+      .then(() => {
+        expect(axios.delete).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+  it('should call getTimetables', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 204, data: null });
+    }));
+    store.dispatch(actionCreators.getTimetables())
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+  it('should call getTimetables', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.getTimetables())
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
   it('should run .catch when signup failed', (done) => {
     axios.get = jest.fn(() => new Promise((reject) => {
       reject({ status: 401, data: null });

@@ -8,6 +8,7 @@ import './Login.css';
 class Login extends Component {
   constructor(props) {
     super(props);
+    this.is_mount = false;
     this.state = {
       email: '',
       password: '',
@@ -16,13 +17,20 @@ class Login extends Component {
   }
 
   componentDidMount() {
+    this.is_mount = true;
     this.props.onGetUser();
+  }
+
+  componentWillUnmount() {
+    this.is_mount = false;
   }
 
   handleLogin() {
     this.props.onLogin(this.state.email, this.state.password)
       .then(() => {
-        this.setState((prevState) => ({ ...prevState, login_failed: true }));
+        if (this.is_mount) {
+          this.setState((prevState) => ({ ...prevState, login_failed: true }));
+        }
       });
   }
 
@@ -132,7 +140,7 @@ Login.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
   storedUser: PropTypes.shape({
-    is_authenticated: PropTypes.bool.isRequired,
+    is_authenticated: PropTypes.bool,
   }).isRequired,
 };
 

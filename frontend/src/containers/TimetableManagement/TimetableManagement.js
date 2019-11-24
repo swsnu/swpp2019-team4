@@ -6,12 +6,13 @@ import * as actionCreators from '../../store/actions/index';
 import TimetableView from '../../components/TimetableView/TimetableView';
 import SideView from '../../components/SideView/SideView';
 import TopBar from '../../components/TopBar/TopBar';
-import CustomCourse from '../../components/CustomCourse/CustomCourse';
+import CustomCourse from '../CustomCourse/CustomCourse';
 import './TimetableManagement.css';
 
 class TimetableManagement extends Component {
   constructor(props) {
     super(props);
+    this.is_mount = false;
     this.state = {
       showCourses: true,
       searchStrings: '',
@@ -20,12 +21,19 @@ class TimetableManagement extends Component {
   }
 
   componentDidMount() {
+    this.is_mount = true;
     this.props.onGetUser()
       .then(() => {
-        this.setState((prevState) => ({ ...prevState, timetableId: this.props.storedUser.timetable_main }));
-        this.props.onGetTimetable(this.props.storedUser.timetable_main);
+        if (this.is_mount) {
+          this.setState((prevState) => ({ ...prevState, timetableId: this.props.storedUser.timetable_main }));
+          this.props.onGetTimetable(this.props.storedUser.timetable_main);
+        }
       });
     this.props.onGetTimetables();
+  }
+
+  componentWillUnmount() {
+    this.is_mount = false;
   }
 
   statePopup(value) {
@@ -206,7 +214,6 @@ TimetableManagement.propTypes = {
   timetables: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
-      timetable_main: PropTypes.number.isRequired,
     }),
   ).isRequired,
   courses: PropTypes.arrayOf(
