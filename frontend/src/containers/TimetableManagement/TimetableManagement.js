@@ -13,7 +13,6 @@ class TimetableManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showPopup: false,
       showCourses: true,
       searchStrings: '',
       timetableId: -1,
@@ -217,7 +216,11 @@ TimetableManagement.propTypes = {
     }),
   ).isRequired,
   timetable: PropTypes.shape({
+<<<<<<< HEAD
     title: PropTypes.string.isRequired,
+=======
+    title: PropTypes.string,
+>>>>>>> dev-master
     course: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number.isRequired,
       time: PropTypes.arrayOf(PropTypes.shape({

@@ -1,0 +1,42 @@
+.RecommendTime #recommend-time-table {
+  width: 100%;
+  border: 0px;
+  border-collapse: collapse;
+}
+
+.RecommendTime #recommend-time-table th {
+  border: 0px;
+  font-weight: 400;
+}
+
+.RecommendTime #recommend-time-table tr td {
+  border-left: 0px;
+  border-right: 0px;
+  border-bottom: 0px;
+  border-top-style: solid;
+  position: relative;
+  vertical-align: top;
+  padding: 0px;
+  background-clip: padding-box;
+}
+
+.RecommendTime #recommend-time-table tr:nth-child(even) td {
+  border-top-width: 1px;
+  border-top-color: #DDDDDD;
+}
+
+.RecommendTime #recommend-time-table tr:nth-child(odd) td {
+  border-top-width: 0px;
+}
+
+.RecommendTime .circle {
+  width: 50px;
+  height: 50px;
+  font-size: 15px;
+  line-height: 48px;
+  border-radius: 50%;
+  text-align: center;
+  border: 1px #888 solid;
+  cursor: pointer;
+  top: 0px;
+}
