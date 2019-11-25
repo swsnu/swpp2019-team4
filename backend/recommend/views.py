@@ -9,7 +9,6 @@ from django.contrib.auth import authenticate, login, logout, update_session_auth
 from django.forms.models import model_to_dict
 
 def collaborative_filtering(user):
-    division_error=1.0/1048576.0
     all_course=[course for course in Course.objects.all().values()]
     all_coursepref=[score_data for score_data in CoursePref.objects.all().values()]
     user_coursepref=[score_data for score_data in CoursePref.objects.filter(user=user).values()]
