@@ -99,7 +99,7 @@ def collaborative_filtering(user):
     for course in all_course:
         if score_result_dict[course['id']] < -1.0:
             if relation_sum[course['id']] == 0.0:
-                score_result_dict[course['id']] = user_average[user.id]
+                score_result_dict[course['id']] = score_average[course['id']]
             else:
                 score_result_dict[course['id']] = round(score_weighted_sum[course['id']]*user_std[user.id]/relation_sum[course['id']]+user_average[user.id],3)
         if score_result_dict[course['id']] < 0.0:
