@@ -9,107 +9,107 @@ from django.contrib.auth import authenticate, login, logout, update_session_auth
 from django.forms.models import model_to_dict
 
 def collaborative_filtering(user):
-    all_course=[course for course in Course.objects.all().values()]
-    all_coursepref=[score_data for score_data in CoursePref.objects.all().values()]
-    user_coursepref=[score_data for score_data in CoursePref.objects.filter(user=user).values()]
-    all_user=[person for person in User.objects.all().values()]
+    all_course = [course for course in Course.objects.all().values()]
+    all_coursepref = [score_data for score_data in CoursePref.objects.all().values()]
+    user_coursepref = [score_data for score_data in CoursePref.objects.filter(user=user).values()]
+    all_user = [person for person in User.objects.all().values()]
 
-    score_sum={}
-    user_count={}
-    score_average={}
+    score_sum = {}
+    user_count = {}
+    score_average = {}
 
-    user_score_sum={}
-    user_score_square_sum={}
-    user_score_count={}
-    user_average={}
-    user_std={}
+    user_score_sum = {}
+    user_score_square_sum = {}
+    user_score_count = {}
+    user_average = {}
+    user_std = {}
 
-    user_sum={}
-    person_sum={}
-    user_person_sum={}
-    relation={}
+    user_sum = {}
+    person_sum = {}
+    user_person_sum = {}
+    relation = {}
 
-    score_weighted_sum={}
-    relation_sum={}
+    score_weighted_sum = {}
+    relation_sum = {}
 
-    score_result_dict={}
-    score_result=[]
+    score_result_dict = {}
+    score_result = []
 
     for course in all_course:
-        score_sum[course['id']]=0.0
-        user_count[course['id']]=0.0
-        score_weighted_sum[course['id']]=0.0
-        relation_sum[course['id']]=0.0
-        score_result_dict[course['id']]=-2.0
-    
+        score_sum[course['id']] = 0.0
+        user_count[course['id']] = 0.0
+        score_weighted_sum[course['id']] = 0.0
+        relation_sum[course['id']] = 0.0
+        score_result_dict[course['id']] = -2.0
+
     for person in all_user:
-        user_sum[person['id']]=0.0
-        person_sum[person['id']]=0.0
-        user_person_sum[person['id']]=0.0
-        user_score_sum[person['id']]=0.0
-        user_score_count[person['id']]=0.0
-        user_score_square_sum[person['id']]=0.0
-    
+        user_sum[person['id']] = 0.0
+        person_sum[person['id']] = 0.0
+        user_person_sum[person['id']] = 0.0
+        user_score_sum[person['id']] = 0.0
+        user_score_count[person['id']] = 0.0
+        user_score_square_sum[person['id']] = 0.0
+
     for score_data in all_coursepref:
-        score_sum[score_data['course_id']]+=score_data['score']
-        user_count[score_data['course_id']]+=1.0
-        user_score_sum[score_data['user_id']]+=score_data['score']
-        user_score_square_sum[score_data['user_id']]+=score_data['score']*score_data['score']
-        user_score_count[score_data['user_id']]+=1.0
-    
+        score_sum[score_data['course_id']] += score_data['score']
+        user_count[score_data['course_id']] += 1.0
+        user_score_sum[score_data['user_id']] += score_data['score']
+        user_score_square_sum[score_data['user_id']] += score_data['score']*score_data['score']
+        user_score_count[score_data['user_id']] += 1.0
+
     for course in all_course:
-        if user_count[course['id']]==0.0:
-            score_average[course['id']]=5.0
+        if user_count[course['id']] == 0.0:
+            score_average[course['id']] = 5.0
         else:
-            score_average[course['id']]=score_sum[course['id']]/user_count[course['id']]
-    
+            score_average[course['id']] = score_sum[course['id']]/user_count[course['id']]
+
     for person in all_user:
-        if user_score_count[person['id']]==0.0:
-            user_average[person['id']]=5.0
-            user_std[person['id']]=0.0
+        if user_score_count[person['id']] == 0.0:
+            user_average[person['id']] = 5.0
+            user_std[person['id']] = 0.0
         else:
-            user_average[person['id']]=user_score_sum[person['id']]/user_score_count[person['id']]
-            user_std[person['id']]=math.sqrt(user_score_square_sum[person['id']]/user_score_count[person['id']]-user_average[person['id']]*user_average[person['id']])
-    
+            user_average[person['id']] = user_score_sum[person['id']]/user_score_count[person['id']]
+            user_std[person['id']] = math.sqrt(user_score_square_sum[person['id']]/user_score_count[person['id']]-user_average[person['id']]*user_average[person['id']])
+
     for score_data in user_coursepref:
-        score_result_dict[score_data['course_id']]=score_data['score']
-    
+        score_result_dict[score_data['course_id']] = score_data['score']
+
     for score_data in all_coursepref:
-        course=score_data['course_id']
-        score=score_result_dict[course]
-        person=score_data['user_id']
-        if score>-1.0:
-            user_delta=score-score_average[course]
-            person_delta=score_data['score']-score_average[course]
-            user_sum[person]+=user_delta*user_delta
-            person_sum[person]+=person_delta*person_delta
-            user_person_sum[person]+=user_delta*person_delta
-    
+        course = score_data['course_id']
+        score = score_result_dict[course]
+        person = score_data['user_id']
+        if score > -1.0:
+            user_delta = score-score_average[course]
+            person_delta = score_data['score']-score_average[course]
+            user_sum[person] += user_delta*user_delta
+            person_sum[person] += person_delta*person_delta
+            user_person_sum[person] += user_delta*person_delta
+
     for person in all_user:
-        if user_sum[person['id']]*person_sum[person['id']]==0.0:
-            relation[person['id']]=0.0
+        if user_sum[person['id']]*person_sum[person['id']] == 0.0:
+            relation[person['id']] = 0.0
         else:
-            relation[person['id']]=user_person_sum[person['id']]/math.sqrt(user_sum[person['id']]*person_sum[person['id']])
-    
+            relation[person['id']] = user_person_sum[person['id']]/math.sqrt(user_sum[person['id']]*person_sum[person['id']])
+
     for score_data in all_coursepref:
-        if user_std[score_data['user_id']]!=0.0:
-            score_weighted_sum[score_data['course_id']]+=relation[score_data['user_id']]*(score_data['score']-user_average[score_data['user_id']])/user_std[score_data['user_id']]
-        relation_sum[score_data['course_id']]+=abs(relation[score_data['user_id']])
+        if user_std[score_data['user_id']] != 0.0:
+            score_weighted_sum[score_data['course_id']] += relation[score_data['user_id']]*(score_data['score']-user_average[score_data['user_id']])/user_std[score_data['user_id']]
+        relation_sum[score_data['course_id']] += abs(relation[score_data['user_id']])
 
     for course in all_course:
-        if score_result_dict[course['id']]<-1.0:
-            if relation_sum[course['id']]==0.0:
-                score_result_dict[course['id']]=user_average[user.id]
+        if score_result_dict[course['id']] < -1.0:
+            if relation_sum[course['id']] == 0.0:
+                score_result_dict[course['id']] = user_average[user.id]
             else:
-                score_result_dict[course['id']]=round(score_weighted_sum[course['id']]*user_std[user.id]/relation_sum[course['id']]+user_average[user.id],3)
-        if score_result_dict[course['id']]<0.0:
-            score_result_dict[course['id']]=0.0
-        if score_result_dict[course['id']]>10.0:
-            score_result_dict[course['id']]=10.0
-    
+                score_result_dict[course['id']] = round(score_weighted_sum[course['id']]*user_std[user.id]/relation_sum[course['id']]+user_average[user.id],3)
+        if score_result_dict[course['id']] < 0.0:
+            score_result_dict[course['id']] = 0.0
+        if score_result_dict[course['id']] > 10.0:
+            score_result_dict[course['id']] = 10.0
+
     for course in all_course:
-        score_result.append({'course':course['id'],'score':score_result_dict[course['id']]})
-    
+        score_result.append({'course':course['id'], 'score':score_result_dict[course['id']]})
+
     return score_result_dict
 
 def api_course_pref(request):
