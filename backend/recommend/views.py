@@ -150,7 +150,7 @@ def api_course_pref_id(request, course_id):
             except CoursePref.DoesNotExist:
                 new_score=CoursePref(user=request.user,course=course,score=score)
                 new_score.save()
-                return JsonResponse(model_to_dict(score_data),safe=False,status=201)
+                return JsonResponse(model_to_dict(new_score),safe=False,status=201)
             score_data.score=score
             score_data.save()
             return JsonResponse(model_to_dict(score_data),safe=False,status=200)

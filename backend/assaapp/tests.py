@@ -16,7 +16,7 @@ class AssaTestCase(TestCase):
         self.user_set.append(User.objects.create_superuser(
             email='young@naver.com', password='young', username='Kim Youngchan'))
         self.user_set.append(User.objects.create_user(
-            email='koo@never.com', password='koo', username='Koo Junseo'))
+            email='koo@snu.ac.kr', password='koo', username='Koo Junseo'))
         self.user_set.append(User.objects.create_user(
             email='assa.staff@gmail.com', password='assaapp', username='SWPP'))
 
@@ -300,7 +300,7 @@ class AssaTestCase(TestCase):
                              content_type='application/json')
         self.assertEqual(response.status_code, 400)
         response = self.post('/api/user/friend/search/',
-                             json.dumps({'email': 'koo@never.com'}),
+                             json.dumps({'email': 'koo@snu.ac.kr'}),
                              content_type='application/json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content.decode())['user']['username'], 'Koo Junseo')
