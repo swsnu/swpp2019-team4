@@ -13,6 +13,7 @@ def collaborative_filtering(user):
     all_coursepref = [score_data for score_data in CoursePref.objects.all().values()]
     user_coursepref = [score_data for score_data in CoursePref.objects.filter(user=user).values()]
     all_user = [person for person in User.objects.all().values()]
+    user_dict = model_to_dict(user)
 
     score_sum = {}
     user_count = {}
@@ -88,6 +89,10 @@ def collaborative_filtering(user):
     for person in all_user:
         if user_sum[person['id']]*person_sum[person['id']] == 0.0:
             relation[person['id']] = 0.0
+            if person['department'] == user_dict['department']:
+                relation[person['id']] += 1.0/1024.0
+            if person['grade'] == user_dict['grade']:
+                relation[person['id']] += 1.0/1048576.0
         else:
             relation[person['id']] = user_person_sum[person['id']]/math.sqrt(user_sum[person['id']]*person_sum[person['id']])
 
@@ -101,7 +106,7 @@ def collaborative_filtering(user):
             if relation_sum[course['id']] == 0.0:
                 score_result_dict[course['id']] = score_average[course['id']]
             else:
-                score_result_dict[course['id']] = round(score_weighted_sum[course['id']]*user_std[user.id]/relation_sum[course['id']]+user_average[user.id],3)
+                score_result_dict[course['id']] = round(score_weighted_sum[course['id']]*user_std[user_dict['id']]/relation_sum[course['id']]+user_average[user_dict['id']],3)
         if score_result_dict[course['id']] < 0.0:
             score_result_dict[course['id']] = 0.0
         if score_result_dict[course['id']] > 10.0:
@@ -110,7 +115,7 @@ def collaborative_filtering(user):
     for course in all_course:
         score_result.append({'course':course['id'], 'score':score_result_dict[course['id']]})
 
-    return score_result_dict
+    return score_result
 
 def api_course_pref(request):
     if request.user.is_authenticated:
