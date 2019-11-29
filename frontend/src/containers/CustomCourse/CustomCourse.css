@@ -1,4 +1,5 @@
 .CustomCourse td:nth-child(1) {
+    width: 80px;
     vertical-align: middle;
     text-align: right;
     color: gray;
@@ -19,4 +20,21 @@
 
 .CustomCourse .dropdown-menu {
     border-color: transparent;
+}
+
+.CustomCourse .rdtPicker {
+    width: 100px;
+    padding: 0rem;
+}
+
+.CustomCourse td td {
+    vertical-align: top !important;
+    text-align:center !important;
+    color: #343a40 !important;
+    width: 100% !important;
+    padding: 0rem;
+}
+
+.CustomCourse .rdtCount {
+    font-size: 1rem !important;
 }
