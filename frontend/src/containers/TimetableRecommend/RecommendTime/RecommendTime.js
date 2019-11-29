@@ -86,6 +86,7 @@ class RecommendTime extends Component {
           <td key={1000 * i + j} style={{ backgroundColor: color, cursor: 'crosshair' }}>
             <div
               style={{ height: '15px' }}
+              id="table-square"
               role="button"
               tabIndex="-1"
               aria-label={color}
@@ -104,6 +105,7 @@ class RecommendTime extends Component {
             <div
               className={`my-2 circle ${this.state.color === i ? 'oi oi-check' : ''}`}
               style={{ backgroundColor: colorArray[i] }}
+              id="color-circle"
               tabIndex="-1"
               role="button"
               aria-label={colorArray[i]}
