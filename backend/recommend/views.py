@@ -1,12 +1,11 @@
 import math
 import json
 from json import JSONDecodeError
+from django.forms.models import model_to_dict
+from django.http import HttpResponse, HttpResponseNotAllowed, \
+    JsonResponse, HttpResponseBadRequest, HttpResponseNotFound
 from assaapp.models import User, Course
 from recommend.models import CoursePref, TimePref
-from django.http import HttpResponse, HttpResponseNotAllowed, \
-    JsonResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseNotFound
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from django.forms.models import model_to_dict
 
 def collaborative_filtering(user):
     all_course = [course for course in Course.objects.all().values()]
@@ -71,25 +70,33 @@ def collaborative_filtering(user):
     if total_count > 0.0:
         total_average = round(total_sum/total_count, 3)
         if total_count > 1.0:
-            total_std = math.sqrt(total_square_sum/(total_count-1.0)-(total_average**2)*total_count/(total_count-1))
+            val = total_square_sum/(total_count-1.0)-(total_average**2)*total_count/(total_count-1)
+            total_std = math.sqrt(val)
 
 
     for course in all_course:
-        if user_count[course['id']] == 0.0:
+        usrcnt = user_count[course['id']]
+        if usrcnt == 0.0:
             score_average[course['id']] = total_average
         else:
-            score_average[course['id']] = score_sum[course['id']]/user_count[course['id']]
+            score_average[course['id']] = score_sum[course['id']]/usrcnt
 
     for person in all_user:
-        if user_score_count[person['id']] == 0.0:
-            user_average[person['id']] = total_average
-            user_std[person['id']] = total_std
+        pid = person['id']
+        score_square_sum = user_score_square_sum[pid]
+        score_sum = user_score_sum[pid]
+        score_cnt = user_score_count[pid]
+        average = user_average[pid]
+        if score_cnt == 0.0:
+            user_average[pid] = total_average
+            user_std[pid] = total_std
         else:
-            user_average[person['id']] = user_score_sum[person['id']]/user_score_count[person['id']]
-            if user_score_count[person['id']] > 1.0:
-                user_std[person['id']] = math.sqrt(user_score_square_sum[person['id']]/(user_score_count[person['id']]-1.0)-(user_average[person['id']]**2)*user_score_count[person['id']]/(user_score_count[person['id']]-1.0))
+            user_average[pid] = score_sum/score_cnt
+            if score_cnt > 1.0:
+                val = score_square_sum/(score_cnt-1.0)-(average**2)*score_cnt/(score_cnt-1.0)
+                user_std[pid] = math.sqrt(val)
             else:
-                user_std[person['id']] = total_std
+                user_std[pid] = total_std
 
     for score_data in user_coursepref:
         score_result_dict[score_data['course_id']] = score_data['score']
@@ -106,22 +113,36 @@ def collaborative_filtering(user):
             user_person_sum[person] += user_delta*person_delta
 
     for person in all_user:
-        if user_sum[person['id']]*person_sum[person['id']] == 0.0:
-            relation[person['id']] = 0.0
+        pid = person['id']
+        usr_sum = user_sum[pid]
+        persn_sum = person_sum[pid]
+        usr_persn_sum = user_person_sum[pid]
+        if usr_sum*persn_sum == 0.0:
+            relation[pid] = 0.0
         else:
-            relation[person['id']] = user_person_sum[person['id']]/math.sqrt(user_sum[person['id']]*person_sum[person['id']])
+            relation[pid] = usr_persn_sum/math.sqrt(usr_sum*persn_sum)
 
     for score_data in all_coursepref:
-        if user_std[score_data['user_id']] != 0.0:
-            score_weighted_sum[score_data['course_id']] += relation[score_data['user_id']]*(score_data['score']-user_average[score_data['user_id']])/user_std[score_data['user_id']]
-            relation_sum[score_data['course_id']] += abs(relation[score_data['user_id']])
+        score_data_usr = score_data['user_id']
+        rel = relation[score_data_usr]
+        score_data_score = score_data['score']
+        score_data_course = score_data['course_id']
+        usr_average = user_average[score_data_usr]
+        usr_std = user_std[score_data_usr]
+        if usr_std != 0.0:
+            score_weighted_sum[score_data_course] += rel*(score_data_score-usr_average)/usr_std
+            relation_sum[score_data['course_id']] += abs(rel)
 
     for course in all_course:
+        usr_std = user_std[user_dict['id']]
+        weighted_sum = score_weighted_sum[course['id']]
+        rel = relation_sum[course['id']]
         if score_result_dict[course['id']] < -1.0:
             if relation_sum[course['id']] == 0.0:
                 score_result_dict[course['id']] = score_average[course['id']]
             else:
-                score_result_dict[course['id']] = round(score_weighted_sum[course['id']]*user_std[user_dict['id']]/relation_sum[course['id']]+user_average[user_dict['id']],3)
+                val = weighted_sum*usr_std/rel+user_average[user_dict['id']]
+                score_result_dict[course['id']] = round(val, 3)
         if score_result_dict[course['id']] < 0.0:
             score_result_dict[course['id']] = 0.0
         if score_result_dict[course['id']] > 10.0:
@@ -191,11 +212,13 @@ def api_course_pref_id(request, course_id):
 @auth_func
 def api_time_pref(request):
     if request.method == 'GET':
-        time_data = [model_to_dict(each_data) for each_data in TimePref.objects.filter(user=request.user)]
+        time_data = [model_to_dict(each_data)
+                     for each_data in TimePref.objects.filter(user=request.user)]
         return JsonResponse(time_data, safe=False)
     if request.method == 'PUT':
         try:
             body = request.body.decode()
+            user = request.user
             score = json.loads(body)['score']
             start_time = json.loads(body)['start_time']
             weekday = json.loads(body)['weekday']
@@ -204,9 +227,9 @@ def api_time_pref(request):
         except (KeyError, JSONDecodeError):
             return HttpResponseBadRequest()
         try:
-            time_data = TimePref.objects.get(user=request.user, weekday=weekday, start_time=start_time)
+            time_data = TimePref.objects.get(user=user, weekday=weekday, start_time=start_time)
         except TimePref.DoesNotExist:
-            new_score = TimePref(user=request.user, score=score, weekday=weekday, start_time=start_time)
+            new_score = TimePref(user=user, score=score, weekday=weekday, start_time=start_time)
             new_score.save()
             return JsonResponse(model_to_dict(new_score), safe=False, status=201)
         time_data.score = score
