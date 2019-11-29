@@ -8,6 +8,7 @@ import './Login.css';
 class Login extends Component {
   constructor(props) {
     super(props);
+    this.is_mount = false;
     this.state = {
       email: '',
       password: '',
@@ -16,18 +17,31 @@ class Login extends Component {
   }
 
   componentDidMount() {
+    this.is_mount = true;
     this.props.onGetUser();
+  }
+
+  componentWillUnmount() {
+    this.is_mount = false;
   }
 
   handleLogin() {
     this.props.onLogin(this.state.email, this.state.password)
       .then(() => {
-        this.setState((prevState) => ({ ...prevState, login_failed: true }));
+        if (this.is_mount) {
+          this.setState((prevState) => ({ ...prevState, login_failed: true }));
+        }
       });
   }
 
   goToSignup() {
     this.props.history.push('/signup');
+  }
+
+  enterKey() {
+    if (window.event.keyCode === 13) {
+      this.handleLogin();
+    }
   }
 
   render() {
@@ -87,9 +101,10 @@ pplication
                   className={`form-control ${this.state.login_failed ? 'is-invalid' : ''}`}
                   type="password"
                   id="pw-input"
-                  value={this.state.pasword}
+                  value={this.state.password}
                   placeholder="Password"
                   onChange={(event) => this.setState({ password: event.target.value })}
+                  onKeyDown={() => this.enterKey()}
                 />
                 <div className="small text-danger text-left" id="login-notice"><b>{loginNotice}</b></div>
               </div>
@@ -125,7 +140,7 @@ Login.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
   storedUser: PropTypes.shape({
-    is_authenticated: PropTypes.bool.isRequired,
+    is_authenticated: PropTypes.bool,
   }).isRequired,
 };
 

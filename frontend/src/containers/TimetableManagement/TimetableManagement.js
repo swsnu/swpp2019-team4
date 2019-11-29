@@ -6,14 +6,14 @@ import * as actionCreators from '../../store/actions/index';
 import TimetableView from '../../components/TimetableView/TimetableView';
 import SideView from '../../components/SideView/SideView';
 import TopBar from '../../components/TopBar/TopBar';
-import TimetableRecommend from '../TimetableRecommend/TimetableRecommend';
+import CustomCourse from '../CustomCourse/CustomCourse';
 import './TimetableManagement.css';
 
 class TimetableManagement extends Component {
   constructor(props) {
     super(props);
+    this.is_mount = false;
     this.state = {
-      showPopup: false,
       showCourses: true,
       searchStrings: '',
       timetableId: -1,
@@ -21,12 +21,19 @@ class TimetableManagement extends Component {
   }
 
   componentDidMount() {
+    this.is_mount = true;
     this.props.onGetUser()
       .then(() => {
-        this.setState((prevState) => ({ ...prevState, timetableId: this.props.storedUser.timetable_main }));
-        this.props.onGetTimetable(this.props.storedUser.timetable_main);
+        if (this.is_mount) {
+          this.setState((prevState) => ({ ...prevState, timetableId: this.props.storedUser.timetable_main }));
+          this.props.onGetTimetable(this.props.storedUser.timetable_main);
+        }
       });
     this.props.onGetTimetables();
+  }
+
+  componentWillUnmount() {
+    this.is_mount = false;
   }
 
   statePopup(value) {
@@ -38,10 +45,25 @@ class TimetableManagement extends Component {
   }
 
   post(courseId) {
-    if (this.state.timetableId !== -1) {
-      this.props.onPostCourse(this.state.timetableId, courseId);
-      this.props.onGetTimetable(this.state.timetableId);
+    this.props.onPostCourse(this.state.timetableId, courseId);
+  }
+
+  deleteCourse(courseId) {
+    this.props.onDeleteCourse(this.state.timetableId, courseId);
+  }
+
+  deleteTimetable(timetableId) {
+    this.props.onDeleteTimetable(timetableId);
+  }
+
+  postCustom(courseData, courseTime) {
+    const courseTimes = courseTime.split('/');
+    const splitedCourseTime = [];
+    for (let i = 0; i < courseTimes.length; i += 1) {
+      splitedCourseTime.push(courseTimes[i].split('-'));
     }
+    this.props.onPostCustomCourse(this.state.timetableId, courseData, splitedCourseTime);
+    this.statePopup(false);
   }
 
   show(timetableId) {
@@ -68,25 +90,47 @@ class TimetableManagement extends Component {
     this.showCoursesInSearch();
   }
 
+  enterKey() {
+    if (window.event.keyCode === 13) {
+      this.search();
+    }
+  }
+
   render() {
     if (this.props.storedUser.is_authenticated === false) {
       return (
         <Redirect to="/login" />
       );
     }
+    const timetableView = this.props.timetables.filter((timetable) => timetable.id !== this.state.timetableId)
+      .map((item) => (
+        <li key={item.id}>
+          <button type="button" className="timetable" onClick={() => this.show(item.id)}>
+            {item.title}
+          </button>
+          <button type="button" className="delete-button" onClick={() => this.deleteTimetable(item.id)}>
+          X
+          </button>
+        </li>
+      ));
     const timetableList = (
-      <SideView
-        list={this.props.timetables}
-        className="timetable-list"
-        onClick={(id) => this.show(id)}
-      />
+      <ul className="timetable-list">
+        <div className="button-container">
+          <li key={this.state.timetableId}>
+            <button type="button" className="timetable-main">
+              {this.props.timetable.title}
+            </button>
+          </li>
+          {timetableView}
+        </div>
+      </ul>
     );
 
     const courseList = (
       <SideView
         list={this.state.showCourses ? this.props.courses : this.props.timetable.course}
         className="course-list"
-        onClick={(id) => this.post(id)}
+        onClick={this.state.showCourses ? (id) => this.post(id) : (id) => this.deleteCourse(id)}
       />
     );
     return (
@@ -106,6 +150,7 @@ class TimetableManagement extends Component {
               type="text"
               value={this.state.searchStrings}
               onChange={(event) => this.setState({ searchStrings: event.target.value })}
+              onKeyDown={() => this.enterKey()}
             />
             <button type="button" className="search" onClick={() => this.search()}>검색</button>
           </label>
@@ -131,25 +176,24 @@ class TimetableManagement extends Component {
             courses={this.props.timetable.course}
             text
             link
-            title=""
           />
         </div>
         {timetableList}
         <div className="manage-timetable-buttons">
-          <button type="button" id="delete-button">DELETE</button>
+          <button type="button" id="delete-button" onClick={() => this.deleteTimetable()}>DELETE</button>
           <button type="button" id="create-button" onClick={() => this.createEmptyTimetable()}>CREATE</button>
-          <button type="button" id="timetable-recommend-button" onClick={() => this.statePopup(true)}>RECOMMEND</button>
-          {
+          <button type="button" id="custom-course-button" onClick={() => this.statePopup(true)}>ADD CUSTOM</button>
+        </div>
+        {
           this.state.showPopup
             ? (
-              <TimetableRecommend
-                timetable={this.props.timetables}
+              <CustomCourse
                 closePopup={() => this.statePopup(false)}
+                postCustomCourse={(courseData, courseTime) => this.postCustom(courseData, courseTime)}
               />
             )
             : null
         }
-        </div>
       </div>
     );
   }
@@ -164,10 +208,12 @@ TimetableManagement.propTypes = {
   onPostTimetable: PropTypes.func.isRequired,
   onPostCourse: PropTypes.func.isRequired,
   onPostMainTimetable: PropTypes.func.isRequired,
+  onDeleteCourse: PropTypes.func.isRequired,
+  onDeleteTimetable: PropTypes.func.isRequired,
+  onPostCustomCourse: PropTypes.func.isRequired,
   timetables: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
-      timetable_main: PropTypes.number.isRequired,
     }),
   ).isRequired,
   courses: PropTypes.arrayOf(
@@ -178,6 +224,7 @@ TimetableManagement.propTypes = {
     }),
   ).isRequired,
   timetable: PropTypes.shape({
+    title: PropTypes.string,
     course: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number.isRequired,
       time: PropTypes.arrayOf(PropTypes.shape({
@@ -206,6 +253,11 @@ const mapDispatchToProps = (dispatch) => ({
   onPostCourse: (title, courseId) => dispatch(actionCreators.postCourse(title, courseId)),
   onGetTimetables: () => dispatch(actionCreators.getTimetables()),
   onPostMainTimetable: (id) => dispatch(actionCreators.postMainTimetable(id)),
+  onPostCustomCourse: (timetableId, courseInfo, courseTime) => dispatch(
+    actionCreators.postCustomCourse(timetableId, courseInfo, courseTime),
+  ),
+  onDeleteCourse: (timetableId, courseId) => dispatch(actionCreators.deleteCourse(timetableId, courseId)),
+  onDeleteTimetable: (timetableId) => dispatch(actionCreators.deleteTimetable(timetableId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableManagement);

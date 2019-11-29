@@ -6,41 +6,27 @@ import * as actionCreators from '../../store/actions/index';
 import TimetableView from '../../components/TimetableView/TimetableView';
 import MainPageFriendView from '../../components/MainPageFriendView/MainPageFriendView';
 import TopBar from '../../components/TopBar/TopBar';
-import FriendTimetable from '../../components/FriendTimetable/FriendTimetable';
 import './Main.css';
 
 class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showPopup: false,
-      showindex: -1,
     };
   }
 
   componentDidMount() {
     this.props.onGetUser();
     this.props.onGetTimetables();
+    this.props.onGetFriend();
+  }
+
+  gotoFriend(id) {
+    this.props.history.push(`/friend#${id}`);
   }
 
   handleLogout() {
     this.props.onLogout();
-  }
-
-  changePopup(value) {
-    if (value === -1) {
-      this.setState((prevState) => ({
-        ...prevState,
-        showPopup: false,
-        showindex: -1,
-      }));
-    } else {
-      this.setState((prevState) => ({
-        ...prevState,
-        showPopup: true,
-        showindex: value,
-      }));
-    }
   }
 
   render() {
@@ -49,42 +35,6 @@ class Main extends Component {
         <Redirect to="/login" />
       );
     }
-    const friend = [
-      {
-        id: 0,
-        name: '정재윤',
-        timetable: [{
-          course: [{
-            title: '소개원실 (테스트용)',
-            course_number: 'M1522.002400',
-            lecture_number: '001',
-            color: '#FF0000',
-            time: [{
-              week_day: 3,
-              start_time: 1110,
-              end_time: 1170,
-            }],
-          }],
-        }],
-      },
-      {
-        id: 1,
-        name: '구준서',
-        timetable: [{
-          course: [{
-            title: '소개원실 (테스트용)',
-            course_number: 'M1522.002400',
-            lecture_number: '001',
-            color: '#FF0000',
-            time: [{
-              week_day: 3,
-              start_time: 1020,
-              end_time: 1110,
-            }],
-          }],
-        }],
-      },
-    ];
 
     let courses = [];
     if (this.props.timetables !== undefined && this.props.storedUser.timetable_main !== undefined) {
@@ -96,49 +46,46 @@ class Main extends Component {
       }
     }
 
-    const friendListView = friend.map((user) => (
-      <MainPageFriendView friend={user} onClick={() => this.changePopup(user.id)} key={user.id} />
+    const friendListView = this.props.storedFriend.map((friend) => (
+      <MainPageFriendView friend={friend} onClick={() => this.gotoFriend(friend.id)} key={friend.id} />
     ));
     return (
       <div className="Main">
         <TopBar id="topbar" logout={() => this.handleLogout()} />
-        <div className="Content-left">
-          <TimetableView id="timetable-table" height={24} width={80} courses={courses} text link title="TIMETABLE" />
+        <div className="row w-100">
+          <div className="Content-left col-8 pl-5">
+            <TimetableView id="timetable-table" height={20} courses={courses} text link />
+          </div>
+          <div className="Content-right col-4 pr-5">
+            {friendListView}
+          </div>
         </div>
-        <div className="Content-right">
-          {friendListView}
-        </div>
-        {
-          this.state.showPopup
-            ? (
-              <FriendTimetable
-                title={`${friend[this.state.showindex].name}님의 시간표`}
-                timetable={friend.filter((x) => x.id === this.state.showindex)[0].timetable}
-                closePopup={() => this.changePopup(-1)}
-              />
-            )
-            : null
-        }
       </div>
     );
   }
 }
 
 Main.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
   onGetUser: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
   onGetTimetables: PropTypes.func.isRequired,
   storedUser: PropTypes.shape({
-    is_authenticated: PropTypes.bool.isRequired,
-    timetable_main: PropTypes.number.isRequired,
+    is_authenticated: PropTypes.bool,
+    timetable_main: PropTypes.number,
   }).isRequired,
+  storedFriend: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   timetables: PropTypes.arrayOf(PropTypes.shape({
     course: PropTypes.arrayOf(PropTypes.shape({})),
   })).isRequired,
+  onGetFriend: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   storedUser: state.user.user,
+  storedFriend: state.user.friend,
   timetables: state.user.timetables,
 });
 
@@ -146,6 +93,7 @@ const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onLogout: () => dispatch(actionCreators.getSignout()),
   onGetTimetables: () => dispatch(actionCreators.getTimetables()),
+  onGetFriend: () => dispatch(actionCreators.getFriend()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

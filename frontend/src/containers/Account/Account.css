@@ -18,5 +18,7 @@
 }
 
 .Account .text-right {
+  padding-top: 0.25rem;
+  vertical-align: top;
   color: #666;
 }
