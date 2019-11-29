@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import SearchBar from '../../../components/SearchBar/SearchBar';
 import './RecommendCourse.css';
 
 class RecommendCourse extends Component {
@@ -184,27 +185,7 @@ class RecommendCourse extends Component {
               </a>
             </li>
           </ul>
-          <div className="input-group my-2">
-            <div className="input-group-prepend">
-              <button className="form-control" type="button" id="recommend-search-filter">
-                <div className="oi oi-target" />
-              </button>
-            </div>
-            <input
-              type="text"
-              className="form-control"
-              id="recommend-search-name"
-              placeholder="과목명"
-              value={this.state.input}
-              onChange={(event) => this.setState({ input: event.target.value })}
-            />
-            <div className="input-group-append">
-              <button className="btn btn-dark" type="button" id="recommend-search-button">
-                <div className="oi oi-magnifying-glass" />
-              </button>
-            </div>
-          </div>
-
+          <SearchBar value={this.state.input} onChange={(event) => this.setState({ input: event.target.value })} />
           <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: '350px' }}>
             <div className="tab-pane show active" id="rated-tab" role="tabpanel" aria-labelledby="rated-tab">
               {this.courseElement(this.state.courses[0])}

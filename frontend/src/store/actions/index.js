@@ -19,6 +19,7 @@ export {
   getCourses,
   postCourse,
   getTimetable,
+  editTimetable,
   getTimetables,
   getTimetableFriend,
   postTimetable,

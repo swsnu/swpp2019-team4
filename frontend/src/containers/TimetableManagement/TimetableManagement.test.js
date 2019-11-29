@@ -80,6 +80,19 @@ function timetableManagement(state) {
   );
 }
 
+jest.mock('../../components/SearchBar/SearchBar', () => jest.fn((props) => (
+  <div className="SearchBar">
+    <input
+      type="text"
+      placeholder="과목명"
+      value={props.value}
+      onChange={props.onChange}
+      onKeyDown={props.onKeyDown}
+    />
+    <button type="button" onClick={props.onSearch}> Search </button>
+  </div>
+)));
+
 describe('TimetableManagement test', () => {
   let spyGetUser;
   let spyGetSignout;
@@ -131,9 +144,7 @@ describe('TimetableManagement test', () => {
     expect(component.find('#topbar').length).toBe(1);
     expect(component.find('#logout-button').length).toBe(1);
     expect(component.find('#semester-select').length).toBe(1);
-    expect(component.find('#courses').length).toBe(1);
     expect(component.find('#timetable-table').length).toBe(1);
-    expect(component.find('#delete-button').length).toBe(1);
     expect(component.find('#create-button').length).toBe(1);
   });
 
@@ -145,13 +156,13 @@ describe('TimetableManagement test', () => {
 
   it('should call post when pressed postCourse button', () => {
     const component = mount(timetableManagement(stubState));
-    component.find('.course-list').find('button').simulate('click');
+    component.find('#searched-tab').find('button').simulate('click');
     expect(spyPostCourse).toBeCalledTimes(1);
   });
 
   it('should call show when pressed createTimetable button', () => {
     const component = mount(timetableManagement(stubState));
-    component.find('.timetable-list').find('.timetable').simulate('click');
+    component.find('#timetable-list').find('button').at(0).simulate('click');
     expect(spyGetTimetable).toBeCalledTimes(1);
     expect(spyPostMainTimetable).toBeCalledTimes(1);
   });
@@ -164,13 +175,13 @@ describe('TimetableManagement test', () => {
 
   it('should call search when pressed search button', () => {
     const component = mount(timetableManagement(stubState));
-    component.find('.search').simulate('click');
+    component.find('.SearchBar button').simulate('click');
     expect(spyGetCourses).toBeCalledTimes(1);
   });
 
   it('should change value when typing in search', () => {
     const component = mount(timetableManagement(stubState));
-    component.find('#courses').simulate('change', 'asdf');
+    component.find('.SearchBar input').simulate('change', 'asdf');
   });
   it('should redirect to login when is_authenticated is false', () => {
     const component = mount(timetableManagement(stubStateFalse));
@@ -179,15 +190,13 @@ describe('TimetableManagement test', () => {
 
   it('should call deleteCourse when pressed course button in course-list', () => {
     const component = mount(timetableManagement(stubState));
-    component.find('.timetable-list').find('.timetable').simulate('click');
-    component.find('.timetable-button').simulate('click');
-    component.find('.course-list').find('button').simulate('click');
+    component.find('#timetable-tab').find('button').at(0).simulate('click');
     expect(spyDeleteCourse).toBeCalledTimes(1);
   });
 
   it('should call deleteTimetable when pressed [X] button', () => {
     const component = mount(timetableManagement(stubState));
-    component.find('.timetable-list').find('.delete-button').simulate('click');
+    component.find('#timetable-list').find('.delete-button').simulate('click');
     expect(spyDeleteTimetable).toBeCalledTimes(1);
   });
 

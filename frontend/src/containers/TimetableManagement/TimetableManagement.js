@@ -4,19 +4,21 @@ import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import * as actionCreators from '../../store/actions/index';
 import TimetableView from '../../components/TimetableView/TimetableView';
-import SideView from '../../components/SideView/SideView';
+import SearchBar from '../../components/SearchBar/SearchBar';
 import TopBar from '../../components/TopBar/TopBar';
+import CourseElement from './CourseElement/CourseElement';
 import CustomCourse from '../CustomCourse/CustomCourse';
-import './TimetableManagement.css';
+// import './TimetableManagement.css';
 
 class TimetableManagement extends Component {
   constructor(props) {
     super(props);
     this.is_mount = false;
     this.state = {
+      semester: '2019-2',
+      title: '',
       showCourses: true,
       searchStrings: '',
-      timetableId: -1,
     };
   }
 
@@ -25,10 +27,16 @@ class TimetableManagement extends Component {
     this.props.onGetUser()
       .then(() => {
         if (this.is_mount) {
-          this.setState((prevState) => ({ ...prevState, timetableId: this.props.storedUser.timetable_main }));
-          this.props.onGetTimetable(this.props.storedUser.timetable_main);
+          this.props.onGetTimetable(this.props.storedUser.timetable_main)
+            .then(() => {
+              if (this.is_mount) {
+                this.setState({ title: this.props.timetable.title });
+              }
+            })
+            .catch(() => {});
         }
-      });
+      })
+      .catch(() => {});
     this.props.onGetTimetables();
   }
 
@@ -36,38 +44,26 @@ class TimetableManagement extends Component {
     this.is_mount = false;
   }
 
-  statePopup(value) {
-    this.setState((prevState) => ({ ...prevState, showPopup: value }));
-  }
-
   handleLogout() {
     this.props.onLogout();
   }
 
-  post(courseId) {
-    this.props.onPostCourse(this.state.timetableId, courseId);
+  postCourse(courseId) {
+    this.props.onPostCourse(this.props.timetable.id, courseId);
   }
 
   deleteCourse(courseId) {
-    this.props.onDeleteCourse(this.state.timetableId, courseId);
+    this.props.onDeleteCourse(this.props.timetable.id, courseId);
   }
 
   deleteTimetable(timetableId) {
     this.props.onDeleteTimetable(timetableId);
   }
 
-  postCustom(courseData, courseTime) {
-    const courseTimes = courseTime.split('/');
-    const splitedCourseTime = [];
-    for (let i = 0; i < courseTimes.length; i += 1) {
-      splitedCourseTime.push(courseTimes[i].split('-'));
-    }
-    this.props.onPostCustomCourse(this.state.timetableId, courseData, splitedCourseTime);
-    this.statePopup(false);
-  }
-
-  show(timetableId) {
-    this.setState({ timetableId });
+  show(timetableId, timetableTitle) {
+    this.setState({
+      title: timetableTitle,
+    });
     this.props.onGetTimetable(timetableId);
     this.props.onPostMainTimetable(timetableId);
     this.showCoursesInTimetable();
@@ -90,6 +86,11 @@ class TimetableManagement extends Component {
     this.showCoursesInSearch();
   }
 
+  editTimetableTitle(timetableTitle) {
+    this.setState({ title: timetableTitle });
+    this.props.onEditTimetable(this.props.timetable.id, timetableTitle);
+  }
+
   enterKey() {
     if (window.event.keyCode === 13) {
       this.search();
@@ -102,98 +103,200 @@ class TimetableManagement extends Component {
         <Redirect to="/login" />
       );
     }
-    const timetableView = this.props.timetables.filter((timetable) => timetable.id !== this.state.timetableId)
+    const timetableList = this.props.timetables.filter((timetable) => timetable.id !== this.props.timetable.id)
       .map((item) => (
-        <li key={item.id}>
-          <button type="button" className="timetable" onClick={() => this.show(item.id)}>
+        <li key={item.id} className="dropdown-item p-0 d-flex">
+          <button
+            type="button"
+            className="btn select-timetable-button flex-grow-1 text-left"
+            onClick={() => this.show(item.id, item.title)}
+          >
             {item.title}
           </button>
-          <button type="button" className="delete-button" onClick={() => this.deleteTimetable(item.id)}>
-          X
+          <button
+            type="button"
+            className="btn btn-simple delete-button"
+            onClick={() => this.deleteTimetable(item.id)}
+          >
+            <div className="oi oi-x small pb-2" />
           </button>
         </li>
       ));
-    const timetableList = (
-      <ul className="timetable-list">
-        <div className="button-container">
-          <li key={this.state.timetableId}>
-            <button type="button" className="timetable-main">
-              {this.props.timetable.title}
-            </button>
-          </li>
-          {timetableView}
-        </div>
-      </ul>
-    );
 
-    const courseList = (
-      <SideView
-        list={this.state.showCourses ? this.props.courses : this.props.timetable.course}
-        className="course-list"
-        onClick={this.state.showCourses ? (id) => this.post(id) : (id) => this.deleteCourse(id)}
+    const searchedCourseList = this.props.courses.map((course) => (
+      <CourseElement
+        key={course.id}
+        course={course}
+        addon={[(
+          <button
+            key="1"
+            type="button"
+            className="btn btn-simple btn-sm"
+            onClick={() => this.postCourse(course.id)}
+          >
+            <div className="oi oi-plus small" />
+          </button>)]}
       />
-    );
+    ));
+
+    const timetableCourseList = this.props.timetable.course.map((course) => (
+      <CourseElement
+        key={course.id}
+        course={course}
+        addon={[(
+          <button
+            key="1"
+            type="button"
+            className="btn btn-simple btn-sm"
+            onClick={() => this.deleteCourse(course.id)}
+          >
+            <div className="oi oi-minus small" />
+          </button>)]}
+      />
+    ));
+
     return (
       <div className="Manage">
         <TopBar id="topbar" logout={() => this.handleLogout()} />
-        <div className="searchBar">
-          <select id="semester-select">
-            <option value="2019-1">2019-1</option>
-            <option value="2019-s">2019-s</option>
-            <option value="2019-2">2019-2</option>
-            <option value="2019-w">2019-w</option>
-          </select>
-          <label className="input-courses" htmlFor="courses">
-            과목명
-            <input
-              id="courses"
-              type="text"
+        <div className="row mx-5">
+          <div className="col-6">
+            <div className="dropdown">
+              <button
+                className="btn dropdown-toggle"
+                type="button"
+                id="semester-select"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                {this.state.semester}
+              </button>
+              <div className="dropdown-menu" aria-labelledby="dropdown-semester">
+                <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-1' })}>
+                  2019-1
+                </button>
+                <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-S' })}>
+                  2019-S
+                </button>
+                <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-2' })}>
+                  2019-2
+                </button>
+                <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-W' })}>
+                  2019-W
+                </button>
+              </div>
+            </div>
+            <SearchBar
               value={this.state.searchStrings}
               onChange={(event) => this.setState({ searchStrings: event.target.value })}
               onKeyDown={() => this.enterKey()}
+              onSearch={() => this.search()}
             />
-            <button type="button" className="search" onClick={() => this.search()}>검색</button>
-          </label>
-        </div>
-        <div className="searched-courses">
-          <div className="label" id="label">
-            <button className="result-button" type="button" onClick={() => this.showCoursesInSearch()}>과목검색</button>
-            <button
-              className="timetable-button"
-              type="button"
-              onClick={() => this.showCoursesInTimetable()}
-            >
-            내 과목
-            </button>
+
+            <ul className="nav nav-tabs nav-justified my-2" id="recommend-course-tab" role="tablist">
+              <li className="nav-item">
+                <a
+                  className={`nav-link w-100 result-button ${this.state.showCourses ? 'active' : ''}`}
+                  onClick={() => this.showCoursesInSearch()}
+                  data-toggle="tab"
+                  href="#searched-tab"
+                  role="tab"
+                  aria-controls="searched"
+                  aria-selected="true"
+                >
+과목검색
+                </a>
+              </li>
+              <li className="nav-item">
+                <a
+                  className={`nav-link w-100 timetable-button ${!this.state.showCourses ? 'active' : ''}`}
+                  onClick={() => this.showCoursesInTimetable()}
+                  data-toggle="tab"
+                  href="#timetable-tab"
+                  role="tab"
+                  aria-controls="timetable"
+                  aria-selected="false"
+                >
+내 과목
+                </a>
+              </li>
+            </ul>
+
+            <div className="tab-content overflow-y-auto mb-4" style={{ height: '420px' }}>
+              <div
+                className={`tab-pane ${this.state.showCourses ? 'active' : ''}`}
+                id="searched-tab"
+                role="tabpanel"
+                aria-labelledby="searched-tab"
+              >
+                {searchedCourseList}
+              </div>
+              <div
+                className={`tab-pane ${!this.state.showCourses ? 'active' : ''}`}
+                id="timetable-tab"
+                role="tabpanel"
+                aria-labelledby="timetable-tab"
+              >
+                {timetableCourseList}
+                <button
+                  type="button"
+                  className="btn btn-simple"
+                  data-toggle="modal"
+                  data-target="#custom-course"
+                  id="custom-course-button"
+                >
+                  <div className="oi oi-plus small px-2" />
+                  커스텀 과목
+                </button>
+              </div>
+            </div>
           </div>
-          {courseList}
-        </div>
-        <div className="timetable">
-          <TimetableView
-            id="timetable-table"
-            height={24}
-            width={60}
-            courses={this.props.timetable.course}
-            text
-            link
-          />
-        </div>
-        {timetableList}
-        <div className="manage-timetable-buttons">
-          <button type="button" id="delete-button" onClick={() => this.deleteTimetable()}>DELETE</button>
-          <button type="button" id="create-button" onClick={() => this.createEmptyTimetable()}>CREATE</button>
-          <button type="button" id="custom-course-button" onClick={() => this.statePopup(true)}>ADD CUSTOM</button>
-        </div>
-        {
-          this.state.showPopup
-            ? (
-              <CustomCourse
-                closePopup={() => this.statePopup(false)}
-                postCustomCourse={(courseData, courseTime) => this.postCustom(courseData, courseTime)}
+          <div className="col-6">
+            <div className="dropdown d-flex justify-content-center">
+              <input
+                type="text"
+                className="form-simple text-center"
+                id="timetable-title-input"
+                value={this.state.title}
+                onChange={(event) => this.setState({ title: event.target.value })}
+                onBlur={() => this.props.onEditTimetable(this.props.timetable.id, this.state.title)}
               />
-            )
-            : null
-        }
+              <button
+                className="btn dropdown-toggle"
+                type="button"
+                id="dropdown-timetable"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                aria-labelledby="Timetable Dropdown"
+              />
+              <div
+                className="dropdown-menu dropdown-menu-right"
+                id="timetable-list"
+                aria-labelledby="dropdown-timetable"
+              >
+                {timetableList}
+                <button
+                  type="button"
+                  className="dropdown-item text-center btn-simple"
+                  id="create-button"
+                  onClick={() => this.createEmptyTimetable()}
+                >
+                  <div className="oi oi-plus small" />
+                </button>
+              </div>
+            </div>
+            <TimetableView
+              id="timetable-table"
+              height={20}
+              courses={this.props.timetable.course}
+            />
+            <CustomCourse
+              id="custom-course"
+              timetableId={this.props.timetable.id}
+            />
+          </div>
+        </div>
       </div>
     );
   }
@@ -205,12 +308,12 @@ TimetableManagement.propTypes = {
   onGetTimetables: PropTypes.func.isRequired,
   onGetCourses: PropTypes.func.isRequired,
   onGetTimetable: PropTypes.func.isRequired,
+  onEditTimetable: PropTypes.func.isRequired,
   onPostTimetable: PropTypes.func.isRequired,
   onPostCourse: PropTypes.func.isRequired,
   onPostMainTimetable: PropTypes.func.isRequired,
   onDeleteCourse: PropTypes.func.isRequired,
   onDeleteTimetable: PropTypes.func.isRequired,
-  onPostCustomCourse: PropTypes.func.isRequired,
   timetables: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
@@ -224,6 +327,7 @@ TimetableManagement.propTypes = {
     }),
   ).isRequired,
   timetable: PropTypes.shape({
+    id: PropTypes.number,
     title: PropTypes.string,
     course: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number.isRequired,
@@ -232,8 +336,8 @@ TimetableManagement.propTypes = {
     })),
   }).isRequired,
   storedUser: PropTypes.shape({
-    is_authenticated: PropTypes.bool.isRequired,
-    timetable_main: PropTypes.number.isRequired,
+    is_authenticated: PropTypes.bool,
+    timetable_main: PropTypes.number,
   }).isRequired,
 };
 
@@ -253,11 +357,9 @@ const mapDispatchToProps = (dispatch) => ({
   onPostCourse: (title, courseId) => dispatch(actionCreators.postCourse(title, courseId)),
   onGetTimetables: () => dispatch(actionCreators.getTimetables()),
   onPostMainTimetable: (id) => dispatch(actionCreators.postMainTimetable(id)),
-  onPostCustomCourse: (timetableId, courseInfo, courseTime) => dispatch(
-    actionCreators.postCustomCourse(timetableId, courseInfo, courseTime),
-  ),
   onDeleteCourse: (timetableId, courseId) => dispatch(actionCreators.deleteCourse(timetableId, courseId)),
   onDeleteTimetable: (timetableId) => dispatch(actionCreators.deleteTimetable(timetableId)),
+  onEditTimetable: (timetableId, title) => dispatch(actionCreators.editTimetable(timetableId, title)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableManagement);

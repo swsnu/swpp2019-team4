@@ -100,6 +100,20 @@ class Course(models.Model):
     language = models.CharField(max_length=16, default='default')
     status = models.CharField(max_length=8, default='default')
 
+    def data(self):
+        course_time_data = [course_time.data() for course_time
+                            in CourseTime.objects.filter(course=self)]
+        return {
+            'id': self.id,
+            'title': self.title,
+            'lecture_number': self.lecture_number,
+            'course_number': self.course_number,
+            'credit': self.credit,
+            'professor': self.professor,
+            'location': self.location,
+            'time': course_time_data,
+        }
+
     def __str__(self):
         return self.title
 
@@ -132,11 +146,25 @@ class CustomCourseTime(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
 
+    def data(self):
+        return {'week_day': self.weekday,
+                'start_time': self.start_time.hour*60
+                              +self.start_time.minute,
+                'end_time': self.end_time.hour*60
+                            +self.end_time.minute}
+
 class CourseTime(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     weekday = models.IntegerField(default=0)
     start_time = models.TimeField()
     end_time = models.TimeField()
+
+    def data(self):
+        return {'week_day': self.weekday,
+                'start_time': self.start_time.hour*60
+                              +self.start_time.minute,
+                'end_time': self.end_time.hour*60
+                            +self.end_time.minute}
 
 class Building(models.Model):
     name = models.CharField(max_length=8, default='default')
@@ -162,31 +190,31 @@ class CustomCourse(models.Model):
                              end_time=course_time.end_time).save()
 
     def data(self):
-        course_time_data = [{
-            'week_day': course_time.weekday,
-            'start_time': course_time.start_time.hour*60
-                          +course_time.start_time.minute,
-            'end_time': course_time.end_time.hour*60
-                        +course_time.end_time.minute
-        } for course_time in CustomCourseTime.objects.filter(course=self, timetable=self.timetable)]
-
         if self.course is None:
+            course_time = [
+                course_time.data() for course_time
+                in CustomCourseTime.objects.filter(course=self, timetable=self.timetable)
+            ]
             return {
                 'id': self.id,
                 'title': self.title,
                 'color': self.color,
-                'lecture_number': '000',
-                'course_number': '000',
-                'time': course_time_data,
+                'time': course_time
             }
+
         course = Course.objects.get(pk=self.course.id)
+        course_time = [course_time.data() for course_time
+                       in CourseTime.objects.filter(course=course)]
         return {
             'id': self.id,
-            'title': course.title,
             'color': self.color,
+            'title': course.title,
             'lecture_number': course.lecture_number,
             'course_number': course.course_number,
-            'time': course_time_data,
+            'credit': course.credit,
+            'professor': course.professor,
+            'location': course.location,
+            'time': course_time,
         }
 
     def __str__(self):
