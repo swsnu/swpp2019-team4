@@ -54,6 +54,10 @@ class RecommendTestCase(TestCase):
                              content_type='application/json')
         response = self.post('/api/recommend/coursepref/')
         self.assertEqual(response.status_code, 405)
+        CoursePref(user=User.objects.get(id=4),
+                   course=Course.objects.get(id=2), score=0).save()
+        CoursePref(user=User.objects.get(id=3),
+                   course=Course.objects.get(id=2), score=0).save()
         CoursePref(user=User.objects.get(id=2),
                    course=Course.objects.get(id=1), score=10).save()
         CoursePref(user=User.objects.get(id=2),
