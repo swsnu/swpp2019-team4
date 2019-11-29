@@ -7,3 +7,16 @@
 .CustomCourse td:nth-child(2) {
     text-align: left;
 }
+
+.CustomCourse #dropdown-color {
+    display: block;
+    height: calc(1.5rem + 0.75rem + 2px);
+    width: calc(1.5rem + 0.75rem + 2px);
+    padding: 0.375rem 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+}
+
+.CustomCourse .dropdown-menu {
+    border-color: transparent;
+}

@@ -70,7 +70,28 @@ class TimetableManagement extends Component {
   }
 
   createEmptyTimetable() {
-    this.props.onPostTimetable('new timetable', '2019-2');
+    const titleBase = '새 시간표';
+    let titleAdd = '';
+    for (let idx = 1; idx < 100; idx += 1, titleAdd = ` (${idx})`) {
+      const title = titleBase + titleAdd;
+      let isRepetition = false;
+      this.props.timetables.forEach((timetable) => {
+        if (timetable.title === title) {
+          isRepetition = true;
+        }
+      });
+      if (!isRepetition) break;
+    }
+
+    const title = titleBase + titleAdd;
+
+    this.props.onPostTimetable(title, '2019-2')
+      .then(() => {
+        if (this.is_mount) {
+          this.show(this.props.timetables[this.props.timetables.length - 1].id, title);
+        }
+      })
+      .catch(() => {});
   }
 
   showCoursesInSearch() {
@@ -255,7 +276,7 @@ class TimetableManagement extends Component {
             <div className="dropdown d-flex justify-content-center">
               <input
                 type="text"
-                className="form-simple text-center"
+                className="form-simple text-center w-50"
                 id="timetable-title-input"
                 value={this.state.title}
                 onChange={(event) => this.setState({ title: event.target.value })}

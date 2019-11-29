@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { TwitterPicker } from 'react-color';
 import * as actionCreators from '../../store/actions/index';
 import './CustomCourse.css';
 
@@ -10,12 +11,12 @@ class CustomCourse extends Component {
     this.state = {
       title: '',
       time: '',
-      color: '',
+      color: '#f47373',
     };
   }
 
   resetState() {
-    this.setState({ title: '', time: '', color: '' });
+    this.setState({ title: '', time: '' });
   }
 
   postCustom(title, color, time) {
@@ -70,11 +71,21 @@ class CustomCourse extends Component {
                   <tr>
                     <td>색상</td>
                     <td>
-                      <input
-                        className="color form-control"
-                        value={this.state.color}
-                        onChange={(event) => { this.setState({ color: event.target.value }); }}
-                      />
+                      <div className="dropdown">
+                        <button
+                          type="button"
+                          id="dropdown-color"
+                          data-toggle="dropdown"
+                          aria-labelledby="Dropdown Color"
+                          style={{ backgroundColor: this.state.color }}
+                        />
+                        <div className="dropdown-menu">
+                          <TwitterPicker
+                            color={this.state.color}
+                            onChangeComplete={(color) => { this.setState({ color: color.hex }); }}
+                          />
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 </tbody>

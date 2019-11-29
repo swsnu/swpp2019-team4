@@ -117,7 +117,7 @@ describe('TimetableManagement test', () => {
     spyGetTimetable = jest.spyOn(actionCreators, 'getTimetable')
       .mockImplementation(() => () => {});
     spyPostTimetable = jest.spyOn(actionCreators, 'postTimetable')
-      .mockImplementation(() => () => {});
+      .mockImplementation(() => () => Promise.resolve(null));
     spyPostCourse = jest.spyOn(actionCreators, 'postCourse')
       .mockImplementation(() => () => {});
     spyPostMainTimetable = jest.spyOn(actionCreators, 'postMainTimetable')
