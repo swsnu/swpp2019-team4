@@ -191,20 +191,20 @@ def api_course_pref_id(request, course_id):
 @auth_func
 def api_time_pref(request):
     if request.method == 'GET':
-        time_data = TimePref.objects.filter(user=request.user).values()
+        time_data = [model_to_dict(each_data) for each_data in TimePref.objects.filter(user=request.user)]
         return JsonResponse(time_data, safe=False)
     if request.method == 'PUT':
         try:
             body = request.body.decode()
             score = json.loads(body)['score']
             start_time = json.loads(body)['start_time']
-            weekday = json.loads(body)['week_day']
+            weekday = json.loads(body)['weekday']
             if score < 0 or score > 10:
                 return HttpResponseBadRequest()
         except (KeyError, JSONDecodeError):
             return HttpResponseBadRequest()
         try:
-            time_data = CoursePref.objects.get(user=request.user, weekday=weekday, start_time=start_time)
+            time_data = TimePref.objects.get(user=request.user, weekday=weekday, start_time=start_time)
         except TimePref.DoesNotExist:
             new_score = TimePref(user=request.user, score=score, weekday=weekday, start_time=start_time)
             new_score.save()
@@ -218,7 +218,7 @@ def api_time_pref(request):
 def api_time_pref_id(request, timepref_id):
     if request.method == 'GET':
         try:
-            time_data = CoursePref.objects.get(id=timepref_id, user=request.user)
+            time_data = TimePref.objects.get(id=timepref_id, user=request.user)
         except TimePref.DoesNotExist:
             return JsonResponse({}, status=404, safe=False)
         return JsonResponse(model_to_dict(time_data), safe=False)

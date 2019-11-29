@@ -139,3 +139,104 @@ class RecommendTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         response = self.get('/api/recommend/coursepref/1/')
         self.assertEqual(response.status_code, 404)
+
+
+    def test_get_timepref(self):
+        response = self.get('/api/recommend/timepref/')
+        self.assertEqual(response.status_code, 401)
+        response = self.post('/api/signin/',
+                             json.dumps({'email': 'koo@snu.ac.kr', 'password': 'koo'}),
+                             content_type='application/json')
+        response = self.post('/api/recommend/timepref/')
+        self.assertEqual(response.status_code, 405)
+        TimePref(user=User.objects.get(id=1),
+                   weekday=0,
+                   start_time="12:00",
+                   score=0).save()
+        TimePref(user=User.objects.get(id=1),
+                   weekday=0,
+                   start_time="12:30",
+                   score=1).save()
+        TimePref(user=User.objects.get(id=2),
+                   weekday=0,
+                   start_time="12:00",
+                   score=2).save()
+        response = self.get('/api/recommend/timepref/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(2, len(json.loads(response.content.decode())))
+        self.assertEqual(0, json.loads(response.content.decode())[0]['score'])
+    
+    def test_put_timepref(self):
+        response = self.put('/api/recommend/timepref/')
+        self.assertEqual(response.status_code, 401)
+        response = self.post('/api/signin/',
+                             json.dumps({'email': 'koo@snu.ac.kr', 'password': 'koo'}),
+                             content_type='application/json')
+        response = self.put('/api/recommend/timepref/',
+                             json.dumps({'score':-1,'weekday':0,'start_time':"12:00"}),
+                             content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        response = self.put('/api/recommend/timepref/',
+                             json.dumps({'weekday':0,'start_time':"12:00"}),
+                             content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        response = self.put('/api/recommend/timepref/',
+                             json.dumps({'score':0,'weekday':0,'start_time':"12:00"}),
+                             content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+        response = self.get('/api/recommend/timepref/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(1, len(json.loads(response.content.decode())))
+        self.assertEqual(0, json.loads(response.content.decode())[0]['score'])
+        response = self.put('/api/recommend/timepref/',
+                             json.dumps({'score':1,'weekday':0,'start_time':"12:00"}),
+                             content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        response = self.get('/api/recommend/timepref/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(1, len(json.loads(response.content.decode())))
+        self.assertEqual(1, json.loads(response.content.decode())[0]['score'])
+
+    def test_get_timepref_id(self):
+        response = self.get('/api/recommend/timepref/1/')
+        self.assertEqual(response.status_code, 401)
+        response = self.post('/api/signin/',
+                             json.dumps({'email': 'koo@snu.ac.kr', 'password': 'koo'}),
+                             content_type='application/json')
+        response = self.post('/api/recommend/timepref/1/')
+        self.assertEqual(response.status_code, 405)
+        TimePref(user=User.objects.get(id=1),
+                   weekday=1,
+                   start_time="13:00",
+                   score=3).save()
+        TimePref(user=User.objects.get(id=2),
+                   weekday=0,
+                   start_time="12:00",
+                   score=0).save()
+        response = self.get('/api/recommend/timepref/2/')
+        self.assertEqual(response.status_code, 404)
+        response = self.get('/api/recommend/timepref/1/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(3, json.loads(response.content.decode())['score'])
+
+    def test_delete_timepref(self):
+        response = self.delete('/api/recommend/timepref/1/')
+        self.assertEqual(response.status_code, 401)
+        response = self.post('/api/signin/',
+                             json.dumps({'email': 'koo@snu.ac.kr', 'password': 'koo'}),
+                             content_type='application/json')
+        response = self.delete('/api/recommend/timepref/1/', json.dumps({}),
+                             content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+        TimePref(user=User.objects.get(id=1),
+                   weekday=5,
+                   start_time="12:00",
+                   score=2).save()
+        response = self.delete('/api/recommend/timepref/99/',
+                             content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+        response = self.delete('/api/recommend/timepref/1/',
+                             content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        response = self.get('/api/recommend/timepref/1/')
+        self.assertEqual(response.status_code, 404)
