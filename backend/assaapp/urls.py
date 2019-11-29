@@ -1,4 +1,4 @@
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 from assaapp import views
 
 urlpatterns = [
@@ -21,5 +21,6 @@ urlpatterns = [
          views.api_timetable_id_custom_course, name='timetable_id_custom_course'),
     path('timetable/<int:timetable_id>/customCourse/<int:custom_course_id>',
          views.api_timetable_id_custom_course_id, name='timetable_id_custom_course_id'),
-    path('course/', views.api_course, name='course')
+    path('course/', views.api_course, name='course'),
+    path('recommend/', include('recommend.urls'))
 ]
