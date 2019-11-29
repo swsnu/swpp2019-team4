@@ -17,6 +17,10 @@ urlpatterns = [
     path('timetable/<int:timetable_id>/', views.api_timetable_id, name='timetable_id'),
     path('timetable/<int:timetable_id>/course/',
          views.api_timetable_id_course, name='timetable_id_course'),
+    path('timetable/<int:timetable_id>/customCourse/',
+         views.api_timetable_id_custom_course, name='timetable_id_custom_course'),
+    path('timetable/<int:timetable_id>/customCourse/<int:custom_course_id>',
+         views.api_timetable_id_custom_course_id, name='timetable_id_custom_course_id'),
     path('course/', views.api_course, name='course'),
     path('recommend/', include('recommend.urls'))
 ]
