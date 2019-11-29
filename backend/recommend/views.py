@@ -86,12 +86,12 @@ def collaborative_filtering(user):
         score_square_sum = user_score_square_sum[pid]
         score_sum = user_score_sum[pid]
         score_cnt = user_score_count[pid]
-        average = user_average[pid]
         if score_cnt == 0.0:
             user_average[pid] = total_average
             user_std[pid] = total_std
         else:
             user_average[pid] = score_sum/score_cnt
+            average = user_average[pid]
             if score_cnt > 1.0:
                 val = score_square_sum/(score_cnt-1.0)-(average**2)*score_cnt/(score_cnt-1.0)
                 user_std[pid] = math.sqrt(val)
