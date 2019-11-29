@@ -73,10 +73,10 @@ class TimetableManagement extends Component {
     const titleBase = '새 시간표';
     let titleAdd = '';
     for (let idx = 1; idx < 100; idx += 1, titleAdd = ` (${idx})`) {
-      const title = titleBase + titleAdd;
+      const titleAll = titleBase + titleAdd;
       let isRepetition = false;
       this.props.timetables.forEach((timetable) => {
-        if (timetable.title === title) {
+        if (timetable.title === titleAll) {
           isRepetition = true;
         }
       });

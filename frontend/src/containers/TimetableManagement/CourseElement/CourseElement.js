@@ -12,7 +12,7 @@ const CourseElement = (props) => {
   const { course } = props;
   let timeString = '';
   for (let i = 0; i < course.time.length; i += 1) {
-    timeString += segmentToString(course.time[i].week_day, course.time[i].start_time, course.time[i].end_time);
+    timeString += segmentToString(course.time[i].week_day, course.time[i].start_time);
     if (i !== course.time.length - 1) {
       timeString += ' ';
     }
