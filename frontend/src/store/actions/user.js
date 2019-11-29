@@ -30,6 +30,12 @@ export const getTimetable = (timetableId) => (dispatch) => axios.get(`/api/timet
   .then((res) => dispatch({ type: actionTypes.GET_TIMETABLE, timetable: res.data }))
   .catch(() => {});
 
+export const editTimetable = (timetableId, title) => (dispatch) => axios.put(`/api/timetable/${timetableId}/`, {
+  title,
+})
+  .then((res) => dispatch({ type: actionTypes.EDIT_TIMETABLE, timetable: res.data }))
+  .catch(() => {});
+
 export const getTimetableFriend = (timetableId) => (dispatch) => axios.get(`/api/timetable/${timetableId}/`)
   .then((res) => dispatch({ type: actionTypes.GET_TIMETABLE_FRIEND, timetable: res.data }))
   .catch(() => {});
@@ -54,13 +60,8 @@ export const deleteTimetable = (timetableId) => (dispatch) => axios.delete(`/api
   .then(() => dispatch({ type: actionTypes.DELETE_TIMETABLE, deletedTimetable: timetableId }))
   .catch(() => {});
 
-export const postCustomCourse = (timetableId, courseInfo, courseTime) => (dispatch) => axios.post(
-  `/api/timetable/${timetableId}/customCourse/`,
-  {
-    title: courseInfo.title,
-    color: courseInfo.color,
-    courseTime,
-  },
+export const postCustomCourse = (timetableId, course) => (dispatch) => axios.post(
+  `/api/timetable/${timetableId}/customCourse/`, course,
 )
   .then((res) => dispatch({ type: actionTypes.POST_CUSTOM_COURSE, timetable: res.data }))
   .catch(() => {});

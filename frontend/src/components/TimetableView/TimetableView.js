@@ -48,11 +48,12 @@ class TimetableView extends Component {
       for (let i = 0; i < this.props.courses.length; i += 1) {
         for (let j = 0; j < this.props.courses[i].time.length; j += 1) {
           const segment = this.props.courses[i].time[j];
-          coursesList[segment.week_day][segment.start_time / 30 - 16].push(
+          const timeIndex = Math.floor(segment.start_time / 30 - 16);
+          coursesList[segment.week_day][timeIndex].push(
             {
               index: i,
               title: this.props.text ? this.props.courses[i].title : '',
-              length: (parseInt((segment.end_time - segment.start_time) / 30, 10) + 1) * heightunit,
+              length: (parseInt((segment.end_time - segment.start_time - 1) / 30, 10) + 1) * heightunit,
               color: this.props.courses[i].color,
               // color: colors[i % colors.length],
             },
@@ -90,7 +91,7 @@ class TimetableView extends Component {
                     return (
                       <div
                         className="square small rounded-sm"
-                        key={1}
+                        key={course.index * 1000 + j}
                         style={{
                           height: `${course.length}px`,
                           backgroundColor: course.color,
@@ -139,6 +140,12 @@ class TimetableView extends Component {
   }
 }
 
+TimetableView.defaultProps = {
+  courses: [],
+  text: true,
+  link: true,
+};
+
 TimetableView.propTypes = {
   courses: PropTypes.arrayOf(PropTypes.shape({
     title: PropTypes.string.isRequired,
@@ -150,9 +157,9 @@ TimetableView.propTypes = {
       end_time: PropTypes.number.isRequired,
       week_day: PropTypes.number.isRequired,
     })),
-  })).isRequired,
+  })),
   height: PropTypes.number.isRequired,
-  text: PropTypes.bool.isRequired,
-  link: PropTypes.bool.isRequired,
+  text: PropTypes.bool,
+  link: PropTypes.bool,
 };
 export default TimetableView;

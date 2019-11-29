@@ -522,13 +522,17 @@ class AssaTestCase(TestCase):
         response = self.post('/api/timetable/200/customCourse/',
                              json.dumps({'title':'swpp',
                                          'color':'#FFFFFF',
-                                         'courseTime':[[0, '18:00', '21:00']]}),
+                                         'time':[{'week_day': 0,
+                                                  'start_time': '18:00',
+                                                  'end_time': '21:00'}]}),
                              content_type='application/json')
         self.assertEqual(response.status_code, 404)
         response = self.post('/api/timetable/1/customCourse/',
                              json.dumps({'title':'swpp',
                                          'color':'#FFFFFF',
-                                         'courseTime':[[0, '18:00', '21:00']]}),
+                                         'time':[{'week_day': 0,
+                                                  'start_time': '18:00',
+                                                  'end_time': '21:00'}]}),
                              content_type='application/json')
         response = self.get('/api/timetable/')
         self.assertEqual(1, len(json.loads(response.content.decode())[0]['course']))
@@ -551,7 +555,9 @@ class AssaTestCase(TestCase):
         response = self.post('/api/timetable/1/customCourse/',
                              json.dumps({'title':'swpp',
                                          'color':'#FFFFFF',
-                                         'courseTime':[[0, '18:00', '21:00']]}),
+                                         'time':[{'week_day': 0,
+                                                  'start_time': '18:00',
+                                                  'end_time': '21:00'}]}),
                              content_type='application/json')
         response = self.delete('/api/timetable/1/customCourse/2')
         self.assertEqual(response.status_code, 404)

@@ -4,8 +4,8 @@ const initialState = {
   user: {
     is_authenticated: null,
   },
-  timetable: {},
-  timetable_friend: {},
+  timetable: { course: [] },
+  timetable_friend: { course: [] },
   timetables: [],
   courses: [],
   friend: [],
@@ -45,6 +45,13 @@ const reducer = (state = initialState, action) => {
         ...state,
         timetable: action.timetable,
         courses: state.courses.filter((course) => course.id !== action.courseId),
+      };
+    case actionTypes.EDIT_TIMETABLE:
+      return {
+        ...state,
+        timetables: state.timetables.map((timetable) => (timetable.id
+          === action.timetable.id ? action.timetable : timetable)),
+        timetable: action.timetable,
       };
     case actionTypes.DELETE_TIMETABLE:
       return { ...state, timetables: state.timetables.filter((timetable) => timetable.id !== action.deletedTimetable) };

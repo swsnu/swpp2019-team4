@@ -27,5 +27,6 @@ module.exports = {
     "react/destructuring-assignment": ["off"],
     "prefer-promise-reject-errors": ["off"],
     "jsx-a11y/label-has-associated-control": ["off"],
+    "react/no-array-index-key": ["off"],
   }
 };

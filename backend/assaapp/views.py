@@ -1,13 +1,13 @@
 import json
 from json import JSONDecodeError
 import random
+from django.db import transaction
 from django.db.utils import IntegrityError
 from django.http import HttpResponse, HttpResponseNotAllowed, \
     JsonResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseNotFound
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.mail import EmailMessage
-from django.forms.models import model_to_dict
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from assaapp.models import User, Timetable, Course, CustomCourse, CustomCourseTime
@@ -232,14 +232,12 @@ def api_timetable_id(request, timetable_id):
         try:
             body = request.body.decode()
             timetable_title = json.loads(body)['title']
-            timetable_semester = json.loads(body)['semester']
             try:
                 timetable = Timetable.objects.get(id=timetable_id)
                 if timetable.user == request.user:
                     timetable.title = timetable_title
-                    timetable.semester = timetable_semester
                     timetable.save()
-                    return JsonResponse(model_to_dict(timetable), status=200)
+                    return JsonResponse(timetable.data(), status=200)
                 return HttpResponseForbidden()
             except Timetable.DoesNotExist:
                 return HttpResponseNotFound()
@@ -301,30 +299,33 @@ def api_timetable_id_custom_course(request, timetable_id):
             body = request.body.decode()
             title = json.loads(body)['title']
             color = json.loads(body)['color']
-            time_list = json.loads(body)['courseTime']
-            try:
+            time_list = json.loads(body)['time']
+            with transaction.atomic():
                 timetable = Timetable.objects.get(pk=timetable_id)
                 custom_course = CustomCourse(timetable=timetable, color=color, title=title)
                 custom_course.save()
-                for time in time_list:
+                custom_course_time = [
                     CustomCourseTime(timetable=timetable,
                                      course=custom_course,
-                                     weekday=time[0],
-                                     start_time=time[1],
-                                     end_time=time[2]).save()
-                return JsonResponse(timetable.data(), safe=False)
-            except Timetable.DoesNotExist:
-                return HttpResponseNotFound()
-        except (KeyError, JSONDecodeError):
+                                     start_time=time['start_time'],
+                                     end_time=time['end_time'],
+                                     weekday=time['week_day'])
+                    for time in time_list]
+                for time in custom_course_time:
+                    time.save()
+            return JsonResponse(timetable.data(), safe=False)
+        except (Timetable.DoesNotExist):
+            return HttpResponseNotFound()
+        except (KeyError, JSONDecodeError, IntegrityError):
             return HttpResponseBadRequest()
     return HttpResponseNotAllowed(['POST'])
 
 @auth_func
 def api_course(request):
     if request.method == 'GET':
-        course_list = Course.objects.values()
-        if request.GET.get('title'):
-            match_text = request.GET.get('title')
+        course_list = Course.objects.all()
+        match_text = request.GET.get('title')
+        if match_text:
             def is_matched(text):
                 matched = 0
                 for char in text:
@@ -333,7 +334,8 @@ def api_course(request):
                     if matched == len(match_text):
                         return True
                 return False
-            course_list = list(filter(lambda x: is_matched(x['title']), course_list))
+            course_list = [course.data() for course
+                           in filter(lambda x: is_matched(x.title), course_list)]
             return JsonResponse(course_list, safe=False)
         return HttpResponseBadRequest()
     return HttpResponseNotAllowed(['GET'])

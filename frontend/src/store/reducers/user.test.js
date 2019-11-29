@@ -62,7 +62,7 @@ describe('Reducer', () => {
         username: '',
       },
     };
-    const newState = reducer(undefined, {});
+    const newState = reducer(initState, {});
     expect(newState).toEqual(initState);
   });
 
