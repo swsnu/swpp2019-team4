@@ -102,7 +102,12 @@ class CustomCourse extends Component {
           value={time.end_time}
           onChange={(moment) => this.handleTime(index, 'end_time', moment)}
         />
-        <button className="col-1 px-1 btn btn-simple" type="button" onClick={() => this.deleteTime(index)}>
+        <button
+          className="col-1 px-1 btn btn-simple"
+          type="button"
+          id="delete-time-button"
+          onClick={() => this.deleteTime(index)}
+        >
           <div className="oi oi-minus small px-2" />
         </button>
       </div>
@@ -134,7 +139,12 @@ class CustomCourse extends Component {
                     <td>시간</td>
                     <td>
                       {segments}
-                      <button className="w-100 btn btn-simple my-2" type="button" onClick={() => this.appendTime()}>
+                      <button
+                        className="w-100 btn btn-simple my-2"
+                        id="append-time-button"
+                        type="button"
+                        onClick={() => this.appendTime()}
+                      >
                         <div className="oi oi-plus small px-2" />
                       추가
                       </button>

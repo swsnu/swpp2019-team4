@@ -47,10 +47,12 @@ jest.mock('../../components/TopBar/TopBar', () => jest.fn((props) => (
 
 describe('<Account />', () => {
   let spyGetSignout;
+  let spyPutUser;
 
   beforeEach(() => {
     spyGetSignout = jest.spyOn(actionCreators, 'getSignout')
       .mockImplementation(() => () => {});
+    spyPutUser = jest.spyOn(actionCreators, 'putUser');
   });
 
   afterEach(() => jest.clearAllMocks());
@@ -71,5 +73,46 @@ describe('<Account />', () => {
     const component = mount(window(stubState));
     component.find('#logout-button').simulate('click');
     expect(spyGetSignout).toBeCalledTimes(1);
+  });
+
+  it('should not call putUser with unvalid input', () => {
+    const component = mount(window(stubState));
+    component.find('#confirm-signup-button').simulate('click');
+    expect(spyPutUser).toBeCalledTimes(0);
+  });
+
+  it('should call putUser with valid input', () => {
+    const component = mount(window(stubState));
+    component.find('#username-input').simulate('change', { target: { value: '김영찬' } });
+    component.find('#department-input').simulate('change', { target: { value: '컴퓨터공학부' } });
+    component.find('#grade-input').simulate('change', { target: { value: '1' } });
+    component.find('#password-prev-input').simulate('change', { target: { value: '12345678' } });
+    component.find('#password-input').simulate('change', { target: { value: '123456789' } });
+    component.find('#password-confirm-input').simulate('change', { target: { value: '123456789' } });
+    component.find('#confirm-signup-button').simulate('click');
+    expect(component.find('Account').instance().state).toStrictEqual({
+      show_modal: false,
+      password_prev: '12345678',
+      password: '123456789',
+      password_confirm: '123456789',
+      username: '김영찬',
+      grade: '1',
+      department: '컴퓨터공학부',
+      password_prev_valid: true,
+      password_valid: true,
+      password_confirm_valid: true,
+      username_valid: true,
+      grade_valid: true,
+      department_valid: true,
+      password_prev_notice: '',
+      password_notice: '',
+      password_confirm_notice: '',
+      username_notice: '',
+      grade_notice: '',
+      department_notice: '',
+      is_waiting: true,
+      is_finished: false,
+    });
+    expect(spyPutUser).toBeCalledTimes(1);
   });
 });
