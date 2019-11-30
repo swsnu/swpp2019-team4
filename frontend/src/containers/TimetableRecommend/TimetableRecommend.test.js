@@ -10,11 +10,11 @@ import TimetableRecommend from './TimetableRecommend';
 import * as actionCreators from '../../store/actions/user';
 
 const stubState = {
-  user: { is_authenticated: true, timetable_main: 0 }
+  user: { is_authenticated: true, timetable_main: 0 },
 };
 
 const stubStateFalse = {
-  user: { is_authenticated: false, timetable_main: 0 }
+  user: { is_authenticated: false, timetable_main: 0 },
 };
 
 function window(state) {
@@ -48,15 +48,15 @@ jest.mock('./RecommendConstraint/RecommendConstraint', () => jest.fn((props) => 
 )));
 
 jest.mock('./RecommendTime/RecommendTime', () => jest.fn(() => (
-  <div className="Recommend_1"/>
+  <div className="Recommend_1" />
 )));
 
 jest.mock('./RecommendCourse/RecommendCourse', () => jest.fn(() => (
-  <div className="Recommend_2"/>
+  <div className="Recommend_2" />
 )));
 
 jest.mock('./RecommendResult/RecommendResult', () => jest.fn(() => (
-  <div className="Recommend_3"/>
+  <div className="Recommend_3" />
 )));
 
 describe('<TimetableRecommend />', () => {
@@ -78,21 +78,21 @@ describe('<TimetableRecommend />', () => {
     expect(component.find('#valid-button').length).toBe(1);
     component.find('#valid-button').simulate('click');
     expect(component.find('.Recommend_0').length).toBe(1);
-    component.find('#recommend-next-button').at(0).simulate('click')
+    component.find('#recommend-next-button').at(0).simulate('click');
     expect(component.find('.Recommend_1').length).toBe(1);
     expect(component.find('#recommend-back-button').length).toBe(1);
     expect(component.find('#recommend-next-button').length).toBe(1);
-    component.find('#recommend-next-button').at(0).simulate('click')
+    component.find('#recommend-next-button').at(0).simulate('click');
     expect(component.find('.Recommend_2').length).toBe(1);
-    component.find('#recommend-next-button').at(0).simulate('click')
+    component.find('#recommend-next-button').at(0).simulate('click');
     expect(component.find('.Recommend_3').length).toBe(1);
     expect(component.find('#recommend-back-button').length).toBe(1);
     expect(component.find('#recommend-next-button').length).toBe(0);
-    component.find('#recommend-back-button').at(0).simulate('click')
+    component.find('#recommend-back-button').at(0).simulate('click');
     expect(component.find('.Recommend_2').length).toBe(1);
-    component.find('#recommend-back-button').at(0).simulate('click')
+    component.find('#recommend-back-button').at(0).simulate('click');
     expect(component.find('.Recommend_1').length).toBe(1);
-    component.find('#recommend-back-button').at(0).simulate('click')
+    component.find('#recommend-back-button').at(0).simulate('click');
     expect(component.find('.Recommend_0').length).toBe(1);
     expect(component.find('.small').length).toBe(4);
     expect(component.find('.bar').length).toBe(3);
