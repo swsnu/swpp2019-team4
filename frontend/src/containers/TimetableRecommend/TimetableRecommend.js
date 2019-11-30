@@ -118,6 +118,7 @@ class TimetableRecommend extends Component {
                   <button
                     type="button"
                     className="btn btn-outline-dark"
+                    id="recommend-back-button"
                     style={{ width: '100px' }}
                     onClick={() => this.movePage(-1)}
                   >
@@ -130,6 +131,7 @@ class TimetableRecommend extends Component {
                   <button
                     type="button"
                     className="btn btn-dark"
+                    id="recommend-next-button"
                     disabled={!this.state.valid}
                     style={{ width: '100px' }}
                     onClick={() => this.movePage(1)}
