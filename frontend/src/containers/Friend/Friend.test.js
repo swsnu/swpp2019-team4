@@ -18,7 +18,7 @@ const stubState = {
   },
   friend: [
     {
-      id: 0,
+      id: 1,
       name: '정재윤',
       email: 'cubec@gmail.com',
       timetable_main: {
@@ -36,7 +36,7 @@ const stubState = {
       },
     },
     {
-      id: 1,
+      id: 2,
       name: '구준서',
       email: 'ookoo@gmail.com',
       timetable_main: {
@@ -56,13 +56,13 @@ const stubState = {
   ],
   friend_send: [
     {
-      id: 2,
+      id: 3,
       name: '김영찬',
       email: 'paden@gmail.com',
     }],
   friend_receive: [
     {
-      id: 3,
+      id: 4,
       name: '김현수',
       email: 'khsoo@gmail.com',
     }],
@@ -80,13 +80,13 @@ const stubStateFalse = {
   },
 };
 
-function window(state) {
+function window(state, location = { hash: '' }) {
   const mockStore = getMockStore(state);
   return (
     <Provider store={mockStore}>
       <ConnectedRouter history={createBrowserHistory()}>
         <Switch>
-          <Route path="/" exact component={Friend} />
+          <Route path="/" exact render={() => <Friend location={location} />} />
           <Route path="/login" exact render={() => <div className="Login" />} />
         </Switch>
       </ConnectedRouter>
@@ -109,9 +109,21 @@ jest.mock('../../components/TimetableView/TimetableView', () => jest.fn((props) 
 )));
 
 describe('<Friend />', () => {
+  let spyPostUserSearch; let spyReceiveFriend; let spyDeleteFriend; let spyCancelFriend; let
+    spyRejectFriend;
   let spyGetSignout;
 
   beforeEach(() => {
+    spyPostUserSearch = jest.spyOn(actionCreators, 'postUserSearch')
+      .mockImplementation(() => () => Promise.resolve(null));
+    spyReceiveFriend = jest.spyOn(actionCreators, 'receiveFriend')
+      .mockImplementation(() => () => {});
+    spyDeleteFriend = jest.spyOn(actionCreators, 'deleteFriend')
+      .mockImplementation(() => () => Promise.resolve(null));
+    spyCancelFriend = jest.spyOn(actionCreators, 'cancelFriend')
+      .mockImplementation(() => () => {});
+    spyRejectFriend = jest.spyOn(actionCreators, 'rejectFriend')
+      .mockImplementation(() => () => {});
     spyGetSignout = jest.spyOn(actionCreators, 'getSignout')
       .mockImplementation(() => () => {});
   });
@@ -124,7 +136,6 @@ describe('<Friend />', () => {
     const timetable = component.find('.TimetableView');
     expect(topbar.length).toBe(1);
     expect(timetable.length).toBe(1);
-    expect(component.find('#fake-course').length).toBe(1);
   });
 
   it('should call signout when pressed logout button', () => {
@@ -137,4 +148,134 @@ describe('<Friend />', () => {
     const component = mount(window(stubStateFalse));
     expect(component.find('.Login').length).toBe(1);
   });
+
+  it('User searching function should be called when click search button', () => {
+    const component = mount(window(stubState));
+    const emailSearch = component.find('#email-search');
+    emailSearch.simulate('click');
+    expect(spyPostUserSearch).toHaveBeenCalledTimes(1);
+  });
+
+  it('User searching function should be called when pressed the enter key', () => {
+    const component = mount(window(stubState));
+    const emailSearch = component.find('#email-input');
+    emailSearch.simulate('keyDown', { keyCode: 13 });
+    expect(spyPostUserSearch).toHaveBeenCalledTimes(1);
+  });
+
+  it('Friend canceling function should be called when click cancel button', () => {
+    const component = mount(window(stubState));
+    const friendCancel = component.find('#friend-cancel');
+    friendCancel.at(0).simulate('click');
+    expect(spyCancelFriend).toHaveBeenCalledTimes(1);
+  });
+
+  it('Friend receving function should be called when click receive button', () => {
+    const component = mount(window(stubState));
+    const friendReceive = component.find('#friend-receive');
+    friendReceive.simulate('click');
+    expect(spyReceiveFriend).toHaveBeenCalledTimes(1);
+  });
+
+  it('Friend rejecting function should be called when click reject button', () => {
+    const component = mount(window(stubState));
+    const friendReject = component.find('#friend-reject');
+    friendReject.simulate('click');
+    expect(spyRejectFriend).toHaveBeenCalledTimes(1);
+  });
+
+  it('Friend Deleting function should be called when click delete button', () => {
+    const component = mount(window(stubState));
+    const friendDelete = component.find('#friend-delete').at(0);
+    friendDelete.simulate('click');
+    expect(spyDeleteFriend).toHaveBeenCalledTimes(1);
+  });
+
+  it('Writing on email input should be change email value', () => {
+    const email = 'assa.staff@gmail.com';
+    const component = mount(window(stubState));
+    const emailInput = component.find('#email-input');
+    emailInput.simulate('change', { target: { value: email } });
+    const instance = component.find(Friend.WrappedComponent).instance();
+    expect(instance.state.email).toEqual(email);
+  });
+
+  it('Should message when successful PENDING', async () => {
+    const search = { exist: true, status: 'PENDING', username: 'cubec' };
+    const component = mount(window({ ...stubState, search }));
+    const emailSearch = component.find('#email-search');
+    await emailSearch.simulate('click');
+    const instance = component.find(Friend.WrappedComponent).instance();
+    expect(instance.state.message).not.toBe('');
+  });
+
+  it('Should message when successful FRIEND', async () => {
+    const search = { exist: true, status: 'FRIEND', username: 'cubec' };
+    const component = mount(window({ ...stubState, search }));
+    const emailSearch = component.find('#email-search');
+    await emailSearch.simulate('click');
+    const instance = component.find(Friend.WrappedComponent).instance();
+    expect(instance.state.message).not.toBe('');
+  });
+
+  it('Should not message when successful without status', async () => {
+    const search = { exist: true, status: '', username: 'cubec' };
+    const component = mount(window({ ...stubState, search }));
+    const emailSearch = component.find('#email-search');
+    await emailSearch.simulate('click');
+    const instance = component.find(Friend.WrappedComponent).instance();
+    expect(instance.state.message).toBe('');
+  });
+
+
+  it('Should message when unsuccessful FRIEND', async () => {
+    const search = { exist: false, status: 'FRIEND', username: 'cubec' };
+    const component = mount(window({ ...stubState, search }));
+    const emailSearch = component.find('#email-search');
+    await emailSearch.simulate('click');
+    const instance = component.find(Friend.WrappedComponent).instance();
+    expect(instance.state.message).not.toBe('');
+  });
+
+  it('Should message when unsuccessful NULL', async () => {
+    const search = { exist: false, status: 'NULL', username: 'cubec' };
+    const component = mount(window({ ...stubState, search }));
+    const emailSearch = component.find('#email-search');
+    await emailSearch.simulate('click');
+    const instance = component.find(Friend.WrappedComponent).instance();
+    expect(instance.state.message).not.toBe('');
+  });
+
+  it('Should message when unsuccessful SENT', async () => {
+    const search = { exist: false, status: 'SENT', username: 'cubec' };
+    const component = mount(window({ ...stubState, search }));
+    const emailSearch = component.find('#email-search');
+    await emailSearch.simulate('click');
+    const instance = component.find(Friend.WrappedComponent).instance();
+    expect(instance.state.message).not.toBe('');
+  });
+
+  it('Should show timetable of friend id when linked to #(number)', async () => {
+    const component = mount(window(stubState, { hash: '#1' }));
+    expect(component.find('#fake-course').length).toBe(1);
+  });
+
+  it('Should show timetable of friend id when clicked show button', async () => {
+    const component = mount(window(stubState));
+    const friendView = component.find('#friend-view').at(0);
+    friendView.simulate('click');
+    expect(component.find('#fake-course').length).toBe(1);
+    friendView.simulate('click');
+    expect(component.find('#fake-course').length).toBe(0);
+  });
+
+  /*
+  it('Should remove timetable of friend id when delete friend', async () => {
+    const component = mount(window(stubState, {hash: '#1'}));
+    expect(component.find('#fake-course').length).toBe(1);
+    const friendDelete = component.find('#friend-delete').at(0);
+    await friendDelete.simulate('click');
+    expect(component.find('#fake-course').length).toBe(0);
+  });
+  */
 });

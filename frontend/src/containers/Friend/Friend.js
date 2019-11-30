@@ -54,8 +54,8 @@ class Friend extends Component {
     });
   }
 
-  enterKey() {
-    if (window.event.keyCode === 13) {
+  enterKey(event) {
+    if (event.keyCode === 13) {
       this.handleSearch();
     }
   }
@@ -130,7 +130,7 @@ class Friend extends Component {
         <div className="px-2">
           <button
             className="btn btn-outline-danger btn-sm"
-            id="friend-cancel"
+            id="friend-delete"
             type="button"
             onClick={() => this.handleDeleteFriend(friend)}
           >
@@ -240,7 +240,7 @@ class Friend extends Component {
                   value={this.state.email}
                   placeholder="Email"
                   onChange={(event) => this.setState({ email: event.target.value, message: '' })}
-                  onKeyDown={() => this.enterKey()}
+                  onKeyDown={(event) => this.enterKey(event)}
                 />
               </div>
               <div className="p-2">
