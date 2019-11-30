@@ -164,7 +164,7 @@ class Building(models.Model):
 class CourseTime(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     building = models.ForeignKey(Building, on_delete=models.CASCADE)
-    lectureroom = models.CharField(max_length=8, default='defualt')
+    lectureroom = models.CharField(max_length=8, default='default')
     weekday = models.IntegerField(default=0)
     start_time = models.TimeField()
     end_time = models.TimeField()
