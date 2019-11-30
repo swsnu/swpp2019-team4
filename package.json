@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "react-datetime": "^2.16.3"
+  }
+}

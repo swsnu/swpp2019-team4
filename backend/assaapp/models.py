@@ -153,8 +153,18 @@ class CustomCourseTime(models.Model):
                 'end_time': self.end_time.hour*60
                             +self.end_time.minute}
 
+class Building(models.Model):
+    name = models.CharField(max_length=8, default='default')
+    latitude = models.DecimalField(max_digits=16, decimal_places=8)
+    longitude = models.DecimalField(max_digits=16, decimal_places=8)
+
+    def __str__(self):
+        return self.name
+
 class CourseTime(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+    lectureroom = models.CharField(max_length=8, default='defualt')
     weekday = models.IntegerField(default=0)
     start_time = models.TimeField()
     end_time = models.TimeField()
@@ -164,15 +174,10 @@ class CourseTime(models.Model):
                 'start_time': self.start_time.hour*60
                               +self.start_time.minute,
                 'end_time': self.end_time.hour*60
-                            +self.end_time.minute}
-
-class Building(models.Model):
-    name = models.CharField(max_length=8, default='default')
-    latitude = models.DecimalField(max_digits=16, decimal_places=8)
-    longitude = models.DecimalField(max_digits=16, decimal_places=8)
-
-    def __str__(self):
-        return self.name
+                            +self.end_time.minute,
+                'position': self.building.name
+                            +'-'
+                            +self.lectureroom}
 
 class CustomCourse(models.Model):
     timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
