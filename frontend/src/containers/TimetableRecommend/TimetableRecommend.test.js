@@ -7,178 +7,105 @@ import { createBrowserHistory } from 'history';
 import { getMockStore } from '../../test-utils/mocks';
 import TimetableRecommend from './TimetableRecommend';
 
+import * as actionCreators from '../../store/actions/user';
+
 const stubState = {
-  user: { is_authenticated: true },
+  user: { is_authenticated: true, timetable_main: 0 },
 };
 
-function timetableRecommend(state) {
+const stubStateFalse = {
+  user: { is_authenticated: false, timetable_main: 0 },
+};
+
+function window(state) {
   const mockStore = getMockStore(state);
-  const recommendlist = [
-    [
-      {
-        week_day: 0,
-        start_time: 660,
-        end_time: 750,
-        name: '자료구조',
-        color: '#2BC366',
-        course_number: 'M1522.000900',
-        lecture_number: '001',
-      },
-      {
-        week_day: 0,
-        start_time: 1020,
-        end_time: 1110,
-        name: '소프트웨어 개발의 원리와 실습',
-        color: '#FF2312',
-        course_number: 'M1522.002400',
-        lecture_number: '001',
-      },
-      {
-        week_day: 2,
-        start_time: 660,
-        end_time: 750,
-        name: '자료구조',
-        color: '#2BC366',
-        course_number: 'M1522.000900',
-        lecture_number: '001',
-      },
-      {
-        week_day: 2,
-        start_time: 1020,
-        end_time: 1110,
-        name: '소프트웨어 개발의 원리와 실습',
-        color: '#FF2312',
-        course_number: 'M1522.002400',
-        lecture_number: '001',
-      },
-      {
-        week_day: 4,
-        start_time: 840,
-        end_time: 960,
-        name: '자료구조',
-        color: '#2BC366',
-        course_number: 'M1522.000900',
-        lecture_number: '001',
-      },
-      {
-        week_day: 0,
-        start_time: 840,
-        end_time: 930,
-        name: '전기전자회로',
-        color: '#7FFF00',
-        course_number: '4190.206A',
-        lecture_number: '001',
-      },
-      {
-        week_day: 2,
-        start_time: 840,
-        end_time: 930,
-        name: '전기전자회로',
-        color: '#7FFF00',
-        course_number: '4190.206A',
-        lecture_number: '001',
-      },
-      {
-        week_day: 0,
-        start_time: 930,
-        end_time: 1020,
-        name: '컴퓨터구조',
-        color: '#FFD700',
-        course_number: '4190.308',
-        lecture_number: '002',
-      },
-      {
-        week_day: 2,
-        start_time: 930,
-        end_time: 1020,
-        name: '컴퓨터구조',
-        color: '#FFD700',
-        course_number: '4190.308',
-        lecture_number: '002',
-      },
-      {
-        week_day: 1,
-        start_time: 930,
-        end_time: 990,
-        name: '프로그래밍의원리',
-        color: '#866BC3',
-        course_number: '4190.210',
-        lecture_number: '001',
-      },
-      {
-        week_day: 3,
-        start_time: 930,
-        end_time: 990,
-        name: '프로그래밍의원리',
-        color: '#866BC3',
-        course_number: '4190.210',
-        lecture_number: '001',
-      },
-      {
-        week_day: 1,
-        start_time: 1110,
-        end_time: 1230,
-        name: '프로그래밍의원리',
-        color: '#866BC3',
-        course_number: '4190.210',
-        lecture_number: '001',
-      },
-      {
-        week_day: 2,
-        start_time: 780,
-        end_time: 840,
-        name: '컴퓨터공학세미나',
-        color: '#FF00FF',
-        course_number: '4190.209',
-        lecture_number: '001',
-      },
-      {
-        week_day: 3,
-        start_time: 1110,
-        end_time: 1230,
-        name: '소프트웨어 개발의 원리와 실습',
-        color: '#00FFFF',
-        course_number: 'M1522.002400',
-        lecture_number: '001',
-      },
-    ],
-  ];
   return (
     <Provider store={mockStore}>
       <ConnectedRouter history={createBrowserHistory()}>
         <Switch>
-          <Route
-            path="/"
-            exact
-            render={() => (
-              <TimetableRecommend
-                timetable={recommendlist}
-                closePopup={() => 1}
-              />
-            )}
-          />
+          <Route path="/" exact component={TimetableRecommend} />
           <Route path="/login" exact render={() => <div className="Login" />} />
-          <Route path="/main" exact render={() => <div className="Main" />} />
         </Switch>
       </ConnectedRouter>
     </Provider>
   );
 }
 
-describe('verification test', () => {
+jest.mock('../../components/TopBar/TopBar', () => jest.fn((props) => (
+  <div className="TopBar">
+    <button type="button" className="text-black-50" id="logout-button" onClick={() => props.logout()}>
+      x
+    </button>
+  </div>
+)));
+
+jest.mock('./RecommendConstraint/RecommendConstraint', () => jest.fn((props) => (
+  <div className="Recommend_0">
+    <button type="button" className="text-black-50" id="valid-button" onClick={() => props.handleValid(true)}>
+      x
+    </button>
+  </div>
+)));
+
+jest.mock('./RecommendTime/RecommendTime', () => jest.fn(() => (
+  <div className="Recommend_1" />
+)));
+
+jest.mock('./RecommendCourse/RecommendCourse', () => jest.fn(() => (
+  <div className="Recommend_2" />
+)));
+
+jest.mock('./RecommendResult/RecommendResult', () => jest.fn(() => (
+  <div className="Recommend_3" />
+)));
+
+describe('<TimetableRecommend />', () => {
+  let spyGetSignout;
+
   beforeEach(() => {
-    // TimetableView.mockClear();
+    spyGetSignout = jest.spyOn(actionCreators, 'getSignout')
+      .mockImplementation(() => () => {});
   });
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => { jest.clearAllMocks(); });
 
-  it('should render timetableRecommend', () => {
-    const component = mount(timetableRecommend(stubState));
-    expect(component.find('.recommended-timetable-space').length).toBe(1);
-    expect(component.find('#save-button').length).toBe(1);
-    expect(component.find('#close-button').length).toBe(1);
-    component.find('.recommended-timetable-space').simulate('click');
-    component.find('.recommended-timetable-space').simulate('keydown');
-    component.find('#close-button').simulate('click');
+  it('Recommendation page render test', () => {
+    const component = mount(window(stubState));
+    const topbar = component.find('.TopBar');
+    expect(topbar.length).toBe(1);
+    expect(component.find('#recommend-back-button').length).toBe(0);
+    expect(component.find('#recommend-next-button').length).toBe(1);
+    expect(component.find('#valid-button').length).toBe(1);
+    component.find('#valid-button').simulate('click');
+    expect(component.find('.Recommend_0').length).toBe(1);
+    component.find('#recommend-next-button').at(0).simulate('click');
+    expect(component.find('.Recommend_1').length).toBe(1);
+    expect(component.find('#recommend-back-button').length).toBe(1);
+    expect(component.find('#recommend-next-button').length).toBe(1);
+    component.find('#recommend-next-button').at(0).simulate('click');
+    expect(component.find('.Recommend_2').length).toBe(1);
+    component.find('#recommend-next-button').at(0).simulate('click');
+    expect(component.find('.Recommend_3').length).toBe(1);
+    expect(component.find('#recommend-back-button').length).toBe(1);
+    expect(component.find('#recommend-next-button').length).toBe(0);
+    component.find('#recommend-back-button').at(0).simulate('click');
+    expect(component.find('.Recommend_2').length).toBe(1);
+    component.find('#recommend-back-button').at(0).simulate('click');
+    expect(component.find('.Recommend_1').length).toBe(1);
+    component.find('#recommend-back-button').at(0).simulate('click');
+    expect(component.find('.Recommend_0').length).toBe(1);
+    expect(component.find('.small').length).toBe(4);
+    expect(component.find('.bar').length).toBe(3);
+  });
+
+  it('should call signout when pressed logout button', () => {
+    const component = mount(window(stubState));
+    component.find('#logout-button').simulate('click');
+    expect(spyGetSignout).toBeCalledTimes(1);
+  });
+
+  it('should redirect to login when is_authenticated is false', () => {
+    const component = mount(window(stubStateFalse));
+    expect(component.find('.Login').length).toBe(1);
   });
 });

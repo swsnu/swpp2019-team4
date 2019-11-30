@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import FrontBar from '../../components/FrontBar/FrontBar';
 import * as actionCreators from '../../store/actions/index';
 
 class Verify extends Component {
@@ -24,7 +25,7 @@ class Verify extends Component {
     this.is_mount = false;
   }
 
-  goToLogin() {
+  gotoLogin() {
     this.props.history.replace('/login');
   }
 
@@ -36,15 +37,19 @@ class Verify extends Component {
     }
     const verifyNotice = (this.state.verify_status ? '이메일 확인이 완료되었습니다.' : '부적절한 요청입니다.');
     return (
-      <div className="Verify">
-        <h3 id="notice">{verifyNotice}</h3>
-        <button
-          type="button"
-          id="to-login-button"
-          onClick={() => this.goToLogin()}
-        >
-로그인 화면으로 돌아가기
-        </button>
+      <div className="Verify background">
+        <FrontBar />
+        <div className="fixed-top h-100 d-flex flex-column justify-content-center align-items-center">
+          <h3 id="notice">{verifyNotice}</h3>
+          <button
+            className="btn btn-outline-dark my-3"
+            type="button"
+            id="to-login-button"
+            onClick={() => this.gotoLogin()}
+          >
+  로그인 화면으로 돌아가기
+          </button>
+        </div>
       </div>
     );
   }

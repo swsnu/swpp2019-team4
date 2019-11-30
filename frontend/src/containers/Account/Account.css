@@ -1,0 +1,24 @@
+.Account .feedback {
+  min-height: 1.5rem;
+}
+
+.Account label {
+  padding-top: .25rem;
+}
+
+.Account table {
+  border: 0px #fff0 !important;
+  margin: 8px;
+}
+
+.Account td {
+  height: 55px;
+  border-top: 0px #fff0 !important;
+  padding: 0rem .5rem;
+}
+
+.Account .text-right {
+  padding-top: 0.25rem;
+  vertical-align: top;
+  color: #666;
+}

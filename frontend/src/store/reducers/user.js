@@ -4,13 +4,13 @@ const initialState = {
   user: {
     is_authenticated: null,
   },
-  timetable: [],
+  timetable: { course: [] },
+  timetable_friend: { course: [] },
   timetables: [],
   courses: [],
   friend: [],
   friend_send: [],
   friend_receive: [],
-  timetable_data: [],
   search: {
     exist: false,
     status: '',
@@ -30,14 +30,31 @@ const reducer = (state = initialState, action) => {
       newUser.is_authenticated = true;
       return { ...state, user: newUser };
     }
-    case actionTypes.GET_TIMETABLES:
-      return { ...state, timetables: action.timetables };
     case actionTypes.GET_TIMETABLE:
       return { ...state, timetable: action.timetable };
+    case actionTypes.GET_TIMETABLE_FRIEND:
+      return { ...state, timetable_friend: action.timetable };
     case actionTypes.POST_TIMETABLE:
       return { ...state, timetables: state.timetables.concat(action.timetable) };
     case actionTypes.POST_COURSE:
       return { ...state, timetable: action.timetable };
+    case actionTypes.POST_CUSTOM_COURSE:
+      return { ...state, timetable: action.timetable };
+    case actionTypes.DELETE_COURSE:
+      return {
+        ...state,
+        timetable: action.timetable,
+        courses: state.courses.filter((course) => course.id !== action.courseId),
+      };
+    case actionTypes.EDIT_TIMETABLE:
+      return {
+        ...state,
+        timetables: state.timetables.map((timetable) => (timetable.id
+          === action.timetable.id ? action.timetable : timetable)),
+        timetable: action.timetable,
+      };
+    case actionTypes.DELETE_TIMETABLE:
+      return { ...state, timetables: state.timetables.filter((timetable) => timetable.id !== action.deletedTimetable) };
     case actionTypes.GET_COURSES:
       return { ...state, courses: action.courses };
     case actionTypes.GET_FRIEND:
@@ -67,7 +84,7 @@ const reducer = (state = initialState, action) => {
       return { ...state, search: stateSearch };
 
     case actionTypes.RECEIVE_FRIEND:
-      stateFriend.push(state.friend_receive.find((user) => user.id === action.user.id));
+      stateFriend.push(action.user);
       return {
         ...state,
         friend_receive: state.friend_receive.filter((user) => user.id !== action.user.id),
@@ -83,8 +100,8 @@ const reducer = (state = initialState, action) => {
     case actionTypes.CANCEL_FRIEND:
       return { ...state, friend_send: state.friend_send.filter((user) => user.id !== action.user_id) };
 
-    case actionTypes.GET_TIMETABLE_DATA:
-      return { ...state, timetable_data: action.timetable_list };
+    case actionTypes.GET_TIMETABLES:
+      return { ...state, timetables: action.timetables };
 
     case actionTypes.POST_MAIN_TIMETABLE: {
       const newuser = state.user;

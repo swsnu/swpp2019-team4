@@ -1,29 +1,15 @@
-.Login {
-  padding: 60px 0;
+.Login h1 {
+  font-family: 'Major Mono Display', monospace;
 }
 
-.Login Form {
-  margin: 0 auto;
-  max-width: 320px;
-}
-
-#email-input {
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-  border-bottom: 1;
-}
-
-#pw-input {
-  border-top-right-radius: 0;
-  border-top-left-radius: 0;
-  border-top: 1;
+.Login h1 .first-letter {
+  color: #6000BB;
 }
 
 #login-notice {
-  color: #FF0000;
+  min-height: 1.5em;
 }
 
-.Login Button {
-  margin: 10px 0;
-  width: 100%;
+#login-area {
+  max-width: 350px !important;
 }

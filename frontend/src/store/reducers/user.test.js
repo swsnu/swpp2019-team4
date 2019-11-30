@@ -49,20 +49,20 @@ describe('Reducer', () => {
       user: {
         is_authenticated: null,
       },
-      timetable: [],
+      timetable: {},
+      timetable_friend: {},
       timetables: [],
       courses: [],
       friend: [],
       friend_send: [],
       friend_receive: [],
-      timetable_data: [],
       search: {
         exist: false,
         status: '',
         username: '',
       },
     };
-    const newState = reducer(undefined, {});
+    const newState = reducer(initState, {});
     expect(newState).toEqual(initState);
   });
 
@@ -163,22 +163,46 @@ describe('Reducer', () => {
     });
     expect(newState.friend_receive.length).toBe(0);
   });
-
-  it('should get timetables', () => {
+  it('should get friend timetable', () => {
     const newState = reducer(stubState, {
-      type: actionTypes.GET_TIMETABLES,
-      timetables: [
+      type: actionTypes.GET_TIMETABLE_FRIEND,
+      timetable:
         {
           id: 1,
           title: 'my timetable',
           semester: '2019-2',
           user_id: 2,
         },
-      ],
     });
-    expect(newState.timetables.length).toBe(1);
+    expect(newState.timetable_friend).toStrictEqual(
+      {
+        id: 1,
+        title: 'my timetable',
+        semester: '2019-2',
+        user_id: 2,
+      },
+    );
   });
-
+  it('should get timetable when post custom course', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.POST_CUSTOM_COURSE,
+      timetable:
+        {
+          id: 1,
+          title: 'my timetable',
+          semester: '2019-2',
+          user_id: 2,
+        },
+    });
+    expect(newState.timetable).toStrictEqual(
+      {
+        id: 1,
+        title: 'my timetable',
+        semester: '2019-2',
+        user_id: 2,
+      },
+    );
+  });
   it('should get timetable', () => {
     const newState = reducer(stubState, {
       type: actionTypes.GET_TIMETABLE,
@@ -189,7 +213,6 @@ describe('Reducer', () => {
           semester: '2019-2',
           user_id: 2,
         },
-
     });
     expect(newState.timetable).toStrictEqual(
       {
@@ -198,6 +221,26 @@ describe('Reducer', () => {
         semester: '2019-2',
         user_id: 2,
       },
+    );
+  });
+  it('should get timetables', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.GET_TIMETABLES,
+      timetables: [
+        {
+          id: 1,
+          title: 'my timetable',
+          semester: '2019-2',
+          user_id: 2,
+        }],
+    });
+    expect(newState.timetables).toStrictEqual(
+      [{
+        id: 1,
+        title: 'my timetable',
+        semester: '2019-2',
+        user_id: 2,
+      }],
     );
   });
   it('should post timetable', () => {
@@ -213,7 +256,21 @@ describe('Reducer', () => {
     });
     expect(newState.timetables.length).toBe(1);
   });
-
+  it('should delete timetable', () => {
+    stubState.timetables = [
+      {
+        id: 1,
+        title: 'my timetable',
+        semester: '2019-2',
+        user_id: 2,
+      }];
+    expect(stubState.timetables.length).toBe(1);
+    const newState = reducer(stubState, {
+      type: actionTypes.DELETE_TIMETABLE,
+      deletedTimetable: 1,
+    });
+    expect(newState.timetables.length).toBe(0);
+  });
   it('should post course', () => {
     const newState = reducer(stubState, {
       type: actionTypes.POST_COURSE,
@@ -234,6 +291,25 @@ describe('Reducer', () => {
       },
     );
   });
+  it('should delete course', () => {
+    stubState.courses = [
+      {
+        id: 1,
+        week_day: 0,
+        start_time: 660,
+        end_time: 750,
+        name: '자료구조',
+        color: '#2BC366',
+        course_number: 'M1522.000900',
+        lecture_number: '001',
+      }];
+    expect(stubState.courses.length).toBe(1);
+    const newState = reducer(stubState, {
+      type: actionTypes.DELETE_COURSE,
+      courseId: 1,
+    });
+    expect(newState.courses.length).toBe(0);
+  });
 
   it('should get courses', () => {
     const newState = reducer(stubState, {
@@ -250,5 +326,23 @@ describe('Reducer', () => {
         }],
     });
     expect(newState.courses.length).toBe(1);
+  });
+  it('should post main timetable', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.POST_MAIN_TIMETABLE,
+      timetable_main: {
+
+        id: 1,
+        title: 'my timetable',
+        semester: '2019-2',
+        user_id: 2,
+      },
+    });
+    expect(newState.user.timetable_main).toStrictEqual({
+      id: 1,
+      title: 'my timetable',
+      semester: '2019-2',
+      user_id: 2,
+    });
   });
 });

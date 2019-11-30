@@ -1,0 +1,9 @@
+.MainPageFriendView {
+  cursor: pointer;
+  height: 60px;
+  transition: 0.3s;
+}
+
+.MainPageFriendView:hover {
+  background-color: #EEEEEE;
+}

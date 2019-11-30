@@ -1,45 +1,62 @@
-.popup {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
-    background-color: rgba(0,0,0, 0.5);
+.TimetableRecommend {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
-.popup_inner {
-    position: absolute;
-    left: 10%;
-    right: 10%;
-    top: 5%;
-    bottom: 5%;
-    margin: auto;
-    background: white;
+
+#recommend-progress .bar {
+  margin-bottom: -1px;
+  width: 3px;
+  height: 80px;
+  margin-left: auto;
+  margin-right: auto;
 }
-.recommended-result-list{
-    float: left;
-    width: 20%;
+
+#recommend-progress table {
+  width: 100%;
+  margin-left: 3rem;
 }
-.recommended-timetable-space{
-    float: top;
-    width: 100%;
-    height: 135;
+
+#recommend-progress td:nth-child(odd) {
+  width: 60px;
 }
-.timetable-result-space{
-    float: right;
-    width: 80%;
+
+#recommend-progress td:nth-child(even) {
+  text-align: left;
+  font-weight: 700;
 }
-.timetable-result{
-    float: top;
-    width: 100%;
+
+#recommend-progress .oi {
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  line-height: 35px;
+  border-radius: 50%;
+  text-align: center;
+  border: 3px solid;
 }
-.save-space{
-    float:left;
-    width: 20%;
+
+#recommend-progress .progress-past {
+  color: #00B000;
+  border-color: #00B000;
 }
-.close-space{
-    float: right;
-    width: 20%;
+
+#recommend-progress .progress-working {
+  color: #B00000;
+  border-color: #B00000;
+}
+
+#recommend-progress .progress-future {
+  color: #808080;
+  border-color: #808080;
+}
+
+#recommend-progress .progress-past .bar {
+  background-color: #00B000;
+}
+
+#recommend-progress .progress-future .bar {
+  background-color: #808080;
 }

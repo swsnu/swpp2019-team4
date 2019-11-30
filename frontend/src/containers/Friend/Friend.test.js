@@ -5,37 +5,74 @@ import { mount } from 'enzyme';
 import { ConnectedRouter } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
 import { getMockStore } from '../../test-utils/mocks';
+import Friend from './Friend';
 
 import * as actionCreators from '../../store/actions/user';
-import FriendManagement from './FriendManagement';
 
 const stubState = {
+  user: { is_authenticated: true },
+  search: {
+    exist: false,
+    status: '',
+    username: '',
+  },
   friend: [
     {
       id: 1,
-      username: 'KHS',
-      email: 'khsoo@gmail.com',
+      name: '정재윤',
+      email: 'cubec@gmail.com',
+      timetable_main: {
+        course: [{
+          title: '소개원실 (테스트용)',
+          time: [{
+            week_day: 3,
+            start_time: 1110,
+            end_time: 1170,
+          }],
+          course_number: 'M1522.002400',
+          lecture_number: '001',
+          color: '#FF0000',
+        }],
+      },
     },
-  ],
-  friend_receive: [
     {
       id: 2,
-      username: 'KYC',
-      email: 'vionic@gmail.com',
+      name: '구준서',
+      email: 'ookoo@gmail.com',
+      timetable_main: {
+        course: [{
+          title: '소개원실 (테스트용)',
+          time: [{
+            week_day: 3,
+            start_time: 1110,
+            end_time: 1170,
+          }],
+          course_number: 'M1522.002400',
+          lecture_number: '001',
+          color: '#FF0000',
+        }],
+      },
     },
   ],
   friend_send: [
     {
       id: 3,
-      username: 'KJS',
-      email: 'koo@gmail.com',
-    },
+      name: '김영찬',
+      email: 'paden@gmail.com',
+    }],
+  friend_receive: [
     {
       id: 4,
-      username: 'JJY',
-      email: 'cubec@gmail.com',
-    },
-  ],
+      name: '김현수',
+      email: 'khsoo@gmail.com',
+    }],
+};
+
+const stubStateFalse = {
+  user: { is_authenticated: false, timetable_main: 0 },
+  friend: [],
+  friend_receive: [],
+  friend_send: [],
   search: {
     exist: false,
     status: '',
@@ -43,61 +80,86 @@ const stubState = {
   },
 };
 
-function window(state) {
+function window(state, location = { hash: '' }) {
   const mockStore = getMockStore(state);
   return (
     <Provider store={mockStore}>
       <ConnectedRouter history={createBrowserHistory()}>
         <Switch>
-          <Route path="/" exact render={() => <FriendManagement onClose={() => {}} />} />
+          <Route path="/" exact render={() => <Friend location={location} />} />
+          <Route path="/login" exact render={() => <div className="Login" />} />
         </Switch>
       </ConnectedRouter>
     </Provider>
   );
 }
 
-describe('<FriendManagement />', () => {
-  let spyGetFriend; let spyPostUserSearch; let spyReceiveFriend; let spyDeleteFriend; let spyCancelFriend; let
+jest.mock('../../components/TopBar/TopBar', () => jest.fn((props) => (
+  <div className="TopBar">
+    <button type="button" className="text-black-50" id="logout-button" onClick={() => props.logout()}>
+      x
+    </button>
+  </div>
+)));
+
+jest.mock('../../components/TimetableView/TimetableView', () => jest.fn((props) => (
+  <div className="TimetableView">
+    {props.courses.map((x) => <button id="fake-course" type="button" key={1}>{x.course_id}</button>)}
+  </div>
+)));
+
+describe('<Friend />', () => {
+  let spyPostUserSearch; let spyReceiveFriend; let spyDeleteFriend; let spyCancelFriend; let
     spyRejectFriend;
+  let spyGetSignout;
 
   beforeEach(() => {
-    spyGetFriend = jest.spyOn(actionCreators, 'getFriend')
-      .mockImplementation(() => () => {});
     spyPostUserSearch = jest.spyOn(actionCreators, 'postUserSearch')
       .mockImplementation(() => () => Promise.resolve(null));
     spyReceiveFriend = jest.spyOn(actionCreators, 'receiveFriend')
       .mockImplementation(() => () => {});
     spyDeleteFriend = jest.spyOn(actionCreators, 'deleteFriend')
-      .mockImplementation(() => () => {});
+      .mockImplementation(() => () => Promise.resolve(null));
     spyCancelFriend = jest.spyOn(actionCreators, 'cancelFriend')
       .mockImplementation(() => () => {});
     spyRejectFriend = jest.spyOn(actionCreators, 'rejectFriend')
+      .mockImplementation(() => () => {});
+    spyGetSignout = jest.spyOn(actionCreators, 'getSignout')
       .mockImplementation(() => () => {});
   });
 
   afterEach(() => { jest.clearAllMocks(); });
 
-  it('Friend management page render test', () => {
+  it('Friend page render test', () => {
     const component = mount(window(stubState));
-    const emailInput = component.find('#email-input');
-    const emailSearch = component.find('#email-search');
-    const friendCancel = component.find('#friend-cancel');
-    const friendReceive = component.find('#friend-receive');
-    const friendReject = component.find('#friend-reject');
-    const friendDelete = component.find('#friend-delete');
-    expect(emailInput.length).toBe(1);
-    expect(emailSearch.length).toBe(1);
-    expect(friendCancel.length).toBe(2);
-    expect(friendReceive.length).toBe(1);
-    expect(friendReject.length).toBe(1);
-    expect(friendDelete.length).toBe(1);
-    expect(spyGetFriend).toHaveBeenCalledTimes(1);
+    const topbar = component.find('.TopBar');
+    const timetable = component.find('.TimetableView');
+    expect(topbar.length).toBe(1);
+    expect(timetable.length).toBe(1);
+  });
+
+  it('should call signout when pressed logout button', () => {
+    const component = mount(window(stubState));
+    component.find('#logout-button').simulate('click');
+    expect(spyGetSignout).toBeCalledTimes(1);
+  });
+
+  it('should redirect to login when is_authenticated is false', () => {
+    const component = mount(window(stubStateFalse));
+    expect(component.find('.Login').length).toBe(1);
   });
 
   it('User searching function should be called when click search button', () => {
     const component = mount(window(stubState));
     const emailSearch = component.find('#email-search');
     emailSearch.simulate('click');
+    expect(spyPostUserSearch).toHaveBeenCalledTimes(1);
+  });
+
+  it('User searching function should be called when pressed the enter key', () => {
+    const component = mount(window(stubState));
+    const emailSearch = component.find('#email-input');
+    emailSearch.simulate('keyDown', { keyCode: 13 });
     expect(spyPostUserSearch).toHaveBeenCalledTimes(1);
   });
 
@@ -124,7 +186,7 @@ describe('<FriendManagement />', () => {
 
   it('Friend Deleting function should be called when click delete button', () => {
     const component = mount(window(stubState));
-    const friendDelete = component.find('#friend-delete');
+    const friendDelete = component.find('#friend-delete').at(0);
     friendDelete.simulate('click');
     expect(spyDeleteFriend).toHaveBeenCalledTimes(1);
   });
@@ -134,7 +196,7 @@ describe('<FriendManagement />', () => {
     const component = mount(window(stubState));
     const emailInput = component.find('#email-input');
     emailInput.simulate('change', { target: { value: email } });
-    const instance = component.find(FriendManagement.WrappedComponent).instance();
+    const instance = component.find(Friend.WrappedComponent).instance();
     expect(instance.state.email).toEqual(email);
   });
 
@@ -143,7 +205,7 @@ describe('<FriendManagement />', () => {
     const component = mount(window({ ...stubState, search }));
     const emailSearch = component.find('#email-search');
     await emailSearch.simulate('click');
-    const instance = component.find(FriendManagement.WrappedComponent).instance();
+    const instance = component.find(Friend.WrappedComponent).instance();
     expect(instance.state.message).not.toBe('');
   });
 
@@ -152,7 +214,7 @@ describe('<FriendManagement />', () => {
     const component = mount(window({ ...stubState, search }));
     const emailSearch = component.find('#email-search');
     await emailSearch.simulate('click');
-    const instance = component.find(FriendManagement.WrappedComponent).instance();
+    const instance = component.find(Friend.WrappedComponent).instance();
     expect(instance.state.message).not.toBe('');
   });
 
@@ -161,7 +223,7 @@ describe('<FriendManagement />', () => {
     const component = mount(window({ ...stubState, search }));
     const emailSearch = component.find('#email-search');
     await emailSearch.simulate('click');
-    const instance = component.find(FriendManagement.WrappedComponent).instance();
+    const instance = component.find(Friend.WrappedComponent).instance();
     expect(instance.state.message).toBe('');
   });
 
@@ -171,7 +233,7 @@ describe('<FriendManagement />', () => {
     const component = mount(window({ ...stubState, search }));
     const emailSearch = component.find('#email-search');
     await emailSearch.simulate('click');
-    const instance = component.find(FriendManagement.WrappedComponent).instance();
+    const instance = component.find(Friend.WrappedComponent).instance();
     expect(instance.state.message).not.toBe('');
   });
 
@@ -180,7 +242,7 @@ describe('<FriendManagement />', () => {
     const component = mount(window({ ...stubState, search }));
     const emailSearch = component.find('#email-search');
     await emailSearch.simulate('click');
-    const instance = component.find(FriendManagement.WrappedComponent).instance();
+    const instance = component.find(Friend.WrappedComponent).instance();
     expect(instance.state.message).not.toBe('');
   });
 
@@ -189,7 +251,31 @@ describe('<FriendManagement />', () => {
     const component = mount(window({ ...stubState, search }));
     const emailSearch = component.find('#email-search');
     await emailSearch.simulate('click');
-    const instance = component.find(FriendManagement.WrappedComponent).instance();
+    const instance = component.find(Friend.WrappedComponent).instance();
     expect(instance.state.message).not.toBe('');
   });
+
+  it('Should show timetable of friend id when linked to #(number)', async () => {
+    const component = mount(window(stubState, { hash: '#1' }));
+    expect(component.find('#fake-course').length).toBe(1);
+  });
+
+  it('Should show timetable of friend id when clicked show button', async () => {
+    const component = mount(window(stubState));
+    const friendView = component.find('#friend-view').at(0);
+    friendView.simulate('click');
+    expect(component.find('#fake-course').length).toBe(1);
+    friendView.simulate('click');
+    expect(component.find('#fake-course').length).toBe(0);
+  });
+
+  /*
+  it('Should remove timetable of friend id when delete friend', async () => {
+    const component = mount(window(stubState, {hash: '#1'}));
+    expect(component.find('#fake-course').length).toBe(1);
+    const friendDelete = component.find('#friend-delete').at(0);
+    await friendDelete.simulate('click');
+    expect(component.find('#fake-course').length).toBe(0);
+  });
+  */
 });

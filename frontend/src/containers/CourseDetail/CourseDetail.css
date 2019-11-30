@@ -1,0 +1,8 @@
+.CourseDetail td:nth-child(1) {
+    text-align: right;
+    color: gray;
+}
+
+.CourseDetail td:nth-child(2) {
+    text-align: left;
+}

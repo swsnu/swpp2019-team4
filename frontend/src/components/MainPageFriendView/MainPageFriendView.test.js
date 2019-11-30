@@ -5,35 +5,44 @@ import MainPageFriendView from './MainPageFriendView';
 const friend = {
   id: 1,
   name: 'KOO',
-  timetable: [
-    {
+  department: '컴퓨터공학부',
+  grade: 2,
+  timetable_main: {
+    course: [{
       title: 'SWPP',
-      week_day: 2,
-      start_time: 1020,
-      end_time: 1110,
+      time: [{
+        week_day: 2,
+        start_time: 1020,
+        end_time: 1110,
+      }],
       course_number: 'M1522.002400',
       lecture_number: '001',
       color: '#FF0000',
     },
     {
       title: 'SWPP2',
-      week_day: 3,
-      start_time: 1020,
-      end_time: 1110,
+      time: [{
+        week_day: 3,
+        start_time: 1020,
+        end_time: 1110,
+      }],
       course_number: 'M1522.002400',
       lecture_number: '001',
       color: '#FF0000',
     },
     {
       title: 'SWPP3',
-      week_day: 3,
-      start_time: 1120,
-      end_time: 1210,
+      time: [{
+        week_day: 3,
+        start_time: 1120,
+        end_time: 1210,
+      }],
       course_number: 'M1522.002400',
       lecture_number: '001',
       color: '#FF0000',
     },
-  ],
+    ],
+  },
 };
 
 const mockDate = require('mockdate');
@@ -46,7 +55,7 @@ describe('<MainPageFriendView/>', () => {
     const component = mount(
       <MainPageFriendView friend={friend} onClick={() => {}} />,
     );
-    expect(component.find('button').text()).toContain('46');
+    expect(component.find('.MainPageFriendView').text()).toContain('46');
   });
 
   it('MainPageFriendView should render 공강 when there are no classes', () => {
@@ -54,7 +63,7 @@ describe('<MainPageFriendView/>', () => {
     const component = mount(
       <MainPageFriendView friend={friend} onClick={() => {}} />,
     );
-    expect(component.find('button').text()).toContain('공강');
+    expect(component.find('.MainPageFriendView').text()).toContain('공강');
   });
 
   it('MainPageFriendView should render class when he/she is in class', () => {
@@ -62,7 +71,7 @@ describe('<MainPageFriendView/>', () => {
     const component = mount(
       <MainPageFriendView friend={friend} onClick={() => {}} />,
     );
-    expect(component.find('button').text()).toContain('SWPP3');
+    expect(component.find('.MainPageFriendView').text()).toContain('SWPP3');
   });
 
   it('MainPageFriendView should not render class when he/she is not in class', () => {
@@ -70,6 +79,6 @@ describe('<MainPageFriendView/>', () => {
     const component = mount(
       <MainPageFriendView friend={friend} onClick={() => {}} />,
     );
-    expect(component.find('button').text()).not.toContain('SWPP');
+    expect(component.find('.MainPageFriendView').text()).not.toContain('SWPP');
   });
 });
