@@ -527,6 +527,7 @@ class AssaTestCase(TestCase):
         response = self.post('/api/timetable/1/customCourse/', json.dumps({}),
                              content_type='application/json')
         self.assertEqual(response.status_code, 400)
+        Building(id=0, name='SNU', latitude=0, longitude=0).save()
         response = self.post('/api/timetable/200/customCourse/',
                              json.dumps({'title':'swpp',
                                          'color':'#FFFFFF',
@@ -560,6 +561,7 @@ class AssaTestCase(TestCase):
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
+        Building(id=0, name='SNU', latitude=0, longitude=0).save()
         response = self.post('/api/timetable/1/customCourse/',
                              json.dumps({'title':'swpp',
                                          'color':'#FFFFFF',
