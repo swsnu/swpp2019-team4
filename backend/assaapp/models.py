@@ -175,9 +175,11 @@ class CourseTime(models.Model):
                               +self.start_time.minute,
                 'end_time': self.end_time.hour*60
                             +self.end_time.minute,
-                'position': self.building.name
-                            +'-'
-                            +self.lectureroom}
+                'position': {'location' : self.building.name
+                                          +'-'
+                                          +self.lectureroom,
+                             'latitude' : self.building.latitude,
+                             'longitude' : self.building.longitude,}}
 
 class CustomCourse(models.Model):
     timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
