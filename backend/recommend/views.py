@@ -192,7 +192,7 @@ def api_coursepref_id(request, course_id):
     if request.method == 'PUT':
         try:
             body = request.body.decode()
-            score = json.loads(body)['score']
+            score = (int)(json.loads(body)['score'])
             if score < 0 or score > 10:
                 return HttpResponseBadRequest()
         except (KeyError, JSONDecodeError):
@@ -203,13 +203,13 @@ def api_coursepref_id(request, course_id):
             return JsonResponse({}, status=404, safe=False)
         try:
             score_data = CoursePref.objects.get(user=request.user, course=course)
+            score_data.score = score
+            score_data.save()
+            return JsonResponse(model_to_dict(score_data), safe=False, status=200)
         except CoursePref.DoesNotExist:
             new_score = CoursePref(user=request.user, course=course, score=score)
             new_score.save()
             return JsonResponse(model_to_dict(new_score), safe=False, status=201)
-        score_data.score = score
-        score_data.save()
-        return JsonResponse(model_to_dict(score_data), safe=False, status=200)
     if request.method == 'DELETE':
         try:
             course = Course.objects.get(id=course_id)
@@ -233,7 +233,7 @@ def api_timepref(request):
         try:
             body = request.body.decode()
             user = request.user
-            score = json.loads(body)['score']
+            score = (int)(json.loads(body)['score'])
             start_time = json.loads(body)['start_time']
             weekday = json.loads(body)['weekday']
             if score < 0 or score > 10:

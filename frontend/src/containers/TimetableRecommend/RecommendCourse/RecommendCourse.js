@@ -60,6 +60,7 @@ class RecommendCourse extends Component {
                   max="10"
                   id={`course-score-form-${course.id}`}
                   value={course.score}
+                  onChange={(event)=>this.props.onChangeslider(course.id,event.target.value)}
                 />
               </div>
             </form>
@@ -160,6 +161,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getCourseScore: () => dispatch(actionCreators.getCourseScore()),
+  onChangeslider: (id,value) => dispatch(actionCreators.putCoursepref(id,value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecommendCourse);

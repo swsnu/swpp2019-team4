@@ -111,6 +111,12 @@ const reducer = (state = initialState, action) => {
     }
     case actionTypes.GET_COURSE_SCORE:
       return {...state, course_score: action.course_list};
+    case actionTypes.PUT_COURSEPREF:
+      var course_list=state.course_score;
+      for(var i=0;i<course_list.length;i++){
+        if(course_list[i].id===action.id)course_list[i].score=action.score;
+      }
+      return {...state, course_score: course_list};
     default:
       return { ...state };
   }

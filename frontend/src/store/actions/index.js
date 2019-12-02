@@ -28,4 +28,5 @@ export {
   deleteCourse,
   deleteTimetable,
   getCourseScore,
+  putCoursepref,
 } from './user';

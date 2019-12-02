@@ -105,3 +105,7 @@ export const postMainTimetable = (id) => (dispatch) => axios.post(`/api/timetabl
 export const getCourseScore = () => (dispatch) => axios.get('/api/recommend/coursepref/')
   .then((res) => dispatch({ type: actionTypes.GET_COURSE_SCORE, course_list: res.data }))
   .catch(() => {});
+
+export const putCoursepref = (id, score) => (dispatch) => axios.put(`/api/recommend/coursepref/${id}/`, { score:score })
+.then((res) => dispatch({ type: actionTypes.PUT_COURSEPREF, coursepref: res.data }))
+.catch(() => {});
