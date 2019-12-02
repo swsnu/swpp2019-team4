@@ -1,6 +1,37 @@
 from assaapp.models import User, Course
 from recommend.models import CoursePref, TimePref
 
+class TimesliceSet:
+    def __init__ (self, timeslice_list):
+        self._timeslice_list = timeslice_list
+
+    def get_list (self):
+        return self._timeslice_list
+
+    def overlap (self, otherset):
+        i = 0
+        for ts in self._timeslice_list:
+            while (i < len(otherset) and otherset[i] < ts):
+                i += 1
+            if (i == len(otherset)):
+                break
+            if (otherset[i] == ts):
+                return True
+        return False
+    
+    def plus (self, otherset):
+        new_list = []
+        i = 0
+        for ts in self._timeslice_list:
+            while (i < len(otherset) and otherset[i] < ts):
+                new_list.append(otherset[i])
+                i += 1
+            new_list.append(ts)
+        while i < len(otherset):
+            new_list.append(otherset[i])
+            i += 1
+        return TimesliceSet(new_list)
+
 class ConvertedUserData:
     TIME_PREF_LEN = 32 * 6
     MAX_TIME_PREF = 3.0
@@ -49,36 +80,6 @@ class ConvertedUserData:
             t_sum += t_score
         return c_sum * t_sum
 
-class TimesliceSet:
-    INFINITY = 10000
-
-    def __init__ (self, timeslice_list):
-        self._timeslice_list = timeslice_list
-
-    def overlap (self, otherset):
-        i = 0
-        for ts in self._timeslice_list:
-            while (i < len(otherset) and otherset[i] < ts):
-                i += 1
-            if (i == len(otherset)):
-                break
-            if (otherset[i] == ts):
-                return True
-        return False
-    
-    def plus (self, otherset):
-        new_list = []
-        i = 0
-        for ts in self._timeslice_list:
-            while (i < len(otherset) and otherset[i] < ts):
-                new_list.append(otherset[i])
-                i += 1
-            new_list.append(ts)
-        while i < len(otherset):
-            new_list.append(otherset[i])
-            i += 1
-        return TimesliceSet(new_list)
-
 class ConvertedCourseData:
     TIME_PREF_LEN = 32 * 6
 
@@ -95,6 +96,13 @@ class ConvertedCourseData:
     def __init__ (self, course):
         self._id = course['id']
         self._timeslice_set = TimesliceSet(self.get_timeslice_list())
+    
+    def get_pref (self, user) :
+        c_score = user.get_course_pref(self)
+        t_score_list = [ user.get_time_pref(tm) for tm in self._timeslice_set.get_list() ]
+        t_score = sum(t_score_list) / len(t_score_list) 
+        return (c_score, t_score)
 
 def recommend (user):
-    pass 
+    user_data = ConvertedUserData(user)
+    all_course_data = [ ConvertedCourseData(course) for course in Course.objects.all().values() ]
