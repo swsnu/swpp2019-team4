@@ -31,6 +31,12 @@ class TimesliceSet:
             new_list.append(otherset[i])
             i += 1
         return TimesliceSet(new_list)
+    
+    def equals (self, otherset):
+        return self.get_list() == otherset.get_list()
+
+    def compare (self, otherset):
+        return self.get_list() < otherset.get_list()
 
 class ConvertedUserData:
     TIME_PREF_LEN = 32 * 6
@@ -93,6 +99,9 @@ class ConvertedCourseData:
                 ret_list.append(i)
         return ret_list
 
+    def get_timeslice_set (self):
+        return self._timeslice_set
+
     def __init__ (self, course):
         self._id = course['id']
         self._timeslice_set = TimesliceSet(self.get_timeslice_list())
@@ -105,4 +114,22 @@ class ConvertedCourseData:
 
 def recommend (user):
     user_data = ConvertedUserData(user)
+    def cmp (x, y):
+        tx = x.get_timeslice_set()
+        ty = y.get_timeslice_set()
+        if not tx.equals(ty):
+            return tx.compare(ty)
+        else:
+            sx = user.course_score(x)
+            sy = user.course_score(y)
+            return sx > sy
     all_course_data = [ ConvertedCourseData(course) for course in Course.objects.all().values() ]
+    all_course_data.sort(cmp = cmp)
+    unique_course_data = []
+    for course_data in all_course_data:
+        if unique_course_data:
+            back = unique_course_data[-1]
+            if back.get_timeslice_set().equals(course_data.get_timeslice_set()):
+                continue
+        unique_course_data.append(course_data)
+    print (len(unique_course_data))

@@ -27,4 +27,5 @@ export {
   postCustomCourse,
   deleteCourse,
   deleteTimetable,
+  getRecommend,
 } from './user';

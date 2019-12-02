@@ -108,6 +108,9 @@ const reducer = (state = initialState, action) => {
       newuser.timetable_main = action.timetable_main;
       return { ...state, user: newuser };
     }
+    case actionTypes.GET_RECOMMEND: {
+      return { ...state, timetables: state.timetables.concat(action.timetables) }
+    }
     default:
       return { ...state };
   }

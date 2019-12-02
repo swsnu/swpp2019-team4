@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-// import * as actionCreators from '../../store/actions/index';
+import * as actionCreators from '../../../store/actions/index';
 import TimetableView from '../../../components/TimetableView/TimetableView';
 import './RecommendResult.css';
 
@@ -82,4 +82,8 @@ RecommendResult.propTypes = {
   })).isRequired,
 };
 
-export default connect(null, null)(RecommendResult);
+const mapDispatchToProps = (dispatch) => ({
+  onGetRecommend: () => dispatch(actionCreators.getRecommend()),
+});
+
+export default connect(null, mapDispatchToProps)(RecommendResult);
