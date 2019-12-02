@@ -13,6 +13,10 @@ class RecommendResult extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.onGetRecommend();
+  }
+
   changeview(newcourses) {
     this.setState((prevState) => ({ ...prevState, courses: newcourses }));
   }
