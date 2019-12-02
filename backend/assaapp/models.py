@@ -181,7 +181,9 @@ class CustomCourse(models.Model):
             CustomCourseTime(timetable=self.timetable, course=self,
                              weekday=course_time.weekday,
                              start_time=course_time.start_time,
-                             end_time=course_time.end_time).save()
+                             end_time=course_time.end_time,
+                             building=course_time.building,
+                             lectureroom=course_time.lectureroom).save()
 
     def data(self):
         if self.course is None:
