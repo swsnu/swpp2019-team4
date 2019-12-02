@@ -139,33 +139,6 @@ class Timetable(models.Model):
     def data_small(self):
         return {'id': self.id, 'title': self.title, 'semester': self.semester}
 
-class CustomCourseTime(models.Model):
-    timetable = models.ForeignKey('Timetable', on_delete=models.CASCADE)
-    course = models.ForeignKey('CustomCourse', on_delete=models.CASCADE)
-    weekday = models.IntegerField(default=0)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-
-    def data(self):
-        return {'week_day': self.weekday,
-                'start_time': self.start_time.hour*60
-                              +self.start_time.minute,
-                'end_time': self.end_time.hour*60
-                            +self.end_time.minute}
-
-class CourseTime(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    weekday = models.IntegerField(default=0)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-
-    def data(self):
-        return {'week_day': self.weekday,
-                'start_time': self.start_time.hour*60
-                              +self.start_time.minute,
-                'end_time': self.end_time.hour*60
-                            +self.end_time.minute}
-
 class Building(models.Model):
     name = models.CharField(max_length=8, default='default')
     latitude = models.DecimalField(max_digits=16, decimal_places=8)
@@ -173,6 +146,27 @@ class Building(models.Model):
 
     def __str__(self):
         return self.name
+
+class CourseTime(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+    lectureroom = models.CharField(max_length=8, default='default')
+    weekday = models.IntegerField(default=0)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    def data(self):
+        position = self.building.name
+        if len(self.lectureroom) > 0:
+            position += '-' + self.lectureroom
+        return {'week_day': self.weekday,
+                'start_time': self.start_time.hour*60
+                              +self.start_time.minute,
+                'end_time': self.end_time.hour*60
+                            +self.end_time.minute,
+                'position': {'location' : position,
+                             'latitude' : self.building.latitude,
+                             'longitude' : self.building.longitude}}
 
 class CustomCourse(models.Model):
     timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
@@ -187,7 +181,9 @@ class CustomCourse(models.Model):
             CustomCourseTime(timetable=self.timetable, course=self,
                              weekday=course_time.weekday,
                              start_time=course_time.start_time,
-                             end_time=course_time.end_time).save()
+                             end_time=course_time.end_time,
+                             building=course_time.building,
+                             lectureroom=course_time.lectureroom).save()
 
     def data(self):
         if self.course is None:
@@ -219,3 +215,25 @@ class CustomCourse(models.Model):
 
     def __str__(self):
         return self.color
+
+class CustomCourseTime(models.Model):
+    timetable = models.ForeignKey('Timetable', on_delete=models.CASCADE)
+    course = models.ForeignKey('CustomCourse', on_delete=models.CASCADE)
+    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+    lectureroom = models.CharField(max_length=8, default='default')
+    weekday = models.IntegerField(default=0)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    def data(self):
+        position = self.building.name
+        if len(self.lectureroom) > 0:
+            position += '-' + self.lectureroom
+        return {'week_day': self.weekday,
+                'start_time': self.start_time.hour*60
+                              +self.start_time.minute,
+                'end_time': self.end_time.hour*60
+                            +self.end_time.minute,
+                'position': {'location' : position,
+                             'latitude' : self.building.latitude,
+                             'longitude' : self.building.longitude}}

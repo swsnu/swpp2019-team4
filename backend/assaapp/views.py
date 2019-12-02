@@ -10,7 +10,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.mail import EmailMessage
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from assaapp.models import User, Timetable, Course, CustomCourse, CustomCourseTime
+from assaapp.models import User, Timetable, Course, CustomCourse, CustomCourseTime, Building
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
 
 def auth_func(func):
@@ -309,7 +309,9 @@ def api_timetable_id_custom_course(request, timetable_id):
                                      course=custom_course,
                                      start_time=time['start_time'],
                                      end_time=time['end_time'],
-                                     weekday=time['week_day'])
+                                     weekday=time['week_day'],
+                                     building=Building.objects.get(id=0),
+                                     lectureroom='')
                     for time in time_list]
                 for time in custom_course_time:
                     time.save()
