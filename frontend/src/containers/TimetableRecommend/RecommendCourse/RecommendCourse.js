@@ -3,73 +3,19 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import SearchBar from '../../../components/SearchBar/SearchBar';
 import './RecommendCourse.css';
+import * as actionCreators from '../../../store/actions/index';
 
 class RecommendCourse extends Component {
   constructor(props) {
     super(props);
     this.state = {
       input: '',
-
-      // temporary data
-      courses: [
-        {
-          id: 3,
-          title: '죽음의 과학적 이해',
-          professor: '유성호',
-          credit: 3,
-          time: [
-            {
-              start_time: 600,
-              end_time: 770,
-              week_day: 3,
-              position: '302-408',
-            },
-            {
-              start_time: 630,
-              end_time: 770,
-              week_day: 4,
-              position: '302-408',
-            },
-          ],
-          except: false,
-          rated: false,
-          score: 10,
-        },
-        {
-          id: 4,
-          title: '죽음의 과학적 이해',
-          professor: '유성호',
-          credit: 3,
-          time: [
-            {
-              start_time: 600,
-              end_time: 770,
-              week_day: 3,
-              position: '302-408',
-            },
-          ],
-          except: false,
-          rated: false,
-          score: 0,
-        },
-      ],
-    };
-
-    this.timeToString = (time) => {
-      const hour = parseInt(time / 60, 10);
-      const hourString = (hour < 10 ? '0' : '') + hour;
-      const minuteString = (time % 60 === 0 ? '' : '.5');
-      return `${hourString}${minuteString}`;
     };
   }
 
   componentDidMount() {
     this.props.handleValid(true);
-  }
-
-  segmentToString(weekDay, startTime) {
-    const weekDayName = ['월', '화', '수', '목', '금', '토'];
-    return `${weekDayName[weekDay]}${this.timeToString(startTime)}`;
+    this.props.getCourseScore();
   }
 
   courseElement(course) {
@@ -86,17 +32,6 @@ class RecommendCourse extends Component {
       '#515BEC',
       '#3F5EFB',
     ];
-    let timeString = '';
-    let courseString = '';
-    for (let i = 0; i < course.time.length; i += 1) {
-      timeString += this.segmentToString(course.time[i].week_day, course.time[i].start_time, course.time[i].end_time);
-      courseString += course.time[i].position;
-      if (i !== course.time.length - 1) {
-        timeString += ' ';
-        courseString += '/';
-      }
-    }
-
     return (
       <div key={course.id}>
         <div className="row">
@@ -105,12 +40,13 @@ class RecommendCourse extends Component {
               {course.title}
             </div>
             <div className="text-black-50 text-left small" id="recommend-course-abstract">
-              {`${course.professor} | ${course.credit}학점 | ${timeString} | ${courseString}`}
+              {`${course.professor} | ${course.credit}학점 | ${course.time} | ${course.location}`}
             </div>
           </div>
           <div className="col-5 d-flex align-items-center">
             <div
               className="m-2 font-weight-bold text-center"
+              id={`slider-value-${course.id}`}
               style={{ color: colorGradient[course.score], width: '30px' }}
             >
               {course.score}
@@ -123,6 +59,7 @@ class RecommendCourse extends Component {
                   min="0"
                   max="10"
                   id={`course-score-form-${course.id}`}
+                  value={course.score}
                 />
               </div>
             </form>
@@ -144,6 +81,16 @@ class RecommendCourse extends Component {
   }
 
   render() {
+    var ratedview=[];
+    var unratedview=[];
+    var exceptview=[];
+    if(this.props.courselist!==undefined){
+      for(let i=0;i<this.props.courselist.length;i=i+1){
+        if(this.props.courselist[i].except&&exceptview.length<50)exceptview.push(this.courseElement(this.props.courselist[i]));
+        else if(this.props.courselist[i].rated&&ratedview.length<50)ratedview.push(this.courseElement(this.props.courselist[i]));
+        else if(!(this.props.courselist[i].rated)&&unratedview.length<50) unratedview.push(this.courseElement(this.props.courselist[i]));
+      }
+    }
     return (
       <div className="RecommendCourse">
         <div className="col-8 offset-2">
@@ -188,14 +135,13 @@ class RecommendCourse extends Component {
           <SearchBar value={this.state.input} onChange={(event) => this.setState({ input: event.target.value })} />
           <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: '350px' }}>
             <div className="tab-pane show active" id="rated-tab" role="tabpanel" aria-labelledby="rated-tab">
-              {this.courseElement(this.state.courses[0])}
-              {this.courseElement(this.state.courses[1])}
+              {ratedview}
             </div>
             <div className="tab-pane" id="unrated-tab" role="tabpanel" aria-labelledby="unrated-tab">
-              평가되지 않은 과목
+              {unratedview}
             </div>
             <div className="tab-pane" id="exception-tab" role="tabpanel" aria-labelledby="exception-tab">
-              이미 수강한 과목
+              {exceptview}
             </div>
           </div>
         </div>
@@ -208,4 +154,12 @@ RecommendCourse.propTypes = {
   handleValid: PropTypes.func.isRequired,
 };
 
-export default connect(null, null)(RecommendCourse);
+const mapStateToProps = (state) => ({
+  courselist: state.user.course_score,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  getCourseScore: () => dispatch(actionCreators.getCourseScore()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RecommendCourse);

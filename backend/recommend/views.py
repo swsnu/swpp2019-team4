@@ -40,7 +40,6 @@ def collaborative_filtering(user):
     relation_sum = {}
 
     score_result_dict = {}
-    score_result = []
 
     for course in all_course:
         score_sum[course['id']] = 0.0
@@ -148,10 +147,7 @@ def collaborative_filtering(user):
         if score_result_dict[course['id']] > 10.0:
             score_result_dict[course['id']] = 10.0
 
-    for course in all_course:
-        score_result.append({'course':course['id'], 'score':score_result_dict[course['id']]})
-
-    return score_result
+    return score_result_dict
 
 def auth_func(func):
     def wrapper_function(*args, **kwargs):
@@ -161,13 +157,31 @@ def auth_func(func):
     return wrapper_function
 
 @auth_func
-def api_course_pref(request):
+def api_coursepref(request):
     if request.method == 'GET':
-        return JsonResponse(collaborative_filtering(request.user), safe=False)
+        cf_result=collaborative_filtering(request.user)
+        rated={}
+        course_list=[]
+        all_course=[course.data_small() for course in Course.objects.all()]
+        course_size=len(all_course)
+        for course in all_course:
+            rated[course['id']]=False
+        print('C')
+        for score_data in CoursePref.objects.filter(user=request.user):
+            rated[score_data.course.id]=True
+        print('D')
+        for course in all_course:
+            course_data=course
+            course_data['rated']=rated[course['id']]
+            course_data['except']=False
+            course_data['score']=cf_result[course['id']]
+            course_list.append(course_data)
+        print('E')
+        return JsonResponse(course_list, safe=False)
     return HttpResponseNotAllowed(['GET'])
 
 @auth_func
-def api_course_pref_id(request, course_id):
+def api_coursepref_id(request, course_id):
     if request.method == 'GET':
         try:
             course = Course.objects.get(id=course_id)
@@ -210,7 +224,7 @@ def api_course_pref_id(request, course_id):
     return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
 
 @auth_func
-def api_time_pref(request):
+def api_timepref(request):
     if request.method == 'GET':
         time_data = [model_to_dict(each_data)
                      for each_data in TimePref.objects.filter(user=request.user)]
@@ -238,7 +252,7 @@ def api_time_pref(request):
     return HttpResponseNotAllowed(['GET', 'PUT'])
 
 @auth_func
-def api_time_pref_id(request, timepref_id):
+def api_timepref_id(request, timepref_id):
     if request.method == 'GET':
         try:
             time_data = TimePref.objects.get(id=timepref_id, user=request.user)

@@ -93,6 +93,7 @@ class Course(models.Model):
     lecture_credit = models.IntegerField(default=-1)
     lab_credit = models.IntegerField(default=-1)
     lecture_type = models.CharField(max_length=64, default='default')
+    time = models.CharField(max_length=128, default='default')
     location = models.CharField(max_length=128, default='default')
     professor = models.CharField(max_length=64, default='default')
     quota = models.CharField(max_length=16, default='default')
@@ -112,6 +113,15 @@ class Course(models.Model):
             'professor': self.professor,
             'location': self.location,
             'time': course_time_data,
+        }
+    def data_small(self):
+        return{
+            'id': self.id,
+            'title': self.title+' ('+self.lecture_number+')',
+            'credit': self.credit,
+            'professor': self.professor,
+            'location': self.location,
+            'time': self.time,
         }
 
     def __str__(self):

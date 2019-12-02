@@ -8,6 +8,7 @@ const initialState = {
   timetable_friend: { course: [] },
   timetables: [],
   courses: [],
+  course_score: [],
   friend: [],
   friend_send: [],
   friend_receive: [],
@@ -108,6 +109,8 @@ const reducer = (state = initialState, action) => {
       newuser.timetable_main = action.timetable_main;
       return { ...state, user: newuser };
     }
+    case actionTypes.GET_COURSE_SCORE:
+      return {...state, course_score: action.course_list};
     default:
       return { ...state };
   }

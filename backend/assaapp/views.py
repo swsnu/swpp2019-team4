@@ -12,6 +12,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from assaapp.models import User, Timetable, Course, CustomCourse, CustomCourseTime, Building
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
+from recommend.views import collaborative_filtering
 
 def auth_func(func):
     def wrapper_function(*args, **kwargs):
@@ -326,6 +327,7 @@ def api_timetable_id_custom_course(request, timetable_id):
 def api_course(request):
     if request.method == 'GET':
         course_list = Course.objects.all()
+        cf_result=collaborative_filtering(request.user)
         match_text = request.GET.get('title')
         if match_text:
             def is_matched(text):
@@ -336,8 +338,9 @@ def api_course(request):
                     if matched == len(match_text):
                         return True
                 return False
-            course_list = [course.data() for course
+            course_list = [course.data_small() for course
                            in filter(lambda x: is_matched(x.title), course_list)]
+            sorted(course_list,key=lambda course:cf_result[course['id']])
             return JsonResponse(course_list, safe=False)
         return HttpResponseBadRequest()
     return HttpResponseNotAllowed(['GET'])
