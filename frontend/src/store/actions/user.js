@@ -102,6 +102,6 @@ export const postMainTimetable = (id) => (dispatch) => axios.post(`/api/timetabl
   .then((res) => dispatch({ type: actionTypes.POST_MAIN_TIMETABLE, main_timetable: res.data.id }))
   .catch(() => {});
 
-export const getRecommend = () => (dispatch) => axios.get('/api/recommend/')
+export const getRecommend = () => (dispatch) => axios.get('/api/recommend/recommend/')
   .then((res) => dispatch({ type: actionTypes.GET_RECOMMEND, timetables: res.data }))
   .catch(() => {});

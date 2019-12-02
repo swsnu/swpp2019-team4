@@ -6,6 +6,7 @@ from django.http import HttpResponse, HttpResponseNotAllowed, \
     JsonResponse, HttpResponseBadRequest, HttpResponseNotFound
 from assaapp.models import User, Course
 from recommend.models import CoursePref, TimePref
+from recommend.recommend import run_recommendation
 
 def collaborative_filtering(user):
     all_course = [course for course in Course.objects.all().values()]
@@ -253,3 +254,10 @@ def api_time_pref_id(request, timepref_id):
         time_data.delete()
         return HttpResponse(status=200)
     return HttpResponseNotAllowed(['GET', 'DELETE'])
+
+@auth_func
+def api_recommend (request) :
+    if request.method == 'GET':
+        run_recommendation(request.user)
+        return JsonResponse([], safe=False)
+    return HttpResponseNotAllowed(['GET'])
