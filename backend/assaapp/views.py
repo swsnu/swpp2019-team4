@@ -338,7 +338,7 @@ def api_course(request):
                     if matched == len(match_text):
                         return True
                 return False
-            course_list = [course.data_small() for course
+            course_list = [course.data() for course
                            in filter(lambda x: is_matched(x.title), course_list)]
             sorted(course_list,key=lambda course:cf_result[course['id']])
             return JsonResponse(course_list, safe=False)

@@ -8,7 +8,9 @@ const initialState = {
   timetable_friend: { course: [] },
   timetables: [],
   courses: [],
-  course_score: [],
+  rated_course: [],
+  unrated_course: [],
+  except_course: [],
   friend: [],
   friend_send: [],
   friend_receive: [],
@@ -109,14 +111,22 @@ const reducer = (state = initialState, action) => {
       newuser.timetable_main = action.timetable_main;
       return { ...state, user: newuser };
     }
-    case actionTypes.GET_COURSE_SCORE:
-      return {...state, course_score: action.course_list};
+    case actionTypes.GET_RATED_COURSE:{
+      const newlist=state.rated_course.concat(action.course_list);
+      return {...state, rated_course: newlist};
+    }
+    case actionTypes.GET_UNRATED_COURSE:{
+      const newlist=state.unrated_course.concat(action.course_list);
+      return {...state, unrated_course: newlist};
+    }
+    case actionTypes.GET_EXCEPT_COURSE:{
+      const newlist=state.except_course.concat(action.course_list);
+      return {...state, except_course: newlist};
+    }
+    case actionTypes.RESET_COURSE_SCORE:
+      return {...state, rated_course: [], unrated_course: [], except_course: []};
     case actionTypes.PUT_COURSEPREF:
-      var course_list=state.course_score;
-      for(var i=0;i<course_list.length;i++){
-        if(course_list[i].id===action.id)course_list[i].score=action.score;
-      }
-      return {...state, course_score: course_list};
+      return {...state};
     default:
       return { ...state };
   }

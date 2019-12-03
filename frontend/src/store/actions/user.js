@@ -102,9 +102,19 @@ export const postMainTimetable = (id) => (dispatch) => axios.post(`/api/timetabl
   .then((res) => dispatch({ type: actionTypes.POST_MAIN_TIMETABLE, main_timetable: res.data.id }))
   .catch(() => {});
 
-export const getCourseScore = () => (dispatch) => axios.get('/api/recommend/coursepref/')
-  .then((res) => dispatch({ type: actionTypes.GET_COURSE_SCORE, course_list: res.data }))
+export const getRatedCourse = (start,end) => (dispatch) => axios.get(`/api/recommend/coursepref/rated/?start=${start}&end=${end}`)
+  .then((res) => dispatch({ type: actionTypes.GET_RATED_COURSE, course_list: res.data }))
   .catch(() => {});
+
+export const getUnratedCourse = (start,end) => (dispatch) => axios.get(`/api/recommend/coursepref/unrated/?start=${start}&end=${end}`)
+  .then((res) => dispatch({ type: actionTypes.GET_UNRATED_COURSE, course_list: res.data }))
+  .catch(() => {});
+
+export const getExceptCourse = (start,end) => (dispatch) => axios.get(`/api/recommend/coursepref/except/?start=${start}&end=${end}`)
+  .then((res) => dispatch({ type: actionTypes.GET_EXCEPT_COURSE, course_list: res.data }))
+  .catch(() => {});
+
+export const resetCourseScore = () => (dispatch) => dispatch({ type: actionTypes.RESET_COURSE_SCORE});
 
 export const putCoursepref = (id, score) => (dispatch) => axios.put(`/api/recommend/coursepref/${id}/`, { score:score })
 .then((res) => dispatch({ type: actionTypes.PUT_COURSEPREF, coursepref: res.data }))

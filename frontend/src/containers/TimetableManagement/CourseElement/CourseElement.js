@@ -2,8 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const CourseElement = (props) => {
+  const segmentToString = (weekDay, startTime) => {
+    const weekDayName = ['월', '화', '수', '목', '금', '토'];
+    const hour = parseInt(startTime / 60, 10);
+    const hourString = (hour < 10 ? '0' : '') + hour;
+    const minuteString = (startTime % 60 === 0 ? '' : '.5');
+    return `${weekDayName[weekDay]}${hourString}${minuteString}`;
+  };
   const { course } = props;
-
+  let timeString = '';
+  for (let i = 0; i < course.time.length; i += 1) {
+    timeString += segmentToString(course.time[i].week_day, course.time[i].start_time);
+    if (i !== course.time.length - 1) {
+      timeString += ' ';
+    }
+  }
   return (
     <div key={course.id}>
       <div className="d-flex mx-2">
@@ -12,7 +25,7 @@ const CourseElement = (props) => {
             {course.title}
           </div>
           <div className="text-black-50 text-left small" id="recommend-course-abstract">
-            {`${course.professor} | ${course.credit}학점 | ${course.time} | ${course.location}`}
+            {`${course.professor} | ${course.credit}학점 | ${timeString} | ${course.location}`}
           </div>
         </div>
         {props.addon}

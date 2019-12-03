@@ -181,6 +181,68 @@ def api_coursepref(request):
     return HttpResponseNotAllowed(['GET'])
 
 @auth_func
+def api_coursepref_rated(request):
+    if request.method == 'GET':
+        cf_result=collaborative_filtering(request.user)
+        cf_user=[score_data for score_data in CoursePref.objects.filter(user=request.user)]
+        start = (int)(request.GET.get('start'))
+        end = (int)(request.GET.get('end'))
+        position = 0
+        rated={}
+        course_list=[]
+        all_course=[course for course in Course.objects.all()]
+        course_size=len(all_course)
+        for course in all_course:
+            rated[course.id]=False
+        for score_data in cf_user:
+            rated[score_data.course.id]=True
+        for course in all_course:
+            if position>end:
+                break
+            elif position>=start and rated[course.id]:
+                course_data=course.data()
+                course_data['score']=cf_result[course.id]
+                course_list.append(course_data)
+            if rated[course.id]:
+                position+=1
+        return JsonResponse(course_list, safe=False)
+    return HttpResponseNotAllowed(['GET'])
+
+@auth_func
+def api_coursepref_unrated(request):
+    if request.method == 'GET':
+        cf_result=collaborative_filtering(request.user)
+        cf_user=[score_data for score_data in CoursePref.objects.filter(user=request.user)]
+        start = (int)(request.GET.get('start'))
+        end = (int)(request.GET.get('end'))
+        position = 0
+        rated={}
+        course_list=[]
+        all_course=[course for course in Course.objects.all()]
+        course_size=len(all_course)
+        for course in all_course:
+            rated[course.id]=False
+        for score_data in cf_user:
+            rated[score_data.course.id]=True
+        for course in all_course:
+            if position>end:
+                break
+            elif position>=start and not rated[course.id]:
+                course_data=course.data()
+                course_data['score']=cf_result[course.id]
+                course_list.append(course_data)
+            if not rated[course.id]:
+                position+=1
+        return JsonResponse(course_list, safe=False)
+    return HttpResponseNotAllowed(['GET'])
+
+@auth_func
+def api_coursepref_except(request):
+    if request.method == 'GET':
+        return JsonResponse([], safe=False)
+    return HttpResponseNotAllowed(['GET'])
+
+@auth_func
 def api_coursepref_id(request, course_id):
     if request.method == 'GET':
         try:

@@ -114,15 +114,6 @@ class Course(models.Model):
             'location': self.location,
             'time': course_time_data,
         }
-    def data_small(self):
-        return{
-            'id': self.id,
-            'title': self.title+' ('+self.lecture_number+')',
-            'credit': self.credit,
-            'professor': self.professor,
-            'location': self.location,
-            'time': self.time,
-        }
 
     def __str__(self):
         return self.title
@@ -166,17 +157,11 @@ class CourseTime(models.Model):
     end_time = models.TimeField()
 
     def data(self):
-        position = self.building.name
-        if len(self.lectureroom) > 0:
-            position += '-' + self.lectureroom
         return {'week_day': self.weekday,
                 'start_time': self.start_time.hour*60
                               +self.start_time.minute,
                 'end_time': self.end_time.hour*60
-                            +self.end_time.minute,
-                'position': {'location' : position,
-                             'latitude' : self.building.latitude,
-                             'longitude' : self.building.longitude}}
+                            +self.end_time.minute}
 
 class CustomCourse(models.Model):
     timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
@@ -236,14 +221,8 @@ class CustomCourseTime(models.Model):
     end_time = models.TimeField()
 
     def data(self):
-        position = self.building.name
-        if len(self.lectureroom) > 0:
-            position += '-' + self.lectureroom
         return {'week_day': self.weekday,
                 'start_time': self.start_time.hour*60
                               +self.start_time.minute,
                 'end_time': self.end_time.hour*60
-                            +self.end_time.minute,
-                'position': {'location' : position,
-                             'latitude' : self.building.latitude,
-                             'longitude' : self.building.longitude}}
+                            +self.end_time.minute,}

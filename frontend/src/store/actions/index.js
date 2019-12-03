@@ -27,6 +27,9 @@ export {
   postCustomCourse,
   deleteCourse,
   deleteTimetable,
-  getCourseScore,
+  getRatedCourse,
+  getUnratedCourse,
+  getExceptCourse,
+  resetCourseScore,
   putCoursepref,
 } from './user';

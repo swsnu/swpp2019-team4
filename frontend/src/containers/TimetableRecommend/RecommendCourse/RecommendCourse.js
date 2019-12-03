@@ -10,12 +10,53 @@ class RecommendCourse extends Component {
     super(props);
     this.state = {
       input: '',
+      ratedScrollLimit:2000,
+      unratedScrollLimit:2000,
+      exceptScrollLimit:2000,
+      ratedCourseCount:50,
+      unratedCourseCount:50,
+      exceptCourseCount:50,
+      tabview:0,
+    };
+    this.timeToString = (time) => {
+      const hour = parseInt(time / 60, 10);
+      const hourString = (hour < 10 ? '0' : '') + hour;
+      const minuteString = (time % 60 === 0 ? '' : '.5');
+      return `${hourString}${minuteString}`;
     };
   }
 
   componentDidMount() {
     this.props.handleValid(true);
-    this.props.getCourseScore();
+    this.props.resetCourseScore();
+    this.props.getRatedCourse(0,49);
+    this.props.getUnratedCourse(0,49);
+    this.props.getExceptCourse(0,49);
+  }
+
+  segmentToString(weekDay, startTime) {
+    const weekDayName = ['월', '화', '수', '목', '금', '토'];
+    return `${weekDayName[weekDay]}${this.timeToString(startTime)}`;
+  }
+
+  scrollHandler(scrollTop){
+    const pageSize=50;
+    const scrollSize=pageSize*60;
+    if(this.state.tabview===0&&this.state.ratedScrollLimit<scrollTop){
+      this.setState({ratedScrollLimit:this.state.ratedScrollLimit+scrollSize});
+      this.props.getRatedCourse(this.state.ratedCourseCount,this.state.ratedCourseCount+pageSize-1);
+      this.setState({ratedCourseCount:this.state.ratedCourseCount+pageSize});
+    }
+    else if(this.state.tabview==1&&this.state.unratedScrollLimit<scrollTop){
+      this.setState({unratedScrollLimit:this.state.unratedScrollLimit+scrollSize});
+      this.props.getUnratedCourse(this.state.unratedCourseCount,this.state.unratedCourseCount+pageSize-1);
+      this.setState({unratedCourseCount:this.state.unratedCourseCount+pageSize});
+    }
+    else if(this.state.tabview==2&&this.state.exceptScrollLimit<scrollTop){
+      this.setState({exceptScrollLimit:this.state.exceptScrollLimit+scrollSize});
+      this.props.getExceptCourse(this.state.exceptCourseCount,this.state.exceptCourseCount+pageSize-1);
+      this.setState({exceptCourseCount:this.state.exceptCourseCount+pageSize});
+    }
   }
 
   courseElement(course) {
@@ -32,6 +73,16 @@ class RecommendCourse extends Component {
       '#515BEC',
       '#3F5EFB',
     ];
+    let timeString = '';
+    let courseString = '';
+    for (let i = 0; i < course.time.length; i += 1) {
+      timeString += this.segmentToString(course.time[i].week_day, course.time[i].start_time, course.time[i].end_time);
+      courseString += course.time[i].position;
+      if (i !== course.time.length - 1) {
+        timeString += ' ';
+        courseString += '/';
+      }
+    }
     return (
       <div key={course.id}>
         <div className="row">
@@ -40,7 +91,7 @@ class RecommendCourse extends Component {
               {course.title}
             </div>
             <div className="text-black-50 text-left small" id="recommend-course-abstract">
-              {`${course.professor} | ${course.credit}학점 | ${course.time} | ${course.location}`}
+              {`${course.professor} | ${course.credit}학점 | ${timeString} | ${course.location}`}
             </div>
           </div>
           <div className="col-5 d-flex align-items-center">
@@ -85,11 +136,19 @@ class RecommendCourse extends Component {
     var ratedview=[];
     var unratedview=[];
     var exceptview=[];
-    if(this.props.courselist!==undefined){
-      for(let i=0;i<this.props.courselist.length;i=i+1){
-        if(this.props.courselist[i].except&&exceptview.length<50)exceptview.push(this.courseElement(this.props.courselist[i]));
-        else if(this.props.courselist[i].rated&&ratedview.length<50)ratedview.push(this.courseElement(this.props.courselist[i]));
-        else if(!(this.props.courselist[i].rated)&&unratedview.length<50) unratedview.push(this.courseElement(this.props.courselist[i]));
+    if(this.props.ratedCourse!==undefined){
+      for(let i=0;i<this.props.ratedCourse.length;i=i+1){
+        ratedview.push(this.courseElement(this.props.ratedCourse[i]));
+      }
+    }
+    if(this.props.unratedCourse!==undefined){
+      for(let i=0;i<this.props.unratedCourse.length;i=i+1){
+        unratedview.push(this.courseElement(this.props.unratedCourse[i]));
+      }
+    }
+    if(this.props.exceptCourse!==undefined){
+      for(let i=0;i<this.props.exceptCourse.length;i=i+1){
+        exceptview.push(this.courseElement(this.props.exceptCourse[i]));
       }
     }
     return (
@@ -104,6 +163,7 @@ class RecommendCourse extends Component {
                 role="tab"
                 aria-controls="rated"
                 aria-selected="true"
+                onClick={()=>{this.setState({tabview:0})}}
               >
 평가
               </a>
@@ -116,6 +176,7 @@ class RecommendCourse extends Component {
                 role="tab"
                 aria-controls="unrated"
                 aria-selected="false"
+                onClick={()=>{this.setState({tabview:1})}}
               >
 미평가
               </a>
@@ -128,13 +189,14 @@ class RecommendCourse extends Component {
                 role="tab"
                 aria-controls="exception"
                 aria-selected="false"
+                onClick={()=>{this.setState({tabview:2})}}
               >
 예외
               </a>
             </li>
           </ul>
           <SearchBar value={this.state.input} onChange={(event) => this.setState({ input: event.target.value })} />
-          <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: '350px' }}>
+          <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: '350px' }} onScroll={(event)=>{this.scrollHandler(event.target.scrollTop)}}>
             <div className="tab-pane show active" id="rated-tab" role="tabpanel" aria-labelledby="rated-tab">
               {ratedview}
             </div>
@@ -156,11 +218,16 @@ RecommendCourse.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  courselist: state.user.course_score,
+  ratedCourse: state.user.rated_course,
+  unratedCourse: state.user.unrated_course,
+  exceptCourse: state.user.except_course,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getCourseScore: () => dispatch(actionCreators.getCourseScore()),
+  resetCourseScore: () => dispatch(actionCreators.resetCourseScore()),
+  getRatedCourse: (start,end) => dispatch(actionCreators.getRatedCourse(start,end)),
+  getUnratedCourse: (start,end) => dispatch(actionCreators.getUnratedCourse(start,end)),
+  getExceptCourse: (start,end) => dispatch(actionCreators.getExceptCourse(start,end)),
   onChangeslider: (id,value) => dispatch(actionCreators.putCoursepref(id,value)),
 });
 
