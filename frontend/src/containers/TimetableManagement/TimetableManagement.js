@@ -18,7 +18,19 @@ class TimetableManagement extends Component {
       semester: '2019-2',
       title: '',
       showCourses: true,
-      searchStrings: '',
+      searchValues: {
+        title: '',
+        classification: '',
+        department: '',
+        degree_program: '',
+        academic_year: '',
+        course_number: '',
+        lecture_number: '',
+        professor: '',
+        language: '',
+        min_credit: '',
+        max_credit: '',
+      },
     };
   }
 
@@ -103,7 +115,7 @@ class TimetableManagement extends Component {
   }
 
   search() {
-    this.props.onGetCourses(this.state.searchStrings);
+    this.props.onGetCourses(this.state.searchValues);
     this.showCoursesInSearch();
   }
 
@@ -116,6 +128,44 @@ class TimetableManagement extends Component {
     if (window.event.keyCode === 13) {
       this.search();
     }
+  }
+
+  searchOnChange(event,type) {
+    var newValue=this.state.searchValues
+    if(type==='title'){
+      newValue.title=event.target.value;
+    }
+    else if(type=='classification'){
+      newValue.classification=event.target.value;
+    }
+    else if(type=='department'){
+      newValue.department=event.target.value;
+    }
+    else if(type=='degree_program'){
+      newValue.degree_program=event.target.value;
+    }
+    else if(type=='academic_year'){
+      newValue.academic_year=event.target.value;
+    }
+    else if(type=='course_number'){
+      newValue.course_number=event.target.value;
+    }
+    else if(type=='lecture_number'){
+      newValue.lecture_number=event.target.value;
+    }
+    else if(type=='professor'){
+      newValue.professor=event.target.value;
+    }
+    else if(type=='language'){
+      newValue.language=event.target.value;
+    }
+    else if(type=='min_credit'){
+      newValue.min_credit=event.target.value;
+    }
+    else if(type=='max_credit'){
+      newValue.max_credit=event.target.value;
+    }
+    this.setState({searchValues:newValue});
   }
 
   render() {
@@ -208,8 +258,8 @@ class TimetableManagement extends Component {
               </div>
             </div>
             <SearchBar
-              value={this.state.searchStrings}
-              onChange={(event) => this.setState({ searchStrings: event.target.value })}
+              value={this.state.searchValues}
+              onChange={(event,type)=>this.searchOnChange(event,type)}
               onKeyDown={() => this.enterKey()}
               onSearch={() => this.search()}
             />

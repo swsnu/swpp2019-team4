@@ -149,6 +149,47 @@ def collaborative_filtering(user):
 
     return score_result_dict
 
+def searcher(course, request_get):
+    def has_text(text,match_text):
+        if match_text:
+            matched = 0
+            for char in text:
+                if char == match_text[matched]:
+                    matched += 1
+                if matched == len(match_text):
+                    return True
+            return False
+        return True
+    search_dict = {}
+    search_dict['title'] = request_get.get('title')
+    search_dict['classification'] = request_get.get('classification')
+    search_dict['department'] = request_get.get('department')
+    search_dict['degree_program'] = request_get.get('degree_program')
+    search_dict['academic_year'] = request_get.get('academic_year')
+    search_dict['course_number'] = request_get.get('course_number')
+    search_dict['lecture_number'] = request_get.get('lecture_number')
+    search_dict['professor'] = request_get.get('professor')
+    search_dict['language'] = request_get.get('language')
+    if request_get.get('max_credit'):
+        search_dict['max_credit'] = (int)(request_get.get('max_credit'))
+    else:
+        search_dict['max_credit'] = 32
+    if request_get.get('min_credit'):
+        search_dict['min_credit'] = (int)(request_get.get('min_credit'))
+    else:
+        search_dict['min_credit'] = -32
+    return (has_text(course.title+course.subtitle,search_dict['title']) and
+            has_text(course.classification,search_dict['classification']) and
+            has_text(course.college+course.department,search_dict['department']) and
+            has_text(course.degree_program,search_dict['degree_program']) and
+            has_text(course.academic_year,search_dict['academic_year']) and
+            has_text(course.course_number,search_dict['course_number']) and
+            has_text(course.lecture_number,search_dict['lecture_number']) and
+            has_text(course.professor,search_dict['professor']) and
+            has_text(course.language,search_dict['language']) and
+            course.credit<=search_dict['max_credit'] and
+            course.credit>=search_dict['min_credit'])
+
 def auth_func(func):
     def wrapper_function(*args, **kwargs):
         if args[0].user.is_authenticated:
@@ -199,11 +240,11 @@ def api_coursepref_rated(request):
         for course in all_course:
             if position>end:
                 break
-            elif position>=start and rated[course.id]:
+            elif position>=start and rated[course.id] and searcher(course,request.GET):
                 course_data=course.data()
                 course_data['score']=cf_result[course.id]
                 course_list.append(course_data)
-            if rated[course.id]:
+            if rated[course.id] and searcher(course,request.GET):
                 position+=1
         return JsonResponse(course_list, safe=False)
     return HttpResponseNotAllowed(['GET'])
@@ -227,11 +268,11 @@ def api_coursepref_unrated(request):
         for course in all_course:
             if position>end:
                 break
-            elif position>=start and not rated[course.id]:
+            elif position>=start and (not rated[course.id]) and searcher(course,request.GET):
                 course_data=course.data()
                 course_data['score']=cf_result[course.id]
                 course_list.append(course_data)
-            if not rated[course.id]:
+            if (not rated[course.id]) and searcher(course,request.GET):
                 position+=1
         return JsonResponse(course_list, safe=False)
     return HttpResponseNotAllowed(['GET'])

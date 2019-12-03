@@ -342,9 +342,16 @@ def searcher(course, request_get):
     search_dict['academic_year'] = request_get.get('academic_year')
     search_dict['course_number'] = request_get.get('course_number')
     search_dict['lecture_number'] = request_get.get('lecture_number')
-    search_dict['max_credit'] = (int)(request_get.get('max_credit'))
-    search_dict['min_credit'] = (int)(request_get.get('min_credit'))
     search_dict['professor'] = request_get.get('professor')
+    search_dict['language'] = request_get.get('language')
+    if request_get.get('max_credit'):
+        search_dict['max_credit'] = (int)(request_get.get('max_credit'))
+    else:
+        search_dict['max_credit'] = 32
+    if request_get.get('min_credit'):
+        search_dict['min_credit'] = (int)(request_get.get('min_credit'))
+    else:
+        search_dict['min_credit'] = -32
     return (has_text(course.title+course.subtitle,search_dict['title']) and
             has_text(course.classification,search_dict['classification']) and
             has_text(course.college+course.department,search_dict['department']) and
@@ -353,8 +360,9 @@ def searcher(course, request_get):
             has_text(course.course_number,search_dict['course_number']) and
             has_text(course.lecture_number,search_dict['lecture_number']) and
             has_text(course.professor,search_dict['professor']) and
-            (max_credit==0 or course.credit<search_dict['max_credit']) and
-            (min_credit==0 or course.credit<search_dict['min_credit']))
+            has_text(course.language,search_dict['language']) and
+            course.credit<=search_dict['max_credit'] and
+            course.credit>=search_dict['min_credit'])
 
 @auth_func
 def api_course(request):
