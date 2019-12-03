@@ -106,7 +106,7 @@ class Course(models.Model):
                             in CourseTime.objects.filter(course=self)]
         return {
             'id': self.id,
-            'title': self.title,
+            'title': self.title+' ('+self.lecture_number+')',
             'lecture_number': self.lecture_number,
             'course_number': self.course_number,
             'credit': self.credit,
