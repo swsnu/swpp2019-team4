@@ -84,7 +84,7 @@ class Course(models.Model):
     college = models.CharField(max_length=32, default='default')
     department = models.CharField(max_length=128, default='default')
     degree_program = models.CharField(max_length=32, default='default')
-    academic_year = models.IntegerField(default=-1)
+    academic_year = models.CharField(max_length=8)
     course_number = models.CharField(max_length=16, default='default')
     lecture_number = models.CharField(max_length=8, default='default')
     title = models.CharField(max_length=128, default='default')
