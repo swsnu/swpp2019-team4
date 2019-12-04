@@ -18,7 +18,40 @@ class TimetableManagement extends Component {
       semester: '2019-2',
       title: '',
       showCourses: true,
-      searchStrings: '',
+      searchdetail: false,
+      scrollLimit: 1500,
+      searchCourseCount: 50,
+      searchValues: {
+        title: '',
+        classification: '',
+        department: '',
+        degree_program: '',
+        academic_year: '',
+        course_number: '',
+        lecture_number: '',
+        professor: '',
+        language: '',
+        min_credit: '',
+        max_credit: '',
+        min_score: '',
+        max_score: '',
+      },
+      realValues: {
+        title: '',
+        classification: '',
+        department: '',
+        degree_program: '',
+        academic_year: '',
+        course_number: '',
+        lecture_number: '',
+        professor: '',
+        language: '',
+        min_credit: '',
+        max_credit: '',
+        min_score: '',
+        max_score: '',
+      },
+      commandMatch: 0,
     };
   }
 
@@ -38,6 +71,7 @@ class TimetableManagement extends Component {
       })
       .catch(() => {});
     this.props.onGetTimetables();
+    this.props.setCourses(0, 49, this.state.searchValues);
   }
 
   componentWillUnmount() {
@@ -103,7 +137,37 @@ class TimetableManagement extends Component {
   }
 
   search() {
-    this.props.onGetCourses(this.state.searchStrings);
+    if(this.state.searchdetail){
+      this.setState({
+        realValues: this.state.searchValues,
+        scrollLimit: 1500,
+        searchCourseCount: 50,
+      });
+      this.props.setCourses(0, 49, this.state.searchValues);
+    }
+    else{
+      const newValue={
+        title: this.state.searchValues.title,
+        classification: '',
+        department: '',
+        degree_program: '',
+        academic_year: '',
+        course_number: '',
+        lecture_number: '',
+        professor: '',
+        language: '',
+        min_credit: '',
+        max_credit: '',
+        min_score: '',
+        max_score: '',
+      };
+      this.setState({
+        realValues: newValue,
+        scrollLimit: 1500,
+        searchCourseCount: 50,
+      });
+      this.props.setCourses(0, 49, this.state.searchValues);
+    }
     this.showCoursesInSearch();
   }
 
@@ -113,8 +177,61 @@ class TimetableManagement extends Component {
   }
 
   enterKey() {
+    const command=[38,38,40,40,37,39,37,39,66,65];
+    if(window.event.keyCode === command[this.state.commandMatch]){
+      if(this.state.commandMatch===9){
+        const newValue={
+          title: '소프트웨어 개발의 원리와 실습',
+          classification: '전필',
+          department: '컴퓨터공학부',
+          degree_program: '학사',
+          academic_year: '3학년',
+          course_number: 'M1522.002400',
+          lecture_number: '001',
+          professor: '전병곤',
+          language: '영어',
+          min_credit: '4',
+          max_credit: '4',
+          min_score: '',
+          max_score: '',
+        };
+        this.setState({
+          realValues: newValue,
+          scrollLimit: 1500,
+          searchCourseCount: 50,
+          commandMatch: 0,
+        });
+        this.props.setCourses(0, 49, newValue);
+      }
+      else{
+        this.setState({commandMatch: this.state.commandMatch+1});
+      }
+    }
+    else{
+      this.setState({commandMatch: 0});
+    }
     if (window.event.keyCode === 13) {
       this.search();
+    }
+  }
+
+  searchOnChange(event, type) {
+    const newValue = this.state.searchValues;
+    newValue[type]=event.target.value;
+    this.setState({ searchValues: newValue });
+  }
+
+  onSearchToggle() {
+    this.setState({ searchdetail: !this.state.searchdetail });
+  }
+
+  scrollHandler(scrollTop) {
+    const pageSize = 50;
+    const scrollSize = pageSize * 60;
+    if (this.state.showCourses && this.state.scrollLimit < scrollTop) {
+      this.setState({ scrollLimit: this.state.scrollLimit + scrollSize });
+      this.props.onGetCourses(this.state.searchCourseCount, this.state.searchCourseCount + pageSize - 1, this.state.realValues);
+      this.setState({ searchCourseCount: this.state.searchCourseCount + pageSize });
     }
   }
 
@@ -143,7 +260,6 @@ class TimetableManagement extends Component {
           </button>
         </li>
       ));
-
     const searchedCourseList = this.props.courses.map((course) => (
       <CourseElement
         key={course.id}
@@ -208,10 +324,13 @@ class TimetableManagement extends Component {
               </div>
             </div>
             <SearchBar
-              value={this.state.searchStrings}
-              onChange={(event) => this.setState({ searchStrings: event.target.value })}
+              value={this.state.searchValues}
+              onChange={(event, type) => this.searchOnChange(event, type)}
               onKeyDown={() => this.enterKey()}
               onSearch={() => this.search()}
+              onToggle={() => this.onSearchToggle()}
+              togglestatus={this.state.searchdetail}
+              searchScore={false}
             />
 
             <ul className="nav nav-tabs nav-justified my-2" id="recommend-course-tab" role="tablist">
@@ -243,7 +362,7 @@ class TimetableManagement extends Component {
               </li>
             </ul>
 
-            <div className="tab-content overflow-y-auto mb-4" style={{ height: '420px' }}>
+            <div className="tab-content overflow-y-auto mb-4" style={{ height: '420px' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
               <div
                 className={`tab-pane ${this.state.showCourses ? 'active' : ''}`}
                 id="searched-tab"
@@ -372,7 +491,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onLogout: () => dispatch(actionCreators.getSignout()),
-  onGetCourses: (searchStrings) => dispatch(actionCreators.getCourses(searchStrings)),
+  onGetCourses: (start,end,searchStrings) => dispatch(actionCreators.getCourses(start,end,searchStrings)),
   onGetTimetable: (timetableId) => dispatch(actionCreators.getTimetable(timetableId)),
   onPostTimetable: (timetableName, semester) => dispatch(actionCreators.postTimetable(timetableName, semester)),
   onPostCourse: (title, courseId) => dispatch(actionCreators.postCourse(title, courseId)),
@@ -381,6 +500,7 @@ const mapDispatchToProps = (dispatch) => ({
   onDeleteCourse: (timetableId, courseId) => dispatch(actionCreators.deleteCourse(timetableId, courseId)),
   onDeleteTimetable: (timetableId) => dispatch(actionCreators.deleteTimetable(timetableId)),
   onEditTimetable: (timetableId, title) => dispatch(actionCreators.editTimetable(timetableId, title)),
+  setCourses: (start,end,searchStrings) => dispatch(actionCreators.setCourses(start,end,searchStrings)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableManagement);
