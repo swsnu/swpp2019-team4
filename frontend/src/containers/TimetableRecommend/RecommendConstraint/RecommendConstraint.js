@@ -91,7 +91,7 @@ class RecommendConstraint extends Component {
     const maxValue = Number(value);
     const maxValid = (maxValue >= 0 && maxValue <= 21);
     const valid = minValue <= maxValue && minValue <= this.state.consts.credit_max;
-    let newConsts = {...this.state.consts, credit_max: maxValue}
+    let newConsts = {...this.state.consts, major_max: maxValue}
     this.setState({ consts: newConsts, major_valid: valid, major_max_valid: maxValid });
     this.props.handleValid(this.state.days_per_week_valid &&
                            this.state.credit_valid &&

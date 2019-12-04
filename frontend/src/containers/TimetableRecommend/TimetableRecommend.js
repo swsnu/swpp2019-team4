@@ -33,7 +33,7 @@ class TimetableRecommend extends Component {
 
   movePage(offset) {
     if (this.state.index === 0) {
-      this.props.onPutConstraint(this.props.constraints)
+      this.props.onPostConstraints(this.props.constraints)
     }
     this.setState((prevState) => ({ ...prevState, index: prevState.index + offset }));
   }
@@ -161,11 +161,13 @@ TimetableRecommend.propTypes = {
 
 const mapStateToProps = (state) => ({
   storedUser: state.user.user,
+  constraints: state.user.constraints
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onLogout: () => dispatch(actionCreators.getSignout()),
+  onPostConstraints: (consts) => dispatch(actionCreators.postConstraints(consts))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableRecommend);

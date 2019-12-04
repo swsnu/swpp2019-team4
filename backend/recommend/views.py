@@ -261,3 +261,25 @@ def api_recommend (request) :
         run_recommendation(request.user)
         return JsonResponse([], safe=False)
     return HttpResponseNotAllowed(['GET'])
+
+@auth_func
+def api_constraints (request):
+    if request.method == 'POST':
+        try:
+            body = json.loads(request.body.decode())
+            user = request.user
+            days_per_week = body['days_per_week']
+            credit_min = body['credit_min']
+            credit_max = body['credit_max']
+            major_min = body['major_min']
+            major_max = body['major_max']
+        except (KeyError, JSONDecodeError):
+            return HttpResponseBadRequest()
+        user.days_per_week = days_per_week
+        user.credit_min = credit_min
+        user.credit_max = credit_max
+        user.major_min = major_min
+        user.major_max = major_max
+        user.save()
+        return HttpResponse(status=200)
+    return HttpResponseNotAllowed(['POST'])

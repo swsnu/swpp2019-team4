@@ -46,6 +46,13 @@ class User(AbstractBaseUser):
                                           related_name='user_main', on_delete=models.SET_NULL)
     friends = models.ManyToManyField('self', symmetrical=True)
     friends_request = models.ManyToManyField('self', symmetrical=False)
+    
+    days_per_week = models.IntegerField(default=5)
+    credit_min = models.IntegerField(default=1)
+    credit_max = models.IntegerField(default=18)
+    major_min = models.IntegerField(default=0)
+    major_max = models.IntegerField(default=18)
+
 
     objects = UserManager()
 

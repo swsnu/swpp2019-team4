@@ -7,4 +7,5 @@ urlpatterns = [
     path('timepref/', views.api_time_pref, name='timepref'),
     path('timepref/<int:timepref_id>/', views.api_time_pref_id, name='timepref_id'),
     path('recommend/', views.api_recommend, name='recommend'),
+    path('constraints/', views.api_constraints, name='constraints'),
 ]
