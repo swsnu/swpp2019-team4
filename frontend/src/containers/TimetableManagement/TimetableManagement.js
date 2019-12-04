@@ -227,8 +227,8 @@ class TimetableManagement extends Component {
     this.props.onDeleteCourseTemp(course);
   }
 
-  searchOnChange(event,type) {
-    var newValue=this.state.searchValues
+  searchOnChange(event, type) {
+    const newValue = this.state.searchValues;
     newValue[type]=event.target.value;
     this.setState({ searchValues: newValue });
   }
