@@ -309,17 +309,8 @@ class TimetableManagement extends Component {
                 {this.state.semester}
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdown-semester">
-                <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-1' })}>
-                  2019-1
-                </button>
-                <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-S' })}>
-                  2019-S
-                </button>
                 <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-2' })}>
                   2019-2
-                </button>
-                <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-W' })}>
-                  2019-W
                 </button>
               </div>
             </div>
