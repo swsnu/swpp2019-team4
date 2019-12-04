@@ -137,6 +137,7 @@ class RecommendCourse extends Component {
                   value={score}
                   onChange={(event) => this.props.onChangeslider(course.id, event.target.value)}
                   onClick={(event) => this.props.onChangeslider(course.id, event.target.value)}
+                  onMouseDown={(event) => this.props.onChangeslider(course.id, event.target.value)}
                 />
               </div>
             </form>
