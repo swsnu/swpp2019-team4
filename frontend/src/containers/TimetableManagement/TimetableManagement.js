@@ -229,40 +229,8 @@ class TimetableManagement extends Component {
 
   searchOnChange(event,type) {
     var newValue=this.state.searchValues
-    if(type==='title'){
-      newValue.title=event.target.value;
-    }
-    else if(type=='classification'){
-      newValue.classification=event.target.value;
-    }
-    else if(type=='department'){
-      newValue.department=event.target.value;
-    }
-    else if(type=='degree_program'){
-      newValue.degree_program=event.target.value;
-    }
-    else if(type=='academic_year'){
-      newValue.academic_year=event.target.value;
-    }
-    else if(type=='course_number'){
-      newValue.course_number=event.target.value;
-    }
-    else if(type=='lecture_number'){
-      newValue.lecture_number=event.target.value;
-    }
-    else if(type=='professor'){
-      newValue.professor=event.target.value;
-    }
-    else if(type=='language'){
-      newValue.language=event.target.value;
-    }
-    else if(type=='min_credit'){
-      newValue.min_credit=event.target.value;
-    }
-    else if(type=='max_credit'){
-      newValue.max_credit=event.target.value;
-    }
-    this.setState({searchValues:newValue});
+    newValue[type]=event.target.value;
+    this.setState({ searchValues: newValue });
   }
 
   onSearchToggle() {
