@@ -32,7 +32,6 @@ const CourseElement = (props) => {
   }
   return (
     <div key={course.id}>
-      <div className="expected_color" style={{backgroundColor:colorGradient[Math.round(course.expected)],height:'40px',width:'3px',float:"left"}}/>
       <div className="d-flex mx-2">
         <div className="flex-grow-1">
           <div className="text-left">
