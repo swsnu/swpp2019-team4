@@ -41,10 +41,8 @@ class RecommendCourse extends Component {
       },
       ratedScrollLimit: 1500,
       unratedScrollLimit: 1500,
-      exceptScrollLimit: 1500,
       ratedCourseCount: 50,
       unratedCourseCount: 50,
-      exceptCourseCount: 50,
       tabview: 0,
       searchdetail: false,
       commandMatch: 0,
@@ -62,7 +60,6 @@ class RecommendCourse extends Component {
     this.props.resetCourseScore();
     this.props.getRatedCourse(0, 49, this.state.realValues);
     this.props.getUnratedCourse(0, 49, this.state.realValues);
-    this.props.getExceptCourse(0, 49, this.state.realValues);
   }
 
   segmentToString(weekDay, startTime) {
@@ -81,10 +78,6 @@ class RecommendCourse extends Component {
       this.setState({ unratedScrollLimit: this.state.unratedScrollLimit + scrollSize });
       this.props.getUnratedCourse(this.state.unratedCourseCount, this.state.unratedCourseCount + pageSize - 1, this.state.realValues);
       this.setState({ unratedCourseCount: this.state.unratedCourseCount + pageSize });
-    } else if (this.state.tabview === 2 && this.state.exceptScrollLimit < scrollTop) {
-      this.setState({ exceptScrollLimit: this.state.exceptScrollLimit + scrollSize });
-      this.props.getExceptCourse(this.state.exceptCourseCount, this.state.exceptCourseCount + pageSize - 1, this.state.realValues);
-      this.setState({ exceptCourseCount: this.state.exceptCourseCount + pageSize });
     }
   }
 
@@ -165,33 +158,7 @@ class RecommendCourse extends Component {
 
   searchOnChange(event, type) {
     const newValue = this.state.searchValues;
-    if (type === 'title') {
-      newValue.title = event.target.value;
-    } else if (type === 'classification') {
-      newValue.classification = event.target.value;
-    } else if (type === 'department') {
-      newValue.department = event.target.value;
-    } else if (type === 'degree_program') {
-      newValue.degree_program = event.target.value;
-    } else if (type === 'academic_year') {
-      newValue.academic_year = event.target.value;
-    } else if (type === 'course_number') {
-      newValue.course_number = event.target.value;
-    } else if (type === 'lecture_number') {
-      newValue.lecture_number = event.target.value;
-    } else if (type === 'professor') {
-      newValue.professor = event.target.value;
-    } else if (type === 'language') {
-      newValue.language = event.target.value;
-    } else if (type === 'min_credit') {
-      newValue.min_credit = event.target.value;
-    } else if (type === 'max_credit') {
-      newValue.max_credit = event.target.value;
-    } else if (type === 'min_score') {
-      newValue.min_score = event.target.value;
-    } else if (type === 'max_score') {
-      newValue.max_score = event.target.value;
-    }
+    newValue[type]=event.target.value;
     this.setState({ searchValues: newValue });
   }
 
@@ -201,15 +168,12 @@ class RecommendCourse extends Component {
         realValues: this.state.searchValues,
         ratedScrollLimit: 1500,
         unratedScrollLimit: 1500,
-        exceptScrollLimit: 1500,
         ratedCourseCount: 50,
         unratedCourseCount: 50,
-        exceptCourseCount: 50,
       });
       this.props.resetCourseScore();
       this.props.getRatedCourse(0, 49, this.state.searchValues);
       this.props.getUnratedCourse(0, 49, this.state.searchValues);
-      this.props.getExceptCourse(0, 49, this.state.searchValues);
     }
     else{
       const newValue={
@@ -231,15 +195,12 @@ class RecommendCourse extends Component {
         realValues: newValue,
         ratedScrollLimit: 1500,
         unratedScrollLimit: 1500,
-        exceptScrollLimit: 1500,
         ratedCourseCount: 50,
         unratedCourseCount: 50,
-        exceptCourseCount: 50,
       });
       this.props.resetCourseScore();
       this.props.getRatedCourse(0, 49, newValue);
       this.props.getUnratedCourse(0, 49, newValue);
-      this.props.getExceptCourse(0, 49, newValue);
     }
   }
 
@@ -266,16 +227,13 @@ class RecommendCourse extends Component {
           realValues: newValue,
           ratedScrollLimit: 1500,
           unratedScrollLimit: 1500,
-          exceptScrollLimit: 1500,
           ratedCourseCount: 50,
           unratedCourseCount: 50,
-          exceptCourseCount: 50,
           commandMatch: 0,
         });
         this.props.resetCourseScore();
         this.props.getRatedCourse(0, 49, newValue);
         this.props.getUnratedCourse(0, 49, newValue);
-        this.props.getExceptCourse(0, 49, newValue);
       }
       else{
         this.setState({commandMatch: this.state.commandMatch+1});
@@ -292,7 +250,6 @@ class RecommendCourse extends Component {
   render() {
     const ratedview = [];
     const unratedview = [];
-    const exceptview = [];
     if (this.props.ratedCourse !== undefined) {
       for (let i = 0; i < this.props.ratedCourse.length; i += 1) {
         ratedview.push(this.courseElement(this.props.ratedCourse[i]));
@@ -301,11 +258,6 @@ class RecommendCourse extends Component {
     if (this.props.unratedCourse !== undefined) {
       for (let i = 0; i < this.props.unratedCourse.length; i += 1) {
         unratedview.push(this.courseElement(this.props.unratedCourse[i]));
-      }
-    }
-    if (this.props.exceptCourse !== undefined) {
-      for (let i = 0; i < this.props.exceptCourse.length; i += 1) {
-        exceptview.push(this.courseElement(this.props.exceptCourse[i]));
       }
     }
     return (
@@ -338,19 +290,6 @@ class RecommendCourse extends Component {
 미평가
               </a>
             </li>
-            <li className="nav-item">
-              <a
-                className="nav-link w-100"
-                data-toggle="tab"
-                href="#exception-tab"
-                role="tab"
-                aria-controls="exception"
-                aria-selected="false"
-                onClick={() => { this.setState({ tabview: 2 }); }}
-              >
-예외
-              </a>
-            </li>
           </ul>
           <SearchBar value={this.state.searchValues} onChange={(event, type) => this.searchOnChange(event, type)} onKeyDown={() => this.enterKey()} onToggle={() => this.onSearchToggle()} togglestatus={this.state.searchdetail} onSearch={() => this.search()} searchScore={true} />
           <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: '350px' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
@@ -359,9 +298,6 @@ class RecommendCourse extends Component {
             </div>
             <div className="tab-pane" id="unrated-tab" role="tabpanel" aria-labelledby="unrated-tab">
               {unratedview}
-            </div>
-            <div className="tab-pane" id="exception-tab" role="tabpanel" aria-labelledby="exception-tab">
-              {exceptview}
             </div>
           </div>
         </div>
@@ -377,14 +313,12 @@ RecommendCourse.propTypes = {
 const mapStateToProps = (state) => ({
   ratedCourse: state.user.rated_course,
   unratedCourse: state.user.unrated_course,
-  exceptCourse: state.user.except_course,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   resetCourseScore: () => dispatch(actionCreators.resetCourseScore()),
   getRatedCourse: (start, end, searchValues) => dispatch(actionCreators.getRatedCourse(start, end, searchValues)),
   getUnratedCourse: (start, end, searchValues) => dispatch(actionCreators.getUnratedCourse(start, end, searchValues)),
-  getExceptCourse: (start, end, searchValues) => dispatch(actionCreators.getExceptCourse(start, end, searchValues)),
   onChangeslider: (id, value) => dispatch(actionCreators.putCourseprefTemp(id, value)),
 });
 

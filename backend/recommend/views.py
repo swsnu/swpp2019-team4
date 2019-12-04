@@ -171,19 +171,19 @@ def searcher(course, score, request_get):
     search_dict['professor'] = request_get.get('professor')
     search_dict['language'] = request_get.get('language')
     if request_get.get('max_credit'):
-        search_dict['max_credit'] = (int)(request_get.get('max_credit'))
+        search_dict['max_credit'] = int(request_get.get('max_credit'))
     else:
         search_dict['max_credit'] = 32
     if request_get.get('min_credit'):
-        search_dict['min_credit'] = (int)(request_get.get('min_credit'))
+        search_dict['min_credit'] = int(request_get.get('min_credit'))
     else:
         search_dict['min_credit'] = -32
     if request_get.get('max_score'):
-        search_dict['max_score'] = (float)(request_get.get('max_score'))
+        search_dict['max_score'] = float(request_get.get('max_score'))
     else:
         search_dict['max_score'] = 32.0
     if request_get.get('min_score'):
-        search_dict['min_score'] = (float)(request_get.get('min_score'))
+        search_dict['min_score'] = float(request_get.get('min_score'))
     else:
         search_dict['min_score'] = -32.0
     return (has_text(course.title+course.subtitle,search_dict['title']) and
@@ -221,7 +221,6 @@ def api_coursepref(request):
         for course in all_course:
             course_data=course
             course_data['rated']=rated[course['id']]
-            course_data['except']=False
             course_data['score']=cf_result[course['id']]
             course_list.append(course_data)
         return JsonResponse(course_list, safe=False)
@@ -255,8 +254,8 @@ def api_coursepref_rated(request):
     if request.method == 'GET':
         cf_result=collaborative_filtering(request.user)
         cf_user=[score_data for score_data in CoursePref.objects.filter(user=request.user)]
-        start = (int)(request.GET.get('start'))
-        end = (int)(request.GET.get('end'))
+        start = int(request.GET.get('start'))
+        end = int(request.GET.get('end'))
         position = 0
         rated={}
         course_list=[]
@@ -282,8 +281,8 @@ def api_coursepref_unrated(request):
     if request.method == 'GET':
         cf_result=collaborative_filtering(request.user)
         cf_user=[score_data for score_data in CoursePref.objects.filter(user=request.user)]
-        start = (int)(request.GET.get('start'))
-        end = (int)(request.GET.get('end'))
+        start = int(request.GET.get('start'))
+        end = int(request.GET.get('end'))
         position = 0
         rated={}
         course_list=[]
@@ -305,12 +304,6 @@ def api_coursepref_unrated(request):
     return HttpResponseNotAllowed(['GET'])
 
 @auth_func
-def api_coursepref_except(request):
-    if request.method == 'GET':
-        return JsonResponse([], safe=False)
-    return HttpResponseNotAllowed(['GET'])
-
-@auth_func
 def api_coursepref_id(request, course_id):
     if request.method == 'GET':
         try:
@@ -322,7 +315,7 @@ def api_coursepref_id(request, course_id):
     if request.method == 'PUT':
         try:
             body = request.body.decode()
-            score = (int)(json.loads(body)['score'])
+            score = int(json.loads(body)['score'])
             if score < 0 or score > 10:
                 return HttpResponseBadRequest()
         except (KeyError, JSONDecodeError):
@@ -363,7 +356,7 @@ def api_timepref(request):
         try:
             body = request.body.decode()
             user = request.user
-            score = (int)(json.loads(body)['score'])
+            score = int(json.loads(body)['score'])
             start_time = json.loads(body)['start_time']
             weekday = json.loads(body)['weekday']
             if score < 0 or score > 10:

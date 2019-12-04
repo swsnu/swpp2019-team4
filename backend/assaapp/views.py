@@ -345,19 +345,19 @@ def searcher(course, score, request_get):
     search_dict['professor'] = request_get.get('professor')
     search_dict['language'] = request_get.get('language')
     if request_get.get('max_credit'):
-        search_dict['max_credit'] = (int)(request_get.get('max_credit'))
+        search_dict['max_credit'] = int(request_get.get('max_credit'))
     else:
         search_dict['max_credit'] = 32
     if request_get.get('min_credit'):
-        search_dict['min_credit'] = (int)(request_get.get('min_credit'))
+        search_dict['min_credit'] = int(request_get.get('min_credit'))
     else:
         search_dict['min_credit'] = -32
     if request_get.get('max_score'):
-        search_dict['max_score'] = (float)(request_get.get('max_score'))
+        search_dict['max_score'] = float(request_get.get('max_score'))
     else:
         search_dict['max_score'] = 32.0
     if request_get.get('min_score'):
-        search_dict['min_score'] = (float)(request_get.get('min_score'))
+        search_dict['min_score'] = float(request_get.get('min_score'))
     else:
         search_dict['min_score'] = -32.0
     return (has_text(course.title+course.subtitle,search_dict['title']) and
@@ -379,8 +379,8 @@ def api_course(request):
     if request.method == 'GET':
         course_list = Course.objects.all()
         cf_result=collaborative_filtering(request.user)
-        start = (int)(request.GET.get('start'))
-        end = (int)(request.GET.get('end'))
+        start = int(request.GET.get('start'))
+        end = int(request.GET.get('end'))
         course_list = [course for course
                         in filter(lambda course: searcher(course,cf_result[course.id],request.GET), course_list)]
         course_list = sorted(course_list, key=lambda course: -cf_result[course.id])

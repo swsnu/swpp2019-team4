@@ -30,7 +30,6 @@ export {
   deleteTimetable,
   getRatedCourse,
   getUnratedCourse,
-  getExceptCourse,
   resetCourseScore,
   putCoursepref,
   putCourseprefTemp,
