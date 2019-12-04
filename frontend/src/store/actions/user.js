@@ -44,7 +44,7 @@ export const getCourses = (start, end, searchValues) => (dispatch) => axios.get(
   .then((res) => dispatch({ type: actionTypes.GET_COURSES, courses: res.data }))
   .catch(() => {});
 
-  export const setCourses = (start, end, searchValues) => (dispatch) => axios.get(`/api/course/?start=${start}&end=${end}&title=${searchValues.title}&classification=${searchValues.classification}&department=${searchValues.department}&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}&professor=${searchValues.professor}&language=${searchValues.language}&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`)
+export const setCourses = (start, end, searchValues) => (dispatch) => axios.get(`/api/course/?start=${start}&end=${end}&title=${searchValues.title}&classification=${searchValues.classification}&department=${searchValues.department}&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}&professor=${searchValues.professor}&language=${searchValues.language}&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`)
   .then((res) => dispatch({ type: actionTypes.SET_COURSES, course_list: res.data }))
   .catch(() => {});
 
@@ -54,11 +54,11 @@ export const postCourse = (timetableId, courseId) => (dispatch) => axios.post(
   .then((res) => dispatch({ type: actionTypes.POST_COURSE, timetable: res.data }))
   .catch(() => {});
 
-export const postCourseTemp = (tempCourse) => (dispatch) => dispatch({ type: actionTypes.POST_COURSE_TEMP, course: tempCourse})
-export const deleteCourseTemp = (course) => (dispatch) => dispatch({ type: actionTypes.DELETE_COURSE_TEMP, course: course})
+export const postCourseTemp = (tempCourse) => (dispatch) => dispatch({ type: actionTypes.POST_COURSE_TEMP, course: tempCourse });
+export const deleteCourseTemp = (course) => (dispatch) => dispatch({ type: actionTypes.DELETE_COURSE_TEMP, course });
 
 export const editCourse = (courseId, changedValues) => (dispatch) => axios.put(
-  `/api/customCourse/${courseId}/`, changedValues
+  `/api/customCourse/${courseId}/`, changedValues,
 )
   .then((res) => dispatch({ type: actionTypes.EDIT_TIMETABLE, timetable: res.data }))
   .catch(() => {});

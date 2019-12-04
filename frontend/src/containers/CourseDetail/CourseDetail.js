@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import * as actionCreators from '../../store/actions/index';
 import { TwitterPicker } from 'react-color';
+import * as actionCreators from '../../store/actions/index';
 import './CourseDetail.css';
 
 class CourseDetail extends Component {
@@ -21,12 +21,12 @@ class CourseDetail extends Component {
   }
 
   handleColor(color) {
-    this.setState({color: color});
-    this.props.onEditCourse(this.props.course.id, { color: color });
+    this.setState({ color });
+    this.props.onEditCourse(this.props.course.id, { color });
   }
 
   render() {
-    const course = this.props.course;
+    const { course } = this.props;
     const isCustom = course.is_custom;
     const href = 'http://sugang.snu.ac.kr/sugang/cc/cc101.action?'
       + 'openSchyy=2019&openShtmFg=U000200002&openDetaShtmFg='
@@ -37,17 +37,15 @@ class CourseDetail extends Component {
     const timeString = (time) => {
       const hour = Math.floor(time / 60);
       const minute = time - hour * 60;
-      const hourString = "" + hour;
-      const minuteString = minute < 10 ? "0" + minute : "" + minute;
-      return hourString + ":" + minuteString;
-    }
-    const timeDiv = course.time.map((segment, index) => {
-      return (
-        <div key = {index}>
-          {weekDayName[segment.week_day] + " (" + timeString(segment.start_time) + " ~ " + timeString(segment.end_time) + ")"}
-        </div>
-      );
-    });
+      const hourString = `${hour}`;
+      const minuteString = minute < 10 ? `0${minute}` : `${minute}`;
+      return `${hourString}:${minuteString}`;
+    };
+    const timeDiv = course.time.map((segment, index) => (
+      <div key={index}>
+        {`${weekDayName[segment.week_day]} (${timeString(segment.start_time)} ~ ${timeString(segment.end_time)})`}
+      </div>
+    ));
 
     return (
       <div className="CourseDetail modal fade" id={this.props.id} tabIndex="-1" role="dialog">
@@ -61,69 +59,82 @@ class CourseDetail extends Component {
             <div className="modal-body">
               <table className="table">
                 <tbody>
-                  {!isCustom ? 
-                  <tr>
-                    <td>강좌번호</td>
-                    <td>{course.course_number}</td>
-                  </tr>
-                  : null}
-                  {!isCustom ? 
-                  <tr>
-                    <td>분반번호</td>
-                    <td>{course.lecture_number}</td>
-                  </tr>
-                  : null}
-                  {!isCustom ? 
-                  <tr>
-                    <td>학점</td>
-                    <td>{course.credit}</td>
-                  </tr>
-                  : null}
-                  {!isCustom ?
-                  <tr>
-                    <td>교수</td>
-                    <td>{course.professor}</td>
-                  </tr>
-                  : null}
-                  {!isCustom ?
-                  <tr>
-                    <td>장소</td>
-                    <td>{course.location}</td>
-                  </tr>
-                  : null}
-              
+                  {!isCustom
+                    ? (
+                      <tr>
+                        <td>강좌번호</td>
+                        <td>{course.course_number}</td>
+                      </tr>
+                    )
+                    : null}
+                  {!isCustom
+                    ? (
+                      <tr>
+                        <td>분반번호</td>
+                        <td>{course.lecture_number}</td>
+                      </tr>
+                    )
+                    : null}
+                  {!isCustom
+                    ? (
+                      <tr>
+                        <td>학점</td>
+                        <td>{course.credit}</td>
+                      </tr>
+                    )
+                    : null}
+                  {!isCustom
+                    ? (
+                      <tr>
+                        <td>교수</td>
+                        <td>{course.professor}</td>
+                      </tr>
+                    )
+                    : null}
+                  {!isCustom
+                    ? (
+                      <tr>
+                        <td>장소</td>
+                        <td>{course.location}</td>
+                      </tr>
+                    )
+                    : null}
+
                   <tr>
                     <td>시간</td>
                     <td>
                       {timeDiv}
                     </td>
                   </tr>
-                  {!isCustom ? 
-                  <tr>
-                    <td>링크</td>
-                    <td><a href={href} rel="noopener noreferrer" target="_blank">세부 정보</a></td>
-                  </tr>
+                  {!isCustom
+                    ? (
+                      <tr>
+                        <td>링크</td>
+                        <td><a href={href} rel="noopener noreferrer" target="_blank">세부 정보</a></td>
+                      </tr>
+                    )
                     : null}
                   <tr>
-                  <td>색상</td>
-                  <td>
-                    <div className="dropdown">
-                      <button
-                        type="button"
-                        id="dropdown-color"
-                        data-toggle="dropdown"
-                        aria-labelledby="Dropdown Color"
-                        style={{ backgroundColor: this.state.color }}
-                        disabled={!this.props.editable}
-                      />
-                      <div className="dropdown-menu">
-                        <TwitterPicker
-                          color={course.color}
-                          onChangeComplete={(color) => this.handleColor(color.hex)}
+                    <td>색상</td>
+                    <td>
+                      <div className="dropdown">
+                        <button
+                          type="button"
+                          id="dropdown-color"
+                          data-toggle="dropdown"
+                          aria-labelledby="Dropdown Color"
+                          style={{ backgroundColor: this.state.color }}
+                          disabled={!this.props.editable}
                         />
+                        <div className="dropdown-menu">
+                          <TwitterPicker
+                            color={course.color}
+                            onChangeComplete={(color) => this.handleColor(color.hex)}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  </td></tr>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -146,7 +157,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 CourseDetail.defaultProps = {
   editable: false,
-}
+};
 
 CourseDetail.propTypes = {
   id: PropTypes.string.isRequired,

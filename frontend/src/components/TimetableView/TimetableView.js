@@ -72,7 +72,7 @@ class TimetableView extends Component {
                 top: (Math.round(((startTime % 60) / 60) * heightunit) - 1),
                 length: (Math.round(((endTime - startTime) / 60) * heightunit)),
                 color: this.props.courses[i].color,
-                opacity: (this.props.courses[i].opacity === undefined)? 1.0 : this.props.courses[i].opacity,
+                opacity: (this.props.courses[i].opacity === undefined) ? 1.0 : this.props.courses[i].opacity,
               },
             );
           }
@@ -123,7 +123,7 @@ class TimetableView extends Component {
                           top: `${course.top}px`,
                           backgroundColor: course.color,
                           opacity: course.opacity,
-                          zIndex: course.opacity > .9 ? 5 : 10,
+                          zIndex: course.opacity > 0.9 ? 5 : 10,
                         }}
                         role="button"
                         tabIndex="0"
