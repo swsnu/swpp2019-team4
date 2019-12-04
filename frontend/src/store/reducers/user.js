@@ -112,35 +112,37 @@ const reducer = (state = initialState, action) => {
       newuser.timetable_main = action.timetable_main;
       return { ...state, user: newuser };
     }
-    case actionTypes.GET_RATED_COURSE:{
-      const newlist=state.rated_course.concat(action.course_list);
-      return {...state, rated_course: newlist};
+    case actionTypes.GET_RATED_COURSE: {
+      const newlist = state.rated_course.concat(action.course_list);
+      return { ...state, rated_course: newlist };
     }
-    case actionTypes.GET_UNRATED_COURSE:{
-      const newlist=state.unrated_course.concat(action.course_list);
-      return {...state, unrated_course: newlist};
+    case actionTypes.GET_UNRATED_COURSE: {
+      const newlist = state.unrated_course.concat(action.course_list);
+      return { ...state, unrated_course: newlist };
     }
-    case actionTypes.GET_EXCEPT_COURSE:{
-      const newlist=state.except_course.concat(action.course_list);
-      return {...state, except_course: newlist};
+    case actionTypes.GET_EXCEPT_COURSE: {
+      const newlist = state.except_course.concat(action.course_list);
+      return { ...state, except_course: newlist };
     }
     case actionTypes.RESET_COURSE_SCORE:
-      return {...state, rated_course: [], unrated_course: [], except_course: []};
+      return {
+        ...state, rated_course: [], unrated_course: [], except_course: [],
+      };
     case actionTypes.PUT_COURSEPREF_TEMP:
-      state.rated_course = state.rated_course.map(function({id, score, ...item }) {return id === action.coursepref.id ? {id, score:action.coursepref.score, ...item} : {id, score, ...item}})
-      state.unrated_course = state.unrated_course.map(function({id, score, ...item }) {return id === action.coursepref.id ? {id, score:action.coursepref.score, ...item} : {id, score, ...item}})
-      state.except_course = state.except_course.map(function({id, score, ...item }) {return id === action.coursepref.id ? {id, score:action.coursepref.score, ...item} : {id, score, ...item}})
-      let target_course = state.changed_courses.filter((course) => course.id === action.coursepref.id)
-      if (target_course.length > 0) {
-        state.changed_courses = state.changed_courses.map(function({id, score}) {return id === action.coursepref.id ? {id, score:action.coursepref.score} : {id, score}})
+      state.rated_course = state.rated_course.map(({ id, score, ...item }) => (id === action.coursepref.id ? { id, score: action.coursepref.score, ...item } : { id, score, ...item }));
+      state.unrated_course = state.unrated_course.map(({ id, score, ...item }) => (id === action.coursepref.id ? { id, score: action.coursepref.score, ...item } : { id, score, ...item }));
+      state.except_course = state.except_course.map(({ id, score, ...item }) => (id === action.coursepref.id ? { id, score: action.coursepref.score, ...item } : { id, score, ...item }));
+      const targetCourse = state.changed_courses.filter((course) => course.id === action.coursepref.id);
+      if (targetCourse.length > 0) {
+        state.changed_courses = state.changed_courses.map(({ id, score }) => (id === action.coursepref.id ? { id, score: action.coursepref.score } : { id, score }));
       } else {
-        state.changed_courses.push(action.coursepref)
+        state.changed_courses.push(action.coursepref);
       }
-      return {...state};
+      return { ...state };
     case actionTypes.PUT_COURSEPREF:
-      return {...state, changed_courses: [] };
+      return { ...state, changed_courses: [] };
     default:
-      return { ...state};
+      return { ...state };
   }
 };
 

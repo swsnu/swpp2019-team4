@@ -32,11 +32,10 @@ class TimetableRecommend extends Component {
   }
 
   movePage(offset) {
-    if (this.state.index == 2) {
+    if (this.state.index === 2) {
       this.props.onPutCoursePref(this.props.changedCourses);
     }
     this.setState((prevState) => ({ ...prevState, index: prevState.index + offset }));
-    
   }
 
   render() {

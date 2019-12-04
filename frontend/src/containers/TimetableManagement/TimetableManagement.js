@@ -18,7 +18,7 @@ class TimetableManagement extends Component {
       semester: '2019-2',
       title: '',
       showCourses: true,
-      searchdetail:false,
+      searchdetail: false,
       searchValues: {
         title: '',
         classification: '',
@@ -133,52 +133,40 @@ class TimetableManagement extends Component {
     }
   }
 
-  searchOnChange(event,type) {
-    var newValue=this.state.searchValues
-    if(type==='title'){
-      newValue.title=event.target.value;
+  searchOnChange(event, type) {
+    const newValue = this.state.searchValues;
+    if (type === 'title') {
+      newValue.title = event.target.value;
+    } else if (type === 'classification') {
+      newValue.classification = event.target.value;
+    } else if (type === 'department') {
+      newValue.department = event.target.value;
+    } else if (type === 'degree_program') {
+      newValue.degree_program = event.target.value;
+    } else if (type === 'academic_year') {
+      newValue.academic_year = event.target.value;
+    } else if (type === 'course_number') {
+      newValue.course_number = event.target.value;
+    } else if (type === 'lecture_number') {
+      newValue.lecture_number = event.target.value;
+    } else if (type === 'professor') {
+      newValue.professor = event.target.value;
+    } else if (type === 'language') {
+      newValue.language = event.target.value;
+    } else if (type === 'min_credit') {
+      newValue.min_credit = event.target.value;
+    } else if (type === 'max_credit') {
+      newValue.max_credit = event.target.value;
+    } else if (type === 'min_score') {
+      newValue.min_score = event.target.value;
+    } else if (type === 'max_score') {
+      newValue.max_score = event.target.value;
     }
-    else if(type=='classification'){
-      newValue.classification=event.target.value;
-    }
-    else if(type=='department'){
-      newValue.department=event.target.value;
-    }
-    else if(type=='degree_program'){
-      newValue.degree_program=event.target.value;
-    }
-    else if(type=='academic_year'){
-      newValue.academic_year=event.target.value;
-    }
-    else if(type=='course_number'){
-      newValue.course_number=event.target.value;
-    }
-    else if(type=='lecture_number'){
-      newValue.lecture_number=event.target.value;
-    }
-    else if(type=='professor'){
-      newValue.professor=event.target.value;
-    }
-    else if(type=='language'){
-      newValue.language=event.target.value;
-    }
-    else if(type=='min_credit'){
-      newValue.min_credit=event.target.value;
-    }
-    else if(type=='max_credit'){
-      newValue.max_credit=event.target.value;
-    }
-    else if(type=='min_score'){
-      newValue.min_score=event.target.value;
-    }
-    else if(type=='max_score'){
-      newValue.max_score=event.target.value;
-    }
-    this.setState({searchValues:newValue});
+    this.setState({ searchValues: newValue });
   }
 
-  onSearchToggle(){
-    this.setState({searchdetail:!this.state.searchdetail});
+  onSearchToggle() {
+    this.setState({ searchdetail: !this.state.searchdetail });
   }
 
   render() {
@@ -272,10 +260,10 @@ class TimetableManagement extends Component {
             </div>
             <SearchBar
               value={this.state.searchValues}
-              onChange={(event,type)=>this.searchOnChange(event,type)}
+              onChange={(event, type) => this.searchOnChange(event, type)}
               onKeyDown={() => this.enterKey()}
               onSearch={() => this.search()}
-              onToggle={()=>this.onSearchToggle()}
+              onToggle={() => this.onSearchToggle()}
               togglestatus={this.state.searchdetail}
             />
 

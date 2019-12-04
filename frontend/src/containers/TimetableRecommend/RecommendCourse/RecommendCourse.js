@@ -39,14 +39,14 @@ class RecommendCourse extends Component {
         min_score: '',
         max_score: '',
       },
-      ratedScrollLimit:2000,
-      unratedScrollLimit:2000,
-      exceptScrollLimit:2000,
-      ratedCourseCount:50,
-      unratedCourseCount:50,
-      exceptCourseCount:50,
-      tabview:0,
-      searchdetail:false,
+      ratedScrollLimit: 2000,
+      unratedScrollLimit: 2000,
+      exceptScrollLimit: 2000,
+      ratedCourseCount: 50,
+      unratedCourseCount: 50,
+      exceptCourseCount: 50,
+      tabview: 0,
+      searchdetail: false,
     };
     this.timeToString = (time) => {
       const hour = parseInt(time / 60, 10);
@@ -59,9 +59,9 @@ class RecommendCourse extends Component {
   componentDidMount() {
     this.props.handleValid(true);
     this.props.resetCourseScore();
-    this.props.getRatedCourse(0,49,this.state.realValues);
-    this.props.getUnratedCourse(0,49,this.state.realValues);
-    this.props.getExceptCourse(0,49,this.state.realValues);
+    this.props.getRatedCourse(0, 49, this.state.realValues);
+    this.props.getUnratedCourse(0, 49, this.state.realValues);
+    this.props.getExceptCourse(0, 49, this.state.realValues);
   }
 
   segmentToString(weekDay, startTime) {
@@ -69,28 +69,26 @@ class RecommendCourse extends Component {
     return `${weekDayName[weekDay]}${this.timeToString(startTime)}`;
   }
 
-  scrollHandler(scrollTop){
-    const pageSize=50;
-    const scrollSize=pageSize*60;
-    if(this.state.tabview===0&&this.state.ratedScrollLimit<scrollTop){
-      this.setState({ratedScrollLimit:this.state.ratedScrollLimit+scrollSize});
-      this.props.getRatedCourse(this.state.ratedCourseCount,this.state.ratedCourseCount+pageSize-1,this.state.realValues);
-      this.setState({ratedCourseCount:this.state.ratedCourseCount+pageSize});
-    }
-    else if(this.state.tabview==1&&this.state.unratedScrollLimit<scrollTop){
-      this.setState({unratedScrollLimit:this.state.unratedScrollLimit+scrollSize});
-      this.props.getUnratedCourse(this.state.unratedCourseCount,this.state.unratedCourseCount+pageSize-1,this.state.realValues);
-      this.setState({unratedCourseCount:this.state.unratedCourseCount+pageSize});
-    }
-    else if(this.state.tabview==2&&this.state.exceptScrollLimit<scrollTop){
-      this.setState({exceptScrollLimit:this.state.exceptScrollLimit+scrollSize});
-      this.props.getExceptCourse(this.state.exceptCourseCount,this.state.exceptCourseCount+pageSize-1,this.state.realValues);
-      this.setState({exceptCourseCount:this.state.exceptCourseCount+pageSize});
+  scrollHandler(scrollTop) {
+    const pageSize = 50;
+    const scrollSize = pageSize * 60;
+    if (this.state.tabview === 0 && this.state.ratedScrollLimit < scrollTop) {
+      this.setState({ ratedScrollLimit: this.state.ratedScrollLimit + scrollSize });
+      this.props.getRatedCourse(this.state.ratedCourseCount, this.state.ratedCourseCount + pageSize - 1, this.state.realValues);
+      this.setState({ ratedCourseCount: this.state.ratedCourseCount + pageSize });
+    } else if (this.state.tabview === 1 && this.state.unratedScrollLimit < scrollTop) {
+      this.setState({ unratedScrollLimit: this.state.unratedScrollLimit + scrollSize });
+      this.props.getUnratedCourse(this.state.unratedCourseCount, this.state.unratedCourseCount + pageSize - 1, this.state.realValues);
+      this.setState({ unratedCourseCount: this.state.unratedCourseCount + pageSize });
+    } else if (this.state.tabview === 2 && this.state.exceptScrollLimit < scrollTop) {
+      this.setState({ exceptScrollLimit: this.state.exceptScrollLimit + scrollSize });
+      this.props.getExceptCourse(this.state.exceptCourseCount, this.state.exceptCourseCount + pageSize - 1, this.state.realValues);
+      this.setState({ exceptCourseCount: this.state.exceptCourseCount + pageSize });
     }
   }
 
-  onSearchToggle(){
-    this.setState({searchdetail:!this.state.searchdetail});
+  onSearchToggle() {
+    this.setState({ searchdetail: !this.state.searchdetail });
   }
 
   courseElement(course) {
@@ -107,7 +105,7 @@ class RecommendCourse extends Component {
       '#515BEC',
       '#3F5EFB',
     ];
-    let score = course.score;
+    const { score } = course;
     let timeString = '';
     for (let i = 0; i < course.time.length; i += 1) {
       timeString += this.segmentToString(course.time[i].week_day, course.time[i].start_time, course.time[i].end_time);
@@ -143,7 +141,7 @@ class RecommendCourse extends Component {
                   max="10"
                   id={`course-score-form-${course.id}`}
                   value={score}
-                  onChange={(event)=>this.props.onChangeslider(course.id,event.target.value)}
+                  onChange={(event) => this.props.onChangeslider(course.id, event.target.value)}
                 />
               </div>
             </form>
@@ -164,62 +162,52 @@ class RecommendCourse extends Component {
     );
   }
 
-  searchOnChange(event,type) {
-    var newValue=this.state.searchValues
-    if(type==='title'){
-      newValue.title=event.target.value;
+  searchOnChange(event, type) {
+    const newValue = this.state.searchValues;
+    if (type === 'title') {
+      newValue.title = event.target.value;
+    } else if (type === 'classification') {
+      newValue.classification = event.target.value;
+    } else if (type === 'department') {
+      newValue.department = event.target.value;
+    } else if (type === 'degree_program') {
+      newValue.degree_program = event.target.value;
+    } else if (type === 'academic_year') {
+      newValue.academic_year = event.target.value;
+    } else if (type === 'course_number') {
+      newValue.course_number = event.target.value;
+    } else if (type === 'lecture_number') {
+      newValue.lecture_number = event.target.value;
+    } else if (type === 'professor') {
+      newValue.professor = event.target.value;
+    } else if (type === 'language') {
+      newValue.language = event.target.value;
+    } else if (type === 'min_credit') {
+      newValue.min_credit = event.target.value;
+    } else if (type === 'max_credit') {
+      newValue.max_credit = event.target.value;
+    } else if (type === 'min_score') {
+      newValue.min_score = event.target.value;
+    } else if (type === 'max_score') {
+      newValue.max_score = event.target.value;
     }
-    else if(type=='classification'){
-      newValue.classification=event.target.value;
-    }
-    else if(type=='department'){
-      newValue.department=event.target.value;
-    }
-    else if(type=='degree_program'){
-      newValue.degree_program=event.target.value;
-    }
-    else if(type=='academic_year'){
-      newValue.academic_year=event.target.value;
-    }
-    else if(type=='course_number'){
-      newValue.course_number=event.target.value;
-    }
-    else if(type=='lecture_number'){
-      newValue.lecture_number=event.target.value;
-    }
-    else if(type=='professor'){
-      newValue.professor=event.target.value;
-    }
-    else if(type=='language'){
-      newValue.language=event.target.value;
-    }
-    else if(type=='min_credit'){
-      newValue.min_credit=event.target.value;
-    }
-    else if(type=='max_credit'){
-      newValue.max_credit=event.target.value;
-    }
-    else if(type=='min_score'){
-      newValue.min_score=event.target.value;
-    }
-    else if(type=='max_score'){
-      newValue.max_score=event.target.value;
-    }
-    this.setState({searchValues:newValue});
+    this.setState({ searchValues: newValue });
   }
 
-  search(){
-    this.setState({realValues:this.state.searchValues,
-                   ratedScrollLimit:2000,
-                   unratedScrollLimit:2000,
-                   exceptScrollLimit:2000,
-                   ratedCourseCount:50,
-                   unratedCourseCount:50,
-                   exceptCourseCount:50,});
+  search() {
+    this.setState({
+      realValues: this.state.searchValues,
+      ratedScrollLimit: 2000,
+      unratedScrollLimit: 2000,
+      exceptScrollLimit: 2000,
+      ratedCourseCount: 50,
+      unratedCourseCount: 50,
+      exceptCourseCount: 50,
+    });
     this.props.resetCourseScore();
-    this.props.getRatedCourse(0,49,this.state.searchValues);
-    this.props.getUnratedCourse(0,49,this.state.searchValues);
-    this.props.getExceptCourse(0,49,this.state.searchValues);
+    this.props.getRatedCourse(0, 49, this.state.searchValues);
+    this.props.getUnratedCourse(0, 49, this.state.searchValues);
+    this.props.getExceptCourse(0, 49, this.state.searchValues);
   }
 
   enterKey() {
@@ -229,21 +217,21 @@ class RecommendCourse extends Component {
   }
 
   render() {
-    var ratedview=[];
-    var unratedview=[];
-    var exceptview=[];
-    if(this.props.ratedCourse!==undefined){
-      for(let i=0;i<this.props.ratedCourse.length;i=i+1){
+    const ratedview = [];
+    const unratedview = [];
+    const exceptview = [];
+    if (this.props.ratedCourse !== undefined) {
+      for (let i = 0; i < this.props.ratedCourse.length; i += 1) {
         ratedview.push(this.courseElement(this.props.ratedCourse[i]));
       }
     }
-    if(this.props.unratedCourse!==undefined){
-      for(let i=0;i<this.props.unratedCourse.length;i=i+1){
+    if (this.props.unratedCourse !== undefined) {
+      for (let i = 0; i < this.props.unratedCourse.length; i += 1) {
         unratedview.push(this.courseElement(this.props.unratedCourse[i]));
       }
     }
-    if(this.props.exceptCourse!==undefined){
-      for(let i=0;i<this.props.exceptCourse.length;i=i+1){
+    if (this.props.exceptCourse !== undefined) {
+      for (let i = 0; i < this.props.exceptCourse.length; i += 1) {
         exceptview.push(this.courseElement(this.props.exceptCourse[i]));
       }
     }
@@ -259,7 +247,7 @@ class RecommendCourse extends Component {
                 role="tab"
                 aria-controls="rated"
                 aria-selected="true"
-                onClick={()=>{this.setState({tabview:0})}}
+                onClick={() => { this.setState({ tabview: 0 }); }}
               >
 평가
               </a>
@@ -272,7 +260,7 @@ class RecommendCourse extends Component {
                 role="tab"
                 aria-controls="unrated"
                 aria-selected="false"
-                onClick={()=>{this.setState({tabview:1})}}
+                onClick={() => { this.setState({ tabview: 1 }); }}
               >
 미평가
               </a>
@@ -285,14 +273,14 @@ class RecommendCourse extends Component {
                 role="tab"
                 aria-controls="exception"
                 aria-selected="false"
-                onClick={()=>{this.setState({tabview:2})}}
+                onClick={() => { this.setState({ tabview: 2 }); }}
               >
 예외
               </a>
             </li>
           </ul>
-          <SearchBar value={this.state.searchValues} onChange={(event,type) => this.searchOnChange(event,type)} onKeyDown={() => this.enterKey()} onToggle={()=>this.onSearchToggle()} togglestatus={this.state.searchdetail} onSearch={() => this.search()}/>
-          <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: '350px' }} onScroll={(event)=>{this.scrollHandler(event.target.scrollTop)}}>
+          <SearchBar value={this.state.searchValues} onChange={(event, type) => this.searchOnChange(event, type)} onKeyDown={() => this.enterKey()} onToggle={() => this.onSearchToggle()} togglestatus={this.state.searchdetail} onSearch={() => this.search()} />
+          <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: '350px' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
             <div className="tab-pane show active" id="rated-tab" role="tabpanel" aria-labelledby="rated-tab">
               {ratedview}
             </div>
@@ -321,10 +309,10 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   resetCourseScore: () => dispatch(actionCreators.resetCourseScore()),
-  getRatedCourse: (start,end,searchValues) => dispatch(actionCreators.getRatedCourse(start,end,searchValues)),
-  getUnratedCourse: (start,end,searchValues) => dispatch(actionCreators.getUnratedCourse(start,end,searchValues)),
-  getExceptCourse: (start,end,searchValues) => dispatch(actionCreators.getExceptCourse(start,end,searchValues)),
-  onChangeslider: (id,value) => dispatch(actionCreators.putCourseprefTemp(id,value)),
+  getRatedCourse: (start, end, searchValues) => dispatch(actionCreators.getRatedCourse(start, end, searchValues)),
+  getUnratedCourse: (start, end, searchValues) => dispatch(actionCreators.getUnratedCourse(start, end, searchValues)),
+  getExceptCourse: (start, end, searchValues) => dispatch(actionCreators.getExceptCourse(start, end, searchValues)),
+  onChangeslider: (id, value) => dispatch(actionCreators.putCourseprefTemp(id, value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecommendCourse);
