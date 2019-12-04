@@ -98,7 +98,7 @@ class RecommendCourse extends Component {
       '#515BEC',
       '#3F5EFB',
     ];
-    const { score } = course;
+    const {score} = course;
     let timeString = '';
     for (let i = 0; i < course.time.length; i += 1) {
       timeString += this.segmentToString(course.time[i].week_day, course.time[i].start_time, course.time[i].end_time);
@@ -108,6 +108,7 @@ class RecommendCourse extends Component {
     }
     return (
       <div key={course.id}>
+        <div className="expected_color" style={{backgroundColor:colorGradient[Math.round(course.expected)],height:'40px',width:'3px',float:"left"}}/>
         <div className="row">
           <div className="col-6">
             <div className="text-left">
@@ -135,6 +136,8 @@ class RecommendCourse extends Component {
                   id={`course-score-form-${course.id}`}
                   value={score}
                   onChange={(event) => this.props.onChangeslider(course.id, event.target.value)}
+                  onClick={(event) => this.props.onChangeslider(course.id, event.target.value)}
+                  onMouseDown={(event) => this.props.onChangeslider(course.id, event.target.value)}
                 />
               </div>
             </form>

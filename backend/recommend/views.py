@@ -7,7 +7,7 @@ from django.http import HttpResponse, HttpResponseNotAllowed, \
 from assaapp.models import User, Course
 from recommend.models import CoursePref, TimePref
 
-def collaborative_filtering(user):
+def cf_score(user):
     all_course = [course for course in Course.objects.all().values()]
     all_coursepref = [score_data for score_data in CoursePref.objects.all().values()]
     user_coursepref = [score_data for score_data in CoursePref.objects.filter(user=user).values()]
@@ -136,18 +136,67 @@ def collaborative_filtering(user):
         usr_std = user_std[user_dict['id']]
         weighted_sum = score_weighted_sum[course['id']]
         rel = relation_sum[course['id']]
-        if score_result_dict[course['id']] < -1.0:
-            if relation_sum[course['id']] == 0.0:
-                score_result_dict[course['id']] = score_average[course['id']]
-            else:
-                val = weighted_sum*usr_std/rel+user_average[user_dict['id']]
-                score_result_dict[course['id']] = round(val, 3)
+        if relation_sum[course['id']] == 0.0:
+            score_result_dict[course['id']] = score_average[course['id']]
+        else:
+            val = weighted_sum*usr_std/rel+user_average[user_dict['id']]
+            score_result_dict[course['id']] = round(val, 3)
         if score_result_dict[course['id']] < 0.0:
             score_result_dict[course['id']] = 0.0
         if score_result_dict[course['id']] > 10.0:
             score_result_dict[course['id']] = 10.0
 
     return score_result_dict
+
+def cf_view(user):
+    all_course = [course.id for course in Course.objects.all()]
+    all_coursepref = [model_to_dict(score_data) for score_data in CoursePref.objects.all()]
+    user_coursepref = [model_to_dict(score_data) for score_data in CoursePref.objects.filter(user=user)]
+    all_user = [person.id for person in User.objects.all()]
+    user_id = user.id
+
+    course_size=len(all_course)
+
+    user_score={}
+    user_sum={}
+    user_one={}
+
+    relation={}
+    relation_sum=0.0
+    relation_abs_sum=0.0
+
+    course_score={}
+
+    for person in all_user:
+        user_sum[person]=0
+        user_one[person]=0
+    for course in all_course:
+        user_score[course]=0
+        course_score[course]=0.0
+    for score_data in user_coursepref:
+        user_score[score_data['course']]=1
+    for score_data in all_coursepref:
+        user_sum[score_data['user']]+=1
+        if user_score[score_data['course']]==1:
+            user_one[score_data['user']]+=1
+    for person in all_user:
+        if person==user_id:
+            continue
+        relation[person]=1.0-(2.0*user_sum[user_id]+2.0*user_sum[person]-4.0*user_one[person])/course_size
+        relation_sum+=relation[person]
+        relation_abs_sum+=abs(relation[person])
+    for score_data in all_coursepref:
+        if score_data['user']==user_id:
+            continue
+        course_score[score_data['course']]+=relation[score_data['user']]
+    if relation_abs_sum==0.0:
+        for course in all_course:
+            course_score[course]=0.5
+    else:
+        relation_base=0.5-relation_sum/relation_abs_sum/2.0
+        for course in all_course:
+            course_score[course]=(course_score[course]/relation_abs_sum)+relation_base
+    return course_score
 
 def searcher(course, score, request_get):
     def has_text(text,match_text):
@@ -210,7 +259,7 @@ def auth_func(func):
 @auth_func
 def api_coursepref(request):
     if request.method == 'GET':
-        cf_result=collaborative_filtering(request.user)
+        cf_result=cf_score(request.user)
         rated={}
         course_list=[]
         all_course=[course.data_small() for course in Course.objects.all()]
@@ -252,26 +301,23 @@ def api_coursepref(request):
 @auth_func
 def api_coursepref_rated(request):
     if request.method == 'GET':
-        cf_result=collaborative_filtering(request.user)
+        cf_view_result=cf_view(request.user)
+        cf_score_result=cf_score(request.user)
         cf_user=[score_data for score_data in CoursePref.objects.filter(user=request.user)]
         start = int(request.GET.get('start'))
         end = int(request.GET.get('end'))
         position = 0
-        rated={}
         course_list=[]
-        all_course=[course for course in Course.objects.all()]
-        for course in all_course:
-            rated[course.id]=False
         for score_data in cf_user:
-            rated[score_data.course.id]=True
-        for course in all_course:
             if position>end:
                 break
-            elif position>=start and rated[course.id] and searcher(course,cf_result[course.id],request.GET):
+            course=score_data.course
+            if position>=start and searcher(course,score_data.score,request.GET):
                 course_data=course.data()
-                course_data['score']=cf_result[course.id]
+                course_data['score']=score_data.score
+                course_data['expected']=cf_score_result[course.id]
                 course_list.append(course_data)
-            if rated[course.id] and searcher(course,cf_result[course.id],request.GET):
+            if searcher(course,score_data.score,request.GET):
                 position+=1
         return JsonResponse(course_list, safe=False)
     return HttpResponseNotAllowed(['GET'])
@@ -279,26 +325,29 @@ def api_coursepref_rated(request):
 @auth_func
 def api_coursepref_unrated(request):
     if request.method == 'GET':
-        cf_result=collaborative_filtering(request.user)
-        cf_user=[score_data for score_data in CoursePref.objects.filter(user=request.user)]
+        cf_view_result=cf_view(request.user)
+        cf_score_result=cf_score(request.user)
+        cf_user=[score_data.course.id for score_data in CoursePref.objects.filter(user=request.user)]
         start = int(request.GET.get('start'))
         end = int(request.GET.get('end'))
         position = 0
         rated={}
         course_list=[]
-        all_course=[course for course in Course.objects.all()]
+        all_course = [course for course in Course.objects.all()]
+        all_course = sorted(all_course, key=lambda course: -cf_view_result[course.id])
         for course in all_course:
             rated[course.id]=False
         for score_data in cf_user:
-            rated[score_data.course.id]=True
+            rated[score_data]=True
         for course in all_course:
             if position>end:
                 break
-            elif position>=start and (not rated[course.id]) and searcher(course,cf_result[course.id],request.GET):
+            if position>=start and (not rated[course.id]) and searcher(course,0,request.GET):
                 course_data=course.data()
-                course_data['score']=cf_result[course.id]
+                course_data['score']='-'
+                course_data['expected']=cf_score_result[course.id]
                 course_list.append(course_data)
-            if (not rated[course.id]) and searcher(course,cf_result[course.id],request.GET):
+            if (not rated[course.id]) and searcher(course,0,request.GET):
                 position+=1
         return JsonResponse(course_list, safe=False)
     return HttpResponseNotAllowed(['GET'])
