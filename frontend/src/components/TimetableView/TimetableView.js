@@ -82,11 +82,13 @@ class TimetableView extends Component {
     tablehtml.push(<tr key={-1}>{tablehtmlIth}</tr>);
     tablehtml.push(
       <tr style={{ borderColor: 'transparent' }} key={0}>
-        {
+        <td colSpan={8}>
+          {
           isCurrentBar
-            ? <td id="timetable-current-bar" colSpan={8} style={{ top: `${currentPad}px` }} />
+            ? <div id="timetable-current-bar" style={{ top: `${currentPad}px` }} />
             : null
         }
+        </td>
       </tr>,
     );
     for (let i = 0; i < maxHour - minHour; i += 1) {

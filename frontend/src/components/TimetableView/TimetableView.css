@@ -43,8 +43,9 @@
 }
 
 .TimetableView #timetable-current-bar {
+  position: absolute;
+  width: 100%;
   background-color: #EB144C;
   height: 1px;
-  top: 30px;
   z-index: 500;
 }
