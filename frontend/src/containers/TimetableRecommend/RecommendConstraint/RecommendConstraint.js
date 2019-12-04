@@ -42,7 +42,13 @@ class RecommendConstraint extends Component {
     const valid = minValue <= maxValue;
     let newConsts = {...this.state.consts, credit_min: minValue};
     this.setState({ consts: newConsts, credit_valid: valid, credit_min_valid: minValid });
-    this.props.handleValid(this.state.days_per_week_valid && valid && minValid && this.state.credit_max_valid);
+    this.props.handleValid(this.state.days_per_week_valid && 
+                           valid &&
+                           minValid && 
+                           this.state.credit_max_valid && 
+                           this.state.major_valid &&
+                           this.state.major_min_valid &&
+                           this.state.major_max_valid);
     this.props.onEditConstraints(newConsts);
   }
 
@@ -53,7 +59,47 @@ class RecommendConstraint extends Component {
     const valid = minValue <= maxValue;
     let newConsts = {...this.state.consts, credit_max: maxValue}
     this.setState({ consts: newConsts, credit_valid: valid, credit_max_valid: maxValid });
-    this.props.handleValid(this.state.days_per_week_valid && valid && this.state.credit_min_valid && maxValid);
+    this.props.handleValid(this.state.days_per_week_valid &&
+                           valid &&
+                           this.state.credit_min_valid &&
+                           maxValid &&
+                           this.state.major_valid &&
+                           this.state.major_min_valid &&
+                           this.state.major_max_valid);
+    this.props.onEditConstraints(newConsts);
+  }
+
+  handleMajorMin(value) {
+    const minValue = Number(value);
+    const maxValue = this.state.consts.major_max;
+    const minValid = (minValue >= 1 && minValue <= 21);
+    const valid = minValue <= maxValue && minValue <= this.state.consts.credit_max;
+    let newConsts = {...this.state.consts, major_min: minValue};
+    this.setState({ consts: newConsts, major_valid: valid, major_min_valid: minValid });
+    this.props.handleValid(this.state.days_per_week_valid &&
+                           this.state.credit_valid &&
+                           this.state.credit_min_valid &&
+                           this.state.credit_max_valid &&
+                           valid && 
+                           minValid && 
+                           this.state.major_max_valid);
+    this.props.onEditConstraints(newConsts);
+  }
+
+  handleMajorMax(value) {
+    const minValue = this.state.consts.major_min;
+    const maxValue = Number(value);
+    const maxValid = (maxValue >= 1 && maxValue <= 21);
+    const valid = minValue <= maxValue && minValue <= this.state.consts.credit_max;
+    let newConsts = {...this.state.consts, credit_max: maxValue}
+    this.setState({ consts: newConsts, major_valid: valid, major_max_valid: maxValid });
+    this.props.handleValid(this.state.days_per_week_valid &&
+                           this.state.credit_valid &&
+                           this.state.credit_min_valid &&
+                           this.state.credit_max_valid &&
+                           valid && 
+                           this.state.major_min_valid && 
+                           maxValid);
     this.props.onEditConstraints(newConsts);
   }
 
@@ -92,6 +138,29 @@ class RecommendConstraint extends Component {
               id="credit-max-input"
               value={this.state.consts.credit_max}
               onChange={(event) => this.handleCreditMax(event.target.value)}
+            />
+          </div>
+        </div>
+        <div className="form-group row mx-0 my-2">
+          <label className="col-2 offset-2 text-right col-form-label" htmlFor="major-min-input"><b>전공 과목 학점 범위</b></label>
+          <div className="col-2">
+            <input
+              type="number"
+              className={`form-control ${this.state.major_valid
+                && this.state.major_min_valid ? 'is-valid' : 'is-invalid'}`}
+              id="major-min-input"
+              value={this.state.consts.major_min}
+              onChange={(event) => this.handleMajorMin(event.target.value)}
+            />
+          </div>
+          <div className="col-2">
+            <input
+              type="number"
+              className={`form-control ${this.state.major_valid
+                && this.state.major_max_valid ? 'is-valid' : 'is-invalid'}`}
+              id="major-max-input"
+              value={this.state.consts.major_max}
+              onChange={(event) => this.handleMajorMax(event.target.value)}
             />
           </div>
         </div>

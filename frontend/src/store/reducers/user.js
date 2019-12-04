@@ -20,8 +20,8 @@ const initialState = {
     days_per_week: 5,
     credit_min: 15,
     credit_max: 18,
-    major_credit_min: 0,
-    major_credit_max: 18,
+    major_min: 1,
+    major_max: 18,
   }
 };
 
