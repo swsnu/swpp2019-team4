@@ -15,9 +15,9 @@ class RecommendConstraint extends Component {
       credit_max_valid: (consts.credit_max >= 1 &&
                          consts.credit_max <= 21),
       credit_valid: (consts.credit_min <= consts.credit_max),
-      major_min_valid: (consts.major_min >= 1 &&
+      major_min_valid: (consts.major_min >= 0 &&
                         consts.major_min <= 21),
-      major_max_valid: (consts.major_max >= 1 &&
+      major_max_valid: (consts.major_max >= 0 &&
                         consts.major_max <= 21),
       major_valid: (consts.major_min <= consts.credit_max),
       days_per_week: consts.days_per_week,
@@ -72,7 +72,7 @@ class RecommendConstraint extends Component {
   handleMajorMin(value) {
     const minValue = Number(value);
     const maxValue = this.state.consts.major_max;
-    const minValid = (minValue >= 1 && minValue <= 21);
+    const minValid = (minValue >= 0 && minValue <= 21);
     const valid = minValue <= maxValue && minValue <= this.state.consts.credit_max;
     let newConsts = {...this.state.consts, major_min: minValue};
     this.setState({ consts: newConsts, major_valid: valid, major_min_valid: minValid });
@@ -89,7 +89,7 @@ class RecommendConstraint extends Component {
   handleMajorMax(value) {
     const minValue = this.state.consts.major_min;
     const maxValue = Number(value);
-    const maxValid = (maxValue >= 1 && maxValue <= 21);
+    const maxValid = (maxValue >= 0 && maxValue <= 21);
     const valid = minValue <= maxValue && minValue <= this.state.consts.credit_max;
     let newConsts = {...this.state.consts, credit_max: maxValue}
     this.setState({ consts: newConsts, major_valid: valid, major_max_valid: maxValid });
