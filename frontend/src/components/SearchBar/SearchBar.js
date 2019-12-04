@@ -136,7 +136,6 @@ const SearchBar = (props) => (
                 className="form-control"
                 id="recommend-search-min_score"
                 placeholder="0/1.234/9.9..."
-                step="0.001"
                 value={props.value.min_score}
                 onChange={(event) => props.onChange(event, 'min_score')}
                 onKeyDown={props.onKeyDown}
@@ -147,7 +146,6 @@ const SearchBar = (props) => (
                 className="form-control"
                 id="recommend-search-max_score"
                 placeholder="0/1.234/9.9..."
-                step="0.001"
                 value={props.value.max_score}
                 onChange={(event) => props.onChange(event, 'max_score')}
                 onKeyDown={props.onKeyDown}
