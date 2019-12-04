@@ -35,7 +35,7 @@ class TimetableView extends Component {
     */
 
     const minHour = 8;
-    const maxHour = 20;
+    const maxHour = 21;
 
     const tableHeaderString = ['', 'M', 'T', 'W', 'T', 'F', 'S'];
     const coursesList = [[], [], [], [], [], []];
