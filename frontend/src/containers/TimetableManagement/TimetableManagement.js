@@ -222,7 +222,7 @@ class TimetableManagement extends Component {
   searchOnChange(event, type) {
     const newValue = this.state.searchValues;
     if (type === 'title') {
-      newValue.title = event.target.value;
+      if(!((this.state.commandMatch==9&&event.target.value[event.target.value.length-1]=='b')||(this.state.commandMatch==0&&event.target.value[event.target.value.length-1]=='a')))newValue.title = event.target.value;
     } else if (type === 'classification') {
       newValue.classification = event.target.value;
     } else if (type === 'department') {
