@@ -19,7 +19,7 @@ class TimetableManagement extends Component {
       title: '',
       showCourses: true,
       searchdetail: false,
-      scrollLimit: 2000,
+      scrollLimit: 1500,
       searchCourseCount: 50,
       searchValues: {
         title: '',
@@ -137,13 +137,39 @@ class TimetableManagement extends Component {
   }
 
   search() {
-    this.setState({
-      realValues: this.state.searchValues,
-      scrollLimit: 2000,
-      searchCourseCount: 50,
-    });
-    this.props.resetCourse();
-    this.props.onGetCourses(0, 49, this.state.searchValues);
+    if(this.state.searchdetail){
+      this.setState({
+        realValues: this.state.searchValues,
+        scrollLimit: 1500,
+        searchCourseCount: 50,
+      });
+      this.props.resetCourse();
+      this.props.onGetCourses(0, 49, this.state.searchValues);
+    }
+    else{
+      const newValue={
+        title: this.state.searchValues.title,
+        classification: '',
+        department: '',
+        degree_program: '',
+        academic_year: '',
+        course_number: '',
+        lecture_number: '',
+        professor: '',
+        language: '',
+        min_credit: '',
+        max_credit: '',
+        min_score: '',
+        max_score: '',
+      };
+      this.setState({
+        realValues: newValue,
+        scrollLimit: 1500,
+        searchCourseCount: 50,
+      });
+      this.props.resetCourse();
+      this.props.onGetCourses(0, 49, newValue);
+    }
     this.showCoursesInSearch();
   }
 

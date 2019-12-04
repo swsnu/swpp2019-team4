@@ -39,9 +39,9 @@ class RecommendCourse extends Component {
         min_score: '',
         max_score: '',
       },
-      ratedScrollLimit: 2000,
-      unratedScrollLimit: 2000,
-      exceptScrollLimit: 2000,
+      ratedScrollLimit: 1500,
+      unratedScrollLimit: 1500,
+      exceptScrollLimit: 1500,
       ratedCourseCount: 50,
       unratedCourseCount: 50,
       exceptCourseCount: 50,
@@ -195,19 +195,51 @@ class RecommendCourse extends Component {
   }
 
   search() {
-    this.setState({
-      realValues: this.state.searchValues,
-      ratedScrollLimit: 2000,
-      unratedScrollLimit: 2000,
-      exceptScrollLimit: 2000,
-      ratedCourseCount: 50,
-      unratedCourseCount: 50,
-      exceptCourseCount: 50,
-    });
-    this.props.resetCourseScore();
-    this.props.getRatedCourse(0, 49, this.state.searchValues);
-    this.props.getUnratedCourse(0, 49, this.state.searchValues);
-    this.props.getExceptCourse(0, 49, this.state.searchValues);
+    if(this.state.searchdetail){
+      this.setState({
+        realValues: this.state.searchValues,
+        ratedScrollLimit: 1500,
+        unratedScrollLimit: 1500,
+        exceptScrollLimit: 1500,
+        ratedCourseCount: 50,
+        unratedCourseCount: 50,
+        exceptCourseCount: 50,
+      });
+      this.props.resetCourseScore();
+      this.props.getRatedCourse(0, 49, this.state.searchValues);
+      this.props.getUnratedCourse(0, 49, this.state.searchValues);
+      this.props.getExceptCourse(0, 49, this.state.searchValues);
+    }
+    else{
+      const newValue={
+        title: this.state.searchValues.title,
+        classification: '',
+        department: '',
+        degree_program: '',
+        academic_year: '',
+        course_number: '',
+        lecture_number: '',
+        professor: '',
+        language: '',
+        min_credit: '',
+        max_credit: '',
+        min_score: '',
+        max_score: '',
+      };
+      this.setState({
+        realValues: newValue,
+        ratedScrollLimit: 1500,
+        unratedScrollLimit: 1500,
+        exceptScrollLimit: 1500,
+        ratedCourseCount: 50,
+        unratedCourseCount: 50,
+        exceptCourseCount: 50,
+      });
+      this.props.resetCourseScore();
+      this.props.getRatedCourse(0, 49, newValue);
+      this.props.getUnratedCourse(0, 49, newValue);
+      this.props.getExceptCourse(0, 49, newValue);
+    }
   }
 
   enterKey() {
