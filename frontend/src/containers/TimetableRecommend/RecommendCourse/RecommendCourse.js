@@ -111,7 +111,7 @@ class RecommendCourse extends Component {
         <div className="row">
           <div className="col-6">
             <div className="text-left">
-              {course.title}
+              {course.title+' ('+course.lecture_number+')'}
             </div>
             <div className="text-black-50 text-left small" id="recommend-course-abstract">
               {`${course.professor} | ${course.credit}학점 | ${timeString} | ${course.location}`}
