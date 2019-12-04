@@ -112,7 +112,7 @@ class RecommendCourse extends Component {
         <div className="row">
           <div className="col-6">
             <div className="text-left">
-              {course.title+' ('+course.lecture_number+')'}
+              {`${course.title} (${course.lecture_number})`}
             </div>
             <div className="text-black-50 text-left small" id="recommend-course-abstract">
               {`${course.professor} | ${course.credit}학점 | ${timeString} | ${course.location}`}
@@ -150,12 +150,12 @@ class RecommendCourse extends Component {
 
   searchOnChange(event, type) {
     const newValue = this.state.searchValues;
-    newValue[type]=event.target.value;
+    newValue[type] = event.target.value;
     this.setState({ searchValues: newValue });
   }
 
   search() {
-    if(this.state.searchdetail){
+    if (this.state.searchdetail) {
       this.setState({
         realValues: this.state.searchValues,
         ratedScrollLimit: 1500,
@@ -165,9 +165,8 @@ class RecommendCourse extends Component {
       });
       this.props.setRatedCourse(0, 49, this.state.searchValues);
       this.props.setUnratedCourse(0, 49, this.state.searchValues);
-    }
-    else{
-      const newValue={
+    } else {
+      const newValue = {
         title: this.state.searchValues.title,
         classification: '',
         department: '',
@@ -195,10 +194,10 @@ class RecommendCourse extends Component {
   }
 
   enterKey() {
-    const command=[38,38,40,40,37,39,37,39,66,65];
-    if(window.event.keyCode === command[this.state.commandMatch]){
-      if(this.state.commandMatch===9){
-        const newValue={
+    const command = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+    if (window.event.keyCode === command[this.state.commandMatch]) {
+      if (this.state.commandMatch === 9) {
+        const newValue = {
           title: '소프트웨어 개발의 원리와 실습',
           classification: '전필',
           department: '컴퓨터공학부',
@@ -223,13 +222,11 @@ class RecommendCourse extends Component {
         });
         this.props.setRatedCourse(0, 49, newValue);
         this.props.setUnratedCourse(0, 49, newValue);
+      } else {
+        this.setState({ commandMatch: this.state.commandMatch + 1 });
       }
-      else{
-        this.setState({commandMatch: this.state.commandMatch+1});
-      }
-    }
-    else{
-      this.setState({commandMatch: 0});
+    } else {
+      this.setState({ commandMatch: 0 });
     }
     if (window.event.keyCode === 13) {
       this.search();
@@ -280,7 +277,7 @@ class RecommendCourse extends Component {
               </a>
             </li>
           </ul>
-          <SearchBar value={this.state.searchValues} onChange={(event, type) => this.searchOnChange(event, type)} onKeyDown={() => this.enterKey()} onToggle={() => this.onSearchToggle()} togglestatus={this.state.searchdetail} onSearch={() => this.search()} searchScore={true} />
+          <SearchBar value={this.state.searchValues} onChange={(event, type) => this.searchOnChange(event, type)} onKeyDown={() => this.enterKey()} onToggle={() => this.onSearchToggle()} togglestatus={this.state.searchdetail} onSearch={() => this.search()} searchScore />
           <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: '350px' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
             <div className="tab-pane show active" id="rated-tab" role="tabpanel" aria-labelledby="rated-tab">
               {ratedview}

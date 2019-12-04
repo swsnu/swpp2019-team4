@@ -12,6 +12,8 @@ class TimetableView extends Component {
         color: '',
         lecture_number: '',
         course_number: '',
+        is_custom: false,
+        time: [],
       },
     };
   }
@@ -70,7 +72,7 @@ class TimetableView extends Component {
                 top: (Math.round(((startTime % 60) / 60) * heightunit) - 1),
                 length: (Math.round(((endTime - startTime) / 60) * heightunit)),
                 color: this.props.courses[i].color,
-                opacity: (this.props.courses[i].opacity===undefined)?1.0:this.props.courses[i].opacity,
+                opacity: (this.props.courses[i].opacity === undefined) ? 1.0 : this.props.courses[i].opacity,
               },
             );
           }
@@ -121,6 +123,7 @@ class TimetableView extends Component {
                           top: `${course.top}px`,
                           backgroundColor: course.color,
                           opacity: course.opacity,
+                          zIndex: course.opacity > 0.9 ? 5 : 10,
                         }}
                         role="button"
                         tabIndex="0"
@@ -160,7 +163,7 @@ class TimetableView extends Component {
             {tablehtml}
           </tbody>
         </table>
-        <CourseDetail id="course-detail" course={this.state.course} />
+        <CourseDetail id="course-detail" course={this.state.course} editable={this.props.editable} />
       </div>
     );
   }
@@ -170,22 +173,24 @@ TimetableView.defaultProps = {
   courses: [],
   text: true,
   link: true,
+  editable: false,
 };
 
 TimetableView.propTypes = {
   courses: PropTypes.arrayOf(PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    color: PropTypes.string.isRequired,
-    lecture_number: PropTypes.string.isRequired,
-    course_number: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    color: PropTypes.string,
+    lecture_number: PropTypes.string,
+    course_number: PropTypes.string,
     time: PropTypes.arrayOf(PropTypes.shape({
-      start_time: PropTypes.number.isRequired,
-      end_time: PropTypes.number.isRequired,
-      week_day: PropTypes.number.isRequired,
+      start_time: PropTypes.number,
+      end_time: PropTypes.number,
+      week_day: PropTypes.number,
     })),
   })),
   height: PropTypes.number.isRequired,
   text: PropTypes.bool,
   link: PropTypes.bool,
+  editable: PropTypes.bool,
 };
 export default TimetableView;

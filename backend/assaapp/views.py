@@ -283,15 +283,35 @@ def api_timetable_id_course(request, timetable_id):
     return HttpResponseNotAllowed(['POST'])
 
 @auth_func
-def api_timetable_id_custom_course_id(request, timetable_id, custom_course_id):
-    if request.method == 'DELETE':
+def api_custom_course_id(request, custom_course_id):
+    if request.method == 'PUT':
         try:
-            timetable = Timetable.objects.get(pk=timetable_id)
-            CustomCourse.objects.get(pk=custom_course_id).delete()
-            return JsonResponse(timetable.data(), safe=False)
+            custom_course = CustomCourse.objects.select_related('timetable__user').get(pk=custom_course_id)
+            timetable = custom_course.timetable
+            if timetable.user != request.user:
+                return HttpResponseNotAllowed()
+            req_data = json.loads(request.body.decode())
+            keys = ['color']
+            for key in keys:
+                if key in req_data:
+                    setattr(custom_course, key, req_data[key])
+            custom_course.save()
+            return JsonResponse(timetable.data())
         except (CustomCourse.DoesNotExist, Timetable.DoesNotExist):
             return HttpResponseNotFound()
-    return HttpResponseNotAllowed(['DELETE'])
+        except (KeyError, JSONDecodeError, IntegrityError):
+            return HttpResponseBadRequest()
+    if request.method == 'DELETE':
+        try:
+            custom_course = CustomCourse.objects.select_related('timetable').get(pk=custom_course_id)
+            timetable = custom_course.timetable
+            if timetable.user != request.user:
+                return HttpResponseNotAllowed()
+            custom_course.delete()
+            return JsonResponse(timetable.data())
+        except (CustomCourse.DoesNotExist, Timetable.DoesNotExist):
+            return HttpResponseNotFound()
+    return HttpResponseNotAllowed(['PUT', 'DELETE'])
 
 @auth_func
 def api_timetable_id_custom_course(request, timetable_id):

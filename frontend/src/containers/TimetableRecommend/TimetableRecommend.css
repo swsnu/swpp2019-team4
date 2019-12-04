@@ -9,18 +9,18 @@
 #recommend-progress .bar {
   margin-bottom: -1px;
   width: 3px;
-  height: 80px;
+  height: 5rem;
   margin-left: auto;
   margin-right: auto;
 }
 
 #recommend-progress table {
   width: 100%;
-  margin-left: 3rem;
+  margin-left: 5rem;
 }
 
 #recommend-progress td:nth-child(odd) {
-  width: 60px;
+  width: 5rem;
 }
 
 #recommend-progress td:nth-child(even) {
