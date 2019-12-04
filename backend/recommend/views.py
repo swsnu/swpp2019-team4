@@ -214,20 +214,16 @@ def api_coursepref(request):
         rated={}
         course_list=[]
         all_course=[course.data_small() for course in Course.objects.all()]
-        course_size=len(all_course)
         for course in all_course:
             rated[course['id']]=False
-        print('C')
         for score_data in CoursePref.objects.filter(user=request.user):
             rated[score_data.course.id]=True
-        print('D')
         for course in all_course:
             course_data=course
             course_data['rated']=rated[course['id']]
             course_data['except']=False
             course_data['score']=cf_result[course['id']]
             course_list.append(course_data)
-        print('E')
         return JsonResponse(course_list, safe=False)
     if request.method == 'PUT':
         try:
@@ -265,7 +261,6 @@ def api_coursepref_rated(request):
         rated={}
         course_list=[]
         all_course=[course for course in Course.objects.all()]
-        course_size=len(all_course)
         for course in all_course:
             rated[course.id]=False
         for score_data in cf_user:
@@ -293,7 +288,6 @@ def api_coursepref_unrated(request):
         rated={}
         course_list=[]
         all_course=[course for course in Course.objects.all()]
-        course_size=len(all_course)
         for course in all_course:
             rated[course.id]=False
         for score_data in cf_user:
