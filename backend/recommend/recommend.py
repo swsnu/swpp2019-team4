@@ -18,6 +18,18 @@ MAX_CREDITS = 18
 
 # constant def end
 
+def get_target_courses (user):
+    all_course = [ course for course in Course.objects.all().values() ]
+    pref_exist = [ False ] * MAX_COURSE_ID
+    user_course_pref = [ pref for pref in CoursePref.objects.filter(user=user).values() ]
+    for pref in user_course_pref:
+        pref_exist[pref['course']] = True
+    ret = []
+    for course in all_course:
+        if pref_exist[course['id']]:
+            ret.append(course)
+    return ret
+
 class TimesliceSet:
     def __init__ (self, timeslice_list):
         self._timeslice_list = timeslice_list
@@ -54,7 +66,7 @@ class TimesliceSet:
 
 class ConvertedUserData:
     def __init__ (self, user):
-        all_course = [ course for course in Course.objects.all().values() ]
+        all_course = get_target_courses(user)
 
         self._index_to_cid = [ 0 ] * len(all_course)
         self._cid_to_index = [ 0 ] * MAX_COURSE_ID
@@ -168,7 +180,7 @@ def backtrack (user, candidates, my_credit, my_score, my_courses, all_courses, i
 def run_recommendation (user):
     user_data = ConvertedUserData(user)
    
-    all_course_data = [ ConvertedCourseData(course) for course in Course.objects.all().values() ]
+    all_course_data = map(lambda x : ConvertedCourseData(x), get_target_courses(user))
     all_course_data.sort(key = lambda x : (x.get_timeslice_set().get_list(), user_data.course_score(x)), reverse = True)
 
     unique_course_data = []
@@ -183,5 +195,3 @@ def run_recommendation (user):
     
     candidates = []
     backtrack(user_data, candidates, 0, 0, [], unique_course_data, 0)
-    for candidate in candidates:
-        print(candidate[0])
