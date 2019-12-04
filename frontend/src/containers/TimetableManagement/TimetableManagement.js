@@ -325,6 +325,7 @@ class TimetableManagement extends Component {
               onSearch={() => this.search()}
               onToggle={() => this.onSearchToggle()}
               togglestatus={this.state.searchdetail}
+              searchScore={false}
             />
 
             <ul className="nav nav-tabs nav-justified my-2" id="recommend-course-tab" role="tablist">
