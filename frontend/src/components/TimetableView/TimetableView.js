@@ -70,6 +70,7 @@ class TimetableView extends Component {
                 top: (Math.round(((startTime % 60) / 60) * heightunit) - 1),
                 length: (Math.round(((endTime - startTime) / 60) * heightunit)),
                 color: this.props.courses[i].color,
+                opacity: (this.props.courses[i].opacity===undefined)?1.0:this.props.courses[i].opacity,
               },
             );
           }
@@ -111,6 +112,7 @@ class TimetableView extends Component {
                 coursesList[j][i].map(
                   (course) => {
                     const dataTarget = this.props.link ? '#course-detail' : '';
+                    console.log(course);
                     return (
                       <div
                         className="square rounded-sm"
@@ -119,6 +121,7 @@ class TimetableView extends Component {
                           height: `${course.length}px`,
                           top: `${course.top}px`,
                           backgroundColor: course.color,
+                          opacity: course.opacity,
                         }}
                         role="button"
                         tabIndex="0"
