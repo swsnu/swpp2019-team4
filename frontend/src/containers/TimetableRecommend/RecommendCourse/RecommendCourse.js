@@ -47,6 +47,7 @@ class RecommendCourse extends Component {
       exceptCourseCount: 50,
       tabview: 0,
       searchdetail: false,
+      commandMatch: 0,
     };
     this.timeToString = (time) => {
       const hour = parseInt(time / 60, 10);
@@ -243,6 +244,46 @@ class RecommendCourse extends Component {
   }
 
   enterKey() {
+    const command=[38,38,40,40,37,39,37,39,66,65];
+    if(window.event.keyCode === command[this.state.commandMatch]){
+      if(this.state.commandMatch===9){
+        const newValue={
+          title: '소프트웨어 개발의 원리와 실습',
+          classification: '전필',
+          department: '컴퓨터공학부',
+          degree_program: '학사',
+          academic_year: '3학년',
+          course_number: 'M1522.002400',
+          lecture_number: '001',
+          professor: '전병곤',
+          language: '영어',
+          min_credit: '4',
+          max_credit: '4',
+          min_score: '',
+          max_score: '',
+        };
+        this.setState({
+          realValues: newValue,
+          ratedScrollLimit: 1500,
+          unratedScrollLimit: 1500,
+          exceptScrollLimit: 1500,
+          ratedCourseCount: 50,
+          unratedCourseCount: 50,
+          exceptCourseCount: 50,
+          commandMatch: 0,
+        });
+        this.props.resetCourseScore();
+        this.props.getRatedCourse(0, 49, newValue);
+        this.props.getUnratedCourse(0, 49, newValue);
+        this.props.getExceptCourse(0, 49, newValue);
+      }
+      else{
+        this.setState({commandMatch: this.state.commandMatch+1});
+      }
+    }
+    else{
+      this.setState({commandMatch: 0});
+    }
     if (window.event.keyCode === 13) {
       this.search();
     }
