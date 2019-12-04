@@ -16,6 +16,13 @@ const initialState = {
     status: '',
     username: '',
   },
+  constraints: {
+    days_per_week: 5,
+    credit_min: 15,
+    credit_max: 18,
+    major_credit_min: 0,
+    major_credit_max: 18,
+  }
 };
 
 const reducer = (state = initialState, action) => {
@@ -110,6 +117,9 @@ const reducer = (state = initialState, action) => {
     }
     case actionTypes.GET_RECOMMEND: {
       return { ...state, timetables: state.timetables.concat(action.timetables) }
+    }
+    case actionTypes.EDIT_CONSTRAINTS: {
+      return { ...state, constraints: action.constraints }
     }
     default:
       return { ...state };

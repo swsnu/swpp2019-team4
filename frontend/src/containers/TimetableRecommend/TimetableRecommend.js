@@ -32,6 +32,9 @@ class TimetableRecommend extends Component {
   }
 
   movePage(offset) {
+    if (this.state.index === 0) {
+      this.props.onPutConstraint(this.props.constraints)
+    }
     this.setState((prevState) => ({ ...prevState, index: prevState.index + offset }));
   }
 

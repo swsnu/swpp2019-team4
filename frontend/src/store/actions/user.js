@@ -105,3 +105,10 @@ export const postMainTimetable = (id) => (dispatch) => axios.post(`/api/timetabl
 export const getRecommend = () => (dispatch) => axios.get('/api/recommend/recommend/')
   .then((res) => dispatch({ type: actionTypes.GET_RECOMMEND, timetables: res.data }))
   .catch(() => {});
+
+export const editConstraints = (consts) => (dispatch) => 
+  dispatch({ type: actionTypes.EDIT_CONSTRAINTS, constraints: consts });
+
+export const postConstraints = (consts) => (dispatch) => axios.post('/api/recommend/constraints/', consts)
+  .then((res) => dispatch({ type: actionTypes.EDIT_CONSTRAINTS, constraints: consts }))
+  .catch(() => {});

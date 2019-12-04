@@ -8,7 +8,7 @@ class RecommendTime extends Component {
     super(props);
     const colorTable = [];
     for (let i = 0; i < 26; i += 1) {
-      colorTable.push([0, 0, 0, 0, 0, 0]);
+      colorTable.push([3, 3, 3, 3, 3, 3]);
     }
     this.is_mount = false;
     this.state = {
@@ -57,7 +57,7 @@ class RecommendTime extends Component {
   }
 
   render() {
-    const colorArray = ['#FFFFFF', '#FFC0C0', '#FF8080', '#FF4040'];
+    const colorArray = ['#FF4040', '#FF8080', '#FFC0C0', '#FFFFFF'];
     const colorComment = ['싫음', '', '', '좋음'];
     const tableHeaderString = ['', 'M', 'T', 'W', 'T', 'F', 'S'];
     const tablehtml = [];

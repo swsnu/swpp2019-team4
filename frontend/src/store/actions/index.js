@@ -28,4 +28,6 @@ export {
   deleteCourse,
   deleteTimetable,
   getRecommend,
+  editConstraints,
+  postConstraints,
 } from './user';
