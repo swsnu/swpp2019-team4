@@ -112,7 +112,6 @@ class TimetableView extends Component {
                 coursesList[j][i].map(
                   (course) => {
                     const dataTarget = this.props.link ? '#course-detail' : '';
-                    console.log(course);
                     return (
                       <div
                         className="square rounded-sm"
