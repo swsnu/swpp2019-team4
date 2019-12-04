@@ -5,7 +5,9 @@ import { Provider } from 'react-redux';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import store, { history } from './store/store';
+import axios from 'axios';
 
+axios.get('/api/token/')
 ReactDOM.render(
   <Provider store={store}>
     <App history={history} />
