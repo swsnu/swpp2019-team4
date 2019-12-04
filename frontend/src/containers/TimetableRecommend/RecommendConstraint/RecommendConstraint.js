@@ -107,7 +107,7 @@ class RecommendConstraint extends Component {
     return (
       <div className="RecommendConstraint h-100 d-flex flex-column justify-content-center">
         <div className="form-group row mx-0 my-2">
-          <label htmlFor="days-range-input" className="col-2 offset-2 text-right col-form-label"><b>주 N회</b></label>
+          <label htmlFor="days-range-input" className="col-2 offset-2 text-right col-form-label"><b>주 N일제</b></label>
           <div className="col-4">
             <input
               type="number"
