@@ -36,7 +36,7 @@ def api_signup(request):
                     req_detail[detail] = req_data[detail]
             user = User.objects.create_user(email=email, password=password,
                                             username=username, **req_detail)
-            content = 'Hi, {}.\nhttp://52.141.20.241/verify/{}/{}\n'.format(
+            content = 'Hi, {}.\nhttps://www.snu-assa.site/verify/{}/{}\n'.format(
                 username,
                 urlsafe_base64_encode(force_bytes(user.id)),
                 ACCOUNT_ACTIVATION_TOKEN.make_token(user)
