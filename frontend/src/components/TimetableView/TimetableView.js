@@ -23,7 +23,7 @@ class TimetableView extends Component {
   render() {
     /*
     * week_day is 0~5 integer. Monday is 0, Tuesday is 1, ... Saturday is 5
-    * start_time, end_time are 660~1230 integer. This value is hour*60+minute (8:00~20:30). start_time must be divided by 30
+    * start_time, end_time are integers. This value is hour*60+minute.
     * height is constant value, and color is 6 hexadigit number.
     * text is true of false. If text if true, text will show. If false, text will not show and can display more smaller
     */
@@ -34,12 +34,22 @@ class TimetableView extends Component {
       '#3D9970', '#B10DC9', '#2ECC40', '#0074D9'];
     */
 
+    const minHour = 8;
+    const maxHour = 20;
+
     const tableHeaderString = ['', 'M', 'T', 'W', 'T', 'F', 'S'];
     const coursesList = [[], [], [], [], [], []];
     const tablehtml = [];
     let tablehtmlIth = [];
-    const heightunit = this.props.height;
-    for (let i = 0; i < 26; i += 1) {
+    const heightunit = this.props.height * 2;
+
+    const date = new Date();
+    const dateLocal = new Date(date.getTime() + 9 * 60 * 60000); // Hardcoded utc+9
+    const time = dateLocal.getUTCHours() * 60 + dateLocal.getUTCMinutes();
+    const isCurrentBar = minHour * 60 < time && time < maxHour * 60;
+    const currentPad = Math.round((time / 60 - minHour) * heightunit);
+
+    for (let i = 0; i < maxHour - minHour; i += 1) {
       for (let j = 0; j < 6; j += 1) {
         coursesList[j].push([]);
       }
@@ -48,52 +58,64 @@ class TimetableView extends Component {
       for (let i = 0; i < this.props.courses.length; i += 1) {
         for (let j = 0; j < this.props.courses[i].time.length; j += 1) {
           const segment = this.props.courses[i].time[j];
-          const timeIndex = Math.floor(segment.start_time / 30 - 16);
-          coursesList[segment.week_day][timeIndex].push(
-            {
-              index: i,
-              title: this.props.text ? this.props.courses[i].title : '',
-              length: (parseInt((segment.end_time - segment.start_time - 1) / 30, 10) + 1) * heightunit,
-              color: this.props.courses[i].color,
-              // color: colors[i % colors.length],
-            },
-          );
+          if (segment.week_day >= 0 && segment.week_day <= 5
+            && segment.start_time < maxHour * 60 && segment.end_time > minHour * 60) {
+            const startTime = Math.max(segment.start_time, minHour * 60);
+            const endTime = Math.min(segment.end_time, maxHour * 60);
+            const timeIndex = Math.floor(startTime / 60 - minHour);
+            coursesList[segment.week_day][timeIndex].push(
+              {
+                index: i,
+                title: this.props.text ? this.props.courses[i].title : '',
+                top: (Math.round(((startTime % 60) / 60) * heightunit) - 1),
+                length: (Math.round(((endTime - startTime) / 60) * heightunit)),
+                color: this.props.courses[i].color,
+              },
+            );
+          }
         }
       }
     }
     for (let i = 0; i < 7; i += 1) {
-      tablehtmlIth.push(<th key={i} height={heightunit}>{this.props.text ? tableHeaderString[i] : ''}</th>);
+      tablehtmlIth.push(<th key={i} height={heightunit / 2}>{this.props.text ? tableHeaderString[i] : ''}</th>);
     }
     tablehtml.push(<tr key={-1}>{tablehtmlIth}</tr>);
-    for (let i = 0; i < 26; i += 1) {
+    tablehtml.push(
+      <tr style={{ borderColor: 'transparent' }} key={0}>
+        {
+          isCurrentBar
+            ? <td id="timetable-current-bar" colSpan={8} style={{ top: `${currentPad}px` }} />
+            : null
+        }
+      </tr>,
+    );
+    for (let i = 0; i < maxHour - minHour; i += 1) {
       tablehtmlIth = [];
-      if (i % 2 === 0) {
-        tablehtmlIth.push(
-          <td
-            className="text-right pr-2 py-0 small text-black-50"
-            key={1000 * i + 1000}
-            rowSpan={2}
-          >
-            {this.props.text ? `${i / 2 + 8}` : ''}
-          </td>,
-        );
-      }
+      tablehtmlIth.push(
+        <td
+          className="timetable-hour-bar text-right pr-2 py-0 small text-black-50"
+          key={1000 * i + 1000}
+        >
+          {this.props.text ? `${i + minHour}` : ''}
+        </td>,
+      );
       for (let j = 0; j < 6; j += 1) {
         if (coursesList[j][i].length === 0) {
-          tablehtmlIth.push(<td key={1000 * i + j + 1001} height={heightunit} />);
+          tablehtmlIth.push(<td key={1000 * i + j + 1001} height={heightunit} className="timetable-hour-bar" />);
         } else {
           tablehtmlIth.push(
-            <td key={1000 * i + j} height={heightunit}>
+            <td key={1000 * i + j} height={heightunit} className="timetable-hour-bar">
               {
                 coursesList[j][i].map(
                   (course) => {
                     const dataTarget = this.props.link ? '#course-detail' : '';
                     return (
                       <div
-                        className="square small rounded-sm"
+                        className="square rounded-sm"
                         key={course.index * 1000 + j}
                         style={{
                           height: `${course.length}px`,
+                          top: `${course.top}px`,
                           backgroundColor: course.color,
                         }}
                         role="button"
