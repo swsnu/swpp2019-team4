@@ -40,6 +40,12 @@ const reducer = (state = initialState, action) => {
       return { ...state, timetable_friend: action.timetable };
     case actionTypes.POST_TIMETABLE:
       return { ...state, timetables: state.timetables.concat(action.timetable) };
+    case actionTypes.POST_COURSE_TEMP:
+      state.timetable.course = state.timetable.course.concat(action.course)
+      return { ...state };
+    case actionTypes.DELETE_COURSE_TEMP:
+      state.timetable.course = state.timetable.course.filter((item) => !(item.id === action.course.id && item.temp === true))
+      return { ...state };
     case actionTypes.POST_COURSE:
       return { ...state, timetable: action.timetable };
     case actionTypes.POST_CUSTOM_COURSE:
