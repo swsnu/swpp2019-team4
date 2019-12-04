@@ -71,8 +71,7 @@ class TimetableManagement extends Component {
       })
       .catch(() => {});
     this.props.onGetTimetables();
-    this.props.resetCourse();
-    this.props.onGetCourses(0, 49, this.state.searchValues);
+    this.props.setCourses(0, 49, this.state.searchValues);
   }
 
   componentWillUnmount() {
@@ -144,8 +143,7 @@ class TimetableManagement extends Component {
         scrollLimit: 1500,
         searchCourseCount: 50,
       });
-      this.props.resetCourse();
-      this.props.onGetCourses(0, 49, this.state.searchValues);
+      this.props.setCourses(0, 49, this.state.searchValues);
     }
     else{
       const newValue={
@@ -168,8 +166,7 @@ class TimetableManagement extends Component {
         scrollLimit: 1500,
         searchCourseCount: 50,
       });
-      this.props.resetCourse();
-      this.props.onGetCourses(0, 49, newValue);
+      this.props.setCourses(0, 49, this.state.searchValues);
     }
     this.showCoursesInSearch();
   }
@@ -204,8 +201,7 @@ class TimetableManagement extends Component {
           searchCourseCount: 50,
           commandMatch: 0,
         });
-        this.props.resetCourse();
-        this.props.onGetCourses(0, 49, newValue);
+        this.props.setCourses(0, 49, newValue);
       }
       else{
         this.setState({commandMatch: this.state.commandMatch+1});
@@ -504,7 +500,7 @@ const mapDispatchToProps = (dispatch) => ({
   onDeleteCourse: (timetableId, courseId) => dispatch(actionCreators.deleteCourse(timetableId, courseId)),
   onDeleteTimetable: (timetableId) => dispatch(actionCreators.deleteTimetable(timetableId)),
   onEditTimetable: (timetableId, title) => dispatch(actionCreators.editTimetable(timetableId, title)),
-  resetCourse: () => dispatch(actionCreators.resetCourse()),
+  setCourses: (start,end,searchStrings) => dispatch(actionCreators.setCourses(start,end,searchStrings)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableManagement);

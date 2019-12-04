@@ -1,4 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
+import { resetCourse } from '../actions/user';
 
 const initialState = {
   user: {
@@ -62,9 +63,9 @@ const reducer = (state = initialState, action) => {
       const newcourses=state.courses.concat(action.courses);
       return { ...state, courses: newcourses };
     }
-    case actionTypes.RESET_COURSE:
+    case actionTypes.SET_COURSES:
       return {
-        ...state, courses: [],
+        ...state, courses: action.course_list,
       };
     case actionTypes.GET_FRIEND:
       return {
@@ -125,10 +126,10 @@ const reducer = (state = initialState, action) => {
       const newlist = state.unrated_course.concat(action.course_list);
       return { ...state, unrated_course: newlist };
     }
-    case actionTypes.RESET_COURSE_SCORE:
-      return {
-        ...state, rated_course: [], unrated_course: [],
-      };
+    case actionTypes.SET_RATED_COURSE:
+      return { ...state, rated_course: action.course_list };
+    case actionTypes.SET_UNRATED_COURSE:
+      return { ...state, unrated_course: action.course_list };
     case actionTypes.PUT_COURSEPREF_TEMP:
       state.rated_course = state.rated_course.map(({ id, score, ...item }) => (id === action.coursepref.id ? { id, score: action.coursepref.score, ...item } : { id, score, ...item }));
       state.unrated_course = state.unrated_course.map(({ id, score, ...item }) => (id === action.coursepref.id ? { id, score: action.coursepref.score, ...item } : { id, score, ...item }));

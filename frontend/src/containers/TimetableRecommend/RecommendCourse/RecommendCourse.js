@@ -57,9 +57,8 @@ class RecommendCourse extends Component {
 
   componentDidMount() {
     this.props.handleValid(true);
-    this.props.resetCourseScore();
-    this.props.getRatedCourse(0, 49, this.state.realValues);
-    this.props.getUnratedCourse(0, 49, this.state.realValues);
+    this.props.setRatedCourse(0, 49, this.state.realValues);
+    this.props.setUnratedCourse(0, 49, this.state.realValues);
   }
 
   segmentToString(weekDay, startTime) {
@@ -171,9 +170,8 @@ class RecommendCourse extends Component {
         ratedCourseCount: 50,
         unratedCourseCount: 50,
       });
-      this.props.resetCourseScore();
-      this.props.getRatedCourse(0, 49, this.state.searchValues);
-      this.props.getUnratedCourse(0, 49, this.state.searchValues);
+      this.props.setRatedCourse(0, 49, this.state.searchValues);
+      this.props.setUnratedCourse(0, 49, this.state.searchValues);
     }
     else{
       const newValue={
@@ -198,9 +196,8 @@ class RecommendCourse extends Component {
         ratedCourseCount: 50,
         unratedCourseCount: 50,
       });
-      this.props.resetCourseScore();
-      this.props.getRatedCourse(0, 49, newValue);
-      this.props.getUnratedCourse(0, 49, newValue);
+      this.props.setRatedCourse(0, 49, newValue);
+      this.props.setUnratedCourse(0, 49, newValue);
     }
   }
 
@@ -231,9 +228,8 @@ class RecommendCourse extends Component {
           unratedCourseCount: 50,
           commandMatch: 0,
         });
-        this.props.resetCourseScore();
-        this.props.getRatedCourse(0, 49, newValue);
-        this.props.getUnratedCourse(0, 49, newValue);
+        this.props.setRatedCourse(0, 49, newValue);
+        this.props.setUnratedCourse(0, 49, newValue);
       }
       else{
         this.setState({commandMatch: this.state.commandMatch+1});
@@ -316,9 +312,10 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  resetCourseScore: () => dispatch(actionCreators.resetCourseScore()),
   getRatedCourse: (start, end, searchValues) => dispatch(actionCreators.getRatedCourse(start, end, searchValues)),
   getUnratedCourse: (start, end, searchValues) => dispatch(actionCreators.getUnratedCourse(start, end, searchValues)),
+  setRatedCourse: (start, end, searchValues) => dispatch(actionCreators.setRatedCourse(start, end, searchValues)),
+  setUnratedCourse: (start, end, searchValues) => dispatch(actionCreators.setUnratedCourse(start, end, searchValues)),
   onChangeslider: (id, value) => dispatch(actionCreators.putCourseprefTemp(id, value)),
 });
 
