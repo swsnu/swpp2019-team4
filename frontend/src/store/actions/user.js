@@ -116,6 +116,9 @@ export const getExceptCourse = (start,end) => (dispatch) => axios.get(`/api/reco
 
 export const resetCourseScore = () => (dispatch) => dispatch({ type: actionTypes.RESET_COURSE_SCORE});
 
-export const putCoursepref = (id, score) => (dispatch) => axios.put(`/api/recommend/coursepref/${id}/`, { score:score })
-.then((res) => dispatch({ type: actionTypes.PUT_COURSEPREF, coursepref: res.data }))
+export const putCourseprefTemp = (id, score) => (dispatch) => 
+  dispatch({ type: actionTypes.PUT_COURSEPREF_TEMP, coursepref: {id, score}})
+
+export const putCoursepref = (changedCourses) => (dispatch) => axios.put(`/api/recommend/coursepref/`, { courses:changedCourses })
+.then((res) => dispatch({ type: actionTypes.PUT_COURSEPREF }))
 .catch(() => {});

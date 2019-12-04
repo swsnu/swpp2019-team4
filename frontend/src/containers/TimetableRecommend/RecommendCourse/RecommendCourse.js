@@ -73,6 +73,7 @@ class RecommendCourse extends Component {
       '#515BEC',
       '#3F5EFB',
     ];
+    let score = course.score;
     let timeString = '';
     let courseString = '';
     for (let i = 0; i < course.time.length; i += 1) {
@@ -100,7 +101,7 @@ class RecommendCourse extends Component {
               id={`slider-value-${course.id}`}
               style={{ color: colorGradient[course.score], width: '30px' }}
             >
-              {course.score}
+              {score}
             </div>
             <form className="flex-grow-1">
               <div className="form-group m-2">
@@ -110,7 +111,7 @@ class RecommendCourse extends Component {
                   min="0"
                   max="10"
                   id={`course-score-form-${course.id}`}
-                  value={course.score}
+                  value={score}
                   onChange={(event)=>this.props.onChangeslider(course.id,event.target.value)}
                 />
               </div>
@@ -228,7 +229,7 @@ const mapDispatchToProps = (dispatch) => ({
   getRatedCourse: (start,end) => dispatch(actionCreators.getRatedCourse(start,end)),
   getUnratedCourse: (start,end) => dispatch(actionCreators.getUnratedCourse(start,end)),
   getExceptCourse: (start,end) => dispatch(actionCreators.getExceptCourse(start,end)),
-  onChangeslider: (id,value) => dispatch(actionCreators.putCoursepref(id,value)),
+  onChangeslider: (id,value) => dispatch(actionCreators.putCourseprefTemp(id,value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecommendCourse);

@@ -178,7 +178,30 @@ def api_coursepref(request):
             course_list.append(course_data)
         print('E')
         return JsonResponse(course_list, safe=False)
-    return HttpResponseNotAllowed(['GET'])
+    if request.method == 'PUT':
+        try:
+            body=request.body.decode()
+            courses=json.loads(body)['courses']
+            print(courses)
+            for course in courses:
+                id = course['id']
+                score = course['score']
+                target_course = Course.objects.get(id=id)
+                try:
+                    score_data = CoursePref.objects.get(user=request.user, course=target_course)
+                    score_data.score=score
+                    score_data.save()
+                except CoursePref.DoesNotExist:
+                    new_score = CoursePref(user=request.user, course=target_course, score=score)
+                    new_score.save()
+            return HttpResponse(status=200)
+        except (KeyError, JSONDecodeError):
+            return HttpResponseBadRequest()
+        except Course.DoesNotExist:
+            return HttpResponseBadRequest()
+        except CoursePref.DoesNotExist:
+            new_score = CoursePref(user=request.user, course=course, score=score)
+    return HttpResponseNotAllowed(['GET', 'PUT'])
 
 @auth_func
 def api_coursepref_rated(request):

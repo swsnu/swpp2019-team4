@@ -11,6 +11,7 @@ const initialState = {
   rated_course: [],
   unrated_course: [],
   except_course: [],
+  changed_courses: [],
   friend: [],
   friend_send: [],
   friend_receive: [],
@@ -125,10 +126,21 @@ const reducer = (state = initialState, action) => {
     }
     case actionTypes.RESET_COURSE_SCORE:
       return {...state, rated_course: [], unrated_course: [], except_course: []};
-    case actionTypes.PUT_COURSEPREF:
+    case actionTypes.PUT_COURSEPREF_TEMP:
+      state.rated_course = state.rated_course.map(function({id, score, ...item }) {return id === action.coursepref.id ? {id, score:action.coursepref.score, ...item} : {id, score, ...item}})
+      state.unrated_course = state.unrated_course.map(function({id, score, ...item }) {return id === action.coursepref.id ? {id, score:action.coursepref.score, ...item} : {id, score, ...item}})
+      state.except_course = state.except_course.map(function({id, score, ...item }) {return id === action.coursepref.id ? {id, score:action.coursepref.score, ...item} : {id, score, ...item}})
+      let target_course = state.changed_courses.filter((course) => course.id === action.coursepref.id)
+      if (target_course.length > 0) {
+        state.changed_courses = state.changed_courses.map(function({id, score}) {return id === action.coursepref.id ? {id, score:action.coursepref.score} : {id, score}})
+      } else {
+        state.changed_courses.push(action.coursepref)
+      }
       return {...state};
+    case actionTypes.PUT_COURSEPREF:
+      return {...state, changed_courses: [] };
     default:
-      return { ...state };
+      return { ...state};
   }
 };
 

@@ -32,4 +32,5 @@ export {
   getExceptCourse,
   resetCourseScore,
   putCoursepref,
+  putCourseprefTemp,
 } from './user';
