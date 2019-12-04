@@ -42,6 +42,7 @@ class RecommendCourse extends Component {
       unratedCourseCount:50,
       exceptCourseCount:50,
       tabview:0,
+      searchdetail:false,
     };
     this.timeToString = (time) => {
       const hour = parseInt(time / 60, 10);
@@ -82,6 +83,10 @@ class RecommendCourse extends Component {
       this.props.getExceptCourse(this.state.exceptCourseCount,this.state.exceptCourseCount+pageSize-1,this.state.realValues);
       this.setState({exceptCourseCount:this.state.exceptCourseCount+pageSize});
     }
+  }
+
+  onSearchToggle(){
+    this.setState({searchdetail:!this.state.searchdetail});
   }
 
   courseElement(course) {
@@ -192,19 +197,23 @@ class RecommendCourse extends Component {
     this.setState({searchValues:newValue});
   }
 
+  search(){
+    this.setState({realValues:this.state.searchValues,
+                   ratedScrollLimit:2000,
+                   unratedScrollLimit:2000,
+                   exceptScrollLimit:2000,
+                   ratedCourseCount:50,
+                   unratedCourseCount:50,
+                   exceptCourseCount:50,});
+    this.props.resetCourseScore();
+    this.props.getRatedCourse(0,49,this.state.searchValues);
+    this.props.getUnratedCourse(0,49,this.state.searchValues);
+    this.props.getExceptCourse(0,49,this.state.searchValues);
+  }
+
   enterKey() {
     if (window.event.keyCode === 13) {
-      this.setState({realValues:this.state.searchValues,
-                     ratedScrollLimit:2000,
-                     unratedScrollLimit:2000,
-                     exceptScrollLimit:2000,
-                     ratedCourseCount:50,
-                     unratedCourseCount:50,
-                     exceptCourseCount:50,});
-      this.props.resetCourseScore();
-      this.props.getRatedCourse(0,49,this.state.searchValues);
-      this.props.getUnratedCourse(0,49,this.state.searchValues);
-      this.props.getExceptCourse(0,49,this.state.searchValues);
+      this.search();
     }
   }
 
@@ -271,7 +280,7 @@ class RecommendCourse extends Component {
               </a>
             </li>
           </ul>
-          <SearchBar value={this.state.searchValues} onChange={(event,type) => this.searchOnChange(event,type)} onKeyDown={() => this.enterKey()} />
+          <SearchBar value={this.state.searchValues} onChange={(event,type) => this.searchOnChange(event,type)} onKeyDown={() => this.enterKey()} onToggle={()=>this.onSearchToggle()} togglestatus={this.state.searchdetail} onSearch={() => this.search()}/>
           <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: '350px' }} onScroll={(event)=>{this.scrollHandler(event.target.scrollTop)}}>
             <div className="tab-pane show active" id="rated-tab" role="tabpanel" aria-labelledby="rated-tab">
               {ratedview}

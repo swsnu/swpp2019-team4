@@ -18,6 +18,7 @@ class TimetableManagement extends Component {
       semester: '2019-2',
       title: '',
       showCourses: true,
+      searchdetail:false,
       searchValues: {
         title: '',
         classification: '',
@@ -168,6 +169,10 @@ class TimetableManagement extends Component {
     this.setState({searchValues:newValue});
   }
 
+  onSearchToggle(){
+    this.setState({searchdetail:!this.state.searchdetail});
+  }
+
   render() {
     if (this.props.storedUser.is_authenticated === false) {
       return (
@@ -262,6 +267,8 @@ class TimetableManagement extends Component {
               onChange={(event,type)=>this.searchOnChange(event,type)}
               onKeyDown={() => this.enterKey()}
               onSearch={() => this.search()}
+              onToggle={()=>this.onSearchToggle()}
+              togglestatus={this.state.searchdetail}
             />
 
             <ul className="nav nav-tabs nav-justified my-2" id="recommend-course-tab" role="tablist">
