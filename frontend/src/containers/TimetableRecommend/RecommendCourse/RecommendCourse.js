@@ -126,7 +126,7 @@ class RecommendCourse extends Component {
             <div
               className="m-2 font-weight-bold text-center"
               id={`slider-value-${course.id}`}
-              style={{ color: colorGradient[course.score], width: '30px' }}
+              style={{ color: colorGradient[Math.round(score)], width: '30px' }}
             >
               {score}
             </div>
@@ -311,9 +311,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   resetCourseScore: () => dispatch(actionCreators.resetCourseScore()),
-  getRatedCourse: (start,end) => dispatch(actionCreators.getRatedCourse(start,end)),
-  getUnratedCourse: (start,end) => dispatch(actionCreators.getUnratedCourse(start,end)),
-  getExceptCourse: (start,end) => dispatch(actionCreators.getExceptCourse(start,end)),
+  getRatedCourse: (start,end,searchValues) => dispatch(actionCreators.getRatedCourse(start,end,searchValues)),
+  getUnratedCourse: (start,end,searchValues) => dispatch(actionCreators.getUnratedCourse(start,end,searchValues)),
+  getExceptCourse: (start,end,searchValues) => dispatch(actionCreators.getExceptCourse(start,end,searchValues)),
   onChangeslider: (id,value) => dispatch(actionCreators.putCourseprefTemp(id,value)),
 });
 
