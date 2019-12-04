@@ -4,7 +4,9 @@ from functools import cmp_to_key
 
 # const def begin
 
-TIME_PREF_LEN = 32 * 6
+WEEKDAYS_LEN = 6
+HOURS_LEN = 26
+TIME_PREF_LEN = WEEKDAYS_LEN * HOURS_LEN
 MAX_TIME_PREF = 3.0
 DEFAULT_TIME_PREF = 1.5
 
@@ -23,7 +25,7 @@ def get_target_courses (user):
     pref_exist = [ False ] * MAX_COURSE_ID
     user_course_pref = [ pref for pref in CoursePref.objects.filter(user=user).values() ]
     for pref in user_course_pref:
-        pref_exist[pref['course']] = True
+        pref_exist[pref['course_id']] = True
     ret = []
     for course in all_course:
         if pref_exist[course['id']]:
@@ -82,7 +84,12 @@ class ConvertedUserData:
         user_course_pref = [ pref for pref in CoursePref.objects.filter(user=user).values() ]
 
         for pref in user_course_pref:
-            self._course_pref_table[self._cid_to_index[pref['course']]] = pref['preference']
+            self._course_pref_table[self._cid_to_index[pref['course_id']]] = pref['score']
+
+        user_time_pref = [ pref for pref in TimePref.objects.filter(user=user).values() ]
+        for pref in user_time_pref:
+            start_time = pref['start_time'].hour * 60 + pref['start_time'].minute
+            self._time_pref_table[pref['weekday']*HOURS_LEN+(start_time-480)//30] = pref['score']
 
     def get_course_pref (self, course):
         return self._course_pref_table[self._cid_to_index[course.get_id()]]
@@ -106,8 +113,8 @@ class ConvertedUserData:
 class ConvertedCourseData:
 
     def overlap (self, timeslice):
-        cur_weekday = timeslice // 32
-        cur_start_time = 8 * 60 + timeslice % 32 * 30
+        cur_weekday = timeslice // HOURS_LEN
+        cur_start_time = 8 * 60 + timeslice % HOURS_LEN * 30
         for course_time in self._course_time_list: 
             if (course_time['start_time'] <= cur_start_time and 
                 cur_start_time <= course_time['end_time'] and 
@@ -180,7 +187,7 @@ def backtrack (user, candidates, my_credit, my_score, my_courses, all_courses, i
 def run_recommendation (user):
     user_data = ConvertedUserData(user)
    
-    all_course_data = map(lambda x : ConvertedCourseData(x), get_target_courses(user))
+    all_course_data = list(map(lambda x : ConvertedCourseData(x), get_target_courses(user)))
     all_course_data.sort(key = lambda x : (x.get_timeslice_set().get_list(), user_data.course_score(x)), reverse = True)
 
     unique_course_data = []
