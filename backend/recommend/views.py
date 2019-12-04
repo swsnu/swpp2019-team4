@@ -344,7 +344,7 @@ def api_coursepref_unrated(request):
                 break
             if position>=start and (not rated[course.id]) and searcher(course,0,request.GET):
                 course_data=course.data()
-                course_data['score']=5
+                course_data['score']='-'
                 course_data['expected']=cf_score_result[course.id]
                 course_list.append(course_data)
             if (not rated[course.id]) and searcher(course,0,request.GET):

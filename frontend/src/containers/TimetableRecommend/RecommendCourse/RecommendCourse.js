@@ -136,6 +136,7 @@ class RecommendCourse extends Component {
                   id={`course-score-form-${course.id}`}
                   value={score}
                   onChange={(event) => this.props.onChangeslider(course.id, event.target.value)}
+                  onClick={(event) => this.props.onChangeslider(course.id, event.target.value)}
                 />
               </div>
             </form>
