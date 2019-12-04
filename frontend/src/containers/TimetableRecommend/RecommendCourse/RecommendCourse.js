@@ -84,7 +84,7 @@ class RecommendCourse extends Component {
     this.setState({ searchdetail: !this.state.searchdetail });
   }
 
-  courseElement(course) {
+  courseElement(course, rated) {
     const colorGradient = [
       '#FC466B',
       '#E94879',
@@ -98,7 +98,7 @@ class RecommendCourse extends Component {
       '#515BEC',
       '#3F5EFB',
     ];
-    const { score } = course;
+    const score = rated?course.score:5;
     let timeString = '';
     for (let i = 0; i < course.time.length; i += 1) {
       timeString += this.segmentToString(course.time[i].week_day, course.time[i].start_time, course.time[i].end_time);
@@ -238,12 +238,12 @@ class RecommendCourse extends Component {
     const unratedview = [];
     if (this.props.ratedCourse !== undefined) {
       for (let i = 0; i < this.props.ratedCourse.length; i += 1) {
-        ratedview.push(this.courseElement(this.props.ratedCourse[i]));
+        ratedview.push(this.courseElement(this.props.ratedCourse[i], true));
       }
     }
     if (this.props.unratedCourse !== undefined) {
       for (let i = 0; i < this.props.unratedCourse.length; i += 1) {
-        unratedview.push(this.courseElement(this.props.unratedCourse[i]));
+        unratedview.push(this.courseElement(this.props.unratedCourse[i], false));
       }
     }
     return (

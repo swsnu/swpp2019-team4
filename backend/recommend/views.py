@@ -8,146 +8,54 @@ from assaapp.models import User, Course
 from recommend.models import CoursePref, TimePref
 
 def collaborative_filtering(user):
-    all_course = [course for course in Course.objects.all().values()]
-    all_coursepref = [score_data for score_data in CoursePref.objects.all().values()]
-    user_coursepref = [score_data for score_data in CoursePref.objects.filter(user=user).values()]
-    all_user = [person for person in User.objects.all().values()]
-    user_dict = model_to_dict(user)
+    all_course = [course.id for course in Course.objects.all()]
+    all_coursepref = [model_to_dict(score_data) for score_data in CoursePref.objects.all()]
+    user_coursepref = [model_to_dict(score_data) for score_data in CoursePref.objects.filter(user=user)]
+    all_user = [person.id for person in User.objects.all()]
+    user_id = user.id
 
-    score_sum = {}
-    user_count = {}
-    score_average = {}
+    course_size=len(all_course)
 
-    total_sum = 0.0
-    total_count = 0.0
-    total_average = 5.0
+    user_score={}
+    user_sum={}
+    user_one={}
 
-    total_square_sum = 0.0
-    total_std = 1.0
+    relation={}
+    relation_sum=0.0
+    relation_abs_sum=0.0
 
-    user_score_sum = {}
-    user_score_square_sum = {}
-    user_score_count = {}
-    user_average = {}
-    user_std = {}
-
-    user_sum = {}
-    person_sum = {}
-    user_person_sum = {}
-    relation = {}
-
-    score_weighted_sum = {}
-    relation_sum = {}
-
-    score_result_dict = {}
-
-    for course in all_course:
-        score_sum[course['id']] = 0.0
-        user_count[course['id']] = 0.0
-        score_weighted_sum[course['id']] = 0.0
-        relation_sum[course['id']] = 0.0
-        score_result_dict[course['id']] = -2.0
+    course_score={}
 
     for person in all_user:
-        user_sum[person['id']] = 0.0
-        person_sum[person['id']] = 0.0
-        user_person_sum[person['id']] = 0.0
-        user_score_sum[person['id']] = 0.0
-        user_score_count[person['id']] = 0.0
-        user_score_square_sum[person['id']] = 0.0
-
-    for score_data in all_coursepref:
-        score_sum[score_data['course_id']] += score_data['score']
-        user_count[score_data['course_id']] += 1.0
-        user_score_sum[score_data['user_id']] += score_data['score']
-        user_score_square_sum[score_data['user_id']] += score_data['score']**2
-        user_score_count[score_data['user_id']] += 1.0
-        total_sum += score_data['score']
-        total_count += 1.0
-        total_square_sum += score_data['score']**2
-
-    if total_count > 0.0:
-        total_average = round(total_sum/total_count, 3)
-        if total_count > 1.0:
-            val = total_square_sum/(total_count-1.0)-(total_average**2)*total_count/(total_count-1)
-            total_std = math.sqrt(val)
-
-
+        user_sum[person]=0
+        user_one[person]=0
     for course in all_course:
-        usrcnt = user_count[course['id']]
-        if usrcnt == 0.0:
-            score_average[course['id']] = total_average
-        else:
-            score_average[course['id']] = score_sum[course['id']]/usrcnt
-
-    for person in all_user:
-        pid = person['id']
-        score_square_sum = user_score_square_sum[pid]
-        score_sum = user_score_sum[pid]
-        score_cnt = user_score_count[pid]
-        if score_cnt == 0.0:
-            user_average[pid] = total_average
-            user_std[pid] = total_std
-        else:
-            user_average[pid] = score_sum/score_cnt
-            average = user_average[pid]
-            if score_cnt > 1.0:
-                val = score_square_sum/(score_cnt-1.0)-(average**2)*score_cnt/(score_cnt-1.0)
-                user_std[pid] = math.sqrt(val)
-            else:
-                user_std[pid] = total_std
-
+        user_score[course]=0
+        course_score[course]=0.0
     for score_data in user_coursepref:
-        score_result_dict[score_data['course_id']] = score_data['score']
-
+        user_score[score_data['course']]=1
     for score_data in all_coursepref:
-        course = score_data['course_id']
-        score = score_result_dict[course]
-        person = score_data['user_id']
-        if score > -1.0:
-            user_delta = score-user_average[user_dict['id']]
-            person_delta = score_data['score']-user_average[person]
-            user_sum[person] += user_delta*user_delta
-            person_sum[person] += person_delta*person_delta
-            user_person_sum[person] += user_delta*person_delta
-
+        user_sum[score_data['user']]+=1
+        if user_score[score_data['course']]==1:
+            user_one[score_data['user']]+=1
     for person in all_user:
-        pid = person['id']
-        usr_sum = user_sum[pid]
-        persn_sum = person_sum[pid]
-        usr_persn_sum = user_person_sum[pid]
-        if usr_sum*persn_sum == 0.0:
-            relation[pid] = 0.0
-        else:
-            relation[pid] = usr_persn_sum/math.sqrt(usr_sum*persn_sum)
-
+        if person==user_id:
+            continue
+        relation[person]=1.0-(2.0*user_sum[user_id]+2.0*user_sum[person]-4.0*user_one[person])/course_size
+        relation_sum+=relation[person]
+        relation_abs_sum+=abs(relation[person])
     for score_data in all_coursepref:
-        score_data_usr = score_data['user_id']
-        rel = relation[score_data_usr]
-        score_data_score = score_data['score']
-        score_data_course = score_data['course_id']
-        usr_average = user_average[score_data_usr]
-        usr_std = user_std[score_data_usr]
-        if usr_std != 0.0:
-            score_weighted_sum[score_data_course] += rel*(score_data_score-usr_average)/usr_std
-            relation_sum[score_data['course_id']] += abs(rel)
-
-    for course in all_course:
-        usr_std = user_std[user_dict['id']]
-        weighted_sum = score_weighted_sum[course['id']]
-        rel = relation_sum[course['id']]
-        if score_result_dict[course['id']] < -1.0:
-            if relation_sum[course['id']] == 0.0:
-                score_result_dict[course['id']] = score_average[course['id']]
-            else:
-                val = weighted_sum*usr_std/rel+user_average[user_dict['id']]
-                score_result_dict[course['id']] = round(val, 3)
-        if score_result_dict[course['id']] < 0.0:
-            score_result_dict[course['id']] = 0.0
-        if score_result_dict[course['id']] > 10.0:
-            score_result_dict[course['id']] = 10.0
-
-    return score_result_dict
+        if score_data['user']==user_id:
+            continue
+        course_score[score_data['course']]+=relation[score_data['user']]
+    if relation_abs_sum==0.0:
+        for course in all_course:
+            course_score[course]=0.5
+    else:
+        relation_base=0.5-relation_sum/relation_abs_sum/2.0
+        for course in all_course:
+            course_score[course]=(course_score[course]/relation_abs_sum)+relation_base
+    return course_score
 
 def searcher(course, score, request_get):
     def has_text(text,match_text):
@@ -257,21 +165,16 @@ def api_coursepref_rated(request):
         start = int(request.GET.get('start'))
         end = int(request.GET.get('end'))
         position = 0
-        rated={}
         course_list=[]
-        all_course=[course for course in Course.objects.all()]
-        for course in all_course:
-            rated[course.id]=False
         for score_data in cf_user:
-            rated[score_data.course.id]=True
-        for course in all_course:
             if position>end:
                 break
-            elif position>=start and rated[course.id] and searcher(course,cf_result[course.id],request.GET):
+            course=score_data.course
+            if position>=start and searcher(course,cf_result[course.id],request.GET):
                 course_data=course.data()
-                course_data['score']=cf_result[course.id]
+                course_data['score']=score_data.score
                 course_list.append(course_data)
-            if rated[course.id] and searcher(course,cf_result[course.id],request.GET):
+            if searcher(course,cf_result[course.id],request.GET):
                 position+=1
         return JsonResponse(course_list, safe=False)
     return HttpResponseNotAllowed(['GET'])
@@ -280,23 +183,23 @@ def api_coursepref_rated(request):
 def api_coursepref_unrated(request):
     if request.method == 'GET':
         cf_result=collaborative_filtering(request.user)
-        cf_user=[score_data for score_data in CoursePref.objects.filter(user=request.user)]
+        cf_user=[score_data.course.id for score_data in CoursePref.objects.filter(user=request.user)]
         start = int(request.GET.get('start'))
         end = int(request.GET.get('end'))
         position = 0
         rated={}
         course_list=[]
-        all_course=[course for course in Course.objects.all()]
+        all_course = [course for course in Course.objects.all()]
+        all_course = sorted(all_course, key=lambda course: -cf_result[course.id])
         for course in all_course:
             rated[course.id]=False
         for score_data in cf_user:
-            rated[score_data.course.id]=True
+            rated[score_data]=True
         for course in all_course:
             if position>end:
                 break
-            elif position>=start and (not rated[course.id]) and searcher(course,cf_result[course.id],request.GET):
+            if position>=start and (not rated[course.id]) and searcher(course,cf_result[course.id],request.GET):
                 course_data=course.data()
-                course_data['score']=cf_result[course.id]
                 course_list.append(course_data)
             if (not rated[course.id]) and searcher(course,cf_result[course.id],request.GET):
                 position+=1
