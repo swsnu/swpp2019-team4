@@ -109,6 +109,12 @@ export const getRecommend = () => (dispatch) => axios.get('/api/recommend/recomm
 export const editConstraints = (consts) => (dispatch) => 
   dispatch({ type: actionTypes.EDIT_CONSTRAINTS, constraints: consts });
 
-export const postConstraints = (consts) => (dispatch) => axios.post('/api/recommend/constraints/', consts)
+export const putConstraints = (consts) => (dispatch) => axios.put('/api/recommend/constraints/', consts)
   .then((res) => dispatch({ type: actionTypes.EDIT_CONSTRAINTS, constraints: consts }))
   .catch(() => {});
+
+export const putTimePref = (table) => {
+  return (dispatch) => axios.put('/api/recommend/timepref/', table)
+    .then((res) => dispatch({ type: actionTypes.EDIT_TIME_PREF, time_pref_table: table }))
+    .catch(() => {});
+}

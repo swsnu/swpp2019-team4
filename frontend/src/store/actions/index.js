@@ -29,5 +29,6 @@ export {
   deleteTimetable,
   getRecommend,
   editConstraints,
-  postConstraints,
+  putConstraints,
+  putTimePref,
 } from './user';

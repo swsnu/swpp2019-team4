@@ -10,4 +10,4 @@ class TimePref(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     weekday = models.IntegerField(default=0)
     start_time = models.TimeField()
-    score = models.IntegerField(default=5)
+    score = models.IntegerField(default=3)

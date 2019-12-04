@@ -22,7 +22,35 @@ const initialState = {
     credit_max: 18,
     major_min: 1,
     major_max: 18,
-  }
+  },
+  time_pref_table: [
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3]
+  ]
 };
 
 const reducer = (state = initialState, action) => {
@@ -120,6 +148,9 @@ const reducer = (state = initialState, action) => {
     }
     case actionTypes.EDIT_CONSTRAINTS: {
       return { ...state, constraints: action.constraints }
+    }
+    case actionTypes.EDIT_TIME_PREF: {
+      return { ...state, time_pref_table: action.time_pref_table }
     }
     default:
       return { ...state };

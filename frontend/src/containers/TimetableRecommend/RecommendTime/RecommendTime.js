@@ -6,10 +6,7 @@ import './RecommendTime.css';
 class RecommendTime extends Component {
   constructor(props) {
     super(props);
-    const colorTable = [];
-    for (let i = 0; i < 26; i += 1) {
-      colorTable.push([3, 3, 3, 3, 3, 3]);
-    }
+    const colorTable = this.props.color_table.slice()
     this.is_mount = false;
     this.state = {
       mouse_down: false,
@@ -51,6 +48,7 @@ class RecommendTime extends Component {
       this.setState((prevState) => {
         const colorTable = prevState.color_table;
         colorTable[xIndex][yIndex] = prevState.color;
+        this.props.handleTimePref(colorTable);
         return ({ ...prevState, color_table: colorTable });
       });
     }
@@ -152,4 +150,8 @@ RecommendTime.propTypes = {
   handleValid: PropTypes.func.isRequired,
 };
 
-export default connect(null, null)(RecommendTime);
+const mapStateToProps = (state) => ({
+  color_table: state.user.time_pref_table,
+});
+
+export default connect(mapStateToProps, null)(RecommendTime);

@@ -16,6 +16,7 @@ class TimetableRecommend extends Component {
     this.state = {
       valid: true,
       index: 0,
+      time_pref: [],
     };
   }
 
@@ -31,9 +32,16 @@ class TimetableRecommend extends Component {
     this.setState({ valid: value });
   }
 
+  handleTimePref(value) {
+    this.setState({ time_pref: value });
+  }
+
   movePage(offset) {
     if (this.state.index === 0) {
-      this.props.onPostConstraints(this.props.constraints)
+      this.props.onPutConstraints(this.props.constraints);
+    }
+    if (this.state.index === 1) {
+      this.props.onPutTimePref(this.state.time_pref);
     }
     this.setState((prevState) => ({ ...prevState, index: prevState.index + offset }));
   }
@@ -51,7 +59,8 @@ class TimetableRecommend extends Component {
         content = (<RecommendConstraint handleValid={(value) => this.handleValid(value)} />);
         break;
       case 1:
-        content = (<RecommendTime handleValid={(value) => this.handleValid(value)} />);
+        content = (<RecommendTime handleValid={(value) => this.handleValid(value)}
+                                  handleTimePref={(value) => this.handleTimePref(value)} />);
         break;
       case 2:
         content = (<RecommendCourse handleValid={(value) => this.handleValid(value)} />);
@@ -167,7 +176,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onLogout: () => dispatch(actionCreators.getSignout()),
-  onPostConstraints: (consts) => dispatch(actionCreators.postConstraints(consts))
+  onPutConstraints: (consts) => dispatch(actionCreators.putConstraints(consts)),
+  onPutTimePref: (time_pref) => dispatch(actionCreators.putTimePref(time_pref))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableRecommend);

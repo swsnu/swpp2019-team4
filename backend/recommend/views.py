@@ -253,7 +253,7 @@ def api_time_pref_id(request, timepref_id):
             return HttpResponseNotFound()
         time_data.delete()
         return HttpResponse(status=200)
-    return HttpResponseNotAllowed(['GET', 'DELETE'])
+    return HttpResponseNotAllowed(['GET', 'POST', 'DELETE'])
 
 @auth_func
 def api_recommend (request) :
@@ -264,7 +264,7 @@ def api_recommend (request) :
 
 @auth_func
 def api_constraints (request):
-    if request.method == 'POST':
+    if request.method == 'PUT':
         try:
             body = json.loads(request.body.decode())
             user = request.user
@@ -282,4 +282,4 @@ def api_constraints (request):
         user.major_max = major_max
         user.save()
         return HttpResponse(status=200)
-    return HttpResponseNotAllowed(['POST'])
+    return HttpResponseNotAllowed(['PUT'])
