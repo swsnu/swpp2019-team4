@@ -17,6 +17,7 @@ export {
   postUserSearch,
   receiveFriend,
   getCourses,
+  setCourses,
   postCourse,
   getTimetable,
   editTimetable,
@@ -27,4 +28,10 @@ export {
   postCustomCourse,
   deleteCourse,
   deleteTimetable,
+  getRatedCourse,
+  getUnratedCourse,
+  setRatedCourse,
+  setUnratedCourse,
+  putCoursepref,
+  putCourseprefTemp,
 } from './user';

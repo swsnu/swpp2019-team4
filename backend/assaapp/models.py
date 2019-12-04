@@ -84,7 +84,7 @@ class Course(models.Model):
     college = models.CharField(max_length=32, default='default')
     department = models.CharField(max_length=128, default='default')
     degree_program = models.CharField(max_length=32, default='default')
-    academic_year = models.IntegerField(default=-1)
+    academic_year = models.CharField(max_length=8)
     course_number = models.CharField(max_length=16, default='default')
     lecture_number = models.CharField(max_length=8, default='default')
     title = models.CharField(max_length=128, default='default')
@@ -93,6 +93,7 @@ class Course(models.Model):
     lecture_credit = models.IntegerField(default=-1)
     lab_credit = models.IntegerField(default=-1)
     lecture_type = models.CharField(max_length=64, default='default')
+    time = models.CharField(max_length=128, default='default')
     location = models.CharField(max_length=128, default='default')
     professor = models.CharField(max_length=64, default='default')
     quota = models.CharField(max_length=16, default='default')
@@ -156,17 +157,11 @@ class CourseTime(models.Model):
     end_time = models.TimeField()
 
     def data(self):
-        position = self.building.name
-        if len(self.lectureroom) > 0:
-            position += '-' + self.lectureroom
         return {'week_day': self.weekday,
                 'start_time': self.start_time.hour*60
                               +self.start_time.minute,
                 'end_time': self.end_time.hour*60
-                            +self.end_time.minute,
-                'position': {'location' : position,
-                             'latitude' : self.building.latitude,
-                             'longitude' : self.building.longitude}}
+                            +self.end_time.minute}
 
 class CustomCourse(models.Model):
     timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
@@ -226,14 +221,8 @@ class CustomCourseTime(models.Model):
     end_time = models.TimeField()
 
     def data(self):
-        position = self.building.name
-        if len(self.lectureroom) > 0:
-            position += '-' + self.lectureroom
         return {'week_day': self.weekday,
                 'start_time': self.start_time.hour*60
                               +self.start_time.minute,
                 'end_time': self.end_time.hour*60
-                            +self.end_time.minute,
-                'position': {'location' : position,
-                             'latitude' : self.building.latitude,
-                             'longitude' : self.building.longitude}}
+                            +self.end_time.minute,}

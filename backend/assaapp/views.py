@@ -12,6 +12,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from assaapp.models import User, Timetable, Course, CustomCourse, CustomCourseTime, Building
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
+from recommend.views import collaborative_filtering
 
 def auth_func(func):
     def wrapper_function(*args, **kwargs):
@@ -322,24 +323,76 @@ def api_timetable_id_custom_course(request, timetable_id):
             return HttpResponseBadRequest()
     return HttpResponseNotAllowed(['POST'])
 
+def searcher(course, score, request_get):
+    def has_text(text,match_text):
+        if match_text:
+            matched = 0
+            for char in text:
+                if char == match_text[matched]:
+                    matched += 1
+                if matched == len(match_text):
+                    return True
+            return False
+        return True
+    search_dict = {}
+    search_dict['title'] = request_get.get('title')
+    search_dict['classification'] = request_get.get('classification')
+    search_dict['department'] = request_get.get('department')
+    search_dict['degree_program'] = request_get.get('degree_program')
+    search_dict['academic_year'] = request_get.get('academic_year')
+    search_dict['course_number'] = request_get.get('course_number')
+    search_dict['lecture_number'] = request_get.get('lecture_number')
+    search_dict['professor'] = request_get.get('professor')
+    search_dict['language'] = request_get.get('language')
+    if request_get.get('max_credit'):
+        search_dict['max_credit'] = int(request_get.get('max_credit'))
+    else:
+        search_dict['max_credit'] = 32
+    if request_get.get('min_credit'):
+        search_dict['min_credit'] = int(request_get.get('min_credit'))
+    else:
+        search_dict['min_credit'] = -32
+    if request_get.get('max_score'):
+        search_dict['max_score'] = float(request_get.get('max_score'))
+    else:
+        search_dict['max_score'] = 32.0
+    if request_get.get('min_score'):
+        search_dict['min_score'] = float(request_get.get('min_score'))
+    else:
+        search_dict['min_score'] = -32.0
+    return (has_text(course.title+course.subtitle,search_dict['title']) and
+            has_text(course.classification,search_dict['classification']) and
+            has_text(course.college+course.department,search_dict['department']) and
+            has_text(course.degree_program,search_dict['degree_program']) and
+            has_text(course.academic_year,search_dict['academic_year']) and
+            has_text(course.course_number,search_dict['course_number']) and
+            has_text(course.lecture_number,search_dict['lecture_number']) and
+            has_text(course.professor,search_dict['professor']) and
+            has_text(course.language,search_dict['language']) and
+            course.credit<=search_dict['max_credit'] and
+            course.credit>=search_dict['min_credit'] and
+            score<=search_dict['max_score'] and
+            score>=search_dict['min_score'])
+
 @auth_func
 def api_course(request):
     if request.method == 'GET':
         course_list = Course.objects.all()
-        match_text = request.GET.get('title')
-        if match_text:
-            def is_matched(text):
-                matched = 0
-                for char in text:
-                    if char == match_text[matched]:
-                        matched += 1
-                    if matched == len(match_text):
-                        return True
-                return False
-            course_list = [course.data() for course
-                           in filter(lambda x: is_matched(x.title), course_list)]
-            return JsonResponse(course_list, safe=False)
-        return HttpResponseBadRequest()
+        cf_result=collaborative_filtering(request.user)
+        start = int(request.GET.get('start'))
+        end = int(request.GET.get('end'))
+        course_list = [course for course
+                        in filter(lambda course: searcher(course,cf_result[course.id],request.GET), course_list)]
+        course_list = sorted(course_list, key=lambda course: -cf_result[course.id])
+        course_len = len(course_list)
+        get_result = []
+        if start>=course_len:
+            return JsonResponse([], safe=False)
+        for i in range(start,course_len):
+            if i>end:
+                break
+            get_result.append(course_list[i].data())
+        return JsonResponse(get_result, safe=False)
     return HttpResponseNotAllowed(['GET'])
 
 @ensure_csrf_cookie

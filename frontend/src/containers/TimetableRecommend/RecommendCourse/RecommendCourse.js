@@ -3,58 +3,50 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import SearchBar from '../../../components/SearchBar/SearchBar';
 import './RecommendCourse.css';
+import * as actionCreators from '../../../store/actions/index';
 
 class RecommendCourse extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      input: '',
-
-      // temporary data
-      courses: [
-        {
-          id: 3,
-          title: '죽음의 과학적 이해',
-          professor: '유성호',
-          credit: 3,
-          time: [
-            {
-              start_time: 600,
-              end_time: 770,
-              week_day: 3,
-              position: '302-408',
-            },
-            {
-              start_time: 630,
-              end_time: 770,
-              week_day: 4,
-              position: '302-408',
-            },
-          ],
-          except: false,
-          rated: false,
-          score: 10,
-        },
-        {
-          id: 4,
-          title: '죽음의 과학적 이해',
-          professor: '유성호',
-          credit: 3,
-          time: [
-            {
-              start_time: 600,
-              end_time: 770,
-              week_day: 3,
-              position: '302-408',
-            },
-          ],
-          except: false,
-          rated: false,
-          score: 0,
-        },
-      ],
+      searchValues: {
+        title: '',
+        classification: '',
+        department: '',
+        degree_program: '',
+        academic_year: '',
+        course_number: '',
+        lecture_number: '',
+        professor: '',
+        language: '',
+        min_credit: '',
+        max_credit: '',
+        min_score: '',
+        max_score: '',
+      },
+      realValues: {
+        title: '',
+        classification: '',
+        department: '',
+        degree_program: '',
+        academic_year: '',
+        course_number: '',
+        lecture_number: '',
+        professor: '',
+        language: '',
+        min_credit: '',
+        max_credit: '',
+        min_score: '',
+        max_score: '',
+      },
+      ratedScrollLimit: 1500,
+      unratedScrollLimit: 1500,
+      ratedCourseCount: 50,
+      unratedCourseCount: 50,
+      tabview: 0,
+      searchdetail: false,
+      commandMatch: 0,
     };
-
     this.timeToString = (time) => {
       const hour = parseInt(time / 60, 10);
       const hourString = (hour < 10 ? '0' : '') + hour;
@@ -65,11 +57,31 @@ class RecommendCourse extends Component {
 
   componentDidMount() {
     this.props.handleValid(true);
+    this.props.setRatedCourse(0, 49, this.state.realValues);
+    this.props.setUnratedCourse(0, 49, this.state.realValues);
   }
 
   segmentToString(weekDay, startTime) {
     const weekDayName = ['월', '화', '수', '목', '금', '토'];
     return `${weekDayName[weekDay]}${this.timeToString(startTime)}`;
+  }
+
+  scrollHandler(scrollTop) {
+    const pageSize = 50;
+    const scrollSize = pageSize * 60;
+    if (this.state.tabview === 0 && this.state.ratedScrollLimit < scrollTop) {
+      this.setState({ ratedScrollLimit: this.state.ratedScrollLimit + scrollSize });
+      this.props.getRatedCourse(this.state.ratedCourseCount, this.state.ratedCourseCount + pageSize - 1, this.state.realValues);
+      this.setState({ ratedCourseCount: this.state.ratedCourseCount + pageSize });
+    } else if (this.state.tabview === 1 && this.state.unratedScrollLimit < scrollTop) {
+      this.setState({ unratedScrollLimit: this.state.unratedScrollLimit + scrollSize });
+      this.props.getUnratedCourse(this.state.unratedCourseCount, this.state.unratedCourseCount + pageSize - 1, this.state.realValues);
+      this.setState({ unratedCourseCount: this.state.unratedCourseCount + pageSize });
+    }
+  }
+
+  onSearchToggle() {
+    this.setState({ searchdetail: !this.state.searchdetail });
   }
 
   courseElement(course) {
@@ -86,34 +98,32 @@ class RecommendCourse extends Component {
       '#515BEC',
       '#3F5EFB',
     ];
+    const { score } = course;
     let timeString = '';
-    let courseString = '';
     for (let i = 0; i < course.time.length; i += 1) {
       timeString += this.segmentToString(course.time[i].week_day, course.time[i].start_time, course.time[i].end_time);
-      courseString += course.time[i].position;
       if (i !== course.time.length - 1) {
         timeString += ' ';
-        courseString += '/';
       }
     }
-
     return (
       <div key={course.id}>
         <div className="row">
           <div className="col-6">
             <div className="text-left">
-              {course.title}
+              {course.title+' ('+course.lecture_number+')'}
             </div>
             <div className="text-black-50 text-left small" id="recommend-course-abstract">
-              {`${course.professor} | ${course.credit}학점 | ${timeString} | ${courseString}`}
+              {`${course.professor} | ${course.credit}학점 | ${timeString} | ${course.location}`}
             </div>
           </div>
           <div className="col-5 d-flex align-items-center">
             <div
               className="m-2 font-weight-bold text-center"
-              style={{ color: colorGradient[course.score], width: '30px' }}
+              id={`slider-value-${course.id}`}
+              style={{ color: colorGradient[Math.round(score)], width: '30px' }}
             >
-              {course.score}
+              {score}
             </div>
             <form className="flex-grow-1">
               <div className="form-group m-2">
@@ -123,16 +133,8 @@ class RecommendCourse extends Component {
                   min="0"
                   max="10"
                   id={`course-score-form-${course.id}`}
-                />
-              </div>
-            </form>
-            <form>
-              <div className="custom-control custom-switch">
-                <input type="checkbox" className="custom-control-input" id={`course-toggle-form-${course.id}`} />
-                <label
-                  className="custom-control-label"
-                  htmlFor={`course-toggle-form-${course.id}`}
-                  aria-label="custom-control-input"
+                  value={score}
+                  onChange={(event) => this.props.onChangeslider(course.id, event.target.value)}
                 />
               </div>
             </form>
@@ -143,7 +145,107 @@ class RecommendCourse extends Component {
     );
   }
 
+  searchOnChange(event, type) {
+    const newValue = this.state.searchValues;
+    newValue[type]=event.target.value;
+    this.setState({ searchValues: newValue });
+  }
+
+  search() {
+    if(this.state.searchdetail){
+      this.setState({
+        realValues: this.state.searchValues,
+        ratedScrollLimit: 1500,
+        unratedScrollLimit: 1500,
+        ratedCourseCount: 50,
+        unratedCourseCount: 50,
+      });
+      this.props.setRatedCourse(0, 49, this.state.searchValues);
+      this.props.setUnratedCourse(0, 49, this.state.searchValues);
+    }
+    else{
+      const newValue={
+        title: this.state.searchValues.title,
+        classification: '',
+        department: '',
+        degree_program: '',
+        academic_year: '',
+        course_number: '',
+        lecture_number: '',
+        professor: '',
+        language: '',
+        min_credit: '',
+        max_credit: '',
+        min_score: '',
+        max_score: '',
+      };
+      this.setState({
+        realValues: newValue,
+        ratedScrollLimit: 1500,
+        unratedScrollLimit: 1500,
+        ratedCourseCount: 50,
+        unratedCourseCount: 50,
+      });
+      this.props.setRatedCourse(0, 49, newValue);
+      this.props.setUnratedCourse(0, 49, newValue);
+    }
+  }
+
+  enterKey() {
+    const command=[38,38,40,40,37,39,37,39,66,65];
+    if(window.event.keyCode === command[this.state.commandMatch]){
+      if(this.state.commandMatch===9){
+        const newValue={
+          title: '소프트웨어 개발의 원리와 실습',
+          classification: '전필',
+          department: '컴퓨터공학부',
+          degree_program: '학사',
+          academic_year: '3학년',
+          course_number: 'M1522.002400',
+          lecture_number: '001',
+          professor: '전병곤',
+          language: '영어',
+          min_credit: '4',
+          max_credit: '4',
+          min_score: '',
+          max_score: '',
+        };
+        this.setState({
+          realValues: newValue,
+          ratedScrollLimit: 1500,
+          unratedScrollLimit: 1500,
+          ratedCourseCount: 50,
+          unratedCourseCount: 50,
+          commandMatch: 0,
+        });
+        this.props.setRatedCourse(0, 49, newValue);
+        this.props.setUnratedCourse(0, 49, newValue);
+      }
+      else{
+        this.setState({commandMatch: this.state.commandMatch+1});
+      }
+    }
+    else{
+      this.setState({commandMatch: 0});
+    }
+    if (window.event.keyCode === 13) {
+      this.search();
+    }
+  }
+
   render() {
+    const ratedview = [];
+    const unratedview = [];
+    if (this.props.ratedCourse !== undefined) {
+      for (let i = 0; i < this.props.ratedCourse.length; i += 1) {
+        ratedview.push(this.courseElement(this.props.ratedCourse[i]));
+      }
+    }
+    if (this.props.unratedCourse !== undefined) {
+      for (let i = 0; i < this.props.unratedCourse.length; i += 1) {
+        unratedview.push(this.courseElement(this.props.unratedCourse[i]));
+      }
+    }
     return (
       <div className="RecommendCourse">
         <div className="col-8 offset-2">
@@ -156,6 +258,7 @@ class RecommendCourse extends Component {
                 role="tab"
                 aria-controls="rated"
                 aria-selected="true"
+                onClick={() => { this.setState({ tabview: 0 }); }}
               >
 평가
               </a>
@@ -168,34 +271,19 @@ class RecommendCourse extends Component {
                 role="tab"
                 aria-controls="unrated"
                 aria-selected="false"
+                onClick={() => { this.setState({ tabview: 1 }); }}
               >
 미평가
               </a>
             </li>
-            <li className="nav-item">
-              <a
-                className="nav-link w-100"
-                data-toggle="tab"
-                href="#exception-tab"
-                role="tab"
-                aria-controls="exception"
-                aria-selected="false"
-              >
-예외
-              </a>
-            </li>
           </ul>
-          <SearchBar value={this.state.input} onChange={(event) => this.setState({ input: event.target.value })} />
-          <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: '350px' }}>
+          <SearchBar value={this.state.searchValues} onChange={(event, type) => this.searchOnChange(event, type)} onKeyDown={() => this.enterKey()} onToggle={() => this.onSearchToggle()} togglestatus={this.state.searchdetail} onSearch={() => this.search()} searchScore={true} />
+          <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: '350px' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
             <div className="tab-pane show active" id="rated-tab" role="tabpanel" aria-labelledby="rated-tab">
-              {this.courseElement(this.state.courses[0])}
-              {this.courseElement(this.state.courses[1])}
+              {ratedview}
             </div>
             <div className="tab-pane" id="unrated-tab" role="tabpanel" aria-labelledby="unrated-tab">
-              평가되지 않은 과목
-            </div>
-            <div className="tab-pane" id="exception-tab" role="tabpanel" aria-labelledby="exception-tab">
-              이미 수강한 과목
+              {unratedview}
             </div>
           </div>
         </div>
@@ -208,4 +296,17 @@ RecommendCourse.propTypes = {
   handleValid: PropTypes.func.isRequired,
 };
 
-export default connect(null, null)(RecommendCourse);
+const mapStateToProps = (state) => ({
+  ratedCourse: state.user.rated_course,
+  unratedCourse: state.user.unrated_course,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  getRatedCourse: (start, end, searchValues) => dispatch(actionCreators.getRatedCourse(start, end, searchValues)),
+  getUnratedCourse: (start, end, searchValues) => dispatch(actionCreators.getUnratedCourse(start, end, searchValues)),
+  setRatedCourse: (start, end, searchValues) => dispatch(actionCreators.setRatedCourse(start, end, searchValues)),
+  setUnratedCourse: (start, end, searchValues) => dispatch(actionCreators.setUnratedCourse(start, end, searchValues)),
+  onChangeslider: (id, value) => dispatch(actionCreators.putCourseprefTemp(id, value)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RecommendCourse);
