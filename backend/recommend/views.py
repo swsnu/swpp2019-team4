@@ -149,7 +149,7 @@ def collaborative_filtering(user):
 
     return score_result_dict
 
-def searcher(course, request_get):
+def searcher(course, score, request_get):
     def has_text(text,match_text):
         if match_text:
             matched = 0
@@ -178,6 +178,14 @@ def searcher(course, request_get):
         search_dict['min_credit'] = (int)(request_get.get('min_credit'))
     else:
         search_dict['min_credit'] = -32
+    if request_get.get('max_score'):
+        search_dict['max_score'] = (float)(request_get.get('max_score'))
+    else:
+        search_dict['max_score'] = 32.0
+    if request_get.get('min_score'):
+        search_dict['min_score'] = (float)(request_get.get('min_score'))
+    else:
+        search_dict['min_score'] = -32.0
     return (has_text(course.title+course.subtitle,search_dict['title']) and
             has_text(course.classification,search_dict['classification']) and
             has_text(course.college+course.department,search_dict['department']) and
@@ -188,7 +196,9 @@ def searcher(course, request_get):
             has_text(course.professor,search_dict['professor']) and
             has_text(course.language,search_dict['language']) and
             course.credit<=search_dict['max_credit'] and
-            course.credit>=search_dict['min_credit'])
+            course.credit>=search_dict['min_credit'] and
+            score<=search_dict['max_score'] and
+            score>=search_dict['min_score'])
 
 def auth_func(func):
     def wrapper_function(*args, **kwargs):
@@ -263,11 +273,11 @@ def api_coursepref_rated(request):
         for course in all_course:
             if position>end:
                 break
-            elif position>=start and rated[course.id] and searcher(course,request.GET):
+            elif position>=start and rated[course.id] and searcher(course,cf_result[course.id],request.GET):
                 course_data=course.data()
                 course_data['score']=cf_result[course.id]
                 course_list.append(course_data)
-            if rated[course.id] and searcher(course,request.GET):
+            if rated[course.id] and searcher(course,cf_result[course.id],request.GET):
                 position+=1
         return JsonResponse(course_list, safe=False)
     return HttpResponseNotAllowed(['GET'])
@@ -291,11 +301,11 @@ def api_coursepref_unrated(request):
         for course in all_course:
             if position>end:
                 break
-            elif position>=start and (not rated[course.id]) and searcher(course,request.GET):
+            elif position>=start and (not rated[course.id]) and searcher(course,cf_result[course.id],request.GET):
                 course_data=course.data()
                 course_data['score']=cf_result[course.id]
                 course_list.append(course_data)
-            if (not rated[course.id]) and searcher(course,request.GET):
+            if (not rated[course.id]) and searcher(course,cf_result[course.id],request.GET):
                 position+=1
         return JsonResponse(course_list, safe=False)
     return HttpResponseNotAllowed(['GET'])

@@ -126,6 +126,28 @@ const SearchBar = (props) => (
           onChange={(event)=>props.onChange(event,'max_credit')}
           onKeyDown={props.onKeyDown}
         />
+        최소평점: 
+        <input
+          type="number"
+          className="form-control"
+          id="recommend-search-min_score"
+          placeholder="0/1.234/9.9..."
+          step="0.001"
+          value={props.value.min_score}
+          onChange={(event)=>props.onChange(event,'min_score')}
+          onKeyDown={props.onKeyDown}
+        />
+        최대평점: 
+        <input
+          type="number"
+          className="form-control"
+          id="recommend-search-max_score"
+          placeholder="0/1.234/9.9..."
+          step="0.001"
+          value={props.value.max_score}
+          onChange={(event)=>props.onChange(event,'max_score')}
+          onKeyDown={props.onKeyDown}
+        />
       </div>
     :null)}
   </div>

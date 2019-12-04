@@ -21,6 +21,8 @@ class RecommendCourse extends Component {
         language: '',
         min_credit: '',
         max_credit: '',
+        min_score: '',
+        max_score: '',
       },
       realValues: {
         title: '',
@@ -34,6 +36,8 @@ class RecommendCourse extends Component {
         language: '',
         min_credit: '',
         max_credit: '',
+        min_score: '',
+        max_score: '',
       },
       ratedScrollLimit:2000,
       unratedScrollLimit:2000,
@@ -194,6 +198,12 @@ class RecommendCourse extends Component {
     }
     else if(type=='max_credit'){
       newValue.max_credit=event.target.value;
+    }
+    else if(type=='min_score'){
+      newValue.min_score=event.target.value;
+    }
+    else if(type=='max_score'){
+      newValue.max_score=event.target.value;
     }
     this.setState({searchValues:newValue});
   }

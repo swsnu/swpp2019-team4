@@ -323,7 +323,7 @@ def api_timetable_id_custom_course(request, timetable_id):
             return HttpResponseBadRequest()
     return HttpResponseNotAllowed(['POST'])
 
-def searcher(course, request_get):
+def searcher(course, score, request_get):
     def has_text(text,match_text):
         if match_text:
             matched = 0
@@ -352,6 +352,14 @@ def searcher(course, request_get):
         search_dict['min_credit'] = (int)(request_get.get('min_credit'))
     else:
         search_dict['min_credit'] = -32
+    if request_get.get('max_score'):
+        search_dict['max_score'] = (float)(request_get.get('max_score'))
+    else:
+        search_dict['max_score'] = 32.0
+    if request_get.get('min_score'):
+        search_dict['min_score'] = (float)(request_get.get('min_score'))
+    else:
+        search_dict['min_score'] = -32.0
     return (has_text(course.title+course.subtitle,search_dict['title']) and
             has_text(course.classification,search_dict['classification']) and
             has_text(course.college+course.department,search_dict['department']) and
@@ -362,7 +370,9 @@ def searcher(course, request_get):
             has_text(course.professor,search_dict['professor']) and
             has_text(course.language,search_dict['language']) and
             course.credit<=search_dict['max_credit'] and
-            course.credit>=search_dict['min_credit'])
+            course.credit>=search_dict['min_credit'] and
+            score<=search_dict['max_score'] and
+            score>=search_dict['min_score'])
 
 @auth_func
 def api_course(request):
@@ -370,7 +380,7 @@ def api_course(request):
         course_list = Course.objects.all()
         cf_result=collaborative_filtering(request.user)
         course_list = [course.data() for course
-                        in filter(lambda course: searcher(course,request.GET), course_list)]
+                        in filter(lambda course: searcher(course,cf_result[course.id],request.GET), course_list)]
         course_list = sorted(course_list, key=lambda course: -cf_result[course['id']])
         return JsonResponse(course_list, safe=False)
     return HttpResponseNotAllowed(['GET'])
