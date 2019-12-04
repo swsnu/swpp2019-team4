@@ -1,4 +1,4 @@
-from assaapp.models import User, Course
+from assaapp.models import User, Course, CourseTime
 from recommend.models import CoursePref, TimePref
 from functools import cmp_to_key
 
@@ -32,14 +32,9 @@ class TimesliceSet:
             new_list.append(otherset[i])
             i += 1
         return TimesliceSet(new_list)
-    
-    def equals (self, otherset):
-        print(self.get_list())
-        print(otherset.get_list())
-        return self.get_list() == otherset.get_list()
 
-    def compare (self, otherset):
-        return self.get_list() < otherset.get_list()
+    def equals (self, otherset):
+        return self.get_list() == otherset.get_list()
 
 class ConvertedUserData:
     TIME_PREF_LEN = 32 * 6
@@ -93,12 +88,19 @@ class ConvertedCourseData:
     TIME_PREF_LEN = 32 * 6
 
     def overlap (self, timeslice):
+        cur_weekday = timeslice // 32
+        cur_start_time = 8 * 60 + timeslice % 32 * 30
+        for course_time in self._course_time_list: 
+            if (course_time['start_time'] <= cur_start_time and 
+                cur_start_time <= course_time['end_time'] and 
+                course_time['week_day'] == cur_weekday) :
+                return True
         return False
 
     def get_timeslice_list (self):
         ret_list = []
         for i in range(ConvertedCourseData.TIME_PREF_LEN):
-            if not self.overlap(i):
+            if self.overlap(i):
                 ret_list.append(i)
         return ret_list
 
@@ -107,6 +109,7 @@ class ConvertedCourseData:
 
     def __init__ (self, course):
         self._id = course['id']
+        self._course_time_list = [ course_time.data() for course_time in CourseTime.objects.filter(course=self._id) ]
         self._timeslice_set = TimesliceSet(self.get_timeslice_list())
     
     def get_id (self):
@@ -115,27 +118,23 @@ class ConvertedCourseData:
     def get_pref (self, user) :
         c_score = user.get_course_pref(self)
         t_score_list = [ user.get_time_pref(tm) for tm in self._timeslice_set.get_list() ]
-        t_score = sum(t_score_list) / len(t_score_list) 
+        if t_score_list:
+            t_score = sum(t_score_list) / len(t_score_list) 
+        else:
+            t_score = 0
         return (c_score, t_score)
 
 def run_recommendation (user):
     user_data = ConvertedUserData(user)
-    def course_cmp (x, y):
-        tx = x.get_timeslice_set()
-        ty = y.get_timeslice_set()
-        if not tx.equals(ty):
-            return tx.compare(ty)
-        else:
-            sx = user_data.course_score(x)
-            sy = user_data.course_score(y)
-            return sx > sy
     all_course_data = [ ConvertedCourseData(course) for course in Course.objects.all().values() ]
-    all_course_data.sort(key = cmp_to_key(course_cmp))
+    all_course_data.sort(key = lambda x : (x.get_timeslice_set().get_list(), user_data.course_score(x)), reverse = True)
     unique_course_data = []
     for course_data in all_course_data:
-        if len(unique_course_data) > 0:
+        if not course_data.get_timeslice_set().get_list():
+            continue
+        if unique_course_data:
             back = unique_course_data[-1]
             if back.get_timeslice_set().equals(course_data.get_timeslice_set()):
                 continue
         unique_course_data.append(course_data)
-    print (len(unique_course_data))
+    print(len(unique_course_data))
