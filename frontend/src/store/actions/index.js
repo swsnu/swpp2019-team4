@@ -17,6 +17,7 @@ export {
   postUserSearch,
   receiveFriend,
   getCourses,
+  resetCourse,
   postCourse,
   getTimetable,
   editTimetable,

@@ -40,9 +40,11 @@ export const getTimetableFriend = (timetableId) => (dispatch) => axios.get(`/api
   .then((res) => dispatch({ type: actionTypes.GET_TIMETABLE_FRIEND, timetable: res.data }))
   .catch(() => {});
 
-export const getCourses = (searchValues) => (dispatch) => axios.get(`/api/course/?title=${searchValues.title}&classification=${searchValues.classification}&department=${searchValues.department}&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}&professor=${searchValues.professor}&language=${searchValues.language}&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`)
+export const getCourses = (start, end, searchValues) => (dispatch) => axios.get(`/api/course/?start=${start}&end=${end}&title=${searchValues.title}&classification=${searchValues.classification}&department=${searchValues.department}&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}&professor=${searchValues.professor}&language=${searchValues.language}&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`)
   .then((res) => dispatch({ type: actionTypes.GET_COURSES, courses: res.data }))
   .catch(() => {});
+
+export const resetCourse = () => (dispatch) => dispatch({ type: actionTypes.RESET_COURSE });
 
 export const postCourse = (timetableId, courseId) => (dispatch) => axios.post(
   `/api/timetable/${timetableId}/course/`, { course_id: courseId },

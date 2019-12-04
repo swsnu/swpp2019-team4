@@ -19,7 +19,24 @@ class TimetableManagement extends Component {
       title: '',
       showCourses: true,
       searchdetail: false,
+      scrollLimit: 2000,
+      searchCourseCount: 50,
       searchValues: {
+        title: '',
+        classification: '',
+        department: '',
+        degree_program: '',
+        academic_year: '',
+        course_number: '',
+        lecture_number: '',
+        professor: '',
+        language: '',
+        min_credit: '',
+        max_credit: '',
+        min_score: '',
+        max_score: '',
+      },
+      realValues: {
         title: '',
         classification: '',
         department: '',
@@ -53,6 +70,8 @@ class TimetableManagement extends Component {
       })
       .catch(() => {});
     this.props.onGetTimetables();
+    this.props.resetCourse();
+    this.props.onGetCourses(0, 49, this.state.searchValues);
   }
 
   componentWillUnmount() {
@@ -118,7 +137,13 @@ class TimetableManagement extends Component {
   }
 
   search() {
-    this.props.onGetCourses(this.state.searchValues);
+    this.setState({
+      realValues: this.state.searchValues,
+      scrollLimit: 2000,
+      searchCourseCount: 50,
+    });
+    this.props.resetCourse();
+    this.props.onGetCourses(0, 49, this.state.searchValues);
     this.showCoursesInSearch();
   }
 
@@ -169,6 +194,16 @@ class TimetableManagement extends Component {
     this.setState({ searchdetail: !this.state.searchdetail });
   }
 
+  scrollHandler(scrollTop) {
+    const pageSize = 50;
+    const scrollSize = pageSize * 60;
+    if (this.state.showCourses && this.state.scrollLimit < scrollTop) {
+      this.setState({ scrollLimit: this.state.scrollLimit + scrollSize });
+      this.props.onGetCourses(this.state.searchCourseCount, this.state.searchCourseCount + pageSize - 1, this.state.realValues);
+      this.setState({ searchCourseCount: this.state.searchCourseCount + pageSize });
+    }
+  }
+
   render() {
     if (this.props.storedUser.is_authenticated === false) {
       return (
@@ -194,7 +229,6 @@ class TimetableManagement extends Component {
           </button>
         </li>
       ));
-
     const searchedCourseList = this.props.courses.map((course) => (
       <CourseElement
         key={course.id}
@@ -296,7 +330,7 @@ class TimetableManagement extends Component {
               </li>
             </ul>
 
-            <div className="tab-content overflow-y-auto mb-4" style={{ height: '420px' }}>
+            <div className="tab-content overflow-y-auto mb-4" style={{ height: '420px' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
               <div
                 className={`tab-pane ${this.state.showCourses ? 'active' : ''}`}
                 id="searched-tab"
@@ -425,7 +459,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onLogout: () => dispatch(actionCreators.getSignout()),
-  onGetCourses: (searchStrings) => dispatch(actionCreators.getCourses(searchStrings)),
+  onGetCourses: (start,end,searchStrings) => dispatch(actionCreators.getCourses(start,end,searchStrings)),
   onGetTimetable: (timetableId) => dispatch(actionCreators.getTimetable(timetableId)),
   onPostTimetable: (timetableName, semester) => dispatch(actionCreators.postTimetable(timetableName, semester)),
   onPostCourse: (title, courseId) => dispatch(actionCreators.postCourse(title, courseId)),
@@ -434,6 +468,7 @@ const mapDispatchToProps = (dispatch) => ({
   onDeleteCourse: (timetableId, courseId) => dispatch(actionCreators.deleteCourse(timetableId, courseId)),
   onDeleteTimetable: (timetableId) => dispatch(actionCreators.deleteTimetable(timetableId)),
   onEditTimetable: (timetableId, title) => dispatch(actionCreators.editTimetable(timetableId, title)),
+  resetCourse: () => dispatch(actionCreators.resetCourse()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableManagement);

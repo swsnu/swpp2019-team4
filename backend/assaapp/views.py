@@ -379,10 +379,20 @@ def api_course(request):
     if request.method == 'GET':
         course_list = Course.objects.all()
         cf_result=collaborative_filtering(request.user)
-        course_list = [course.data() for course
+        start = (int)(request.GET.get('start'))
+        end = (int)(request.GET.get('end'))
+        course_list = [course for course
                         in filter(lambda course: searcher(course,cf_result[course.id],request.GET), course_list)]
-        course_list = sorted(course_list, key=lambda course: -cf_result[course['id']])
-        return JsonResponse(course_list, safe=False)
+        course_list = sorted(course_list, key=lambda course: -cf_result[course.id])
+        course_len = len(course_list)
+        get_result = []
+        if start>=course_len:
+            return JsonResponse([], safe=False)
+        for i in range(start,course_len):
+            if i>end:
+                break
+            get_result.append(course_list[i].data())
+        return JsonResponse(get_result, safe=False)
     return HttpResponseNotAllowed(['GET'])
 
 @ensure_csrf_cookie

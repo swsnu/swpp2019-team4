@@ -59,8 +59,14 @@ const reducer = (state = initialState, action) => {
       };
     case actionTypes.DELETE_TIMETABLE:
       return { ...state, timetables: state.timetables.filter((timetable) => timetable.id !== action.deletedTimetable) };
-    case actionTypes.GET_COURSES:
-      return { ...state, courses: action.courses };
+    case actionTypes.GET_COURSES:{
+      const newcourses=state.courses.concat(action.courses);
+      return { ...state, courses: newcourses };
+    }
+    case actionTypes.RESET_COURSE:
+      return {
+        ...state, courses: [],
+      };
     case actionTypes.GET_FRIEND:
       return {
         ...state,
