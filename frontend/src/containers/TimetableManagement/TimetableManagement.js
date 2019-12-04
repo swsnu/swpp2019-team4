@@ -87,7 +87,7 @@ class TimetableManagement extends Component {
   }
 
   deleteCourse(courseId) {
-    this.props.onDeleteCourse(this.props.timetable.id, courseId);
+    this.props.onDeleteCourse(courseId);
   }
 
   deleteTimetable(timetableId) {
@@ -435,6 +435,7 @@ class TimetableManagement extends Component {
               id="timetable-table"
               height={20}
               courses={this.props.timetable.course}
+              editable={true}
             />
             <CustomCourse
               id="custom-course"
@@ -503,7 +504,7 @@ const mapDispatchToProps = (dispatch) => ({
   onPostCourse: (title, courseId) => dispatch(actionCreators.postCourse(title, courseId)),
   onGetTimetables: () => dispatch(actionCreators.getTimetables()),
   onPostMainTimetable: (id) => dispatch(actionCreators.postMainTimetable(id)),
-  onDeleteCourse: (timetableId, courseId) => dispatch(actionCreators.deleteCourse(timetableId, courseId)),
+  onDeleteCourse: (courseId) => dispatch(actionCreators.deleteCourse(courseId)),
   onDeleteTimetable: (timetableId) => dispatch(actionCreators.deleteTimetable(timetableId)),
   onEditTimetable: (timetableId, title) => dispatch(actionCreators.editTimetable(timetableId, title)),
   setCourses: (start,end,searchStrings) => dispatch(actionCreators.setCourses(start,end,searchStrings)),

@@ -22,10 +22,10 @@ const CourseElement = (props) => {
       <div className="d-flex mx-2">
         <div className="flex-grow-1">
           <div className="text-left">
-            {course.title+' ('+course.lecture_number+')'}
+            {props.course.is_custom ? course.title : course.title+' ('+course.lecture_number+')'}
           </div>
-          <div className="text-black-50 text-left small" id="recommend-course-abstract">
-            {`${course.professor} | ${course.credit}학점 | ${timeString} | ${course.location}`}
+          <div className="text-black-50 text-left small" id="recommend-course-abstract" style={{minHeight: "1rem"}}>
+            {props.course.is_custom ? " " : `${course.professor} | ${course.credit}학점 | ${timeString} | ${course.location}`}
           </div>
         </div>
         {props.addon}
@@ -38,6 +38,7 @@ const CourseElement = (props) => {
 CourseElement.propTypes = {
   course: PropTypes.shape({
     id: PropTypes.number,
+    is_custom: PropTypes.bool,
     title: PropTypes.string,
     professor: PropTypes.string,
     credit: PropTypes.number,

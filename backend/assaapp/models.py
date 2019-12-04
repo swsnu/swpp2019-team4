@@ -188,6 +188,7 @@ class CustomCourse(models.Model):
             ]
             return {
                 'id': self.id,
+                'is_custom': True,
                 'title': self.title,
                 'color': self.color,
                 'time': course_time
@@ -198,6 +199,7 @@ class CustomCourse(models.Model):
                        in CourseTime.objects.filter(course=course)]
         return {
             'id': self.id,
+            'is_custom': False,
             'color': self.color,
             'title': course.title,
             'lecture_number': course.lecture_number,
