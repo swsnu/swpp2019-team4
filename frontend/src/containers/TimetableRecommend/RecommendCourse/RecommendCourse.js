@@ -138,16 +138,6 @@ class RecommendCourse extends Component {
                 />
               </div>
             </form>
-            <form>
-              <div className="custom-control custom-switch">
-                <input type="checkbox" className="custom-control-input" id={`course-toggle-form-${course.id}`} />
-                <label
-                  className="custom-control-label"
-                  htmlFor={`course-toggle-form-${course.id}`}
-                  aria-label="custom-control-input"
-                />
-              </div>
-            </form>
           </div>
         </div>
         <hr className="my-2" />
