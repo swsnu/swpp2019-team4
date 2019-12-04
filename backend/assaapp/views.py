@@ -12,7 +12,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from assaapp.models import User, Timetable, Course, CustomCourse, CustomCourseTime, Building
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
-from recommend.views import collaborative_filtering
+from recommend.views import cf_view, cf_score
 
 def auth_func(func):
     def wrapper_function(*args, **kwargs):
@@ -378,12 +378,13 @@ def searcher(course, score, request_get):
 def api_course(request):
     if request.method == 'GET':
         course_list = Course.objects.all()
-        cf_result=collaborative_filtering(request.user)
+        cf_view_result=cf_view(request.user)
+        cf_score_result=cf_score(request.user)
         start = int(request.GET.get('start'))
         end = int(request.GET.get('end'))
         course_list = [course for course
-                        in filter(lambda course: searcher(course,cf_result[course.id],request.GET), course_list)]
-        course_list = sorted(course_list, key=lambda course: -cf_result[course.id])
+                        in filter(lambda course: searcher(course,0,request.GET), course_list)]
+        course_list = sorted(course_list, key=lambda course: -cf_view_result[course.id])
         course_len = len(course_list)
         get_result = []
         if start>=course_len:
@@ -391,7 +392,9 @@ def api_course(request):
         for i in range(start,course_len):
             if i>end:
                 break
-            get_result.append(course_list[i].data())
+            course_data=course_list[i].data()
+            course_data['expected']=cf_score_result[course_data['id']]
+            get_result.append(course_data)
         return JsonResponse(get_result, safe=False)
     return HttpResponseNotAllowed(['GET'])
 

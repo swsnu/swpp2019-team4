@@ -108,6 +108,7 @@ class RecommendCourse extends Component {
     }
     return (
       <div key={course.id}>
+        <div className="expected_color" style={{backgroundColor:colorGradient[Math.round(course.expected)],height:'40px',width:'3px',float:"left"}}/>
         <div className="row">
           <div className="col-6">
             <div className="text-left">

@@ -10,6 +10,19 @@ const CourseElement = (props) => {
     return `${weekDayName[weekDay]}${hourString}${minuteString}`;
   };
   const { course } = props;
+  const colorGradient = [
+    '#FC466B',
+    '#E94879',
+    '#D64A87',
+    '#C34D96',
+    '#B04FA4',
+    '#9D52B3',
+    '#8A54C1',
+    '#7756CF',
+    '#6459DE',
+    '#515BEC',
+    '#3F5EFB',
+  ];
   let timeString = '';
   for (let i = 0; i < course.time.length; i += 1) {
     timeString += segmentToString(course.time[i].week_day, course.time[i].start_time);
@@ -19,6 +32,7 @@ const CourseElement = (props) => {
   }
   return (
     <div key={course.id}>
+      <div className="expected_color" style={{backgroundColor:colorGradient[Math.round(course.expected)],height:'40px',width:'3px',float:"left"}}/>
       <div className="d-flex mx-2">
         <div className="flex-grow-1">
           <div className="text-left">
