@@ -218,24 +218,23 @@ def api_time_pref(request):
         return JsonResponse(time_data, safe=False)
     if request.method == 'PUT':
         try:
-            body = request.body.decode()
+            body = json.loads(request.body.decode())
             user = request.user
-            score = json.loads(body)['score']
-            start_time = json.loads(body)['start_time']
-            weekday = json.loads(body)['weekday']
-            if score < 0 or score > 10:
-                return HttpResponseBadRequest()
         except (KeyError, JSONDecodeError):
             return HttpResponseBadRequest()
-        try:
-            time_data = TimePref.objects.get(user=user, weekday=weekday, start_time=start_time)
-        except TimePref.DoesNotExist:
-            new_score = TimePref(user=user, score=score, weekday=weekday, start_time=start_time)
-            new_score.save()
-            return JsonResponse(model_to_dict(new_score), safe=False, status=201)
-        time_data.score = score
-        time_data.save()
-        return JsonResponse(model_to_dict(time_data), safe=False, status=200)
+        for i in range(26):
+            for j in range(6):
+                weekday = j
+                score = body[i][j]
+                start_time = str(8+i//2) + ":" + ("30" if i%2 == 1 else "00")
+                try:
+                    time_data = TimePref.objects.get(user=user, weekday=weekday, start_time=start_time)
+                except TimePref.DoesNotExist:
+                    new_score = TimePref(user=user, score=score, weekday=weekday, start_time=start_time)
+                    new_score.save()
+                time_data.score = score
+                time_data.save()
+        return HttpResponse(status=200)
     return HttpResponseNotAllowed(['GET', 'PUT'])
 
 @auth_func
