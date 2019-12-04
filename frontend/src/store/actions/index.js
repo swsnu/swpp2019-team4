@@ -19,6 +19,8 @@ export {
   getCourses,
   setCourses,
   postCourse,
+  postCourseTemp,
+  deleteCourseTemp,
   getTimetable,
   editTimetable,
   getTimetables,

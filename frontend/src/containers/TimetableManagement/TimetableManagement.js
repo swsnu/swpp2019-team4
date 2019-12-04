@@ -215,10 +215,54 @@ class TimetableManagement extends Component {
     }
   }
 
-  searchOnChange(event, type) {
-    const newValue = this.state.searchValues;
-    newValue[type]=event.target.value;
-    this.setState({ searchValues: newValue });
+  handleMouseEnter(course) {
+    let tempCourse = {...course, temp : true, color : "#d3d3d3"}
+    if (this.props.course.filter((item) => item.course_number === course.course_number).length === 0) {
+      this.props.onPostCourseTemp(tempCourse);  
+    }
+    
+  }
+
+  handleMouseLeave(course) {
+    this.props.onDeleteCourseTemp(course);
+  }
+
+  searchOnChange(event,type) {
+    var newValue=this.state.searchValues
+    if(type==='title'){
+      newValue.title=event.target.value;
+    }
+    else if(type=='classification'){
+      newValue.classification=event.target.value;
+    }
+    else if(type=='department'){
+      newValue.department=event.target.value;
+    }
+    else if(type=='degree_program'){
+      newValue.degree_program=event.target.value;
+    }
+    else if(type=='academic_year'){
+      newValue.academic_year=event.target.value;
+    }
+    else if(type=='course_number'){
+      newValue.course_number=event.target.value;
+    }
+    else if(type=='lecture_number'){
+      newValue.lecture_number=event.target.value;
+    }
+    else if(type=='professor'){
+      newValue.professor=event.target.value;
+    }
+    else if(type=='language'){
+      newValue.language=event.target.value;
+    }
+    else if(type=='min_credit'){
+      newValue.min_credit=event.target.value;
+    }
+    else if(type=='max_credit'){
+      newValue.max_credit=event.target.value;
+    }
+    this.setState({searchValues:newValue});
   }
 
   onSearchToggle() {
@@ -269,6 +313,8 @@ class TimetableManagement extends Component {
             key="1"
             type="button"
             className="btn btn-simple btn-sm"
+            onMouseEnter={() => this.handleMouseEnter(course)}
+            onMouseLeave={() => this.handleMouseLeave(course)}
             onClick={() => this.postCourse(course.id)}
           >
             <div className="oi oi-plus small" />
@@ -486,6 +532,7 @@ const mapStateToProps = (state) => ({
   timetables: state.user.timetables,
   courses: state.user.courses,
   timetable: state.user.timetable,
+  course: state.user.timetable.course,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -501,6 +548,8 @@ const mapDispatchToProps = (dispatch) => ({
   onDeleteTimetable: (timetableId) => dispatch(actionCreators.deleteTimetable(timetableId)),
   onEditTimetable: (timetableId, title) => dispatch(actionCreators.editTimetable(timetableId, title)),
   setCourses: (start,end,searchStrings) => dispatch(actionCreators.setCourses(start,end,searchStrings)),
+  onPostCourseTemp: (tempCourse) => dispatch(actionCreators.postCourseTemp(tempCourse)),
+  onDeleteCourseTemp: (course) => dispatch(actionCreators.deleteCourseTemp(course)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableManagement);
