@@ -323,26 +323,56 @@ def api_timetable_id_custom_course(request, timetable_id):
             return HttpResponseBadRequest()
     return HttpResponseNotAllowed(['POST'])
 
+def searcher(course, request_get):
+    def has_text(text,match_text):
+        if match_text:
+            matched = 0
+            for char in text:
+                if char == match_text[matched]:
+                    matched += 1
+                if matched == len(match_text):
+                    return True
+            return False
+        return True
+    search_dict = {}
+    search_dict['title'] = request_get.get('title')
+    search_dict['classification'] = request_get.get('classification')
+    search_dict['department'] = request_get.get('department')
+    search_dict['degree_program'] = request_get.get('degree_program')
+    search_dict['academic_year'] = request_get.get('academic_year')
+    search_dict['course_number'] = request_get.get('course_number')
+    search_dict['lecture_number'] = request_get.get('lecture_number')
+    search_dict['professor'] = request_get.get('professor')
+    search_dict['language'] = request_get.get('language')
+    if request_get.get('max_credit'):
+        search_dict['max_credit'] = (int)(request_get.get('max_credit'))
+    else:
+        search_dict['max_credit'] = 32
+    if request_get.get('min_credit'):
+        search_dict['min_credit'] = (int)(request_get.get('min_credit'))
+    else:
+        search_dict['min_credit'] = -32
+    return (has_text(course.title+course.subtitle,search_dict['title']) and
+            has_text(course.classification,search_dict['classification']) and
+            has_text(course.college+course.department,search_dict['department']) and
+            has_text(course.degree_program,search_dict['degree_program']) and
+            has_text(course.academic_year,search_dict['academic_year']) and
+            has_text(course.course_number,search_dict['course_number']) and
+            has_text(course.lecture_number,search_dict['lecture_number']) and
+            has_text(course.professor,search_dict['professor']) and
+            has_text(course.language,search_dict['language']) and
+            course.credit<=search_dict['max_credit'] and
+            course.credit>=search_dict['min_credit'])
+
 @auth_func
 def api_course(request):
     if request.method == 'GET':
         course_list = Course.objects.all()
         cf_result=collaborative_filtering(request.user)
-        match_text = request.GET.get('title')
-        if match_text:
-            def is_matched(text):
-                matched = 0
-                for char in text:
-                    if char == match_text[matched]:
-                        matched += 1
-                    if matched == len(match_text):
-                        return True
-                return False
-            course_list = [course.data() for course
-                           in filter(lambda x: is_matched(x.title), course_list)]
-            sorted(course_list,key=lambda course:cf_result[course['id']])
-            return JsonResponse(course_list, safe=False)
-        return HttpResponseBadRequest()
+        course_list = [course.data() for course
+                        in filter(lambda course: searcher(course,request.GET), course_list)]
+        course_list = sorted(course_list, key=lambda course: -cf_result[course['id']])
+        return JsonResponse(course_list, safe=False)
     return HttpResponseNotAllowed(['GET'])
 
 @ensure_csrf_cookie
