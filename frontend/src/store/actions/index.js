@@ -37,4 +37,7 @@ export {
   setUnratedCourse,
   putCoursepref,
   putCourseprefTemp,
+  setSearchable,
+  setRatedSearchable,
+  setUnratedSearchable,
 } from './user';
