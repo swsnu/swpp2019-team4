@@ -84,6 +84,12 @@ class RecommendCourse extends Component {
     this.setState({ searchdetail: !this.state.searchdetail });
   }
 
+  changeTab(tab) {
+    this.setState({ tabview: tab });
+    this.props.onPutCoursePref(this.props.changedCourses);
+    this.props.setRatedCourse(0, 49, this.state.realValues);
+    this.props.setUnratedCourse(0, 49, this.state.realValues);
+  }
   courseElement(course) {
     const colorGradient = [
       '#FC466B',
@@ -112,7 +118,7 @@ class RecommendCourse extends Component {
         <div className="row">
           <div className="col-6">
             <div className="text-left">
-              {course.title+' ('+course.lecture_number+')'}
+              {`${course.title} (${course.lecture_number})`}
             </div>
             <div className="text-black-50 text-left small" id="recommend-course-abstract">
               {`${course.professor} | ${course.credit}학점 | ${timeString} | ${course.location}`}
@@ -136,7 +142,6 @@ class RecommendCourse extends Component {
                   id={`course-score-form-${course.id}`}
                   value={score}
                   onChange={(event) => this.props.onChangeslider(course.id, event.target.value)}
-                  onClick={(event) => this.props.onChangeslider(course.id, event.target.value)}
                   onMouseDown={(event) => this.props.onChangeslider(course.id, event.target.value)}
                 />
               </div>
@@ -150,12 +155,12 @@ class RecommendCourse extends Component {
 
   searchOnChange(event, type) {
     const newValue = this.state.searchValues;
-    newValue[type]=event.target.value;
+    newValue[type] = event.target.value;
     this.setState({ searchValues: newValue });
   }
 
   search() {
-    if(this.state.searchdetail){
+    if (this.state.searchdetail) {
       this.setState({
         realValues: this.state.searchValues,
         ratedScrollLimit: 1500,
@@ -165,9 +170,8 @@ class RecommendCourse extends Component {
       });
       this.props.setRatedCourse(0, 49, this.state.searchValues);
       this.props.setUnratedCourse(0, 49, this.state.searchValues);
-    }
-    else{
-      const newValue={
+    } else {
+      const newValue = {
         title: this.state.searchValues.title,
         classification: '',
         department: '',
@@ -195,10 +199,10 @@ class RecommendCourse extends Component {
   }
 
   enterKey() {
-    const command=[38,38,40,40,37,39,37,39,66,65];
-    if(window.event.keyCode === command[this.state.commandMatch]){
-      if(this.state.commandMatch===9){
-        const newValue={
+    const command = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+    if (window.event.keyCode === command[this.state.commandMatch]) {
+      if (this.state.commandMatch === 9) {
+        const newValue = {
           title: '소프트웨어 개발의 원리와 실습',
           classification: '전필',
           department: '컴퓨터공학부',
@@ -223,13 +227,11 @@ class RecommendCourse extends Component {
         });
         this.props.setRatedCourse(0, 49, newValue);
         this.props.setUnratedCourse(0, 49, newValue);
+      } else {
+        this.setState({ commandMatch: this.state.commandMatch + 1 });
       }
-      else{
-        this.setState({commandMatch: this.state.commandMatch+1});
-      }
-    }
-    else{
-      this.setState({commandMatch: 0});
+    } else {
+      this.setState({ commandMatch: 0 });
     }
     if (window.event.keyCode === 13) {
       this.search();
@@ -261,7 +263,7 @@ class RecommendCourse extends Component {
                 role="tab"
                 aria-controls="rated"
                 aria-selected="true"
-                onClick={() => { this.setState({ tabview: 0 }); }}
+                onClick={() => { this.changeTab(0)}}
               >
 평가
               </a>
@@ -274,13 +276,13 @@ class RecommendCourse extends Component {
                 role="tab"
                 aria-controls="unrated"
                 aria-selected="false"
-                onClick={() => { this.setState({ tabview: 1 }); }}
+                onClick={() => { this.changeTab(1)}}
               >
 미평가
               </a>
             </li>
           </ul>
-          <SearchBar value={this.state.searchValues} onChange={(event, type) => this.searchOnChange(event, type)} onKeyDown={() => this.enterKey()} onToggle={() => this.onSearchToggle()} togglestatus={this.state.searchdetail} onSearch={() => this.search()} searchScore={true} />
+          <SearchBar value={this.state.searchValues} onChange={(event, type) => this.searchOnChange(event, type)} onKeyDown={() => this.enterKey()} onToggle={() => this.onSearchToggle()} togglestatus={this.state.searchdetail} onSearch={() => this.search()} searchScore />
           <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: '350px' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
             <div className="tab-pane show active" id="rated-tab" role="tabpanel" aria-labelledby="rated-tab">
               {ratedview}
@@ -302,6 +304,7 @@ RecommendCourse.propTypes = {
 const mapStateToProps = (state) => ({
   ratedCourse: state.user.rated_course,
   unratedCourse: state.user.unrated_course,
+  changedCourses: state.user.changed_courses,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -310,6 +313,7 @@ const mapDispatchToProps = (dispatch) => ({
   setRatedCourse: (start, end, searchValues) => dispatch(actionCreators.setRatedCourse(start, end, searchValues)),
   setUnratedCourse: (start, end, searchValues) => dispatch(actionCreators.setUnratedCourse(start, end, searchValues)),
   onChangeslider: (id, value) => dispatch(actionCreators.putCourseprefTemp(id, value)),
+  onPutCoursePref: (changedCourses) => dispatch(actionCreators.putCoursepref(changedCourses)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecommendCourse);

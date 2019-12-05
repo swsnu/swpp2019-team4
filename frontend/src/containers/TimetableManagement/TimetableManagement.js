@@ -87,7 +87,7 @@ class TimetableManagement extends Component {
   }
 
   deleteCourse(courseId) {
-    this.props.onDeleteCourse(this.props.timetable.id, courseId);
+    this.props.onDeleteCourse(courseId);
   }
 
   deleteTimetable(timetableId) {
@@ -137,16 +137,15 @@ class TimetableManagement extends Component {
   }
 
   search() {
-    if(this.state.searchdetail){
+    if (this.state.searchdetail) {
       this.setState({
         realValues: this.state.searchValues,
         scrollLimit: 1500,
         searchCourseCount: 50,
       });
       this.props.setCourses(0, 49, this.state.searchValues);
-    }
-    else{
-      const newValue={
+    } else {
+      const newValue = {
         title: this.state.searchValues.title,
         classification: '',
         department: '',
@@ -177,10 +176,10 @@ class TimetableManagement extends Component {
   }
 
   enterKey() {
-    const command=[38,38,40,40,37,39,37,39,66,65];
-    if(window.event.keyCode === command[this.state.commandMatch]){
-      if(this.state.commandMatch===9){
-        const newValue={
+    const command = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+    if (window.event.keyCode === command[this.state.commandMatch]) {
+      if (this.state.commandMatch === 9) {
+        const newValue = {
           title: '소프트웨어 개발의 원리와 실습',
           classification: '전필',
           department: '컴퓨터공학부',
@@ -202,13 +201,11 @@ class TimetableManagement extends Component {
           commandMatch: 0,
         });
         this.props.setCourses(0, 49, newValue);
+      } else {
+        this.setState({ commandMatch: this.state.commandMatch + 1 });
       }
-      else{
-        this.setState({commandMatch: this.state.commandMatch+1});
-      }
-    }
-    else{
-      this.setState({commandMatch: 0});
+    } else {
+      this.setState({ commandMatch: 0 });
     }
     if (window.event.keyCode === 13) {
       this.search();
@@ -216,10 +213,11 @@ class TimetableManagement extends Component {
   }
 
   handleMouseEnter(course) {
-    let tempCourse = {...course, temp : true, color : "#d3d3d3", opacity: 0.5}
-    if (this.props.course.filter((item) => item.course_number === course.course_number).length === 0) {
-      this.props.onPostCourseTemp(tempCourse);  
-    }
+    const tempCourse = {
+      ...course, temp: true, color: '#d3d3d3', opacity: 0.5,
+    };
+    
+    this.props.onPostCourseTemp(tempCourse);
     
   }
 
@@ -229,7 +227,7 @@ class TimetableManagement extends Component {
 
   searchOnChange(event, type) {
     const newValue = this.state.searchValues;
-    newValue[type]=event.target.value;
+    newValue[type] = event.target.value;
     this.setState({ searchValues: newValue });
   }
 
@@ -323,17 +321,8 @@ class TimetableManagement extends Component {
                 {this.state.semester}
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdown-semester">
-                <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-1' })}>
-                  2019-1
-                </button>
-                <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-S' })}>
-                  2019-S
-                </button>
                 <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-2' })}>
                   2019-2
-                </button>
-                <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-W' })}>
-                  2019-W
                 </button>
               </div>
             </div>
@@ -444,6 +433,7 @@ class TimetableManagement extends Component {
               id="timetable-table"
               height={20}
               courses={this.props.timetable.course}
+              editable
             />
             <CustomCourse
               id="custom-course"
@@ -506,16 +496,16 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onLogout: () => dispatch(actionCreators.getSignout()),
-  onGetCourses: (start,end,searchStrings) => dispatch(actionCreators.getCourses(start,end,searchStrings)),
+  onGetCourses: (start, end, searchStrings) => dispatch(actionCreators.getCourses(start, end, searchStrings)),
   onGetTimetable: (timetableId) => dispatch(actionCreators.getTimetable(timetableId)),
   onPostTimetable: (timetableName, semester) => dispatch(actionCreators.postTimetable(timetableName, semester)),
   onPostCourse: (title, courseId) => dispatch(actionCreators.postCourse(title, courseId)),
   onGetTimetables: () => dispatch(actionCreators.getTimetables()),
   onPostMainTimetable: (id) => dispatch(actionCreators.postMainTimetable(id)),
-  onDeleteCourse: (timetableId, courseId) => dispatch(actionCreators.deleteCourse(timetableId, courseId)),
+  onDeleteCourse: (courseId) => dispatch(actionCreators.deleteCourse(courseId)),
   onDeleteTimetable: (timetableId) => dispatch(actionCreators.deleteTimetable(timetableId)),
   onEditTimetable: (timetableId, title) => dispatch(actionCreators.editTimetable(timetableId, title)),
-  setCourses: (start,end,searchStrings) => dispatch(actionCreators.setCourses(start,end,searchStrings)),
+  setCourses: (start, end, searchStrings) => dispatch(actionCreators.setCourses(start, end, searchStrings)),
   onPostCourseTemp: (tempCourse) => dispatch(actionCreators.postCourseTemp(tempCourse)),
   onDeleteCourseTemp: (course) => dispatch(actionCreators.deleteCourseTemp(course)),
 });

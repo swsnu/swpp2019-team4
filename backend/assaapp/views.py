@@ -10,7 +10,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.mail import EmailMessage
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from assaapp.models import User, Timetable, Course, CustomCourse, CustomCourseTime, Building
+from assaapp.models import User, Timetable, Course, CourseTime, CustomCourse, CustomCourseTime, Building
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
 from recommend.views import cf_view, cf_score, searcher
 from django.core.mail import send_mail
@@ -275,6 +275,13 @@ def api_timetable_id_course(request, timetable_id):
             try:
                 timetable = Timetable.objects.get(pk=timetable_id)
                 course = Course.objects.get(pk=course_id)
+                time_list=[]
+                for course_time in CustomCourseTime.objects.filter(timetable=timetable):
+                    time_list.append(course_time)
+                for course_time in CourseTime.objects.filter(course=course):
+                    for in_time in time_list:
+                        if not (course_time.weekday!=in_time.weekday or course_time.start_time>=in_time.end_time or course_time.end_time<=in_time.start_time):
+                            return HttpResponseBadRequest()
                 custom_course = CustomCourse(timetable=timetable, course=course, color=color)
                 custom_course.save()
                 custom_course.set_course_time()
@@ -286,15 +293,35 @@ def api_timetable_id_course(request, timetable_id):
     return HttpResponseNotAllowed(['POST'])
 
 @auth_func
-def api_timetable_id_custom_course_id(request, timetable_id, custom_course_id):
-    if request.method == 'DELETE':
+def api_custom_course_id(request, custom_course_id):
+    if request.method == 'PUT':
         try:
-            timetable = Timetable.objects.get(pk=timetable_id)
-            CustomCourse.objects.get(pk=custom_course_id).delete()
-            return JsonResponse(timetable.data(), safe=False)
+            custom_course = CustomCourse.objects.select_related('timetable__user').get(pk=custom_course_id)
+            timetable = custom_course.timetable
+            if timetable.user != request.user:
+                return HttpResponseNotAllowed()
+            req_data = json.loads(request.body.decode())
+            keys = ['color']
+            for key in keys:
+                if key in req_data:
+                    setattr(custom_course, key, req_data[key])
+            custom_course.save()
+            return JsonResponse(timetable.data())
         except (CustomCourse.DoesNotExist, Timetable.DoesNotExist):
             return HttpResponseNotFound()
-    return HttpResponseNotAllowed(['DELETE'])
+        except (KeyError, JSONDecodeError, IntegrityError):
+            return HttpResponseBadRequest()
+    if request.method == 'DELETE':
+        try:
+            custom_course = CustomCourse.objects.select_related('timetable').get(pk=custom_course_id)
+            timetable = custom_course.timetable
+            if timetable.user != request.user:
+                return HttpResponseNotAllowed()
+            custom_course.delete()
+            return JsonResponse(timetable.data())
+        except (CustomCourse.DoesNotExist, Timetable.DoesNotExist):
+            return HttpResponseNotFound()
+    return HttpResponseNotAllowed(['PUT', 'DELETE'])
 
 @auth_func
 def api_timetable_id_custom_course(request, timetable_id):

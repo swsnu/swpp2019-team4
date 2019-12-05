@@ -41,21 +41,15 @@ const reducer = (state = initialState, action) => {
     case actionTypes.POST_TIMETABLE:
       return { ...state, timetables: state.timetables.concat(action.timetable) };
     case actionTypes.POST_COURSE_TEMP:
-      state.timetable.course = state.timetable.course.concat(action.course)
+      state.timetable.course = state.timetable.course.concat(action.course);
       return { ...state };
     case actionTypes.DELETE_COURSE_TEMP:
-      state.timetable.course = state.timetable.course.filter((item) => !(item.id === action.course.id && item.temp === true))
+      state.timetable.course = state.timetable.course.filter((item) => !(item.id === action.course.id && item.temp === true));
       return { ...state };
     case actionTypes.POST_COURSE:
       return { ...state, timetable: action.timetable };
     case actionTypes.POST_CUSTOM_COURSE:
       return { ...state, timetable: action.timetable };
-    case actionTypes.DELETE_COURSE:
-      return {
-        ...state,
-        timetable: action.timetable,
-        courses: state.courses.filter((course) => course.id !== action.courseId),
-      };
     case actionTypes.EDIT_TIMETABLE:
       return {
         ...state,
@@ -65,8 +59,8 @@ const reducer = (state = initialState, action) => {
       };
     case actionTypes.DELETE_TIMETABLE:
       return { ...state, timetables: state.timetables.filter((timetable) => timetable.id !== action.deletedTimetable) };
-    case actionTypes.GET_COURSES:{
-      const newcourses=state.courses.concat(action.courses);
+    case actionTypes.GET_COURSES: {
+      const newcourses = state.courses.concat(action.courses);
       return { ...state, courses: newcourses };
     }
     case actionTypes.SET_COURSES:

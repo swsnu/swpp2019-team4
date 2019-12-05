@@ -28,6 +28,7 @@ export {
   postTimetable,
   postMainTimetable,
   postCustomCourse,
+  editCourse,
   deleteCourse,
   deleteTimetable,
   getRatedCourse,
