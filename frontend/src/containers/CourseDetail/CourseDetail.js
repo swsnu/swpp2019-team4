@@ -65,6 +65,13 @@ class CourseDetail extends Component {
     });
   }
   
+  handleWeekday(index, value) {
+    this.setState((prevState) => {
+      const { time } = prevState;
+      time[index].week_day = value;
+      return { time };
+    });
+  }
   appendTime() {
     this.setState((prevState) => {
       const { time } = prevState;
@@ -97,14 +104,27 @@ class CourseDetail extends Component {
       const minuteString = minute < 10 ? `0${minute}` : `${minute}`;
       return `${hourString}:${minuteString}`;
     };
-    const modifyTime = this.state.time.map((segment, index) => (
-      <div key={index}>
+    const modifyTime = this.state.time.map((time, index) => (
+      <div className="form-group row px-3 mb-0 mb-2" key={index}>
+        <select
+          className="form-control col-3"
+          id="weekday-control"
+          value={time.week_day}
+          onChange={(event) => this.handleWeekday(index, event.target.value)}
+        >
+          <option value={0}>월</option>
+          <option value={1}>화</option>
+          <option value={2}>수</option>
+          <option value={3}>목</option>
+          <option value={4}>금</option>
+          <option value={5}>토</option>
+        </select>
         <Datetime
-        className="col pr-0"
-        dateFormat={false}
-        timeFormat="H:mm"
-        value={segment.start_time}
-        onChange={(moment) => this.handleTime(index, 'start_time', moment)}
+          className="col pr-0"
+          dateFormat={false}
+          timeFormat="H:mm"
+          value={time.start_time}
+          onChange={(moment) => this.handleTime(index, 'start_time', moment)}
         />
         <div className="col-1 px-0">
           <div className="w-100 text-center small text-black-50 pt-2">~</div>
@@ -113,7 +133,7 @@ class CourseDetail extends Component {
           className="col px-0"
           dateFormat={false}
           timeFormat="H:mm"
-          value={segment.end_time}
+          value={time.end_time}
           onChange={(moment) => this.handleTime(index, 'end_time', moment)}
         />
         <button
