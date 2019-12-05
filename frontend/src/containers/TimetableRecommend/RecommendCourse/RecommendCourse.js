@@ -84,6 +84,12 @@ class RecommendCourse extends Component {
     this.setState({ searchdetail: !this.state.searchdetail });
   }
 
+  changeTab(tab) {
+    this.setState({ tabview: tab });
+    this.props.onPutCoursePref(this.props.changedCourses);
+    this.props.setRatedCourse(0, 49, this.state.realValues);
+    this.props.setUnratedCourse(0, 49, this.state.realValues);
+  }
   courseElement(course) {
     const colorGradient = [
       '#FC466B',
@@ -258,7 +264,7 @@ class RecommendCourse extends Component {
                 role="tab"
                 aria-controls="rated"
                 aria-selected="true"
-                onClick={() => { this.setState({ tabview: 0 }); }}
+                onClick={() => { this.changeTab(0)}}
               >
 평가
               </a>
@@ -271,7 +277,7 @@ class RecommendCourse extends Component {
                 role="tab"
                 aria-controls="unrated"
                 aria-selected="false"
-                onClick={() => { this.setState({ tabview: 1 }); }}
+                onClick={() => { this.changeTab(1)}}
               >
 미평가
               </a>
@@ -299,6 +305,7 @@ RecommendCourse.propTypes = {
 const mapStateToProps = (state) => ({
   ratedCourse: state.user.rated_course,
   unratedCourse: state.user.unrated_course,
+  changedCourses: state.user.changed_courses,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -307,6 +314,7 @@ const mapDispatchToProps = (dispatch) => ({
   setRatedCourse: (start, end, searchValues) => dispatch(actionCreators.setRatedCourse(start, end, searchValues)),
   setUnratedCourse: (start, end, searchValues) => dispatch(actionCreators.setUnratedCourse(start, end, searchValues)),
   onChangeslider: (id, value) => dispatch(actionCreators.putCourseprefTemp(id, value)),
+  onPutCoursePref: (changedCourses) => dispatch(actionCreators.putCoursepref(changedCourses)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecommendCourse);
