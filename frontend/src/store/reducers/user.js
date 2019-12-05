@@ -1,5 +1,4 @@
 import * as actionTypes from '../actions/actionTypes';
-import { resetCourse } from '../actions/user';
 
 const initialState = {
   user: {
@@ -20,6 +19,9 @@ const initialState = {
     status: '',
     username: '',
   },
+  searched: false,
+  ratedSearched: false,
+  unratedSearched: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -61,11 +63,11 @@ const reducer = (state = initialState, action) => {
       return { ...state, timetables: state.timetables.filter((timetable) => timetable.id !== action.deletedTimetable) };
     case actionTypes.GET_COURSES: {
       const newcourses = state.courses.concat(action.courses);
-      return { ...state, courses: newcourses };
+      return { ...state, courses: newcourses};
     }
     case actionTypes.SET_COURSES:
       return {
-        ...state, courses: action.course_list,
+        ...state, courses: action.course_list, searched: true
       };
     case actionTypes.GET_FRIEND:
       return {
@@ -120,16 +122,16 @@ const reducer = (state = initialState, action) => {
     }
     case actionTypes.GET_RATED_COURSE: {
       const newlist = state.rated_course.concat(action.course_list);
-      return { ...state, rated_course: newlist };
+      return { ...state, rated_course: newlist};
     }
     case actionTypes.GET_UNRATED_COURSE: {
       const newlist = state.unrated_course.concat(action.course_list);
-      return { ...state, unrated_course: newlist };
+      return { ...state, unrated_course: newlist};
     }
     case actionTypes.SET_RATED_COURSE:
-      return { ...state, rated_course: action.course_list };
+      return { ...state, rated_course: action.course_list, ratedSearched: true };
     case actionTypes.SET_UNRATED_COURSE:
-      return { ...state, unrated_course: action.course_list };
+      return { ...state, unrated_course: action.course_list, unratedSearched: true };
     case actionTypes.PUT_COURSEPREF_TEMP:
       state.rated_course = state.rated_course.map(({ id, score, ...item }) => (id === action.coursepref.id ? { id, score: action.coursepref.score, ...item } : { id, score, ...item }));
       state.unrated_course = state.unrated_course.map(({ id, score, ...item }) => (id === action.coursepref.id ? { id, score: action.coursepref.score, ...item } : { id, score, ...item }));
@@ -142,6 +144,12 @@ const reducer = (state = initialState, action) => {
       return { ...state };
     case actionTypes.PUT_COURSEPREF:
       return { ...state, changed_courses: [] };
+    case actionTypes.SET_SEARCHABLE:
+      return {...state,searched:false};
+    case actionTypes.SET_RATED_SEARCHABLE:
+      return {...state,ratedSearched:false};
+    case actionTypes.SET_UNRATED_SEARCHABLE:
+      return {...state,unratedSearched:false};
     default:
       return { ...state };
   }
