@@ -1,5 +1,6 @@
 import math
 import json
+from random import sample
 from json import JSONDecodeError
 from django.forms.models import model_to_dict
 from django.http import HttpResponse, HttpResponseNotAllowed, \
@@ -259,7 +260,7 @@ def api_time_pref_id(request, timepref_id):
 def api_recommend (request) :
     if request.method == 'GET':
         user = request.user
-        raw_timetables = run_recommendation(request.user)
+        raw_timetables = sample(run_recommendation(request.user)[0:101], 20)
         timetables = []
         for i in range(len(raw_timetables)):
             timetable = Timetable(title='recommend'+str(i+1), user=user)

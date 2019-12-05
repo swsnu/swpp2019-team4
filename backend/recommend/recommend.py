@@ -50,12 +50,13 @@ class TimesliceSet:
 
     def overlap (self, otherset):
         i = 0
+        otherlist = otherset.get_list()
         for ts in self._timeslice_list:
-            while (i < len(otherset) and otherset[i] < ts):
+            while (i < len(otherlist) and otherlist[i] < ts):
                 i += 1
-            if (i == len(otherset)):
+            if (i == len(otherlist)):
                 break
-            if (otherset[i] == ts):
+            if (otherlist[i] == ts):
                 return True
         return False
     
@@ -136,6 +137,7 @@ class ConvertedCourseData:
         self._id = course['id']
         self._credit = course['credit']
         self._major = (course['classification'] != '교양')
+        self._course_number = course['course_number']
         self._course_time_list = [ course_time.data() for course_time in CourseTime.objects.filter(course=self._id) ]
         self._timeslice_set = TimesliceSet(self.get_timeslice_list())
 
@@ -147,6 +149,9 @@ class ConvertedCourseData:
     
     def get_credit (self):
         return self._credit
+    
+    def get_course_number (self):
+        return self._course_number
 
     def get_pref (self, user) :
         c_score = user.get_course_pref(self)
@@ -166,26 +171,33 @@ def backtrack (terminate_cond, append_cond, user, candidates, my_score, my_cours
         max_possible_score = my_score / len(my_courses) if my_courses else cur_score
         if(max_possible_score <= worst_candidate_score):
             return
-    my_courses.append(cur_course)
-    my_score += cur_score
-    if not terminate_cond (my_courses):
-        if append_cond (my_courses):
-            candidates.append((my_score/len(my_courses), my_courses.copy()))
-            prv_score = 0
-            cur_score = candidates[-1][0]
-            for i in reversed(range(len(candidates)-1)):
-                prv_score = cur_score
-                cur_score = candidates[i][0]
-                if(prv_score > cur_score):
-                    candidates[i], candidates[i+1] = candidates[i+1], candidates[i]
-                    cur_score = prv_score
-                else:
-                    break
-            if len(candidates) > MAX_CANDIDATES:
-                candidates.pop()
-        backtrack(terminate_cond, append_cond, user, candidates, my_score, my_courses, all_courses, index+1)
-    my_courses.pop()
-    my_score -= cur_score
+    flag = True
+    for course in my_courses:
+        if (course.get_course_number() == cur_course.get_course_number() or
+            course.get_timeslice_set().overlap(cur_course.get_timeslice_set())):
+            flag = False
+            break
+    if flag:
+        my_courses.append(cur_course)
+        my_score += cur_score
+        if not terminate_cond (my_courses):
+            if append_cond (my_courses):
+                candidates.append((my_score/len(my_courses), my_courses.copy()))
+                prv_score = 0
+                cur_score = candidates[-1][0]
+                for i in reversed(range(len(candidates)-1)):
+                    prv_score = cur_score
+                    cur_score = candidates[i][0]
+                    if(prv_score > cur_score):
+                        candidates[i], candidates[i+1] = candidates[i+1], candidates[i]
+                        cur_score = prv_score
+                    else:
+                        break
+                if len(candidates) > MAX_CANDIDATES:
+                    candidates.pop()
+            backtrack(terminate_cond, append_cond, user, candidates, my_score, my_courses, all_courses, index+1)
+        my_courses.pop()
+        my_score -= cur_score
     backtrack(terminate_cond, append_cond, user, candidates, my_score, my_courses, all_courses, index+1)
 
 def run_recommendation (user):
