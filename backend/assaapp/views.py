@@ -273,9 +273,8 @@ def api_timetable_id_course(request, timetable_id):
                 timetable = Timetable.objects.get(pk=timetable_id)
                 course = Course.objects.get(pk=course_id)
                 time_list=[]
-                for in_course in CustomCourse.objects.filter(timetable=timetable):
-                    for course_time in CustomCourseTime.objects.filter(course=in_course):
-                        time_list.append(course_time)
+                for course_time in CustomCourseTime.objects.filter(timetable=timetable):
+                    time_list.append(course_time)
                 for course_time in CourseTime.objects.filter(course=course):
                     for in_time in time_list:
                         if not (course_time.weekday!=in_time.weekday or course_time.start_time>=in_time.end_time or course_time.end_time<=in_time.start_time):
