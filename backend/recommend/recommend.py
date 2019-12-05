@@ -14,11 +14,20 @@ MAX_COURSE_ID = 4200
 MAX_COURSE_PREF = 10.0
 DEFAULT_COURSE_PREF = 5.0
 
-MAX_CANDIDATES = 100
-MIN_CREDITS = 15
-MAX_CREDITS = 18
+MAX_CANDIDATES = 300
+MIN_CREDIT = 15
+MAX_CREDIT = 18
+MIN_MAJOR = 0
+MAX_MAJOR = 18
 
 # constant def end
+
+def get_constants (user):
+    global MIN_CREDIT, MAX_CREDIT, MIN_MAJOR, MAX_MAJOR
+    MIN_CREDIT = user.credit_min
+    MAX_CREDIT = user.credit_max
+    MIN_MAJOR = user.major_min
+    MAX_MAJOR = user.major_max
 
 def get_target_courses (user):
     all_course = [ course for course in Course.objects.all().values() ]
@@ -154,12 +163,12 @@ class ConvertedCourseData:
         return (c_score, t_score)
 
 def backtrack (user, candidates, my_credit, my_score, my_courses, all_courses, index):
-    if my_credit > MAX_CREDITS:
+    if my_credit > MAX_CREDIT:
         return
-    if my_credit >= MIN_CREDITS:
-        candidates.append((my_score, my_courses))
+    if my_credit >= MIN_CREDIT and my_courses:
+        candidates.append((my_score/len(my_courses), my_courses))
         prv_score = 0
-        cur_score = my_score
+        cur_score = candidates[-1][0]
         for i in reversed(range(len(candidates)-1)):
             prv_score = cur_score
             cur_score = candidates[i][0]
@@ -176,7 +185,7 @@ def backtrack (user, candidates, my_credit, my_score, my_courses, all_courses, i
     cur_credit = cur_course.get_credit()
     if len(candidates) == MAX_CANDIDATES:
         worst_candidate_score = candidates[-1][0]
-        max_possible_score = my_score + cur_score * (MAX_CREDITS - my_credit) / cur_credit
+        max_possible_score = my_score / len(my_courses) if my_courses else cur_score
         if(max_possible_score <= worst_candidate_score):
             return
     my_courses.append(cur_course)
@@ -185,6 +194,8 @@ def backtrack (user, candidates, my_credit, my_score, my_courses, all_courses, i
     backtrack(user, candidates, my_credit, my_score, my_courses, all_courses, index+1)
 
 def run_recommendation (user):
+    get_constants(user)
+
     user_data = ConvertedUserData(user)
    
     all_course_data = list(map(lambda x : ConvertedCourseData(x), get_target_courses(user)))
