@@ -291,10 +291,11 @@ def api_custom_course_id(request, custom_course_id):
             if timetable.user != request.user:
                 return HttpResponseNotAllowed()
             req_data = json.loads(request.body.decode())
-            keys = ['color']
+            keys = ['color', 'title']
             for key in keys:
                 if key in req_data:
                     setattr(custom_course, key, req_data[key])
+            custom_course.set_custom_course_time(req_data['times'])
             custom_course.save()
             return JsonResponse(timetable.data())
         except (CustomCourse.DoesNotExist, Timetable.DoesNotExist):

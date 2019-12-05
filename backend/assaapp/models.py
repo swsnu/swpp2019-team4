@@ -163,6 +163,22 @@ class CourseTime(models.Model):
                 'end_time': self.end_time.hour*60
                             +self.end_time.minute}
 
+class CustomCourseTime(models.Model):
+    timetable = models.ForeignKey('Timetable', on_delete=models.CASCADE)
+    course = models.ForeignKey('CustomCourse', on_delete=models.CASCADE)
+    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+    lectureroom = models.CharField(max_length=8, default='default')
+    weekday = models.IntegerField(default=0)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    def data(self):
+        return {'week_day': self.weekday,
+                'start_time': self.start_time.hour*60
+                              +self.start_time.minute,
+                'end_time': self.end_time.hour*60
+                            +self.end_time.minute,}
+
 class CustomCourse(models.Model):
     timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
@@ -180,6 +196,20 @@ class CustomCourse(models.Model):
                              building=course_time.building,
                              lectureroom=course_time.lectureroom).save()
 
+    def set_custom_course_time(self, times):
+        custom_course_time_list = CustomCourseTime.objects.filter(course=self)
+        building = custom_course_time_list[0].building
+        lectureroom = custom_course_time_list[0].lectureroom
+        for time in custom_course_time_list:
+            time.delete()
+        for time in times:
+            CustomCourseTime(timetable=self.timetable, course=self,
+                             weekday=time['week_day'],
+                             start_time=time['start_time'],
+                             end_time=time['end_time'],
+                             building=building,
+                             lectureroom=lectureroom).save()
+
     def data(self):
         if self.course is None:
             course_time = [
@@ -196,7 +226,7 @@ class CustomCourse(models.Model):
 
         course = Course.objects.get(pk=self.course.id)
         course_time = [course_time.data() for course_time
-                       in CourseTime.objects.filter(course=course)]
+                       in CustomCourseTime.objects.filter(course=self, timetable=self.timetable)]
         return {
             'id': self.id,
             'is_custom': False,
@@ -213,18 +243,3 @@ class CustomCourse(models.Model):
     def __str__(self):
         return self.color
 
-class CustomCourseTime(models.Model):
-    timetable = models.ForeignKey('Timetable', on_delete=models.CASCADE)
-    course = models.ForeignKey('CustomCourse', on_delete=models.CASCADE)
-    building = models.ForeignKey(Building, on_delete=models.CASCADE)
-    lectureroom = models.CharField(max_length=8, default='default')
-    weekday = models.IntegerField(default=0)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-
-    def data(self):
-        return {'week_day': self.weekday,
-                'start_time': self.start_time.hour*60
-                              +self.start_time.minute,
-                'end_time': self.end_time.hour*60
-                            +self.end_time.minute,}

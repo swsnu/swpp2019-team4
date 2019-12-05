@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Datetime from 'react-datetime';
 import { TwitterPicker } from 'react-color';
 import * as actionCreators from '../../store/actions/index';
 import './CourseDetail.css';
@@ -9,6 +10,8 @@ class CourseDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      modify:false,
+      time:[]
     };
   }
 
@@ -20,13 +23,66 @@ class CourseDetail extends Component {
     }
   }
 
-  handleColor(color) {
-    this.setState({ color });
-    this.props.onEditCourse(this.props.course.id, { color });
+  timeString(time) {
+    const hour = Math.floor(time / 60);
+    const minute = time - hour * 60;
+    const hourString = `${hour}`;
+    const minuteString = minute < 10 ? `0${minute}` : `${minute}`;
+    return `${hourString}:${minuteString}`;
+  };
+
+  toggleModify() {
+    this.setState({ title: this.props.course.title})
+    this.setState({ modify: !this.state.modify})
+    let times = this.props.course.time.map((time) => {
+      return {
+        week_day:time.week_day,
+        start_time:this.timeString(time.start_time),
+        end_time:this.timeString(time.end_time)
+      }
+    })
+    this.setState({time:times})
+    if (this.state.modify) {
+      this.props.onEditCourse(this.props.course.id, { color : this.state.color, title : this.state.title, times : this.state.time });
+    }
+    
+  }
+
+  deleteTime(index) {
+    this.setState((prevState) => {
+      const { time } = prevState;
+      time.splice(index, 1);
+      return { time };
+    });
+  }
+  handleTime(index, key, moment) {
+    if (typeof moment === 'string') return;
+    const value = moment.format('H:mm');
+    this.setState((prevState) => {
+      const { time } = prevState;
+      time[index][key] = value;
+      return { time };
+    });
+  }
+  
+  appendTime() {
+    this.setState((prevState) => {
+      const { time } = prevState;
+      time.push({
+        week_day: 0,
+        start_time: '12:00',
+        end_time: '13:00',
+      });
+      return { time };
+    });
+  }
+  modifyColor(color) {
+    this.setState({ color});
   }
 
   render() {
     const { course } = this.props;
+    
     const isCustom = course.is_custom;
     const href = 'http://sugang.snu.ac.kr/sugang/cc/cc101.action?'
       + 'openSchyy=2019&openShtmFg=U000200002&openDetaShtmFg='
@@ -41,6 +97,35 @@ class CourseDetail extends Component {
       const minuteString = minute < 10 ? `0${minute}` : `${minute}`;
       return `${hourString}:${minuteString}`;
     };
+    const modifyTime = this.state.time.map((segment, index) => (
+      <div key={index}>
+        <Datetime
+        className="col pr-0"
+        dateFormat={false}
+        timeFormat="H:mm"
+        value={segment.start_time}
+        onChange={(moment) => this.handleTime(index, 'start_time', moment)}
+        />
+        <div className="col-1 px-0">
+          <div className="w-100 text-center small text-black-50 pt-2">~</div>
+        </div>
+        <Datetime
+          className="col px-0"
+          dateFormat={false}
+          timeFormat="H:mm"
+          value={segment.end_time}
+          onChange={(moment) => this.handleTime(index, 'end_time', moment)}
+        />
+        <button
+          className="col-1 px-1 btn btn-simple"
+          type="button"
+          id="delete-time-button"
+          onClick={() => this.deleteTime(index)}
+        >
+          <div className="oi oi-minus small px-2" />
+        </button>
+      </div>
+    ));
     const timeDiv = course.time.map((segment, index) => (
       <div key={index}>
         {`${weekDayName[segment.week_day]} (${timeString(segment.start_time)} ~ ${timeString(segment.end_time)})`}
@@ -52,9 +137,16 @@ class CourseDetail extends Component {
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">
-                {course.title}
-              </h5>
+              {this.state.modify?
+                  <input
+                    className="title form-control"
+                    value={this.state.title}
+                    onChange={(event) => { this.setState({ title: event.target.value }); }}
+                  />:
+                  <h5 className="modal-title">
+                    {course.title}
+                  </h5>
+              }
             </div>
             <div className="modal-body">
               <table className="table">
@@ -103,7 +195,18 @@ class CourseDetail extends Component {
                   <tr>
                     <td>시간</td>
                     <td>
-                      {timeDiv}
+                      {this.state.modify ? 
+                        modifyTime : timeDiv}
+                      {this.state.modify ?
+                      <button
+                      className="w-100 btn btn-simple my-2"
+                      id="append-time-button"
+                      type="button"
+                      onClick={() => this.appendTime()}
+                    >
+                      <div className="oi oi-plus small px-2" />
+                    추가
+                    </button> : null}
                     </td>
                   </tr>
                   {!isCustom
@@ -129,7 +232,7 @@ class CourseDetail extends Component {
                         <div className="dropdown-menu">
                           <TwitterPicker
                             color={course.color}
-                            onChangeComplete={(color) => this.handleColor(color.hex)}
+                            onChangeComplete={(color) => this.modifyColor(color.hex)}
                           />
                         </div>
                       </div>
@@ -139,7 +242,8 @@ class CourseDetail extends Component {
               </table>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-dark" data-dismiss="modal">닫기</button>
+              <button type="button" className="btn btn-dark" onClick={() => this.toggleModify()}>{this.state.modify?"완료":"수정"}</button>
+              <button type="button" className="btn btn-dark" onClick={() => this.setState({modify:false})}data-dismiss="modal">닫기</button>
             </div>
           </div>
         </div>
