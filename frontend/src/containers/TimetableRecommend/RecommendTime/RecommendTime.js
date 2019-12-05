@@ -20,6 +20,7 @@ class RecommendTime extends Component {
   componentDidMount() {
     this.is_mount = true;
     this.props.handleValid(true);
+    this.props.handleTimePref(this.props.color_table);
     document.addEventListener('mouseup', this.mouseUpListener, true);
     document.addEventListener('mousedown', this.mouseDownListener, true);
   }

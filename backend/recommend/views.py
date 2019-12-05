@@ -4,7 +4,7 @@ from json import JSONDecodeError
 from django.forms.models import model_to_dict
 from django.http import HttpResponse, HttpResponseNotAllowed, \
     JsonResponse, HttpResponseBadRequest, HttpResponseNotFound
-from assaapp.models import User, Course
+from assaapp.models import User, Course, Timetable, CustomCourse
 from recommend.models import CoursePref, TimePref
 from recommend.recommend import run_recommendation
 
@@ -219,13 +219,14 @@ def api_time_pref(request):
     if request.method == 'PUT':
         try:
             body = json.loads(request.body.decode())
+            table = body['table']
             user = request.user
         except (KeyError, JSONDecodeError):
             return HttpResponseBadRequest()
         for i in range(26):
             for j in range(6):
                 weekday = j
-                score = body[i][j]
+                score = table[i][j]
                 start_time = str(8+i//2) + ":" + ("30" if i%2 == 1 else "00")
                 try:
                     time_data = TimePref.objects.get(user=user, weekday=weekday, start_time=start_time)
@@ -257,8 +258,16 @@ def api_time_pref_id(request, timepref_id):
 @auth_func
 def api_recommend (request) :
     if request.method == 'GET':
-        run_recommendation(request.user)
-        return JsonResponse([], safe=False)
+        user = request.user
+        raw_timetables = run_recommendation(request.user)
+        timetables = []
+        for i in range(len(raw_timetables)):
+            timetable = Timetable(title='recommend'+str(i+1), user=user)
+            timetable.save()
+            for course_id in raw_timetables[i]:
+                CustomCourse(timetable=timetable, course=Course.objects.filter(id=course_id)[0]).save()
+            timetables.append(timetable)
+        return JsonResponse(list(map(lambda x: x.data(), timetables)), safe=False)
     return HttpResponseNotAllowed(['GET'])
 
 @auth_func

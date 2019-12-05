@@ -103,7 +103,10 @@ export const postMainTimetable = (id) => (dispatch) => axios.post(`/api/timetabl
   .catch(() => {});
 
 export const getRecommend = () => (dispatch) => axios.get('/api/recommend/recommend/')
-  .then((res) => dispatch({ type: actionTypes.GET_RECOMMEND, timetables: res.data }))
+  .then((res) => {
+    console.log(res.data)
+    return dispatch({ type: actionTypes.GET_RECOMMEND, timetables: res.data })
+  })
   .catch(() => {});
 
 export const editConstraints = (consts) => (dispatch) => 
@@ -114,7 +117,7 @@ export const putConstraints = (consts) => (dispatch) => axios.put('/api/recommen
   .catch(() => {});
 
 export const putTimePref = (table) => {
-  return (dispatch) => axios.put('/api/recommend/timepref/', table)
+  return (dispatch) => axios.put('/api/recommend/timepref/', { table })
     .then((res) => dispatch({ type: actionTypes.EDIT_TIME_PREF, time_pref_table: table }))
     .catch(() => {});
 }

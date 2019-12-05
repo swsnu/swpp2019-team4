@@ -135,9 +135,13 @@ class ConvertedCourseData:
     def __init__ (self, course):
         self._id = course['id']
         self._credit = course['credit']
+        self._major = (course['classification'] != '교양')
         self._course_time_list = [ course_time.data() for course_time in CourseTime.objects.filter(course=self._id) ]
         self._timeslice_set = TimesliceSet(self.get_timeslice_list())
-    
+
+    def is_major (self):
+        return self._major
+
     def get_id (self):
         return self._id
     
@@ -154,22 +158,6 @@ class ConvertedCourseData:
         return (c_score, t_score)
 
 def backtrack (terminate_cond, append_cond, user, candidates, my_score, my_courses, all_courses, index):
-    if terminate_cond (my_courses):
-        return
-    if append_cond (my_courses):
-        candidates.append((my_score/len(my_courses), my_courses))
-        prv_score = 0
-        cur_score = candidates[-1][0]
-        for i in reversed(range(len(candidates)-1)):
-            prv_score = cur_score
-            cur_score = candidates[i][0]
-            if(prv_score > cur_score):
-                candidates[i], candidates[i+1] = candidates[i+1], candidates[i]
-                cur_score = prv_score
-            else:
-                break
-        if len(candidates) > MAX_CANDIDATES:
-            candidates.pop()
     if index == len(all_courses):
         return
     (cur_score, cur_course) = all_courses[index]
@@ -179,8 +167,25 @@ def backtrack (terminate_cond, append_cond, user, candidates, my_score, my_cours
         if(max_possible_score <= worst_candidate_score):
             return
     my_courses.append(cur_course)
-    backtrack(terminate_cond, append_cond, user, candidates, my_score + cur_score, my_courses, all_courses, index+1)
+    my_score += cur_score
+    if not terminate_cond (my_courses):
+        if append_cond (my_courses):
+            candidates.append((my_score/len(my_courses), my_courses.copy()))
+            prv_score = 0
+            cur_score = candidates[-1][0]
+            for i in reversed(range(len(candidates)-1)):
+                prv_score = cur_score
+                cur_score = candidates[i][0]
+                if(prv_score > cur_score):
+                    candidates[i], candidates[i+1] = candidates[i+1], candidates[i]
+                    cur_score = prv_score
+                else:
+                    break
+            if len(candidates) > MAX_CANDIDATES:
+                candidates.pop()
+        backtrack(terminate_cond, append_cond, user, candidates, my_score, my_courses, all_courses, index+1)
     my_courses.pop()
+    my_score -= cur_score
     backtrack(terminate_cond, append_cond, user, candidates, my_score, my_courses, all_courses, index+1)
 
 def run_recommendation (user):
@@ -231,7 +236,7 @@ def run_recommendation (user):
         for course1 in valid_course_data:
             flag = False
             for course2 in candidate:
-                if course1.get_timeslice_set().equals(course2.get_timeslice_set()):
+                if course1[1].get_timeslice_set().equals(course2.get_timeslice_set()):
                     flag = True
                     break
             if flag:
@@ -257,4 +262,4 @@ def run_recommendation (user):
         
         backtrack(termi2, appnd2, user, answer, 0, [], using_courses, 0)
     
-    return list(map(lambda x: list(map(lambda y: y.get_id(), x)), answer))
+    return list(map(lambda x: list(map(lambda y: y.get_id(), x[1])), answer))
