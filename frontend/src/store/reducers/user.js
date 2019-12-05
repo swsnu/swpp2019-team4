@@ -54,7 +54,8 @@ const initialState = {
     [3, 3, 3, 3, 3, 3],
     [3, 3, 3, 3, 3, 3],
     [3, 3, 3, 3, 3, 3]
-  ]
+  ],
+  recommended_timetables: []
 };
 
 const reducer = (state = initialState, action) => {
