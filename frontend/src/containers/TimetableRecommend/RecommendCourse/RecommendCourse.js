@@ -45,6 +45,7 @@ class RecommendCourse extends Component {
       unratedCourseCount: 50,
       tabview: 0,
       searchdetail: false,
+      searching: false,
       commandMatch: 0,
     };
     this.timeToString = (time) => {
@@ -155,6 +156,8 @@ class RecommendCourse extends Component {
   }
 
   search() {
+    if(this.state.searching)return;
+    this.setState({searching:true});
     if (this.state.searchdetail) {
       this.setState({
         realValues: this.state.searchValues,
@@ -234,6 +237,10 @@ class RecommendCourse extends Component {
   }
 
   render() {
+    if(this.props.searched){
+      this.props.searchable();
+      this.setState({searching: false});
+    }
     const ratedview = [];
     const unratedview = [];
     if (this.props.ratedCourse !== undefined) {
@@ -277,7 +284,7 @@ class RecommendCourse extends Component {
               </a>
             </li>
           </ul>
-          <SearchBar value={this.state.searchValues} onChange={(event, type) => this.searchOnChange(event, type)} onKeyDown={() => this.enterKey()} onToggle={() => this.onSearchToggle()} togglestatus={this.state.searchdetail} onSearch={() => this.search()} searchScore />
+          <SearchBar value={this.state.searchValues} onChange={(event, type) => this.searchOnChange(event, type)} onKeyDown={() => this.enterKey()} onToggle={() => this.onSearchToggle()} togglestatus={this.state.searchdetail} onSearch={() => this.search()} searchScore={true} searching={this.state.searching} />
           <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: '350px' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
             <div className="tab-pane show active" id="rated-tab" role="tabpanel" aria-labelledby="rated-tab">
               {ratedview}
@@ -299,6 +306,7 @@ RecommendCourse.propTypes = {
 const mapStateToProps = (state) => ({
   ratedCourse: state.user.rated_course,
   unratedCourse: state.user.unrated_course,
+  searched: state.user.ratedSearched&&state.user.unratedSearched,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -307,6 +315,7 @@ const mapDispatchToProps = (dispatch) => ({
   setRatedCourse: (start, end, searchValues) => dispatch(actionCreators.setRatedCourse(start, end, searchValues)),
   setUnratedCourse: (start, end, searchValues) => dispatch(actionCreators.setUnratedCourse(start, end, searchValues)),
   onChangeslider: (id, value) => dispatch(actionCreators.putCourseprefTemp(id, value)),
+  searchable: () =>{dispatch(actionCreators.setRatedSearchable());dispatch(actionCreators.setUnratedSearchable());},
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecommendCourse);

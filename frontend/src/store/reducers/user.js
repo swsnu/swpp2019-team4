@@ -63,7 +63,7 @@ const reducer = (state = initialState, action) => {
       return { ...state, timetables: state.timetables.filter((timetable) => timetable.id !== action.deletedTimetable) };
     case actionTypes.GET_COURSES: {
       const newcourses = state.courses.concat(action.courses);
-      return { ...state, courses: newcourses, searched: true };
+      return { ...state, courses: newcourses};
     }
     case actionTypes.SET_COURSES:
       return {
@@ -122,11 +122,11 @@ const reducer = (state = initialState, action) => {
     }
     case actionTypes.GET_RATED_COURSE: {
       const newlist = state.rated_course.concat(action.course_list);
-      return { ...state, rated_course: newlist, ratedSearched: true };
+      return { ...state, rated_course: newlist};
     }
     case actionTypes.GET_UNRATED_COURSE: {
       const newlist = state.unrated_course.concat(action.course_list);
-      return { ...state, unrated_course: newlist, unratedSearcehd: true };
+      return { ...state, unrated_course: newlist};
     }
     case actionTypes.SET_RATED_COURSE:
       return { ...state, rated_course: action.course_list, ratedSearched: true };
