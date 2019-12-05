@@ -43,6 +43,9 @@ class TimetableRecommend extends Component {
     if (this.state.index === 1) {
       this.props.onPutTimePref(this.state.time_pref);
     }
+    if (this.state.index === 2) {
+      this.props.onPutCoursePref(this.props.changedCourses);
+    }
     this.setState((prevState) => ({ ...prevState, index: prevState.index + offset }));
   }
 
@@ -170,14 +173,16 @@ TimetableRecommend.propTypes = {
 
 const mapStateToProps = (state) => ({
   storedUser: state.user.user,
-  constraints: state.user.constraints
+  constraints: state.user.constraints,
+  changedCourses: state.user.changed_courses,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onLogout: () => dispatch(actionCreators.getSignout()),
   onPutConstraints: (consts) => dispatch(actionCreators.putConstraints(consts)),
-  onPutTimePref: (time_pref) => dispatch(actionCreators.putTimePref(time_pref))
+  onPutTimePref: (time_pref) => dispatch(actionCreators.putTimePref(time_pref)),
+  onPutCoursePref: (changedCourses) => dispatch(actionCreators.putCoursepref(changedCourses)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableRecommend);

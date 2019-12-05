@@ -1,4 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
+import { resetCourse } from '../actions/user';
 
 const initialState = {
   user: {
@@ -8,6 +9,9 @@ const initialState = {
   timetable_friend: { course: [] },
   timetables: [],
   courses: [],
+  rated_course: [],
+  unrated_course: [],
+  changed_courses: [],
   friend: [],
   friend_send: [],
   friend_receive: [],
@@ -71,16 +75,16 @@ const reducer = (state = initialState, action) => {
       return { ...state, timetable_friend: action.timetable };
     case actionTypes.POST_TIMETABLE:
       return { ...state, timetables: state.timetables.concat(action.timetable) };
+    case actionTypes.POST_COURSE_TEMP:
+      state.timetable.course = state.timetable.course.concat(action.course);
+      return { ...state };
+    case actionTypes.DELETE_COURSE_TEMP:
+      state.timetable.course = state.timetable.course.filter((item) => !(item.id === action.course.id && item.temp === true));
+      return { ...state };
     case actionTypes.POST_COURSE:
       return { ...state, timetable: action.timetable };
     case actionTypes.POST_CUSTOM_COURSE:
       return { ...state, timetable: action.timetable };
-    case actionTypes.DELETE_COURSE:
-      return {
-        ...state,
-        timetable: action.timetable,
-        courses: state.courses.filter((course) => course.id !== action.courseId),
-      };
     case actionTypes.EDIT_TIMETABLE:
       return {
         ...state,
@@ -90,8 +94,14 @@ const reducer = (state = initialState, action) => {
       };
     case actionTypes.DELETE_TIMETABLE:
       return { ...state, timetables: state.timetables.filter((timetable) => timetable.id !== action.deletedTimetable) };
-    case actionTypes.GET_COURSES:
-      return { ...state, courses: action.courses };
+    case actionTypes.GET_COURSES: {
+      const newcourses = state.courses.concat(action.courses);
+      return { ...state, courses: newcourses };
+    }
+    case actionTypes.SET_COURSES:
+      return {
+        ...state, courses: action.course_list,
+      };
     case actionTypes.GET_FRIEND:
       return {
         ...state,
@@ -152,6 +162,30 @@ const reducer = (state = initialState, action) => {
     case actionTypes.EDIT_TIME_PREF: {
       return { ...state, time_pref_table: action.time_pref_table }
     }
+    case actionTypes.GET_RATED_COURSE: {
+      const newlist = state.rated_course.concat(action.course_list);
+      return { ...state, rated_course: newlist };
+    }
+    case actionTypes.GET_UNRATED_COURSE: {
+      const newlist = state.unrated_course.concat(action.course_list);
+      return { ...state, unrated_course: newlist };
+    }
+    case actionTypes.SET_RATED_COURSE:
+      return { ...state, rated_course: action.course_list };
+    case actionTypes.SET_UNRATED_COURSE:
+      return { ...state, unrated_course: action.course_list };
+    case actionTypes.PUT_COURSEPREF_TEMP:
+      state.rated_course = state.rated_course.map(({ id, score, ...item }) => (id === action.coursepref.id ? { id, score: action.coursepref.score, ...item } : { id, score, ...item }));
+      state.unrated_course = state.unrated_course.map(({ id, score, ...item }) => (id === action.coursepref.id ? { id, score: action.coursepref.score, ...item } : { id, score, ...item }));
+      const targetCourse = state.changed_courses.filter((course) => course.id === action.coursepref.id);
+      if (targetCourse.length > 0) {
+        state.changed_courses = state.changed_courses.map(({ id, score }) => (id === action.coursepref.id ? { id, score: action.coursepref.score } : { id, score }));
+      } else {
+        state.changed_courses.push(action.coursepref);
+      }
+      return { ...state };
+    case actionTypes.PUT_COURSEPREF:
+      return { ...state, changed_courses: [] };
     default:
       return { ...state };
   }

@@ -10,8 +10,9 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.mail import EmailMessage
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from assaapp.models import User, Timetable, Course, CustomCourse, CustomCourseTime
+from assaapp.models import User, Timetable, Course, CustomCourse, CustomCourseTime, Building
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
+from recommend.views import cf_view, cf_score, searcher
 
 def auth_func(func):
     def wrapper_function(*args, **kwargs):
@@ -282,15 +283,35 @@ def api_timetable_id_course(request, timetable_id):
     return HttpResponseNotAllowed(['POST'])
 
 @auth_func
-def api_timetable_id_custom_course_id(request, timetable_id, custom_course_id):
-    if request.method == 'DELETE':
+def api_custom_course_id(request, custom_course_id):
+    if request.method == 'PUT':
         try:
-            timetable = Timetable.objects.get(pk=timetable_id)
-            CustomCourse.objects.get(pk=custom_course_id).delete()
-            return JsonResponse(timetable.data(), safe=False)
+            custom_course = CustomCourse.objects.select_related('timetable__user').get(pk=custom_course_id)
+            timetable = custom_course.timetable
+            if timetable.user != request.user:
+                return HttpResponseNotAllowed()
+            req_data = json.loads(request.body.decode())
+            keys = ['color']
+            for key in keys:
+                if key in req_data:
+                    setattr(custom_course, key, req_data[key])
+            custom_course.save()
+            return JsonResponse(timetable.data())
         except (CustomCourse.DoesNotExist, Timetable.DoesNotExist):
             return HttpResponseNotFound()
-    return HttpResponseNotAllowed(['DELETE'])
+        except (KeyError, JSONDecodeError, IntegrityError):
+            return HttpResponseBadRequest()
+    if request.method == 'DELETE':
+        try:
+            custom_course = CustomCourse.objects.select_related('timetable').get(pk=custom_course_id)
+            timetable = custom_course.timetable
+            if timetable.user != request.user:
+                return HttpResponseNotAllowed()
+            custom_course.delete()
+            return JsonResponse(timetable.data())
+        except (CustomCourse.DoesNotExist, Timetable.DoesNotExist):
+            return HttpResponseNotFound()
+    return HttpResponseNotAllowed(['PUT', 'DELETE'])
 
 @auth_func
 def api_timetable_id_custom_course(request, timetable_id):
@@ -309,7 +330,9 @@ def api_timetable_id_custom_course(request, timetable_id):
                                      course=custom_course,
                                      start_time=time['start_time'],
                                      end_time=time['end_time'],
-                                     weekday=time['week_day'])
+                                     weekday=time['week_day'],
+                                     building=Building.objects.get(id=0),
+                                     lectureroom='')
                     for time in time_list]
                 for time in custom_course_time:
                     time.save()
@@ -324,20 +347,24 @@ def api_timetable_id_custom_course(request, timetable_id):
 def api_course(request):
     if request.method == 'GET':
         course_list = Course.objects.all()
-        match_text = request.GET.get('title')
-        if match_text:
-            def is_matched(text):
-                matched = 0
-                for char in text:
-                    if char == match_text[matched]:
-                        matched += 1
-                    if matched == len(match_text):
-                        return True
-                return False
-            course_list = [course.data() for course
-                           in filter(lambda x: is_matched(x.title), course_list)]
-            return JsonResponse(course_list, safe=False)
-        return HttpResponseBadRequest()
+        cf_view_result=cf_view(request.user)
+        cf_score_result=cf_score(request.user)
+        start = int(request.GET.get('start'))
+        end = int(request.GET.get('end'))
+        course_list = [course for course
+                        in filter(lambda course: searcher(course,0,request.GET), course_list)]
+        course_list = sorted(course_list, key=lambda course: -cf_view_result[course.id])
+        course_len = len(course_list)
+        get_result = []
+        if start>=course_len:
+            return JsonResponse([], safe=False)
+        for i in range(start,course_len):
+            if i>end:
+                break
+            course_data=course_list[i].data()
+            course_data['expected']=cf_score_result[course_data['id']]
+            get_result.append(course_data)
+        return JsonResponse(get_result, safe=False)
     return HttpResponseNotAllowed(['GET'])
 
 @ensure_csrf_cookie

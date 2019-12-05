@@ -3,7 +3,7 @@ from django.test import TestCase, Client
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.forms.models import model_to_dict
-from assaapp.models import User, Timetable, Course, CustomCourse, CourseTime
+from assaapp.models import User, Timetable, Course, CustomCourse, CourseTime, Building
 from assaapp.tokens import ACCOUNT_ACTIVATION_TOKEN
 class AssaTestCase(TestCase):
     def setUp(self):
@@ -358,12 +358,16 @@ class AssaTestCase(TestCase):
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
+        Building(name='SNU', latitude=0, longitude=0).save()
         CourseTime(course=Course.objects.get(id=1),
-                   weekday=0, start_time="17:00", end_time="18:30").save()
+                   weekday=0, start_time="17:00", end_time="18:30",
+                   building=Building.objects.get(id=1), lectureroom="0").save()
         CourseTime(course=Course.objects.get(id=1),
-                   weekday=2, start_time="17:00", end_time="18:30").save()
+                   weekday=2, start_time="17:00", end_time="18:30",
+                   building=Building.objects.get(id=1), lectureroom="0").save()
         CourseTime(course=Course.objects.get(id=1),
-                   weekday=3, start_time="18:30", end_time="20:30").save()
+                   weekday=3, start_time="18:30", end_time="20:30",
+                   building=Building.objects.get(id=1), lectureroom="0").save()
         CustomCourse(timetable=Timetable.objects.get(id=1),
                      course=Course.objects.get(id=1), color="#2468AC").save()
         response = self.get('/api/timetable/')
@@ -399,12 +403,16 @@ class AssaTestCase(TestCase):
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
+        Building(name='SNU', latitude=0, longitude=0).save()
         CourseTime(course=Course.objects.get(id=1),
-                   weekday=0, start_time="17:00", end_time="18:30").save()
+                   weekday=0, start_time="17:00", end_time="18:30",
+                   building=Building.objects.get(id=1), lectureroom="0").save()
         CourseTime(course=Course.objects.get(id=1),
-                   weekday=2, start_time="17:00", end_time="18:30").save()
+                   weekday=2, start_time="17:00", end_time="18:30",
+                   building=Building.objects.get(id=1), lectureroom="0").save()
         CourseTime(course=Course.objects.get(id=1),
-                   weekday=3, start_time="18:30", end_time="20:30").save()
+                   weekday=3, start_time="18:30", end_time="20:30",
+                   building=Building.objects.get(id=1), lectureroom="0").save()
         CustomCourse(timetable=Timetable.objects.get(id=1),
                      course=Course.objects.get(id=1), color="#2468AC").save()
         response = self.get('/api/timetable/1/')
@@ -519,6 +527,7 @@ class AssaTestCase(TestCase):
         response = self.post('/api/timetable/1/customCourse/', json.dumps({}),
                              content_type='application/json')
         self.assertEqual(response.status_code, 400)
+        Building(id=0, name='SNU', latitude=0, longitude=0).save()
         response = self.post('/api/timetable/200/customCourse/',
                              json.dumps({'title':'swpp',
                                          'color':'#FFFFFF',
@@ -552,6 +561,7 @@ class AssaTestCase(TestCase):
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
+        Building(id=0, name='SNU', latitude=0, longitude=0).save()
         response = self.post('/api/timetable/1/customCourse/',
                              json.dumps({'title':'swpp',
                                          'color':'#FFFFFF',

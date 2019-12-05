@@ -20,18 +20,13 @@
   padding: 0px;
 }
 
-.TimetableView #timetable tr:nth-child(even) td {
+.TimetableView .timetable-hour-bar {
   border-top-color: #DDDDDD;
-}
-
-.TimetableView #timetable tr:nth-child(odd) td {
-  border-top-color: #FFFFFF;
 }
 
 .TimetableView .square {
   position: absolute;
   width: 100%;
-  top: -1px;
   padding: 0px;
   margin: auto;
   z-index: 5;
@@ -44,4 +39,13 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  font-size: .75rem;
+}
+
+.TimetableView #timetable-current-bar {
+  position: absolute;
+  width: 100%;
+  background-color: #EB144C;
+  height: 1px;
+  z-index: 500;
 }
