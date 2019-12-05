@@ -216,9 +216,9 @@ class TimetableManagement extends Component {
     const tempCourse = {
       ...course, temp: true, color: '#d3d3d3', opacity: 0.5,
     };
-    if (this.props.course.filter((item) => item.lecture_number === course.lecture_number && item.course_number === course.course_number).length === 0) {
-      this.props.onPostCourseTemp(tempCourse);
-    }
+    
+    this.props.onPostCourseTemp(tempCourse);
+    
   }
 
   handleMouseLeave(course) {
