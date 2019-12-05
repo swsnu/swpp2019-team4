@@ -13,6 +13,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from assaapp.models import User, Timetable, Course, CustomCourse, CustomCourseTime, Building
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
 from recommend.views import cf_view, cf_score, searcher
+from django.core.mail import send_mail
 
 def auth_func(func):
     def wrapper_function(*args, **kwargs):
@@ -35,13 +36,15 @@ def api_signup(request):
                     req_detail[detail] = req_data[detail]
             user = User.objects.create_user(email=email, password=password,
                                             username=username, **req_detail)
-            content = 'Hi, {}.\nhttp://localhost:3000/verify/{}/{}\n'.format(
+            content = 'Hi, {}.\nhttps://www.snu-assa.site/verify/{}/{}\n'.format(
                 username,
                 urlsafe_base64_encode(force_bytes(user.id)),
                 ACCOUNT_ACTIVATION_TOKEN.make_token(user)
             )
-            email = EmailMessage('Confirm your email for ASSA', content, to=[email])
-            email.send()
+            send_mail('Email Verification', content, 'assa.staff@gmail.com', [email], fail_silently=False)
+            #email = EmailMessage('Confirm your email for ASSA', content, to=[email])
+            #email.send()
+            
         except (KeyError, ValueError, JSONDecodeError, IntegrityError):
             return HttpResponseBadRequest()
         return HttpResponse(status=201)
