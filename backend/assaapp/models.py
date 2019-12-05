@@ -205,7 +205,7 @@ class CustomCourse(models.Model):
         course_time = [course_time.data() for course_time
                        in CourseTime.objects.filter(course=course)]
         return {
-            'id': self.id,
+            'id': course.id,
             'is_custom': False,
             'color': self.color,
             'title': course.title,

@@ -155,7 +155,7 @@ const reducer = (state = initialState, action) => {
       return { ...state, user: newuser };
     }
     case actionTypes.GET_RECOMMEND: {
-      return { ...state, timetables: action.timetables }
+      return { ...state, recommended_timetables: action.timetables }
     }
     case actionTypes.EDIT_CONSTRAINTS: {
       return { ...state, constraints: action.constraints }

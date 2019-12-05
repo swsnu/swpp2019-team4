@@ -445,7 +445,7 @@ def api_timepref_id(request, timepref_id):
 @auth_func
 def api_recommend (request) :
     if request.method == 'GET':
-        user = request.user
+        user = User.objects.filter(id=1)[0]
         raw_timetables = sample(run_recommendation(request.user)[0:101], 20)
         timetables = []
         for i in range(len(raw_timetables)):
@@ -454,7 +454,7 @@ def api_recommend (request) :
             for course_id in raw_timetables[i]:
                 CustomCourse(timetable=timetable, course=Course.objects.filter(id=course_id)[0]).save()
             timetables.append(timetable)
-        return JsonResponse(list(map(lambda x: x.data(), timetables)), safe=False)
+        return JsonResponse([timetable.data() for timetable in timetables], safe=False)
     return HttpResponseNotAllowed(['GET'])
 
 @auth_func
