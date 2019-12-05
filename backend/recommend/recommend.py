@@ -110,15 +110,6 @@ class ConvertedUserData:
         (c_score, t_score) = course.get_pref(self)
         return c_score * t_score
 
-    def timetable_score (self, course_list):
-        c_sum = 0
-        t_sum = 0
-        for course in course_list:
-            (c_score, t_score) = course.get_pref(self)
-            c_sum += c_score
-            t_sum += t_score
-        return c_sum * t_sum
-
 class ConvertedCourseData:
 
     def overlap (self, timeslice):
@@ -162,10 +153,10 @@ class ConvertedCourseData:
             t_score = 0
         return (c_score, t_score)
 
-def backtrack (user, candidates, my_credit, my_score, my_courses, all_courses, index):
-    if my_credit > MAX_CREDIT:
+def backtrack (terminate_cond, append_cond, user, candidates, my_score, my_courses, all_courses, index):
+    if terminate_cond (my_courses):
         return
-    if my_credit >= MIN_CREDIT and my_courses:
+    if append_cond (my_courses):
         candidates.append((my_score/len(my_courses), my_courses))
         prv_score = 0
         cur_score = candidates[-1][0]
@@ -182,16 +173,15 @@ def backtrack (user, candidates, my_credit, my_score, my_courses, all_courses, i
     if index == len(all_courses):
         return
     (cur_score, cur_course) = all_courses[index]
-    cur_credit = cur_course.get_credit()
     if len(candidates) == MAX_CANDIDATES:
         worst_candidate_score = candidates[-1][0]
         max_possible_score = my_score / len(my_courses) if my_courses else cur_score
         if(max_possible_score <= worst_candidate_score):
             return
     my_courses.append(cur_course)
-    backtrack(user, candidates, my_credit + cur_credit, my_score + cur_score, my_courses, all_courses, index+1)
+    backtrack(terminate_cond, append_cond, user, candidates, my_score + cur_score, my_courses, all_courses, index+1)
     my_courses.pop()
-    backtrack(user, candidates, my_credit, my_score, my_courses, all_courses, index+1)
+    backtrack(terminate_cond, append_cond, user, candidates, my_score, my_courses, all_courses, index+1)
 
 def run_recommendation (user):
     get_constants(user)
@@ -202,14 +192,69 @@ def run_recommendation (user):
     all_course_data.sort(key = lambda x : (x.get_timeslice_set().get_list(), user_data.course_score(x)), reverse = True)
 
     unique_course_data = []
+    valid_course_data = []
+
     for course_data in all_course_data:
         if not course_data.get_timeslice_set().get_list():
             continue
+        valid_course_data.append((user_data.course_score(course_data), course_data))
         if unique_course_data:
             back = unique_course_data[-1][1]
             if back.get_timeslice_set().equals(course_data.get_timeslice_set()):
                 continue
         unique_course_data.append((user_data.course_score(course_data), course_data))
     
+    unique_course_data.sort(key = lambda x : x[0], reverse = True)
+    valid_course_data.sort(key = lambda x : x[0], reverse = True)
+
+    def termi1 (x):
+        my_credit = 0
+        for course in x:
+            my_credit += course.get_credit()
+        return my_credit > MAX_CREDIT
+
+    def appnd1 (x):
+        my_credit = 0
+        for course in x:
+            my_credit += course.get_credit()
+        return my_credit >= MIN_CREDIT and x
+
     candidates = []
-    backtrack(user_data, candidates, 0, 0, [], unique_course_data, 0)
+    backtrack(termi1, appnd1, user_data, candidates, 0, [], unique_course_data, 0)
+
+    answer = []
+    for candidate_pair in candidates:
+        (_, candidate) = candidate_pair
+
+        using_courses = []
+
+        for course1 in valid_course_data:
+            flag = False
+            for course2 in candidate:
+                if course1.get_timeslice_set().equals(course2.get_timeslice_set()):
+                    flag = True
+                    break
+            if flag:
+                using_courses.append(course1)
+
+        def termi2 (x):
+            my_credit = 0
+            my_major = 0
+            for course in x:
+                cur_credit = course.get_credit()
+                my_credit += cur_credit
+                my_major += cur_credit if course.is_major() else 0
+            return my_credit > MAX_CREDIT or my_major > MAX_MAJOR
+
+        def appnd2 (x):
+            my_credit = 0
+            my_major = 0
+            for course in x:
+                cur_credit = course.get_credit()
+                my_credit += cur_credit
+                my_major += cur_credit if course.is_major() else 0
+            return my_credit >= MIN_CREDIT and my_major >= MIN_MAJOR and x
+        
+        backtrack(termi2, appnd2, user, answer, 0, [], using_courses, 0)
+    
+    return list(map(lambda x: list(map(lambda y: y.get_id(), x)), answer))
