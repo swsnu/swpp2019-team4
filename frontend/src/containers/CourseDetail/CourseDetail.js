@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { TwitterPicker } from 'react-color';
-import {
-  withScriptjs, withGoogleMap, GoogleMap, Marker,
-} from 'react-google-maps';
 import * as actionCreators from '../../store/actions/index';
 import Datetime from './Datetime/Datetime';
+import CourseMap from './CourseMap/CourseMap';
 import './CourseDetail.css';
 
 class CourseDetail extends Component {
@@ -104,17 +102,6 @@ class CourseDetail extends Component {
   }
 
   render() {
-    const CourseMap = withScriptjs(withGoogleMap((props) => (
-      <GoogleMap
-        defaultZoom={17}
-        defaultCenter={props.center}
-      >
-        <Marker
-          position={props.center}
-        />
-      </GoogleMap>
-    )));
-
     const { course } = this.props;
     const isCustom = course.is_custom;
     const href = 'http://sugang.snu.ac.kr/sugang/cc/cc101.action?'
@@ -277,11 +264,6 @@ class CourseDetail extends Component {
                     <td>지도</td>
                     <td>
                       <CourseMap
-                        googleMapURL="https://maps.googleapis.com/maps/api/js?key=
-                          AIzaSyC2MiVSeJrRHzbm68f6ST_u37KTNFPH1JU&libraries=places"
-                        loadingElement={<div style={{ height: '20rem' }} />}
-                        containerElement={<div style={{ height: '20rem' }} />}
-                        mapElement={<div style={{ height: '20rem' }} />}
                         center={this.state.center}
                       />
                     </td>
