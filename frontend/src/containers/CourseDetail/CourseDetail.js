@@ -94,6 +94,12 @@ class CourseDetail extends Component {
     this.setState({ title: props.course.title, color: props.course.color, time: times });
   }
 
+  postCustom() {
+    const course = { title: this.state.title, color: this.state.color, time: this.state.time };
+    this.props.onPostCustomCourse(this.props.timetableId, course);
+    this.setToProps(this.props);
+  }
+
   render() {
     const CourseMap = withScriptjs(withGoogleMap((props) => (
       <GoogleMap
@@ -281,7 +287,29 @@ class CourseDetail extends Component {
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-outline-dark" onClick={() => this.setToProps(this.props)} data-dismiss="modal">취소</button>
-              <button type="button" className="btn btn-dark" onClick={() => this.updateCourse()} data-dismiss="modal">완료</button>
+              {
+                this.props.newCourse
+                  ? (
+                    <button
+                      type="button"
+                      className="btn btn-dark"
+                      onClick={() => this.postCustom()}
+                      data-dismiss="modal"
+                    >
+                      생성
+                    </button>
+                  )
+                  : (
+                    <button
+                      type="button"
+                      className="btn btn-dark"
+                      data-dismiss="modal"
+                      onClick={() => this.updateCourse()}
+                    >
+                      수정
+                    </button>
+                  )
+              }
             </div>
           </div>
         </div>
@@ -295,10 +323,27 @@ const mapStateToProps = () => ({
 
 const mapDispatchToProps = (dispatch) => ({
   onEditCourse: (courseId, changedValues) => dispatch(actionCreators.editCourse(courseId, changedValues)),
+  onPostCustomCourse: (timetableId, course) => dispatch(
+    actionCreators.postCustomCourse(timetableId, course),
+  ),
 });
+
+CourseDetail.defaultProps = {
+  timetableId: undefined,
+  course: {
+    id: undefined,
+    title: '',
+    color: '#FCB900',
+    time: [],
+    is_custom: true,
+  },
+  newCourse: false,
+};
 
 CourseDetail.propTypes = {
   id: PropTypes.string.isRequired,
+  timetableId: PropTypes.number,
+  newCourse: PropTypes.bool,
   course: PropTypes.shape({
     id: PropTypes.number,
     title: PropTypes.string,
@@ -310,8 +355,10 @@ CourseDetail.propTypes = {
       end_time: PropTypes.number,
       week_day: PropTypes.number,
     })).isRequired,
-  }).isRequired,
+    is_custom: PropTypes.bool,
+  }),
   onEditCourse: PropTypes.func.isRequired,
+  onPostCustomCourse: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CourseDetail);

@@ -7,7 +7,7 @@ import TimetableView from '../../components/TimetableView/TimetableView';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import TopBar from '../../components/TopBar/TopBar';
 import CourseElement from './CourseElement/CourseElement';
-import CustomCourse from '../CustomCourse/CustomCourse';
+import CourseDetail from '../CourseDetail/CourseDetail';
 // import './TimetableManagement.css';
 
 class TimetableManagement extends Component {
@@ -445,8 +445,9 @@ class TimetableManagement extends Component {
               editable
               showDetail
             />
-            <CustomCourse
+            <CourseDetail
               id="custom-course"
+              newCourse={true}
               timetableId={this.props.timetable.id}
             />
           </div>
