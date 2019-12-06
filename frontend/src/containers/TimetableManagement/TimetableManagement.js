@@ -248,6 +248,10 @@ class TimetableManagement extends Component {
     }
   }
 
+  openCourseDetail(course) {
+    this.setState((prevState) => ({ ...prevState, selectedCourse: course }));
+  }
+
   render() {
     if (this.props.storedUser.is_authenticated === false) {
       return (
@@ -300,7 +304,21 @@ class TimetableManagement extends Component {
       <CourseElement
         key={course.id}
         course={course}
-        addon={[(
+        addon={[
+          (
+          <button
+            key="2"
+            type="button"
+            data-toggle="modal"
+            data-target="#edit-course-detail"
+            id="edit-course-button"
+            className="btn btn-simple btn-sm"
+            onClick={() => this.openCourseDetail(course)}
+          >
+            <div className="oi oi-pencil small" />
+          </button>
+          ),
+          (
           <button
             key="1"
             type="button"
@@ -308,7 +326,9 @@ class TimetableManagement extends Component {
             onClick={() => this.deleteCourse(course.id)}
           >
             <div className="oi oi-minus small" />
-          </button>)]}
+          </button>
+          ),
+        ]}
       />
     ));
 
@@ -394,7 +414,7 @@ class TimetableManagement extends Component {
                   type="button"
                   className="btn btn-simple"
                   data-toggle="modal"
-                  data-target="#custom-course"
+                  data-target="#custom-course-detail"
                   id="custom-course-button"
                 >
                   <div className="oi oi-plus small px-2" />
@@ -446,10 +466,11 @@ class TimetableManagement extends Component {
               showDetail
             />
             <CourseDetail
-              id="custom-course"
+              id="custom-course-detail"
               newCourse={true}
               timetableId={this.props.timetable.id}
             />
+            <CourseDetail id="edit-course-detail" course={this.state.selectedCourse} />
           </div>
         </div>
       </div>

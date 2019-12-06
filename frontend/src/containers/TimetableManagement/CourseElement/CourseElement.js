@@ -42,7 +42,6 @@ const CourseElement = (props) => {
           </div>
         </div>
         {props.addon}
-        {props.addon}
       </div>
       <hr className="my-2" />
     </div>
