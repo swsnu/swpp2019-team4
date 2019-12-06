@@ -79,7 +79,7 @@ class RecommendResult extends Component {
           </div>
           <div className="buttons">
             <div className="save-space">
-              <button type="button" id="save-button" style={{ width: '100%' }} onClick={this.onClickSave()}>SAVE</button>
+              <button type="button" id="save-button" style={{ width: '100%' }} onClick={() => this.onClickSave()}>SAVE</button>
             </div>
             <div className="close-space">
               <button
