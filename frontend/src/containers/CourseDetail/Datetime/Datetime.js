@@ -101,7 +101,7 @@ class Datetime extends Component {
         {
         this.state.dropdown > 0
     && (
-    <div className="dropdown-menu show" style={{ transform: 'translateX(1rem)' }}>
+    <div className="dropdown-menu show">
       <table>
         <tbody>
           <tr>

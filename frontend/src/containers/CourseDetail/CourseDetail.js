@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { TwitterPicker } from 'react-color';
+import {
+  withScriptjs, withGoogleMap, GoogleMap, Marker,
+} from 'react-google-maps';
 import * as actionCreators from '../../store/actions/index';
 import Datetime from './Datetime/Datetime';
 import './CourseDetail.css';
@@ -16,6 +19,9 @@ class CourseDetail extends Component {
     };
   }
 
+  componentDidMount() {
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.course.color !== this.props.course.color) {
       this.setState({
@@ -26,8 +32,14 @@ class CourseDetail extends Component {
       week_day: time.week_day,
       start_time: this.timeString(time.start_time),
       end_time: this.timeString(time.end_time),
+      building: time.building,
     }));
     this.setState({ title: nextProps.course.title, color: nextProps.course.color, time: times });
+  }
+
+  setPosition(building) {
+    console.log({ lat: building.lat, lng: building.lng });
+    this.setState({ center: { lat: parseFloat(building.lat), lng: parseFloat(building.lng) } });
   }
 
   appendTime() {
@@ -93,6 +105,16 @@ class CourseDetail extends Component {
   }
 
   render() {
+    const CourseMap = withScriptjs(withGoogleMap((props) => (
+      <GoogleMap
+        defaultZoom={17}
+        defaultCenter={props.center}
+      >
+        <Marker
+          position={props.center}
+        />
+      </GoogleMap>
+    )));
     const { course } = this.props;
     const isCustom = course.is_custom;
     const href = 'http://sugang.snu.ac.kr/sugang/cc/cc101.action?'
@@ -102,7 +124,7 @@ class CourseDetail extends Component {
 
     const weekDayName = ['월', '화', '수', '목', '금', '토', '일'];
     const timeDiv = this.state.time.map((segment, index) => (
-      <div className="form-group row px-3 mb-0 mb-2" key={index}>
+      <div className="d-flex flex-row mb-0 mb-2" key={index}>
         <select
           className="form-control form-control-sm col-3"
           id="weekday-control"
@@ -117,25 +139,33 @@ class CourseDetail extends Component {
           <option value={5}>토</option>
         </select>
         <Datetime
-          className="col"
+          className="mx-2"
           value={segment.start_time}
           onChange={(value) => this.handleTime(index, 'start_time', value)}
         />
         <div>
-          <div className="w-100 text-center small text-black-50 pt-2">~</div>
+          <div className="w-100 text-center small text-black-50 pt-2"><b>-</b></div>
         </div>
         <Datetime
-          className="col"
+          className="mx-2"
           value={segment.end_time}
           onChange={(value) => this.handleTime(index, 'end_time', value)}
         />
         <button
-          className="col-1 px-1 btn btn-simple btn-sm"
+          className="px-1 btn btn-simple btn-sm"
+          type="button"
+          id="show-position-button"
+          onClick={() => this.setPosition(segment.building)}
+        >
+          <div className="oi oi-map-marker small px-2" />
+        </button>
+        <button
+          className="px-1 btn btn-simple btn-sm"
           type="button"
           id="delete-time-button"
           onClick={() => this.deleteTime(index)}
         >
-          <div className="oi oi-minus px-2" />
+          <div className="oi oi-minus small px-2" />
         </button>
       </div>
     ));
@@ -206,7 +236,7 @@ class CourseDetail extends Component {
                     <td>
                       {timeDiv}
                       <button
-                        className="w-100 btn btn-simple my-2"
+                        className="w-100 btn btn-simple btn-sm my-1"
                         id="append-time-button"
                         type="button"
                         onClick={() => this.appendTime()}
@@ -242,6 +272,18 @@ class CourseDetail extends Component {
                           />
                         </div>
                       </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>지도</td>
+                    <td>
+                      <CourseMap
+                        googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2MiVSeJrRHzbm68f6ST_u37KTNFPH1JU&libraries=places"
+                        loadingElement={<div style={{ height: '100%' }} />}
+                        containerElement={<div style={{ height: '400px' }} />}
+                        mapElement={<div style={{ height: '100%' }} />}
+                        center={this.state.center}
+                      />
                     </td>
                   </tr>
                 </tbody>

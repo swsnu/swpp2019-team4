@@ -147,6 +147,11 @@ class Building(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def data(self) :
+        return {'name' : self.name, 
+                'lat' : self.latitude,
+                'lng' : self.longitude}
 
 class CourseTime(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -231,7 +236,7 @@ class CustomCourse(models.Model):
 class CustomCourseTime(models.Model):
     timetable = models.ForeignKey('Timetable', on_delete=models.CASCADE)
     course = models.ForeignKey('CustomCourse', on_delete=models.CASCADE)
-    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+    building = models.ForeignKey('Building', on_delete=models.CASCADE)
     lectureroom = models.CharField(max_length=8, default='default')
     weekday = models.IntegerField(default=0)
     start_time = models.TimeField()
@@ -242,4 +247,5 @@ class CustomCourseTime(models.Model):
                 'start_time': self.start_time.hour*60
                               +self.start_time.minute,
                 'end_time': self.end_time.hour*60
-                            +self.end_time.minute,}
+                            +self.end_time.minute,
+                'building' : self.building.data()}
