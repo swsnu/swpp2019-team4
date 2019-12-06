@@ -278,7 +278,6 @@ def api_coursepref(request):
         try:
             body=request.body.decode()
             courses=json.loads(body)['courses']
-            print(courses)
             for course in courses:
                 id = course['id']
                 score = course['score']
@@ -416,11 +415,11 @@ def api_timepref(request):
                 start_time = str(8+i//2) + ":" + ("30" if i%2 == 1 else "00")
                 try:
                     time_data = TimePref.objects.get(user=user, weekday=weekday, start_time=start_time)
+                    time_data.score = score
+                    time_data.save()
                 except TimePref.DoesNotExist:
                     new_score = TimePref(user=user, score=score, weekday=weekday, start_time=start_time)
                     new_score.save()
-                time_data.score = score
-                time_data.save()
         return HttpResponse(status=200)
     return HttpResponseNotAllowed(['GET', 'PUT'])
 
