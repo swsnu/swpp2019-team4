@@ -296,15 +296,20 @@ def api_timetable_id_course(request, timetable_id):
 def api_custom_course_id(request, custom_course_id):
     if request.method == 'PUT':
         try:
+            
             custom_course = CustomCourse.objects.select_related('timetable__user').get(pk=custom_course_id)
             timetable = custom_course.timetable
             if timetable.user != request.user:
                 return HttpResponseNotAllowed()
             req_data = json.loads(request.body.decode())
-            keys = ['color']
+            print("-------req_data--------")
+            print(req_data)
+            print("-----------------------")
+            keys = ['color', 'title']
             for key in keys:
                 if key in req_data:
                     setattr(custom_course, key, req_data[key])
+            custom_course.set_custom_course_time(req_data['time'])
             custom_course.save()
             return JsonResponse(timetable.data())
         except (CustomCourse.DoesNotExist, Timetable.DoesNotExist):

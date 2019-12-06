@@ -180,6 +180,21 @@ class CustomCourse(models.Model):
                              building=course_time.building,
                              lectureroom=course_time.lectureroom).save()
 
+    def set_custom_course_time(self, times):
+        custom_course_time_list = CustomCourseTime.objects.filter(course=self)
+        building = custom_course_time_list[0].building
+        lectureroom = custom_course_time_list[0].lectureroom
+        for time in custom_course_time_list:
+            time.delete()
+        for time in times:
+            print(time)
+            CustomCourseTime(timetable=self.timetable, course=self,
+                             weekday=time['week_day'],
+                             start_time=time['start_time'],
+                             end_time=time['end_time'],
+                             building=building,
+                             lectureroom=lectureroom).save()
+
     def data(self):
         if self.course is None:
             course_time = [
@@ -196,12 +211,13 @@ class CustomCourse(models.Model):
 
         course = Course.objects.get(pk=self.course.id)
         course_time = [course_time.data() for course_time
-                       in CourseTime.objects.filter(course=course)]
+                       in CustomCourseTime.objects.filter(course=self)]
+        title = course.title if self.title == 'default' else self.title
         return {
             'id': self.id,
             'is_custom': False,
             'color': self.color,
-            'title': course.title,
+            'title': title,
             'lecture_number': course.lecture_number,
             'course_number': course.course_number,
             'credit': course.credit,
