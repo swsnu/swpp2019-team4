@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { TwitterPicker } from 'react-color';
 import * as actionCreators from '../../store/actions/index';
 import Datetime from 'react-datetime';
+import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps";
 import './CourseDetail.css';
 
 class CourseDetail extends Component {
@@ -15,7 +16,8 @@ class CourseDetail extends Component {
       color: '',
     };
   }
-
+  componentDidMount() {
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.course.color !== this.props.course.color) {
       this.setState({
@@ -26,7 +28,8 @@ class CourseDetail extends Component {
       return {
         week_day:time.week_day,
         start_time:this.timeString(time.start_time),
-        end_time:this.timeString(time.end_time)
+        end_time:this.timeString(time.end_time),
+        building:time.building
       }
     })
     this.setState({ title : nextProps.course.title, color : nextProps.course.color, time : times})
@@ -34,6 +37,10 @@ class CourseDetail extends Component {
 
   
 
+  setPosition(building) {
+    console.log({lat:building.lat, lng:building.lng})
+    this.setState({center:{lat:parseFloat(building.lat), lng:parseFloat(building.lng)}})
+  }
   appendTime() {
     this.setState((prevState) => {
       const { time } = prevState;
@@ -113,6 +120,15 @@ class CourseDetail extends Component {
     this.setState({ title : this.props.course.title, color : this.props.course.color, time : times})
   }
   render() {
+    const CourseMap = withScriptjs(withGoogleMap(props =>
+      <GoogleMap
+        defaultZoom={17}
+        defaultCenter={props.center}
+      >
+        <Marker 
+          position={props.center}
+        />
+      </GoogleMap>))
     const { course } = this.props;
     const isCustom = course.is_custom;
     const href = 'http://sugang.snu.ac.kr/sugang/cc/cc101.action?'
@@ -153,6 +169,14 @@ class CourseDetail extends Component {
           value={segment.end_time}
           onChange={(moment) => this.handleTime(index, 'end_time', moment)}
         />
+        <button
+          className="col-1 px-1 btn btn-simple"
+          type="button"
+          id="delete-time-button"
+          onClick={() => this.setPosition(segment.building)}
+        >
+          <div className="oi oi-minus small px-2" />
+        </button>
         <button
           className="col-1 px-1 btn btn-simple"
           type="button"
@@ -264,6 +288,19 @@ class CourseDetail extends Component {
                             />
                           </div>
                         </div>
+                      </td>
+                  </tr>
+                  <tr>
+                    <td>지도</td>
+                      <td>
+                        <CourseMap
+                          googleMapURL='https://maps.googleapis.com/maps/api/js?key=AIzaSyC2MiVSeJrRHzbm68f6ST_u37KTNFPH1JU&libraries=places'
+                          loadingElement={<div style={{ height: `100%` }} />}
+                          containerElement={<div style={{ height: `400px` }} />}
+                          mapElement={<div style={{ height: `100%` }} />}
+                          center= {this.state.center}
+                        >
+                        </CourseMap>
                       </td>
                   </tr>
                 </tbody>
