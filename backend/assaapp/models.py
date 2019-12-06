@@ -187,8 +187,8 @@ class CustomCourse(models.Model):
 
     def set_custom_course_time(self, times):
         custom_course_time_list = CustomCourseTime.objects.filter(course=self)
-        building = custom_course_time_list[0].building
-        lectureroom = custom_course_time_list[0].lectureroom
+        building = Building.objects.get(id=0)
+        lectureroom = ''
         for time in custom_course_time_list:
             time.delete()
         for time in times:
