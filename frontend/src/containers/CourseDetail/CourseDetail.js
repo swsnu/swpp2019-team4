@@ -236,24 +236,33 @@ class CourseDetail extends Component {
                     : null}
                   <tr>
                     <td>색상</td>
-                    <td>
-                      <div className="dropdown">
-                        <button
-                          type="button"
-                          id="dropdown-color"
-                          data-toggle="dropdown"
-                          aria-labelledby="Dropdown Color"
-                          style={{ backgroundColor: this.state.color }}
-                          disabled={!this.props.editable}
-                        />
-                        <div className="dropdown-menu">
-                          <TwitterPicker
-                            color={course.color}
-                            onChangeComplete={(color) => this.handleColor(color.hex)}
+                    {this.state.modify ?
+                    (
+                      <td>
+                        <div className="dropdown">
+                          <button
+                            type="button"
+                            id="dropdown-color"
+                            data-toggle="dropdown"
+                            aria-labelledby="Dropdown Color"
+                            style={{ backgroundColor: this.state.color }}
+                            disabled={!this.props.editable}
                           />
+                          <div className="dropdown-menu">
+                            <TwitterPicker
+                              color={course.color}
+                              onChangeComplete={(color) => this.handleColor(color.hex)}
+                            />
+                          </div>
                         </div>
-                      </div>
-                    </td>
+                      </td>) : 
+                          <div
+                            id="dropdown-color"
+                            data-toggle="dropdown"
+                            aria-labelledby="Dropdown Color"
+                            style={{ backgroundColor: this.state.color }}
+                            disabled={!this.props.editable}
+                          />}
                   </tr>
                 </tbody>
               </table>
