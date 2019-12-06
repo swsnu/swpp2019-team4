@@ -443,6 +443,7 @@ class TimetableManagement extends Component {
               height={20}
               courses={this.props.timetable.course}
               editable
+              showDetail
             />
             <CustomCourse
               id="custom-course"

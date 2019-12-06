@@ -127,10 +127,10 @@ class TimetableView extends Component {
                         }}
                         role="button"
                         tabIndex="0"
-                        data-toggle="modal"
+                        data-toggle={this.props.showDetail ? "modal" : ""}
                         data-target={dataTarget}
-                        onClick={() => this.openCourseDetail(this.props.courses[course.index])}
-                        onKeyDown={() => this.openCourseDetail(this.props.courses[course.index])}
+                        onClick={() => this.props.showDetail ? this.openCourseDetail(this.props.courses[course.index]) : null}
+                        onKeyDown={() => this.props.showDetail ? this.openCourseDetail(this.props.courses[course.index]) : null}
                       >
                         <div className="title px-1 text-black">
                           <b>{course.title}</b>
