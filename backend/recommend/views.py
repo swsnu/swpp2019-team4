@@ -1,6 +1,5 @@
 import math
 import json
-from random import sample
 from json import JSONDecodeError
 from django.forms.models import model_to_dict
 from django.http import HttpResponse, HttpResponseNotAllowed, \
@@ -445,16 +444,7 @@ def api_timepref_id(request, timepref_id):
 @auth_func
 def api_recommend (request) :
     if request.method == 'GET':
-        user = User.objects.filter(id=1)[0]
-        raw_timetables = sample(run_recommendation(request.user)[0:101], 20)
-        timetables = []
-        for i in range(len(raw_timetables)):
-            timetable = Timetable(title='recommend'+str(i+1), user=user)
-            timetable.save()
-            for course_id in raw_timetables[i]:
-                CustomCourse(timetable=timetable, course=Course.objects.filter(id=course_id)[0]).save()
-            timetables.append(timetable)
-        return JsonResponse([timetable.data() for timetable in timetables], safe=False)
+        return JsonResponse(run_recommendation(request.user), safe=False)
     return HttpResponseNotAllowed(['GET'])
 
 @auth_func

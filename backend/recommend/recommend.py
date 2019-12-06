@@ -1,6 +1,7 @@
 from assaapp.models import User, Course, CourseTime
 from recommend.models import CoursePref, TimePref
 from functools import cmp_to_key
+from random import sample
 
 # const def begin
 
@@ -274,4 +275,36 @@ def run_recommendation (user):
         
         backtrack(termi2, appnd2, user, answer, 0, [], using_courses, 0)
     
-    return list(map(lambda x: list(map(lambda y: y.get_id(), x[1])), answer))
+    color_gradient = [
+      '#FC466B',
+      '#E94879',
+      '#D64A87',
+      '#C34D96',
+      '#B04FA4',
+      '#9D52B3',
+      '#8A54C1',
+      '#7756CF',
+      '#6459DE',
+      '#515BEC',
+      '#3F5EFB',
+    ]
+
+    course_map = [ None ] * MAX_COURSE_ID
+    for course in Course.objects.all():
+        course_map[course.data()['id']] = course
+
+    answer = sample(answer[:min(100, len(answer))], min(20, len(answer)))
+
+    formatted_answer = []
+    for timetable in answer:
+        formatted_courses = []
+        for converted_course in timetable[1]:
+            course = course_map[converted_course.get_id()]
+            course_pref = user_data.get_course_pref(converted_course)
+            color_dict = {'color': color_gradient[round(course_pref)]}
+            course_data = course.data()
+            course_data.update(color_dict)
+            formatted_courses.append(course_data)
+        formatted_answer.append({'course': formatted_courses})
+
+    return formatted_answer
