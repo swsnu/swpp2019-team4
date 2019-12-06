@@ -17,6 +17,17 @@ class CourseDetail extends Component {
       time: [],
       color: '',
     };
+    this.timeString = (time) => {
+      const hour = Math.floor(time / 60);
+      const minute = time - hour * 60;
+      const hourString = `${hour}`;
+      const minuteString = minute < 10 ? `0${minute}` : `${minute}`;
+      return `${hourString}:${minuteString}`;
+    };
+  }
+
+  componentDidMount() {
+    this.setToProps(this.props);
   }
 
   shouldComponentUpdate(nextProps) {
@@ -27,8 +38,17 @@ class CourseDetail extends Component {
   }
 
   setPosition(building) {
-    console.log({ lat: building.lat, lng: building.lng });
     this.setState({ center: { lat: parseFloat(building.lat), lng: parseFloat(building.lng) } });
+  }
+
+  setToProps(props) {
+    const times = props.course.time.map((time) => ({
+      week_day: time.week_day,
+      start_time: this.timeString(time.start_time),
+      end_time: this.timeString(time.end_time),
+      building: time.building,
+    }));
+    this.setState({ title: props.course.title, color: props.course.color, time: times });
   }
 
   appendTime() {
@@ -72,32 +92,15 @@ class CourseDetail extends Component {
     this.props.onEditCourse(this.props.course.id, { color });
   }
 
-  timeString(time) {
-    const hour = Math.floor(time / 60);
-    const minute = time - hour * 60;
-    const hourString = `${hour}`;
-    const minuteString = minute < 10 ? `0${minute}` : `${minute}`;
-    return `${hourString}:${minuteString}`;
-  }
-
   updateCourse() {
-    this.props.onEditCourse(this.props.course.id, { color: this.state.color, time: this.state.time, title: this.state.title });
-  }
-
-  setToProps(props) {
-    const times = props.course.time.map((time) => ({
-      week_day: time.week_day,
-      start_time: this.timeString(time.start_time),
-      end_time: this.timeString(time.end_time),
-      building: time.building,
-    }));
-    this.setState({ title: props.course.title, color: props.course.color, time: times });
+    this.props.onEditCourse(this.props.course.id,
+      { color: this.state.color, time: this.state.time, title: this.state.title });
   }
 
   postCustom() {
     const course = { title: this.state.title, color: this.state.color, time: this.state.time };
     this.props.onPostCustomCourse(this.props.timetableId, course);
-    this.setToProps(this.props);
+    setTimeout(() => this.setToProps(this.props), 500);
   }
 
   render() {
@@ -274,7 +277,8 @@ class CourseDetail extends Component {
                     <td>지도</td>
                     <td>
                       <CourseMap
-                        googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2MiVSeJrRHzbm68f6ST_u37KTNFPH1JU&libraries=places"
+                        googleMapURL="https://maps.googleapis.com/maps/api/js?key=
+                          AIzaSyC2MiVSeJrRHzbm68f6ST_u37KTNFPH1JU&libraries=places"
                         loadingElement={<div style={{ height: '20rem' }} />}
                         containerElement={<div style={{ height: '20rem' }} />}
                         mapElement={<div style={{ height: '20rem' }} />}
@@ -286,7 +290,14 @@ class CourseDetail extends Component {
               </table>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-outline-dark" onClick={() => this.setToProps(this.props)} data-dismiss="modal">취소</button>
+              <button
+                type="button"
+                className="btn btn-outline-dark"
+                onClick={() => setTimeout(() => this.setToProps(this.props), 500)}
+                data-dismiss="modal"
+              >
+                취소
+              </button>
               {
                 this.props.newCourse
                   ? (
@@ -350,6 +361,9 @@ CourseDetail.propTypes = {
     color: PropTypes.string,
     lecture_number: PropTypes.string,
     course_number: PropTypes.string,
+    credit: PropTypes.number,
+    professor: PropTypes.string,
+    location: PropTypes.string,
     time: PropTypes.arrayOf(PropTypes.shape({
       start_time: PropTypes.number,
       end_time: PropTypes.number,
