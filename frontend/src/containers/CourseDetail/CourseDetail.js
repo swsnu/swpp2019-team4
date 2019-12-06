@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { TwitterPicker } from 'react-color';
 import * as actionCreators from '../../store/actions/index';
-import Datetime from 'react-datetime';
+import Datetime from './Datetime/Datetime';
 import './CourseDetail.css';
 
 class CourseDetail extends Component {
@@ -22,17 +22,13 @@ class CourseDetail extends Component {
         color: nextProps.course.color,
       });
     }
-    let times = nextProps.course.time.map((time) => {
-      return {
-        week_day:time.week_day,
-        start_time:this.timeString(time.start_time),
-        end_time:this.timeString(time.end_time)
-      }
-    })
-    this.setState({ title : nextProps.course.title, color : nextProps.course.color, time : times})
+    const times = nextProps.course.time.map((time) => ({
+      week_day: time.week_day,
+      start_time: this.timeString(time.start_time),
+      end_time: this.timeString(time.end_time),
+    }));
+    this.setState({ title: nextProps.course.title, color: nextProps.course.color, time: times });
   }
-
-  
 
   appendTime() {
     this.setState((prevState) => {
@@ -62,56 +58,40 @@ class CourseDetail extends Component {
     });
   }
 
-  handleTime(index, key, moment) {
-    if (typeof moment === 'string') return;
-    const value = moment.format('H:mm');
+  handleTime(index, key, value) {
     this.setState((prevState) => {
       const { time } = prevState;
       time[index][key] = value;
       return { time };
     });
   }
-  
+
   handleColor(color) {
     this.setState({ color });
     this.props.onEditCourse(this.props.course.id, { color });
   }
 
-  timeString(time){
+  timeString(time) {
     const hour = Math.floor(time / 60);
     const minute = time - hour * 60;
     const hourString = `${hour}`;
     const minuteString = minute < 10 ? `0${minute}` : `${minute}`;
     return `${hourString}:${minuteString}`;
-  };
-
-  appendTime() {
-    this.setState((prevState) => {
-      const { time } = prevState;
-      time.push({
-        week_day: 0,
-        start_time: '12:00',
-        end_time: '13:00',
-      });
-      return { time };
-    });
   }
 
-
   updateCourse() {
-    this.props.onEditCourse(this.props.course.id, { color:this.state.color, time:this.state.time, title:this.state.title })
+    this.props.onEditCourse(this.props.course.id, { color: this.state.color, time: this.state.time, title: this.state.title });
   }
 
   reset() {
-    let times = this.props.course.time.map((time) => {
-      return {
-        week_day:time.week_day,
-        start_time:this.timeString(time.start_time),
-        end_time:this.timeString(time.end_time)
-      }
-    })
-    this.setState({ title : this.props.course.title, color : this.props.course.color, time : times})
+    const times = this.props.course.time.map((time) => ({
+      week_day: time.week_day,
+      start_time: this.timeString(time.start_time),
+      end_time: this.timeString(time.end_time),
+    }));
+    this.setState({ title: this.props.course.title, color: this.props.course.color, time: times });
   }
+
   render() {
     const { course } = this.props;
     const isCustom = course.is_custom;
@@ -124,7 +104,7 @@ class CourseDetail extends Component {
     const timeDiv = this.state.time.map((segment, index) => (
       <div className="form-group row px-3 mb-0 mb-2" key={index}>
         <select
-          className="form-control col-3"
+          className="form-control form-control-sm col-3"
           id="weekday-control"
           value={segment.week_day}
           onChange={(event) => this.handleWeekday(index, event.target.value)}
@@ -137,29 +117,25 @@ class CourseDetail extends Component {
           <option value={5}>토</option>
         </select>
         <Datetime
-          className="col pr-0"
-          dateFormat={false}
-          timeFormat="H:mm"
+          className="col"
           value={segment.start_time}
-          onChange={(moment) => this.handleTime(index, 'start_time', moment)}
+          onChange={(value) => this.handleTime(index, 'start_time', value)}
         />
-        <div className="col-1 px-0">
+        <div>
           <div className="w-100 text-center small text-black-50 pt-2">~</div>
         </div>
         <Datetime
-          className="col px-0"
-          dateFormat={false}
-          timeFormat="H:mm"
+          className="col"
           value={segment.end_time}
-          onChange={(moment) => this.handleTime(index, 'end_time', moment)}
+          onChange={(value) => this.handleTime(index, 'end_time', value)}
         />
         <button
-          className="col-1 px-1 btn btn-simple"
+          className="col-1 px-1 btn btn-simple btn-sm"
           type="button"
           id="delete-time-button"
           onClick={() => this.deleteTime(index)}
         >
-          <div className="oi oi-minus small px-2" />
+          <div className="oi oi-minus px-2" />
         </button>
       </div>
     ));
@@ -168,19 +144,22 @@ class CourseDetail extends Component {
       <div className="CourseDetail modal fade" id={this.props.id} tabIndex="-1" role="dialog">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">{
-                <input
-                  className="title form-control"
-                  value={this.state.title}
-                  onChange={(event) => { this.setState({ title: event.target.value }); }}
-                />
-              }
-              </h5>
-            </div>
             <div className="modal-body">
               <table className="table">
+                <colgroup>
+                  <col span="1" style={{ width: '6rem' }} />
+                </colgroup>
                 <tbody>
+                  <tr>
+                    <td>제목</td>
+                    <td>
+                      <input
+                        className="title form-control form-control-sm"
+                        value={this.state.title}
+                        onChange={(event) => { this.setState({ title: event.target.value }); }}
+                      />
+                    </td>
+                  </tr>
                   {!isCustom
                     ? (
                       <tr>
@@ -247,31 +226,30 @@ class CourseDetail extends Component {
                     : null}
                   <tr>
                     <td>색상</td>
-                      <td>
-                        <div className="dropdown">
-                          <button
-                            type="button"
-                            id="dropdown-color"
-                            data-toggle="dropdown"
-                            aria-labelledby="Dropdown Color"
-                            style={{ backgroundColor: this.state.color }}
-                            disabled={!this.props.editable}
+                    <td>
+                      <div className="dropdown">
+                        <button
+                          type="button"
+                          id="dropdown-color"
+                          data-toggle="dropdown"
+                          aria-labelledby="Dropdown Color"
+                          style={{ backgroundColor: this.state.color }}
+                        />
+                        <div className="dropdown-menu">
+                          <TwitterPicker
+                            color={course.color}
+                            onChangeComplete={(color) => this.handleColor(color.hex)}
                           />
-                          <div className="dropdown-menu">
-                            <TwitterPicker
-                              color={course.color}
-                              onChangeComplete={(color) => this.handleColor(color.hex)}
-                            />
-                          </div>
                         </div>
-                      </td>
+                      </div>
+                    </td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div className="modal-footer">
+              <button type="button" className="btn btn-outline-dark" onClick={() => this.reset()} data-dismiss="modal">취소</button>
               <button type="button" className="btn btn-dark" onClick={() => this.updateCourse()} data-dismiss="modal">완료</button>
-              <button type="button" className="btn btn-dark" onClick={() => this.reset()} data-dismiss="modal">닫기</button>
             </div>
           </div>
         </div>
@@ -287,10 +265,6 @@ const mapDispatchToProps = (dispatch) => ({
   onEditCourse: (courseId, changedValues) => dispatch(actionCreators.editCourse(courseId, changedValues)),
 });
 
-CourseDetail.defaultProps = {
-  editable: false,
-};
-
 CourseDetail.propTypes = {
   id: PropTypes.string.isRequired,
   course: PropTypes.shape({
@@ -305,7 +279,6 @@ CourseDetail.propTypes = {
       week_day: PropTypes.number,
     })).isRequired,
   }).isRequired,
-  editable: PropTypes.bool,
   onEditCourse: PropTypes.func.isRequired,
 };
 

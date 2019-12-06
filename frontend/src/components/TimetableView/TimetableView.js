@@ -124,6 +124,7 @@ class TimetableView extends Component {
                           backgroundColor: course.color,
                           opacity: course.opacity,
                           zIndex: course.opacity > 0.9 ? 5 : 10,
+                          cursor: this.props.showDetail ? "pointer" : "default"
                         }}
                         role="button"
                         tabIndex="0"
@@ -163,7 +164,7 @@ class TimetableView extends Component {
             {tablehtml}
           </tbody>
         </table>
-        <CourseDetail id="course-detail" course={this.state.course} editable={this.props.editable} />
+        <CourseDetail id="course-detail" course={this.state.course} />
       </div>
     );
   }
@@ -191,6 +192,5 @@ TimetableView.propTypes = {
   height: PropTypes.number.isRequired,
   text: PropTypes.bool,
   link: PropTypes.bool,
-  editable: PropTypes.bool,
 };
 export default TimetableView;
