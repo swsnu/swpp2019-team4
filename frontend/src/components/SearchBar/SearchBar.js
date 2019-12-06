@@ -233,9 +233,17 @@ const SearchBar = (props) => {
         onKeyDown={props.onKeyDown}
       />
       <div className="input-group-append">
-        <button className="btn btn-dark" type="button" id="recommend-search-button" onClick={props.onSearch}>
-          <div className="oi oi-magnifying-glass" />
-        </button>
+        {(props.searching?
+          (
+            <button className="btn btn-dark" type="button" id="recommend-search-button" onClick={props.onSearch} disabled>
+              <div className="oi oi-magnifying-glass" />
+            </button>
+          ):
+          (
+            <button className="btn btn-dark" type="button" id="recommend-search-button" onClick={props.onSearch}>
+              <div className="oi oi-magnifying-glass" />
+            </button>
+          ))}
       </div>
     </div>
   );

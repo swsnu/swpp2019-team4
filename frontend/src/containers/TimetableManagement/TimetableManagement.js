@@ -21,6 +21,7 @@ class TimetableManagement extends Component {
       searchdetail: false,
       scrollLimit: 1500,
       searchCourseCount: 50,
+      searching: false,
       searchValues: {
         title: '',
         classification: '',
@@ -137,6 +138,8 @@ class TimetableManagement extends Component {
   }
 
   search() {
+    if(this.state.searching)return;
+    this.setState({searching:true});
     if (this.state.searchdetail) {
       this.setState({
         realValues: this.state.searchValues,
@@ -216,9 +219,9 @@ class TimetableManagement extends Component {
     const tempCourse = {
       ...course, temp: true, color: '#d3d3d3', opacity: 0.5,
     };
-    if (this.props.course.filter((item) => item.course_number === course.course_number).length === 0) {
-      this.props.onPostCourseTemp(tempCourse);
-    }
+    
+    this.props.onPostCourseTemp(tempCourse);
+    
   }
 
   handleMouseLeave(course) {
@@ -250,6 +253,11 @@ class TimetableManagement extends Component {
       return (
         <Redirect to="/login" />
       );
+    }
+    if(this.props.searched)
+    {
+      this.props.searchable();
+      this.setState({searching:false});
     }
     const timetableList = this.props.timetables.filter((timetable) => timetable.id !== this.props.timetable.id)
       .map((item) => (
@@ -334,6 +342,7 @@ class TimetableManagement extends Component {
               onToggle={() => this.onSearchToggle()}
               togglestatus={this.state.searchdetail}
               searchScore={false}
+              searching={this.state.searching}
             />
 
             <ul className="nav nav-tabs nav-justified my-2" id="recommend-course-tab" role="tablist">
@@ -491,6 +500,7 @@ const mapStateToProps = (state) => ({
   courses: state.user.courses,
   timetable: state.user.timetable,
   course: state.user.timetable.course,
+  searched: state.user.searched
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -508,6 +518,7 @@ const mapDispatchToProps = (dispatch) => ({
   setCourses: (start, end, searchStrings) => dispatch(actionCreators.setCourses(start, end, searchStrings)),
   onPostCourseTemp: (tempCourse) => dispatch(actionCreators.postCourseTemp(tempCourse)),
   onDeleteCourseTemp: (course) => dispatch(actionCreators.deleteCourseTemp(course)),
+  searchable: () => dispatch(actionCreators.setSearchable()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableManagement);

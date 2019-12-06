@@ -154,3 +154,7 @@ export const putCourseprefTemp = (id, score) => (dispatch) => dispatch({ type: a
 export const putCoursepref = (changedCourses) => (dispatch) => axios.put('/api/recommend/coursepref/', { courses: changedCourses })
   .then(() => dispatch({ type: actionTypes.PUT_COURSEPREF }))
   .catch(() => {});
+
+export const setSearchable = () => (dispatch) => dispatch({ type: actionTypes.SET_SEARCHABLE});
+export const setRatedSearchable = () => (dispatch) => dispatch({ type: actionTypes.SET_RATED_SEARCHABLE});
+export const setUnratedSearchable = () => (dispatch) => dispatch({ type: actionTypes.SET_UNRATED_SEARCHABLE});
