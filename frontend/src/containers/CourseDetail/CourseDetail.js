@@ -19,22 +19,11 @@ class CourseDetail extends Component {
     };
   }
 
-  componentDidMount() {
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.course.color !== this.props.course.color) {
-      this.setState({
-        color: nextProps.course.color,
-      });
+  shouldComponentUpdate(nextProps) {
+    if (this.props.course.id !== nextProps.course.id) {
+      this.setToProps(nextProps);
     }
-    const times = nextProps.course.time.map((time) => ({
-      week_day: time.week_day,
-      start_time: this.timeString(time.start_time),
-      end_time: this.timeString(time.end_time),
-      building: time.building,
-    }));
-    this.setState({ title: nextProps.course.title, color: nextProps.course.color, time: times });
+    return true;
   }
 
   setPosition(building) {
@@ -95,13 +84,14 @@ class CourseDetail extends Component {
     this.props.onEditCourse(this.props.course.id, { color: this.state.color, time: this.state.time, title: this.state.title });
   }
 
-  reset() {
-    const times = this.props.course.time.map((time) => ({
+  setToProps(props) {
+    const times = props.course.time.map((time) => ({
       week_day: time.week_day,
       start_time: this.timeString(time.start_time),
       end_time: this.timeString(time.end_time),
+      building: time.building,
     }));
-    this.setState({ title: this.props.course.title, color: this.props.course.color, time: times });
+    this.setState({ title: props.course.title, color: props.course.color, time: times });
   }
 
   render() {
@@ -115,6 +105,7 @@ class CourseDetail extends Component {
         />
       </GoogleMap>
     )));
+
     const { course } = this.props;
     const isCustom = course.is_custom;
     const href = 'http://sugang.snu.ac.kr/sugang/cc/cc101.action?'
@@ -122,7 +113,6 @@ class CourseDetail extends Component {
       + `U000300001&sbjtCd=${course.course_number}`
       + `&ltNo=${course.lecture_number}&sugangFlag=P`;
 
-    const weekDayName = ['월', '화', '수', '목', '금', '토', '일'];
     const timeDiv = this.state.time.map((segment, index) => (
       <div className="d-flex flex-row mb-0 mb-2" key={index}>
         <select
@@ -279,9 +269,9 @@ class CourseDetail extends Component {
                     <td>
                       <CourseMap
                         googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2MiVSeJrRHzbm68f6ST_u37KTNFPH1JU&libraries=places"
-                        loadingElement={<div style={{ height: '100%' }} />}
-                        containerElement={<div style={{ height: '400px' }} />}
-                        mapElement={<div style={{ height: '100%' }} />}
+                        loadingElement={<div style={{ height: '20rem' }} />}
+                        containerElement={<div style={{ height: '20rem' }} />}
+                        mapElement={<div style={{ height: '20rem' }} />}
                         center={this.state.center}
                       />
                     </td>
@@ -290,7 +280,7 @@ class CourseDetail extends Component {
               </table>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-outline-dark" onClick={() => this.reset()} data-dismiss="modal">취소</button>
+              <button type="button" className="btn btn-outline-dark" onClick={() => this.setToProps(this.props)} data-dismiss="modal">취소</button>
               <button type="button" className="btn btn-dark" onClick={() => this.updateCourse()} data-dismiss="modal">완료</button>
             </div>
           </div>
