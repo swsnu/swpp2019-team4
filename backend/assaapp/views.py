@@ -302,9 +302,6 @@ def api_custom_course_id(request, custom_course_id):
             if timetable.user != request.user:
                 return HttpResponseNotAllowed()
             req_data = json.loads(request.body.decode())
-            print("-------req_data--------")
-            print(req_data)
-            print("-----------------------")
             keys = ['color', 'title']
             for key in keys:
                 if key in req_data:
