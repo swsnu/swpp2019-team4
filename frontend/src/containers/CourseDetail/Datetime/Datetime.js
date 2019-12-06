@@ -27,6 +27,13 @@ class Datetime extends Component {
     document.removeEventListener('click', this.clickListener, true);
   }
 
+  shouldComponentUpdate(nextProps) {
+    if (this.props.value !== nextProps.value) {
+      this.handleChange(nextProps.value);
+    }
+    return true;
+  }
+
   clickListener() {
     this.setState((prevState) => ({ dropdown: prevState.dropdown - 1 }));
   }
