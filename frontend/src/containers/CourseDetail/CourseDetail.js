@@ -10,7 +10,6 @@ class CourseDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      modify:false,
       title: '',
       time: [],
       color: '',
@@ -86,15 +85,24 @@ class CourseDetail extends Component {
     return `${hourString}:${minuteString}`;
   };
 
-  toggleModify() {
-    this.setState({ modify : !this.state.modify})
-    if (this.state.modify) {
-      this.props.onEditCourse(this.props.course.id, { color:this.state.color, time:this.state.time, title:this.state.title })
-    }
+  appendTime() {
+    this.setState((prevState) => {
+      const { time } = prevState;
+      time.push({
+        week_day: 0,
+        start_time: '12:00',
+        end_time: '13:00',
+      });
+      return { time };
+    });
+  }
+
+
+  updateCourse() {
+    this.props.onEditCourse(this.props.course.id, { color:this.state.color, time:this.state.time, title:this.state.title })
   }
 
   reset() {
-    this.setState({ modify : false })
     let times = this.props.course.time.map((time) => {
       return {
         week_day:time.week_day,
@@ -114,7 +122,6 @@ class CourseDetail extends Component {
 
     const weekDayName = ['월', '화', '수', '목', '금', '토', '일'];
     const timeDiv = this.state.time.map((segment, index) => (
-      this.state.modify?
       <div className="form-group row px-3 mb-0 mb-2" key={index}>
         <select
           className="form-control col-3"
@@ -154,9 +161,6 @@ class CourseDetail extends Component {
         >
           <div className="oi oi-minus small px-2" />
         </button>
-      </div>:
-      <div key={index}>
-        {`${weekDayName[segment.week_day]} (${segment.start_time} ~ ${segment.end_time})`}
       </div>
     ));
 
@@ -166,13 +170,11 @@ class CourseDetail extends Component {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title">{
-                this.state.modify?
                 <input
                   className="title form-control"
                   value={this.state.title}
                   onChange={(event) => { this.setState({ title: event.target.value }); }}
-                />:
-                course.title
+                />
               }
               </h5>
             </div>
@@ -224,6 +226,15 @@ class CourseDetail extends Component {
                     <td>시간</td>
                     <td>
                       {timeDiv}
+                      <button
+                        className="w-100 btn btn-simple my-2"
+                        id="append-time-button"
+                        type="button"
+                        onClick={() => this.appendTime()}
+                      >
+                        <div className="oi oi-plus small px-2" />
+                      추가
+                      </button>
                     </td>
                   </tr>
                   {!isCustom
@@ -236,8 +247,6 @@ class CourseDetail extends Component {
                     : null}
                   <tr>
                     <td>색상</td>
-                    {this.state.modify ?
-                    (
                       <td>
                         <div className="dropdown">
                           <button
@@ -255,21 +264,14 @@ class CourseDetail extends Component {
                             />
                           </div>
                         </div>
-                      </td>) : 
-                          <div
-                            id="dropdown-color"
-                            data-toggle="dropdown"
-                            aria-labelledby="Dropdown Color"
-                            style={{ backgroundColor: this.state.color }}
-                            disabled={!this.props.editable}
-                          />}
+                      </td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-dark" onClick={() => this.toggleModify()}>{this.state.modify?'완료':'수정'}</button>
-              <button type="button" className="btn btn-dark" onClick={() => this.reset()}data-dismiss="modal">닫기</button>
+              <button type="button" className="btn btn-dark" onClick={() => this.updateCourse()} data-dismiss="modal">완료</button>
+              <button type="button" className="btn btn-dark" onClick={() => this.reset()} data-dismiss="modal">닫기</button>
             </div>
           </div>
         </div>
