@@ -39,6 +39,13 @@ class RecommendResult extends Component {
   }
 
   render() {
+    if(this.state.calculating) {
+      return (
+        <div className="RecommendResult loading">
+          <h1>계산하는 중입니다...</h1>
+        </div>
+      )
+    }
     const tableviewlist = [];
     for (let i = 0; i < this.props.timetable.length; i += 1) {
       tableviewlist.push(
