@@ -13,7 +13,11 @@ class CourseDetail extends Component {
     this.state = {
       index: -1,
       title: '',
-      time: [],
+      time: [{
+        building:'',
+        detail:'',
+        }
+      ],
       color: '',
       building:[{
         name:'',
@@ -41,6 +45,10 @@ class CourseDetail extends Component {
   }
 
   setPosition(index, building) {
+    if (this.props.newCourse) {
+      this.setState({ index: index})
+      return;
+    }
     this.setState({ index: index, center: { lat: parseFloat(building.lat), lng: parseFloat(building.lng)}});
   }
 
@@ -170,6 +178,7 @@ class CourseDetail extends Component {
       </div>
     ));
     return (
+      
       <div className="CourseDetail modal fade" id={this.props.id} tabIndex="-1" role="dialog">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
@@ -277,7 +286,7 @@ class CourseDetail extends Component {
                     <td>지도</td>
                     <td>
                       <CourseMap
-                        center={this.state.index != -1 ? {lat: parseFloat(this.props.course.time[this.state.index].building.lat), lng: parseFloat(this.props.course.time[this.state.index].building.lng)} : null}
+                        center={this.props.newCourse? {lat:0, lng:0} : this.state.index != -1 ? {lat: parseFloat(this.props.course.time[this.state.index].building.lat), lng: parseFloat(this.props.course.time[this.state.index].building.lng)} : {lat:0, lng:0}}
                         building={this.state.index != -1 ? this.state.time[this.state.index].building : null}
                         set={(building) => {this.handlePosition(building, this.state.index)}}
                       />

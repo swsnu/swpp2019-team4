@@ -338,17 +338,9 @@ def api_timetable_id_custom_course(request, timetable_id):
                 timetable = Timetable.objects.get(pk=timetable_id)
                 custom_course = CustomCourse(timetable=timetable, color=color, title=title)
                 custom_course.save()
-                custom_course_time = [
-                    CustomCourseTime(timetable=timetable,
-                                     course=custom_course,
-                                     start_time=time['start_time'],
-                                     end_time=time['end_time'],
-                                     weekday=time['week_day'],
-                                     building=Building.objects.get(id=0),
-                                     lectureroom='')
-                    for time in time_list]
-                for time in custom_course_time:
-                    time.save()
+                print(time_list)
+                custom_course.set_custom_course_time(time_list)
+                custom_course.save()
             return JsonResponse(timetable.data(), safe=False)
         except (Timetable.DoesNotExist):
             return HttpResponseNotFound()

@@ -42,7 +42,6 @@ class CourseMap extends Component {
     this.props.onSearchBuildings(this.props.building.name);
   }
   render() {
-    console.log(this.props.center)
     const datalist = this.props.list.map((building) => 
       <option key={building.name} >{building.name}</option>
     )
@@ -63,13 +62,13 @@ class CourseMap extends Component {
               autoComplete="on"
               list="suggestions"
               value={this.props.building?this.props.building.name:''}
-              onChange={(event) => { this.props.set({...this.props.building, name:event.target.value }); }}
+              onChange={(event) => { this.props.set({...this.props.building, name:event.target.value, detail: this.props.building && this.props.building.detail?this.props.building.detail:'' }); }}
             /> 
         </div>
         <button onClick={() => {this.searchBuilding()}}>검색</button>
         <input
         value={this.props.building?this.props.building.detail:''}
-        onChange={(event) => { this.props.set( {...this.props.building, detail:event.target.value }); }}
+        onChange={(event) => { this.props.set( {...this.props.building, detail:event.target.value, name: this.props.building && this.props.buildling.name?this.props.building.name:'' }); }}
         />
       </div>
     );
