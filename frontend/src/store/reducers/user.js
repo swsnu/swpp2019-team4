@@ -4,6 +4,7 @@ const initialState = {
   user: {
     is_authenticated: null,
   },
+  building_list: [],
   timetable: { course: [] },
   timetable_friend: { course: [] },
   timetables: [],
@@ -150,6 +151,8 @@ const reducer = (state = initialState, action) => {
       return {...state,ratedSearched:false};
     case actionTypes.SET_UNRATED_SEARCHABLE:
       return {...state,unratedSearched:false};
+    case actionTypes.SEARCH_BUILDINGS:
+      return {...state, building_list:action.building_list};
     default:
       return { ...state };
   }

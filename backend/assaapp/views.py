@@ -379,6 +379,14 @@ def api_course(request):
         return JsonResponse(get_result, safe=False)
     return HttpResponseNotAllowed(['GET'])
 
+@auth_func
+def api_building(request):
+    if request.method == 'GET':
+        building_list = Building.objects.all()
+        building_list = [building.data() for building
+                         in building_list]
+        return JsonResponse(building_list, safe=False)
+    return HttpResponseNotAllowed(['GET'])
 @ensure_csrf_cookie
 def api_token(request):
     if request.method == 'GET':

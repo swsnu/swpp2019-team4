@@ -140,3 +140,7 @@ export const putCoursepref = (changedCourses) => (dispatch) => axios.put('/api/r
 export const setSearchable = () => (dispatch) => dispatch({ type: actionTypes.SET_SEARCHABLE});
 export const setRatedSearchable = () => (dispatch) => dispatch({ type: actionTypes.SET_RATED_SEARCHABLE});
 export const setUnratedSearchable = () => (dispatch) => dispatch({ type: actionTypes.SET_UNRATED_SEARCHABLE});
+
+export const searchBuildings = (name) => (dispatch) => axios.get(`/api/building/?name=${name}`)
+  .then((res) => dispatch({ type: actionTypes.SEARCH_BUILDINGS, building_list: res.data}))
+  .catch(() => {});

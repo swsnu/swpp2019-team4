@@ -14,6 +14,10 @@ class CourseDetail extends Component {
       title: '',
       time: [],
       color: '',
+      building:{
+        name:'',
+        detail:''
+      }
     };
     this.timeString = (time) => {
       const hour = Math.floor(time / 60);
@@ -36,7 +40,7 @@ class CourseDetail extends Component {
   }
 
   setPosition(building) {
-    this.setState({ center: { lat: parseFloat(building.lat), lng: parseFloat(building.lng) } });
+    this.setState({ center: { lat: parseFloat(building.lat), lng: parseFloat(building.lng)}, building:{name:building.name, detail:building.detail}});
   }
 
   setToProps(props) {
@@ -46,7 +50,9 @@ class CourseDetail extends Component {
       end_time: this.timeString(time.end_time),
       building: time.building,
     }));
+    console.log(times)
     this.setState({ title: props.course.title, color: props.course.color, time: times });
+    console.log(this.state)
   }
 
   appendTime() {
@@ -265,6 +271,7 @@ class CourseDetail extends Component {
                     <td>
                       <CourseMap
                         center={this.state.center}
+                        building={this.state.building}
                       />
                     </td>
                   </tr>
