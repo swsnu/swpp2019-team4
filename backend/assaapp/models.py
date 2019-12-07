@@ -149,7 +149,6 @@ class Timetable(models.Model):
 
 class Building(models.Model):
     name = models.CharField(max_length=8, default='default')
-    detail = models.TextField(default="")
     latitude = models.DecimalField(max_digits=16, decimal_places=8)
     longitude = models.DecimalField(max_digits=16, decimal_places=8)
 
@@ -158,9 +157,14 @@ class Building(models.Model):
     
     def data(self) :
         return {'name' : self.name, 
-                'detail' : self.detail,
                 'lat' : self.latitude,
                 'lng' : self.longitude}
+
+    def detail_data(self, detail):
+        return {'name' : self.name,
+                'lat' : self.latitude,
+                'lng' : self.longitude,
+                'detail' : detail}
 
 class CourseTime(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -201,11 +205,13 @@ class CustomCourse(models.Model):
         for time in custom_course_time_list:
             time.delete()
         for time in times:
+            print(time['building'])
             CustomCourseTime(timetable=self.timetable, course=self,
                              weekday=time['week_day'],
                              start_time=time['start_time'],
                              end_time=time['end_time'],
-                             building=building,
+                             building=Building.objects.get(name=time['building']['name']),
+                             detail=time['building']['detail'],
                              lectureroom=lectureroom).save()
 
     def data(self):
@@ -246,6 +252,7 @@ class CustomCourseTime(models.Model):
     timetable = models.ForeignKey('Timetable', on_delete=models.CASCADE)
     course = models.ForeignKey('CustomCourse', on_delete=models.CASCADE)
     building = models.ForeignKey('Building', on_delete=models.CASCADE)
+    detail = models.TextField(default='')
     lectureroom = models.CharField(max_length=8, default='default')
     weekday = models.IntegerField(default=0)
     start_time = models.TimeField()
@@ -257,4 +264,4 @@ class CustomCourseTime(models.Model):
                               +self.start_time.minute,
                 'end_time': self.end_time.hour*60
                             +self.end_time.minute,
-                'building' : self.building.data()}
+                'building' : self.building.detail_data(self.detail)}

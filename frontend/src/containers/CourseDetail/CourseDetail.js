@@ -11,13 +11,14 @@ class CourseDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      index: -1,
       title: '',
       time: [],
       color: '',
-      building:{
+      building:[{
         name:'',
         detail:''
-      }
+      }]
     };
     this.timeString = (time) => {
       const hour = Math.floor(time / 60);
@@ -39,8 +40,18 @@ class CourseDetail extends Component {
     return true;
   }
 
-  setPosition(building) {
-    this.setState({ center: { lat: parseFloat(building.lat), lng: parseFloat(building.lng)}, building:{name:building.name, detail:building.detail}});
+  setPosition(index, building) {
+    this.setState({ index: index, center: { lat: parseFloat(building.lat), lng: parseFloat(building.lng)}});
+  }
+
+  handlePosition(building, index) {
+    console.log(building)
+    if (index == -1) return;
+    this.setState((prevState) => {
+      const {time} = prevState;
+      time[index].building = building;
+      return {time}
+    })
   }
 
   setToProps(props) {
@@ -50,9 +61,7 @@ class CourseDetail extends Component {
       end_time: this.timeString(time.end_time),
       building: time.building,
     }));
-    console.log(times)
-    this.setState({ title: props.course.title, color: props.course.color, time: times });
-    console.log(this.state)
+    this.setState({title: props.course.title, color: props.course.color, time: times });
   }
 
   appendTime() {
@@ -147,7 +156,7 @@ class CourseDetail extends Component {
           className="px-1 btn btn-simple btn-sm"
           type="button"
           id="show-position-button"
-          onClick={() => this.setPosition(segment.building)}
+          onClick={() => this.setPosition(index, segment.building)}
         >
           <div className="oi oi-map-marker small px-2" />
         </button>
@@ -161,8 +170,8 @@ class CourseDetail extends Component {
         </button>
       </div>
     ));
-
     return (
+      
       <div className="CourseDetail modal fade" id={this.props.id} tabIndex="-1" role="dialog">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
@@ -271,7 +280,8 @@ class CourseDetail extends Component {
                     <td>
                       <CourseMap
                         center={this.state.center}
-                        building={this.state.building}
+                        building={this.state.index != -1 ? this.state.time[this.state.index].building : null}
+                        set={(building) => {this.handlePosition(building, this.state.index)}}
                       />
                     </td>
                   </tr>

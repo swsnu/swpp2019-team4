@@ -296,12 +296,12 @@ def api_timetable_id_course(request, timetable_id):
 def api_custom_course_id(request, custom_course_id):
     if request.method == 'PUT':
         try:
-            
             custom_course = CustomCourse.objects.select_related('timetable__user').get(pk=custom_course_id)
             timetable = custom_course.timetable
             if timetable.user != request.user:
                 return HttpResponseNotAllowed()
             req_data = json.loads(request.body.decode())
+            print(req_data)
             keys = ['color', 'title']
             for key in keys:
                 if key in req_data:
@@ -312,6 +312,8 @@ def api_custom_course_id(request, custom_course_id):
         except (CustomCourse.DoesNotExist, Timetable.DoesNotExist):
             return HttpResponseNotFound()
         except (KeyError, JSONDecodeError, IntegrityError):
+            return HttpResponseBadRequest()
+        except (Building.DoexNotExist):
             return HttpResponseBadRequest()
     if request.method == 'DELETE':
         try:
@@ -387,6 +389,7 @@ def api_building(request):
                          in building_list]
         return JsonResponse(building_list, safe=False)
     return HttpResponseNotAllowed(['GET'])
+    
 @ensure_csrf_cookie
 def api_token(request):
     if request.method == 'GET':

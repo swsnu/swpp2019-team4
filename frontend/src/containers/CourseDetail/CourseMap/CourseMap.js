@@ -28,18 +28,21 @@ class CourseMap extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps) {    
-    if(this.props.center.lat === nextProps.center.lat 
-      && this.props.center.lng === nextProps.center.lng) {
+  shouldComponentUpdate(nextProps) {
+    if(this.props.building !== nextProps.building) {
       return true;
     }
-    this.setState({building:nextProps.building})
+    if(this.props.center.lat === nextProps.center.lat 
+      && this.props.center.lng === nextProps.center.lng) {
+      return false;
+    }
     return true;
   }
   searchBuilding() {
-    this.props.onSearchBuildings(this.state.building.name);
+    this.props.onSearchBuildings(this.props.building.name);
   }
   render() {
+    console.log(this.props.list)
     const datalist = this.props.list.map((building) => 
       <option key={building.name} >{building.name}</option>
     )
@@ -56,17 +59,17 @@ class CourseMap extends Component {
             <datalist id="suggestions">
               {datalist}
             </datalist>
-            <input  
+            <input
               autoComplete="on"
               list="suggestions"
-              value={this.state.building.name}
-              onChange={(event) => { this.setState({ building: {...this.state.building, name:event.target.value }}); }}
+              value={this.props.building?this.props.building.name:''}
+              onChange={(event) => { this.props.set({...this.props.building, name:event.target.value }); }}
             /> 
         </div>
         <button onClick={() => {this.searchBuilding()}}>검색</button>
         <input
-        value={this.state.building.detail}
-        onChange={(event) => { this.setState({ building: {...this.state.building, detail:event.target.value }}); }}
+        value={this.props.building?this.props.building.detail:''}
+        onChange={(event) => { this.props.set( {...this.props.building, detail:event.target.value }); }}
         />
       </div>
     );
