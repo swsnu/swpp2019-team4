@@ -104,57 +104,75 @@ class CourseDetail extends Component {
   render() {
     const { course } = this.props;
     const isCustom = course.is_custom;
+    const weekDay = ['월', '화', '수', '목', '금', '토', '일'];
     const href = 'http://sugang.snu.ac.kr/sugang/cc/cc101.action?'
       + 'openSchyy=2019&openShtmFg=U000200002&openDetaShtmFg='
       + `U000300001&sbjtCd=${course.course_number}`
       + `&ltNo=${course.lecture_number}&sugangFlag=P`;
 
-    const timeDiv = this.state.time.map((segment, index) => (
-      <div className="d-flex flex-row mb-0 mb-2" key={index}>
-        <select
-          className="form-control form-control-sm col-3"
-          id="weekday-control"
-          value={segment.week_day}
-          onChange={(event) => this.handleWeekday(index, event.target.value)}
-        >
-          <option value={0}>월</option>
-          <option value={1}>화</option>
-          <option value={2}>수</option>
-          <option value={3}>목</option>
-          <option value={4}>금</option>
-          <option value={5}>토</option>
-        </select>
-        <Datetime
-          className="mx-2"
-          value={segment.start_time}
-          onChange={(value) => this.handleTime(index, 'start_time', value)}
-        />
-        <div>
-          <div className="w-100 text-center small text-black-50 pt-2"><b>-</b></div>
+    let timeDiv;
+    if (this.props.editable) {
+      timeDiv = this.state.time.map((segment, index) => (
+        <div className="d-flex flex-row mb-2" key={index}>
+          <select
+            className="form-control form-control-sm col-3"
+            id="weekday-control"
+            value={segment.week_day}
+            onChange={(event) => this.handleWeekday(index, event.target.value)}
+          >
+            <option value={0}>월</option>
+            <option value={1}>화</option>
+            <option value={2}>수</option>
+            <option value={3}>목</option>
+            <option value={4}>금</option>
+            <option value={5}>토</option>
+          </select>
+          <Datetime
+            className="mx-2"
+            value={segment.start_time}
+            onChange={(value) => this.handleTime(index, 'start_time', value)}
+          />
+          <div>
+            <div className="w-100 text-center small text-black-50 pt-2"><b>-</b></div>
+          </div>
+          <Datetime
+            className="mx-2"
+            value={segment.end_time}
+            onChange={(value) => this.handleTime(index, 'end_time', value)}
+          />
+          <button
+            className="px-1 btn btn-simple btn-sm"
+            type="button"
+            id="show-position-button"
+            onClick={() => this.setPosition(segment.building)}
+          >
+            <div className="oi oi-map-marker small px-2" />
+          </button>
+          <button
+            className="px-1 btn btn-simple btn-sm"
+            type="button"
+            id="delete-time-button"
+            onClick={() => this.deleteTime(index)}
+          >
+            <div className="oi oi-minus small px-2" />
+          </button>
         </div>
-        <Datetime
-          className="mx-2"
-          value={segment.end_time}
-          onChange={(value) => this.handleTime(index, 'end_time', value)}
-        />
-        <button
-          className="px-1 btn btn-simple btn-sm"
-          type="button"
-          id="show-position-button"
-          onClick={() => this.setPosition(segment.building)}
-        >
-          <div className="oi oi-map-marker small px-2" />
-        </button>
-        <button
-          className="px-1 btn btn-simple btn-sm"
-          type="button"
-          id="delete-time-button"
-          onClick={() => this.deleteTime(index)}
-        >
-          <div className="oi oi-minus small px-2" />
-        </button>
-      </div>
-    ));
+      ));
+    } else {
+      timeDiv = this.state.time.map((segment, index) => (
+        <div className="d-flex flex-row align-items-center my-0" key={index}>
+          <div>{`${weekDay[segment.week_day]} ${segment.start_time} - ${segment.end_time}`}</div>
+          <button
+            className="px-1 btn btn-simple btn-sm"
+            type="button"
+            id="show-position-button"
+            onClick={() => this.setPosition(segment.building)}
+          >
+            <div className="oi oi-map-marker small px-2" />
+          </button>
+        </div>
+      ));
+    }
 
     return (
       <div className="CourseDetail modal fade" id={this.props.id} tabIndex="-1" role="dialog">
@@ -169,11 +187,15 @@ class CourseDetail extends Component {
                   <tr>
                     <td>제목</td>
                     <td>
-                      <input
-                        className="title form-control form-control-sm"
-                        value={this.state.title}
-                        onChange={(event) => { this.setState({ title: event.target.value }); }}
-                      />
+                      {this.props.editable
+                        ? (
+                          <input
+                            className="title form-control form-control-sm"
+                            value={this.state.title}
+                            onChange={(event) => { this.setState({ title: event.target.value }); }}
+                          />
+                        )
+                        : course.title}
                     </td>
                   </tr>
                   {!isCustom
@@ -216,22 +238,6 @@ class CourseDetail extends Component {
                       </tr>
                     )
                     : null}
-
-                  <tr>
-                    <td>시간</td>
-                    <td>
-                      {timeDiv}
-                      <button
-                        className="w-100 btn btn-simple btn-sm my-1"
-                        id="append-time-button"
-                        type="button"
-                        onClick={() => this.appendTime()}
-                      >
-                        <div className="oi oi-plus small px-2" />
-                      추가
-                      </button>
-                    </td>
-                  </tr>
                   {!isCustom
                     ? (
                       <tr>
@@ -241,6 +247,24 @@ class CourseDetail extends Component {
                     )
                     : null}
                   <tr>
+                    <td>시간</td>
+                    <td>
+                      {timeDiv}
+                      { this.props.editable
+                      && (
+                      <button
+                        className="w-100 btn btn-simple btn-sm my-1"
+                        id="append-time-button"
+                        type="button"
+                        onClick={() => this.appendTime()}
+                      >
+                        <div className="oi oi-plus small px-2" />
+                      추가
+                      </button>
+                      )}
+                    </td>
+                  </tr>
+                  <tr>
                     <td>색상</td>
                     <td>
                       <div className="dropdown">
@@ -249,6 +273,7 @@ class CourseDetail extends Component {
                           id="dropdown-color"
                           data-toggle="dropdown"
                           aria-labelledby="Dropdown Color"
+                          disabled={!this.props.editable}
                           style={{ backgroundColor: this.state.color }}
                         />
                         <div className="dropdown-menu">
@@ -271,16 +296,19 @@ class CourseDetail extends Component {
                 </tbody>
               </table>
             </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-outline-dark"
-                onClick={() => setTimeout(() => this.setToProps(this.props), 500)}
-                data-dismiss="modal"
-              >
+            {
+              this.props.editable
+                ? (
+                  <div className="modal-footer">
+                    <button
+                      type="button"
+                      className="btn btn-outline-dark"
+                      onClick={() => setTimeout(() => this.setToProps(this.props), 500)}
+                      data-dismiss="modal"
+                    >
                 취소
-              </button>
-              {
+                    </button>
+                    {
                 this.props.newCourse
                   ? (
                     <button
@@ -302,8 +330,22 @@ class CourseDetail extends Component {
                       수정
                     </button>
                   )
-              }
-            </div>
+                }
+                  </div>
+                )
+                : (
+                  <div className="modal-footer">
+                    <button
+                      type="button"
+                      className="btn btn-outline-dark"
+                      onClick={() => setTimeout(() => this.setToProps(this.props), 500)}
+                      data-dismiss="modal"
+                    >
+                닫기
+                    </button>
+                  </div>
+                )
+            }
           </div>
         </div>
       </div>
@@ -331,11 +373,13 @@ CourseDetail.defaultProps = {
     is_custom: true,
   },
   newCourse: false,
+  editable: false,
 };
 
 CourseDetail.propTypes = {
   id: PropTypes.string.isRequired,
   timetableId: PropTypes.number,
+  editable: PropTypes.bool,
   newCourse: PropTypes.bool,
   course: PropTypes.shape({
     id: PropTypes.number,

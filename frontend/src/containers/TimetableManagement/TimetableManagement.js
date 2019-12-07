@@ -138,8 +138,8 @@ class TimetableManagement extends Component {
   }
 
   search() {
-    if(this.state.searching)return;
-    this.setState({searching:true});
+    if (this.state.searching) return;
+    this.setState({ searching: true });
     if (this.state.searchdetail) {
       this.setState({
         realValues: this.state.searchValues,
@@ -219,9 +219,8 @@ class TimetableManagement extends Component {
     const tempCourse = {
       ...course, temp: true, color: '#d3d3d3', opacity: 0.5,
     };
-    
+
     this.props.onPostCourseTemp(tempCourse);
-    
   }
 
   handleMouseLeave(course) {
@@ -258,10 +257,9 @@ class TimetableManagement extends Component {
         <Redirect to="/login" />
       );
     }
-    if(this.props.searched)
-    {
+    if (this.props.searched) {
       this.props.searchable();
-      this.setState({searching:false});
+      this.setState({ searching: false });
     }
     const timetableList = this.props.timetables.filter((timetable) => timetable.id !== this.props.timetable.id)
       .map((item) => (
@@ -306,27 +304,27 @@ class TimetableManagement extends Component {
         course={course}
         addon={[
           (
-          <button
-            key="2"
-            type="button"
-            data-toggle="modal"
-            data-target="#edit-course-detail"
-            id="edit-course-button"
-            className="btn btn-simple btn-sm"
-            onClick={() => this.openCourseDetail(course)}
-          >
-            <div className="oi oi-pencil small" />
-          </button>
+            <button
+              key="2"
+              type="button"
+              data-toggle="modal"
+              data-target="#edit-course-detail"
+              id="edit-course-button"
+              className="btn btn-simple btn-sm"
+              onClick={() => this.openCourseDetail(course)}
+            >
+              <div className="oi oi-pencil small" />
+            </button>
           ),
           (
-          <button
-            key="1"
-            type="button"
-            className="btn btn-simple btn-sm"
-            onClick={() => this.deleteCourse(course.id)}
-          >
-            <div className="oi oi-minus small" />
-          </button>
+            <button
+              key="1"
+              type="button"
+              className="btn btn-simple btn-sm"
+              onClick={() => this.deleteCourse(course.id)}
+            >
+              <div className="oi oi-minus small" />
+            </button>
           ),
         ]}
       />
@@ -463,14 +461,18 @@ class TimetableManagement extends Component {
               height={20}
               courses={this.props.timetable.course}
               editable
-              showDetail
             />
             <CourseDetail
               id="custom-course-detail"
-              newCourse={true}
+              newCourse
+              editable
               timetableId={this.props.timetable.id}
             />
-            <CourseDetail id="edit-course-detail" course={this.state.selectedCourse} />
+            <CourseDetail
+              id="edit-course-detail"
+              course={this.state.selectedCourse}
+              editable
+            />
           </div>
         </div>
       </div>
@@ -523,7 +525,7 @@ const mapStateToProps = (state) => ({
   courses: state.user.courses,
   timetable: state.user.timetable,
   course: state.user.timetable.course,
-  searched: state.user.searched
+  searched: state.user.searched,
 });
 
 const mapDispatchToProps = (dispatch) => ({
