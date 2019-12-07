@@ -41,7 +41,7 @@ class CourseMap extends Component {
   }
   render() {
     const datalist = this.props.list.map((building) => 
-      <option>{building.name}</option>
+      <option key={building.name} >{building.name}</option>
     )
     return (
       <div>
