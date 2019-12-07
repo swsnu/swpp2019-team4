@@ -115,6 +115,24 @@ export const postMainTimetable = (id) => (dispatch) => axios.post(`/api/timetabl
   .then((res) => dispatch({ type: actionTypes.POST_MAIN_TIMETABLE, main_timetable: res.data.id }))
   .catch(() => {});
 
+export const getRecommend = () => (dispatch) => axios.get('/api/recommend/recommend/')
+  .then((res) => {
+    return dispatch({ type: actionTypes.GET_RECOMMEND, timetables: res.data })
+  })
+  .catch(() => {});
+
+export const editConstraints = (consts) => (dispatch) => 
+  dispatch({ type: actionTypes.EDIT_CONSTRAINTS, constraints: consts });
+
+export const putConstraints = (consts) => (dispatch) => axios.put('/api/recommend/constraints/', consts)
+  .then((res) => dispatch({ type: actionTypes.EDIT_CONSTRAINTS, constraints: consts }))
+  .catch(() => {});
+
+export const putTimePref = (table) => {
+  return (dispatch) => axios.put('/api/recommend/timepref/', { table })
+    .then((res) => dispatch({ type: actionTypes.EDIT_TIME_PREF, time_pref_table: table }))
+    .catch(() => {});
+}
 export const getRatedCourse = (start, end, searchValues) => (dispatch) => axios.get(`/api/recommend/coursepref/rated/?start=${start}&end=${end}&title=${searchValues.title}&classification=${searchValues.classification}&department=${searchValues.department}&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}&professor=${searchValues.professor}&language=${searchValues.language}&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`)
   .then((res) => dispatch({ type: actionTypes.GET_RATED_COURSE, course_list: res.data }))
   .catch(() => {});

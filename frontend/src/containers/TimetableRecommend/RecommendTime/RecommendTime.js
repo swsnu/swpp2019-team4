@@ -6,10 +6,7 @@ import './RecommendTime.css';
 class RecommendTime extends Component {
   constructor(props) {
     super(props);
-    const colorTable = [];
-    for (let i = 0; i < 26; i += 1) {
-      colorTable.push([0, 0, 0, 0, 0, 0]);
-    }
+    const colorTable = this.props.color_table.slice()
     this.is_mount = false;
     this.state = {
       mouse_down: false,
@@ -23,6 +20,7 @@ class RecommendTime extends Component {
   componentDidMount() {
     this.is_mount = true;
     this.props.handleValid(true);
+    this.props.handleTimePref(this.props.color_table);
     document.addEventListener('mouseup', this.mouseUpListener, true);
     document.addEventListener('mousedown', this.mouseDownListener, true);
   }
@@ -51,13 +49,14 @@ class RecommendTime extends Component {
       this.setState((prevState) => {
         const colorTable = prevState.color_table;
         colorTable[xIndex][yIndex] = prevState.color;
+        this.props.handleTimePref(colorTable);
         return ({ ...prevState, color_table: colorTable });
       });
     }
   }
 
   render() {
-    const colorArray = ['#FFFFFF', '#FFC0C0', '#FF8080', '#FF4040'];
+    const colorArray = ['#FF4040', '#FF8080', '#FFC0C0', '#FFFFFF'];
     const colorComment = ['싫음', '', '', '좋음'];
     const tableHeaderString = ['', 'M', 'T', 'W', 'T', 'F', 'S'];
     const tablehtml = [];
@@ -152,4 +151,8 @@ RecommendTime.propTypes = {
   handleValid: PropTypes.func.isRequired,
 };
 
-export default connect(null, null)(RecommendTime);
+const mapStateToProps = (state) => ({
+  color_table: state.user.time_pref_table,
+});
+
+export default connect(mapStateToProps, null)(RecommendTime);
