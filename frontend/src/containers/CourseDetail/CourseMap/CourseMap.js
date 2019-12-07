@@ -34,7 +34,7 @@ class CourseMap extends Component {
     }
     if(this.props.center.lat === nextProps.center.lat 
       && this.props.center.lng === nextProps.center.lng) {
-      return false;
+      return true;
     }
     return true;
   }
