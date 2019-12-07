@@ -16,6 +16,7 @@ class TimetableRecommend extends Component {
     this.state = {
       valid: true,
       index: 0,
+      time_pref: [],
     };
   }
 
@@ -31,7 +32,17 @@ class TimetableRecommend extends Component {
     this.setState({ valid: value });
   }
 
+  handleTimePref(value) {
+    this.setState({ time_pref: value });
+  }
+
   movePage(offset) {
+    if (this.state.index === 0) {
+      this.props.onPutConstraints(this.props.constraints);
+    }
+    if (this.state.index === 1) {
+      this.props.onPutTimePref(this.state.time_pref);
+    }
     if (this.state.index === 2) {
       this.props.onPutCoursePref(this.props.changedCourses);
     }
@@ -51,7 +62,8 @@ class TimetableRecommend extends Component {
         content = (<RecommendConstraint handleValid={(value) => this.handleValid(value)} />);
         break;
       case 1:
-        content = (<RecommendTime handleValid={(value) => this.handleValid(value)} />);
+        content = (<RecommendTime handleValid={(value) => this.handleValid(value)}
+                                  handleTimePref={(value) => this.handleTimePref(value)} />);
         break;
       case 2:
         content = (<RecommendCourse handleValid={(value) => this.handleValid(value)} />);
@@ -161,12 +173,15 @@ TimetableRecommend.propTypes = {
 
 const mapStateToProps = (state) => ({
   storedUser: state.user.user,
+  constraints: state.user.constraints,
   changedCourses: state.user.changed_courses,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onLogout: () => dispatch(actionCreators.getSignout()),
+  onPutConstraints: (consts) => dispatch(actionCreators.putConstraints(consts)),
+  onPutTimePref: (time_pref) => dispatch(actionCreators.putTimePref(time_pref)),
   onPutCoursePref: (changedCourses) => dispatch(actionCreators.putCoursepref(changedCourses)),
 });
 

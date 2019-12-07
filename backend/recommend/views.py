@@ -4,8 +4,9 @@ from json import JSONDecodeError
 from django.forms.models import model_to_dict
 from django.http import HttpResponse, HttpResponseNotAllowed, \
     JsonResponse, HttpResponseBadRequest, HttpResponseNotFound
-from assaapp.models import User, Course
+from assaapp.models import User, Course, Timetable, CustomCourse
 from recommend.models import CoursePref, TimePref
+from recommend.recommend import run_recommendation
 
 def cf_score(user):
     all_course = [course for course in Course.objects.all().values()]
@@ -198,17 +199,18 @@ def cf_view(user):
             course_score[course]=(course_score[course]/relation_abs_sum)+relation_base
     return course_score
 
+def has_text(text,match_text):
+    if match_text:
+        matched = 0
+        for char in text:
+            if char == match_text[matched]:
+                matched += 1
+            if matched == len(match_text):
+                return True
+        return False
+    return True
+
 def searcher(course, score, request_get):
-    def has_text(text,match_text):
-        if match_text:
-            matched = 0
-            for char in text:
-                if char == match_text[matched]:
-                    matched += 1
-                if matched == len(match_text):
-                    return True
-            return False
-        return True
     search_dict = {}
     search_dict['title'] = request_get.get('title')
     search_dict['classification'] = request_get.get('classification')
@@ -277,7 +279,6 @@ def api_coursepref(request):
         try:
             body=request.body.decode()
             courses=json.loads(body)['courses']
-            print(courses)
             for course in courses:
                 id = course['id']
                 score = course['score']
@@ -403,24 +404,24 @@ def api_timepref(request):
         return JsonResponse(time_data, safe=False)
     if request.method == 'PUT':
         try:
-            body = request.body.decode()
+            body = json.loads(request.body.decode())
+            table = body['table']
             user = request.user
-            score = int(json.loads(body)['score'])
-            start_time = json.loads(body)['start_time']
-            weekday = json.loads(body)['weekday']
-            if score < 0 or score > 10:
-                return HttpResponseBadRequest()
         except (KeyError, JSONDecodeError):
             return HttpResponseBadRequest()
-        try:
-            time_data = TimePref.objects.get(user=user, weekday=weekday, start_time=start_time)
-        except TimePref.DoesNotExist:
-            new_score = TimePref(user=user, score=score, weekday=weekday, start_time=start_time)
-            new_score.save()
-            return JsonResponse(model_to_dict(new_score), safe=False, status=201)
-        time_data.score = score
-        time_data.save()
-        return JsonResponse(model_to_dict(time_data), safe=False, status=200)
+        for i in range(26):
+            for j in range(6):
+                weekday = j
+                score = table[i][j]
+                start_time = str(8+i//2) + ":" + ("30" if i%2 == 1 else "00")
+                try:
+                    time_data = TimePref.objects.get(user=user, weekday=weekday, start_time=start_time)
+                    time_data.score = score
+                    time_data.save()
+                except TimePref.DoesNotExist:
+                    new_score = TimePref(user=user, score=score, weekday=weekday, start_time=start_time)
+                    new_score.save()
+        return HttpResponse(status=200)
     return HttpResponseNotAllowed(['GET', 'PUT'])
 
 @auth_func
@@ -438,4 +439,32 @@ def api_timepref_id(request, timepref_id):
             return HttpResponseNotFound()
         time_data.delete()
         return HttpResponse(status=200)
-    return HttpResponseNotAllowed(['GET', 'DELETE'])
+    return HttpResponseNotAllowed(['GET', 'POST', 'DELETE'])
+
+@auth_func
+def api_recommend (request) :
+    if request.method == 'GET':
+        return JsonResponse(run_recommendation(request.user), safe=False)
+    return HttpResponseNotAllowed(['GET'])
+
+@auth_func
+def api_constraints (request):
+    if request.method == 'PUT':
+        try:
+            body = json.loads(request.body.decode())
+            user = request.user
+            days_per_week = body['days_per_week']
+            credit_min = body['credit_min']
+            credit_max = body['credit_max']
+            major_min = body['major_min']
+            major_max = body['major_max']
+        except (KeyError, JSONDecodeError):
+            return HttpResponseBadRequest()
+        user.days_per_week = days_per_week
+        user.credit_min = credit_min
+        user.credit_max = credit_max
+        user.major_min = major_min
+        user.major_max = major_max
+        user.save()
+        return HttpResponse(status=200)
+    return HttpResponseNotAllowed(['PUT'])

@@ -20,6 +20,42 @@ const initialState = {
     status: '',
     username: '',
   },
+  constraints: {
+    days_per_week: 5,
+    credit_min: 15,
+    credit_max: 18,
+    major_min: 1,
+    major_max: 18,
+  },
+  time_pref_table: [
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3, 3]
+  ],
+  recommended_timetables: [],
   searched: false,
   ratedSearched: false,
   unratedSearched: false,
@@ -120,6 +156,15 @@ const reducer = (state = initialState, action) => {
       const newuser = state.user;
       newuser.timetable_main = action.timetable_main;
       return { ...state, user: newuser };
+    }
+    case actionTypes.GET_RECOMMEND: {
+      return { ...state, recommended_timetables: action.timetables }
+    }
+    case actionTypes.EDIT_CONSTRAINTS: {
+      return { ...state, constraints: action.constraints }
+    }
+    case actionTypes.EDIT_TIME_PREF: {
+      return { ...state, time_pref_table: action.time_pref_table }
     }
     case actionTypes.GET_RATED_COURSE: {
       const newlist = state.rated_course.concat(action.course_list);
