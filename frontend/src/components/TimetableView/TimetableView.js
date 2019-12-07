@@ -43,7 +43,7 @@ class TimetableView extends Component {
     const coursesList = [[], [], [], [], [], []];
     const tablehtml = [];
     let tablehtmlIth = [];
-    const heightunit = this.props.height * 2;
+    const heightunit = this.props.height / 8.5;
 
     const date = new Date();
     const dateLocal = new Date(date.getTime() + 9 * 60 * 60000); // Hardcoded utc+9
@@ -69,8 +69,8 @@ class TimetableView extends Component {
               {
                 index: i,
                 title: this.props.text ? this.props.courses[i].title : '',
-                top: (Math.round(((startTime % 60) / 60) * heightunit) - 1),
-                length: (Math.round(((endTime - startTime) / 60) * heightunit)),
+                top: ((startTime % 60) / 60) * heightunit + "rem",
+                length: ((endTime - startTime) / 60) * heightunit + "rem",
                 color: this.props.courses[i].color,
                 opacity: (this.props.courses[i].opacity === undefined) ? 1.0 : this.props.courses[i].opacity,
               },
@@ -80,7 +80,7 @@ class TimetableView extends Component {
       }
     }
     for (let i = 0; i < 7; i += 1) {
-      tablehtmlIth.push(<th key={i} height={heightunit / 2}>{this.props.text ? tableHeaderString[i] : ''}</th>);
+      tablehtmlIth.push(<th key={i} style={{height: (heightunit / 2) + "rem"}}>{this.props.text ? tableHeaderString[i] : ''}</th>);
     }
     tablehtml.push(<tr key={-1}>{tablehtmlIth}</tr>);
     tablehtml.push(
@@ -88,7 +88,7 @@ class TimetableView extends Component {
         <td colSpan={8}>
           {
           isCurrentBar
-            ? <div id="timetable-current-bar" style={{ top: `${currentPad}px` }} />
+            ? <div id="timetable-current-bar" style={{ top: `${currentPad}rem` }} />
             : null
         }
         </td>
@@ -106,10 +106,10 @@ class TimetableView extends Component {
       );
       for (let j = 0; j < 6; j += 1) {
         if (coursesList[j][i].length === 0) {
-          tablehtmlIth.push(<td key={1000 * i + j + 1001} height={heightunit} className="timetable-hour-bar" />);
+          tablehtmlIth.push(<td key={1000 * i + j + 1001} style={{height: heightunit + "rem"}} className="timetable-hour-bar" />);
         } else {
           tablehtmlIth.push(
-            <td key={1000 * i + j} height={heightunit} className="timetable-hour-bar">
+            <td key={1000 * i + j} style={{height: heightunit + "rem"}} className="timetable-hour-bar">
               {
                 coursesList[j][i].map(
                   (course) => {
@@ -119,19 +119,19 @@ class TimetableView extends Component {
                         className="square rounded-sm"
                         key={course.index * 1000 + j}
                         style={{
-                          height: `${course.length}px`,
-                          top: `${course.top}px`,
+                          height: course.length,
+                          top: course.top,
                           backgroundColor: course.color,
                           opacity: course.opacity,
                           zIndex: course.opacity > 0.9 ? 5 : 10,
-                          cursor: this.props.showDetail ? 'pointer' : 'default',
+                          cursor: this.props.link ? "pointer" : "default"
                         }}
                         role="button"
                         tabIndex="0"
-                        data-toggle={this.props.showDetail ? 'modal' : ''}
+                        data-toggle={this.props.link ? "modal" : ""}
                         data-target={dataTarget}
-                        onClick={() => (this.props.showDetail ? this.openCourseDetail(this.props.courses[course.index]) : null)}
-                        onKeyDown={() => (this.props.showDetail ? this.openCourseDetail(this.props.courses[course.index]) : null)}
+                        onClick={() => this.props.link ? this.openCourseDetail(this.props.courses[course.index]) : null}
+                        onKeyDown={() => this.props.link ? this.openCourseDetail(this.props.courses[course.index]) : null}
                       >
                         <div className="title px-1 text-black">
                           <b>{course.title}</b>
@@ -164,7 +164,7 @@ class TimetableView extends Component {
             {tablehtml}
           </tbody>
         </table>
-        <CourseDetail id="course-detail" course={this.state.course} />
+        <CourseDetail id="course-detail" course={this.state.course} editable={this.props.editable} />
       </div>
     );
   }
@@ -192,5 +192,6 @@ TimetableView.propTypes = {
   height: PropTypes.number.isRequired,
   text: PropTypes.bool,
   link: PropTypes.bool,
+  editable: PropTypes.bool,
 };
 export default TimetableView;

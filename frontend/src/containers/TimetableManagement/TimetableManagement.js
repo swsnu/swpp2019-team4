@@ -461,14 +461,18 @@ class TimetableManagement extends Component {
               height={20}
               courses={this.props.timetable.course}
               editable
-              showDetail
             />
             <CourseDetail
               id="custom-course-detail"
               newCourse
+              editable
               timetableId={this.props.timetable.id}
             />
-            <CourseDetail id="edit-course-detail" course={this.state.selectedCourse} />
+            <CourseDetail
+              id="edit-course-detail"
+              course={this.state.selectedCourse}
+              editable
+            />
           </div>
         </div>
       </div>
