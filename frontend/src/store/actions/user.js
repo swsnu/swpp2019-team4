@@ -54,8 +54,12 @@ export const postCourse = (timetableId, courseId) => (dispatch) => axios.post(
   .then((res) => dispatch({ type: actionTypes.POST_COURSE, timetable: res.data }))
   .catch(() => {});
 
-export const postCourseTemp = (tempCourse) => (dispatch) => dispatch({ type: actionTypes.POST_COURSE_TEMP, course: tempCourse });
-export const deleteCourseTemp = (course) => (dispatch) => dispatch({ type: actionTypes.DELETE_COURSE_TEMP, course });
+export const postCourseTemp = (tempCourse) => (dispatch) => dispatch(
+  { type: actionTypes.POST_COURSE_TEMP, course: tempCourse },
+);
+export const deleteCourseTemp = (course) => (dispatch) => dispatch(
+  { type: actionTypes.DELETE_COURSE_TEMP, course },
+);
 
 export const editCourse = (courseId, changedValues) => (dispatch) => axios.put(
   `/api/customCourse/${courseId}/`, changedValues,
@@ -116,23 +120,18 @@ export const postMainTimetable = (id) => (dispatch) => axios.post(`/api/timetabl
   .catch(() => {});
 
 export const getRecommend = () => (dispatch) => axios.get('/api/recommend/recommend/')
-  .then((res) => {
-    return dispatch({ type: actionTypes.GET_RECOMMEND, timetables: res.data })
-  })
+  .then((res) => dispatch({ type: actionTypes.GET_RECOMMEND, timetables: res.data }))
   .catch(() => {});
 
-export const editConstraints = (consts) => (dispatch) => 
-  dispatch({ type: actionTypes.EDIT_CONSTRAINTS, constraints: consts });
+export const editConstraints = (consts) => (dispatch) => dispatch({ type: actionTypes.EDIT_CONSTRAINTS, constraints: consts });
 
 export const putConstraints = (consts) => (dispatch) => axios.put('/api/recommend/constraints/', consts)
-  .then((res) => dispatch({ type: actionTypes.EDIT_CONSTRAINTS, constraints: consts }))
+  .then(() => dispatch({ type: actionTypes.EDIT_CONSTRAINTS, constraints: consts }))
   .catch(() => {});
 
-export const putTimePref = (table) => {
-  return (dispatch) => axios.put('/api/recommend/timepref/', { table })
-    .then((res) => dispatch({ type: actionTypes.EDIT_TIME_PREF, time_pref_table: table }))
-    .catch(() => {});
-}
+export const putTimePref = (table) => (dispatch) => axios.put('/api/recommend/timepref/', { table })
+  .then(() => dispatch({ type: actionTypes.EDIT_TIME_PREF, time_pref_table: table }))
+  .catch(() => {});
 export const getRatedCourse = (start, end, searchValues) => (dispatch) => axios.get(`/api/recommend/coursepref/rated/?start=${start}&end=${end}&title=${searchValues.title}&classification=${searchValues.classification}&department=${searchValues.department}&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}&professor=${searchValues.professor}&language=${searchValues.language}&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`)
   .then((res) => dispatch({ type: actionTypes.GET_RATED_COURSE, course_list: res.data }))
   .catch(() => {});
@@ -149,16 +148,20 @@ export const setUnratedCourse = (start, end, searchValues) => (dispatch) => axio
   .then((res) => dispatch({ type: actionTypes.SET_UNRATED_COURSE, course_list: res.data }))
   .catch(() => {});
 
-export const putCourseprefTemp = (id, score) => (dispatch) => dispatch({ type: actionTypes.PUT_COURSEPREF_TEMP, coursepref: { id, score } });
+export const putCourseprefTemp = (id, score) => (dispatch) => dispatch(
+  { type: actionTypes.PUT_COURSEPREF_TEMP, coursepref: { id, score } },
+);
 
-export const putCoursepref = (changedCourses) => (dispatch) => axios.put('/api/recommend/coursepref/', { courses: changedCourses })
+export const putCoursepref = (changedCourses) => (dispatch) => axios.put(
+  '/api/recommend/coursepref/', { courses: changedCourses },
+)
   .then(() => dispatch({ type: actionTypes.PUT_COURSEPREF }))
   .catch(() => {});
 
-export const setSearchable = () => (dispatch) => dispatch({ type: actionTypes.SET_SEARCHABLE});
-export const setRatedSearchable = () => (dispatch) => dispatch({ type: actionTypes.SET_RATED_SEARCHABLE});
-export const setUnratedSearchable = () => (dispatch) => dispatch({ type: actionTypes.SET_UNRATED_SEARCHABLE});
+export const setSearchable = () => (dispatch) => dispatch({ type: actionTypes.SET_SEARCHABLE });
+export const setRatedSearchable = () => (dispatch) => dispatch({ type: actionTypes.SET_RATED_SEARCHABLE });
+export const setUnratedSearchable = () => (dispatch) => dispatch({ type: actionTypes.SET_UNRATED_SEARCHABLE });
 
 export const searchBuildings = (name) => (dispatch) => axios.get(`/api/building/?name=${name}`)
-  .then((res) => dispatch({ type: actionTypes.SEARCH_BUILDINGS, building_list: res.data}))
+  .then((res) => dispatch({ type: actionTypes.SEARCH_BUILDINGS, building_list: res.data }))
   .catch(() => {});

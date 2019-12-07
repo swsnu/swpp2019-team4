@@ -14,15 +14,11 @@ class CourseDetail extends Component {
       index: -1,
       title: '',
       time: [{
-        building:'',
-        detail:'',
-        }
+        building: '',
+        detail: '',
+      },
       ],
       color: '',
-      building:[{
-        name:'',
-        detail:''
-      }]
     };
     this.timeString = (time) => {
       const hour = Math.floor(time / 60);
@@ -44,22 +40,10 @@ class CourseDetail extends Component {
     return true;
   }
 
-  setPosition(index, building) {
-    if (this.props.newCourse) {
-      this.setState({ index: index})
-      return;
-    }
-    this.setState({ index: index, center: { lat: parseFloat(building.lat), lng: parseFloat(building.lng)}});
+  setPosition(index) {
+    this.setState({ index });
   }
 
-  handlePosition(building, index) {
-    if (index == -1) return;
-    this.setState((prevState) => {
-      const {time} = prevState;
-      time[index].building = building;
-      return {time}
-    })
-  }
 
   setToProps(props) {
     const times = props.course.time.map((time) => ({
@@ -68,7 +52,18 @@ class CourseDetail extends Component {
       end_time: this.timeString(time.end_time),
       building: time.building,
     }));
-    this.setState({index: -1, title: props.course.title, color: props.course.color, time: times });
+    this.setState({
+      index: -1, title: props.course.title, color: props.course.color, time: times,
+    });
+  }
+
+  handlePosition(building, index) {
+    if (index === -1) return;
+    this.setState((prevState) => {
+      const { time } = prevState;
+      time[index].building = building;
+      return { time };
+    });
   }
 
   appendTime() {
@@ -177,8 +172,11 @@ class CourseDetail extends Component {
         </button>
       </div>
     ));
+    const lat = this.state.index !== -1 ? parseFloat(this.props.course.time[this.state.index].building.lat) : 0;
+    const lng = this.state.index !== -1 ? parseFloat(this.props.course.time[this.state.index].building.lng) : 0;
+    const center = !this.props.newCourse && this.state.index !== -1 ? { lat, lng } : { lat: 0, lng: 0 };
     return (
-      
+
       <div className="CourseDetail modal fade" id={this.props.id} tabIndex="-1" role="dialog">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
@@ -286,9 +284,9 @@ class CourseDetail extends Component {
                     <td>지도</td>
                     <td>
                       <CourseMap
-                        center={this.props.newCourse? {lat:0, lng:0} : this.state.index != -1 ? {lat: parseFloat(this.props.course.time[this.state.index].building.lat), lng: parseFloat(this.props.course.time[this.state.index].building.lng)} : {lat:0, lng:0}}
-                        building={this.state.index != -1 ? this.state.time[this.state.index].building : null}
-                        set={(building) => {this.handlePosition(building, this.state.index)}}
+                        center={center}
+                        building={this.state.index !== -1 ? this.state.time[this.state.index].building : null}
+                        set={(building) => { this.handlePosition(building, this.state.index); }}
                       />
                     </td>
                   </tr>

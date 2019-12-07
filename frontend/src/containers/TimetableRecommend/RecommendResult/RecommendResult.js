@@ -17,8 +17,8 @@ class RecommendResult extends Component {
   componentDidMount() {
     this.props.onGetRecommend()
       .then((res) => {
-        console.log(res)
-        return this.setState((prevState) => ({...prevState, calculating: false}))
+        console.log(res);
+        return this.setState((prevState) => ({ ...prevState, calculating: false }));
       });
   }
 
@@ -26,25 +26,25 @@ class RecommendResult extends Component {
     this.setState((prevState) => ({ ...prevState, courses: newcourses }));
   }
 
-  onClickSave () {
-    this.props.onPostTimetable("New timetable", "")
+  onClickSave() {
+    this.props.onPostTimetable('New timetable', '')
       .then((res) => {
-        const timetable_id = res.timetable.id
-        const courses = this.state.courses
+        const timetable_id = res.timetable.id;
+        const { courses } = this.state;
         for (let i = 0; i < courses.length; i += 1) {
-          console.log(courses[i])
-          this.props.onPostCourse(timetable_id, courses[i].id)
+          console.log(courses[i]);
+          this.props.onPostCourse(timetable_id, courses[i].id);
         }
-      })
+      });
   }
 
   render() {
-    if(this.state.calculating) {
+    if (this.state.calculating) {
       return (
         <div className="RecommendResult loading">
           <h1>계산하는 중입니다...</h1>
         </div>
-      )
+      );
     }
     const tableviewlist = [];
     for (let i = 0; i < this.props.timetable.length; i += 1) {

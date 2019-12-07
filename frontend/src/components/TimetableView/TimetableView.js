@@ -124,14 +124,14 @@ class TimetableView extends Component {
                           backgroundColor: course.color,
                           opacity: course.opacity,
                           zIndex: course.opacity > 0.9 ? 5 : 10,
-                          cursor: this.props.showDetail ? "pointer" : "default"
+                          cursor: this.props.showDetail ? 'pointer' : 'default',
                         }}
                         role="button"
                         tabIndex="0"
-                        data-toggle={this.props.showDetail ? "modal" : ""}
+                        data-toggle={this.props.showDetail ? 'modal' : ''}
                         data-target={dataTarget}
-                        onClick={() => this.props.showDetail ? this.openCourseDetail(this.props.courses[course.index]) : null}
-                        onKeyDown={() => this.props.showDetail ? this.openCourseDetail(this.props.courses[course.index]) : null}
+                        onClick={() => (this.props.showDetail ? this.openCourseDetail(this.props.courses[course.index]) : null)}
+                        onKeyDown={() => (this.props.showDetail ? this.openCourseDetail(this.props.courses[course.index]) : null)}
                       >
                         <div className="title px-1 text-black">
                           <b>{course.title}</b>
