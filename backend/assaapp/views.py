@@ -12,7 +12,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from assaapp.models import User, Timetable, Course, CourseTime, CustomCourse, CustomCourseTime, Building
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
-from recommend.views import cf_view, cf_score, searcher
+from recommend.views import cf_view, cf_score, searcher, has_text
 from django.core.mail import send_mail
 
 def auth_func(func):
@@ -381,4 +381,14 @@ def api_course(request):
 def api_token(request):
     if request.method == 'GET':
         return HttpResponse(status=204)
+    return HttpResponseNotAllowed(['GET'])
+
+@auth_func
+def api_building(request):
+    if request.method == 'GET':
+        bd_list = Building.objects.all()
+        text_search = request.GET.get('name')
+        search_result = [bd.data() for bd
+                        in filter(lambda bd: searcher(bd.name,text_search), bd_list)]
+        return JsonResponse(search_result, safe=False)
     return HttpResponseNotAllowed(['GET'])

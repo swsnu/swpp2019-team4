@@ -154,6 +154,12 @@ class Building(models.Model):
 
     def __str__(self):
         return self.name
+    def data(self):
+        return {
+                'id': self.id,
+                'name': self.name,
+                'latitude': self.latitude,
+                'longitude': self.longitude,}
 
 class CourseTime(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
