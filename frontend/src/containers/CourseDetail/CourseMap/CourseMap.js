@@ -39,28 +39,29 @@ class CourseMap extends Component {
     this.props.onSearchBuildings(this.props.building.name);
   }
 
-  
+
   render() {
     const datalist = this.props.list.map((building) => <option key={building.name}>{building.name}</option>);
     const editBuilding = (
       <div>
-    <div>
-      <datalist id="suggestions">
-        {datalist}
-      </datalist>
-      <input
-        autoComplete="on"
-        list="suggestions"
-        value={this.props.building ? this.props.building.name : ''}
-        onChange={(event) => { this.props.set({ name: event.target.value, detail: this.props.building.detail }); }}
-      />
-    </div>
-    <button type="button" onClick={() => { this.searchBuilding(); }}>검색</button>
-    <input
-      value={this.props.building ? this.props.building.detail : ''}
-      onChange={(event) => { this.props.set({ detail: event.target.value, name: this.props.building.name }); }}
-    />
-  </div>)
+        <div>
+          <datalist id="suggestions">
+            {datalist}
+          </datalist>
+          <input
+            autoComplete="on"
+            list="suggestions"
+            value={this.props.building ? this.props.building.name : ''}
+            onChange={(event) => { this.props.set({ name: event.target.value, detail: this.props.building.detail }); }}
+          />
+        </div>
+        <button type="button" onClick={() => { this.searchBuilding(); }}>검색</button>
+        <input
+          value={this.props.building ? this.props.building.detail : ''}
+          onChange={(event) => { this.props.set({ detail: event.target.value, name: this.props.building.name }); }}
+        />
+      </div>
+    );
     return (
       <div>
         <GoogleMapWrapper
@@ -71,7 +72,7 @@ class CourseMap extends Component {
           mapElement={<div style={{ height: '20rem' }} />}
           center={this.props.center}
         />
-        {this.props.editable?editBuilding:null}
+        {this.props.editable ? editBuilding : null}
       </div>
     );
   }
