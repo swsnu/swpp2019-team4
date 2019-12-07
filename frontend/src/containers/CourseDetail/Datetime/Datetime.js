@@ -99,7 +99,7 @@ class Datetime extends Component {
         <input
           type="text"
           className="form-control form-control-sm"
-          id="dropdown-time"
+          id="datetime-form"
           onClick={() => this.toggleDropdown()}
           onBlur={() => this.handleBlur()}
           value={this.props.value}
@@ -116,6 +116,7 @@ class Datetime extends Component {
               <div className="px-2">
                 <span
                   className="btn-simple click"
+                  id="datetime-hour-up"
                   role="button"
                   tabIndex={-1}
                   onMouseDown={() => this.changeHour(1)}
@@ -125,6 +126,7 @@ class Datetime extends Component {
                 <div className="py-1">{this.state.hour}</div>
                 <span
                   className="btn-simple click"
+                  id="datetime-hour-down"
                   role="button"
                   tabIndex={-1}
                   onMouseDown={() => this.changeHour(-1)}
@@ -136,6 +138,7 @@ class Datetime extends Component {
               <div className="px-2">
                 <span
                   className="btn-simple click"
+                  id="datetime-minute-up"
                   role="button"
                   tabIndex={-1}
                   onMouseDown={() => this.changeMinute(1)}
@@ -145,6 +148,7 @@ class Datetime extends Component {
                 <div className="py-1">{this.state.minute >= 10 ? this.state.minute : `0${this.state.minute}`}</div>
                 <span
                   className="btn-simple click"
+                  id="datetime-minute-down"
                   role="button"
                   tabIndex={-1}
                   onMouseDown={() => this.changeMinute(-1)}
