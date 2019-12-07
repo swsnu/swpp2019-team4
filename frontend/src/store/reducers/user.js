@@ -90,6 +90,7 @@ const reducer = (state = initialState, action) => {
     case actionTypes.POST_CUSTOM_COURSE:
       return { ...state, timetable: action.timetable };
     case actionTypes.EDIT_TIMETABLE:
+      console.log(action.timetable)
       return {
         ...state,
         timetables: state.timetables.map((timetable) => (timetable.id

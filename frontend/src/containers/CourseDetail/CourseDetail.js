@@ -45,7 +45,6 @@ class CourseDetail extends Component {
   }
 
   handlePosition(building, index) {
-    console.log(building)
     if (index == -1) return;
     this.setState((prevState) => {
       const {time} = prevState;
@@ -61,7 +60,7 @@ class CourseDetail extends Component {
       end_time: this.timeString(time.end_time),
       building: time.building,
     }));
-    this.setState({title: props.course.title, color: props.course.color, time: times });
+    this.setState({index: -1, title: props.course.title, color: props.course.color, time: times });
   }
 
   appendTime() {
@@ -171,7 +170,6 @@ class CourseDetail extends Component {
       </div>
     ));
     return (
-      
       <div className="CourseDetail modal fade" id={this.props.id} tabIndex="-1" role="dialog">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
@@ -279,7 +277,7 @@ class CourseDetail extends Component {
                     <td>지도</td>
                     <td>
                       <CourseMap
-                        center={this.state.center}
+                        center={this.state.index != -1 ? {lat: parseFloat(this.props.course.time[this.state.index].building.lat), lng: parseFloat(this.props.course.time[this.state.index].building.lng)} : null}
                         building={this.state.index != -1 ? this.state.time[this.state.index].building : null}
                         set={(building) => {this.handlePosition(building, this.state.index)}}
                       />

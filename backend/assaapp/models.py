@@ -205,7 +205,6 @@ class CustomCourse(models.Model):
         for time in custom_course_time_list:
             time.delete()
         for time in times:
-            print(time['building'])
             CustomCourseTime(timetable=self.timetable, course=self,
                              weekday=time['week_day'],
                              start_time=time['start_time'],

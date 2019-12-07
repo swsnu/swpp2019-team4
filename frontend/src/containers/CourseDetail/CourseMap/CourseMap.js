@@ -32,7 +32,7 @@ class CourseMap extends Component {
     if(this.props.building !== nextProps.building) {
       return true;
     }
-    if(this.props.center.lat === nextProps.center.lat 
+    if(this.props.center && this.props.center.lat === nextProps.center.lat 
       && this.props.center.lng === nextProps.center.lng) {
       return true;
     }
@@ -42,7 +42,7 @@ class CourseMap extends Component {
     this.props.onSearchBuildings(this.props.building.name);
   }
   render() {
-    console.log(this.props.list)
+    console.log(this.props.center)
     const datalist = this.props.list.map((building) => 
       <option key={building.name} >{building.name}</option>
     )

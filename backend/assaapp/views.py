@@ -301,7 +301,6 @@ def api_custom_course_id(request, custom_course_id):
             if timetable.user != request.user:
                 return HttpResponseNotAllowed()
             req_data = json.loads(request.body.decode())
-            print(req_data)
             keys = ['color', 'title']
             for key in keys:
                 if key in req_data:
@@ -389,7 +388,7 @@ def api_building(request):
                          in building_list]
         return JsonResponse(building_list, safe=False)
     return HttpResponseNotAllowed(['GET'])
-    
+
 @ensure_csrf_cookie
 def api_token(request):
     if request.method == 'GET':
