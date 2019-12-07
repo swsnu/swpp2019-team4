@@ -7,13 +7,13 @@ from django.http import HttpResponse, HttpResponseNotAllowed, \
     JsonResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseNotFound
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.core.mail import EmailMessage
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from assaapp.models import User, Timetable, Course, CourseTime, CustomCourse, CustomCourseTime, Building
-from .tokens import ACCOUNT_ACTIVATION_TOKEN
-from recommend.views import cf_view, cf_score, searcher, has_text
 from django.core.mail import send_mail
+from recommend.views import cf_view, cf_score, searcher, has_text
+from assaapp.models import User, Timetable, Course, CourseTime, \
+    CustomCourse, CustomCourseTime, Building
+from .tokens import ACCOUNT_ACTIVATION_TOKEN
 
 def auth_func(func):
     def wrapper_function(*args, **kwargs):
@@ -41,10 +41,12 @@ def api_signup(request):
                 urlsafe_base64_encode(force_bytes(user.id)),
                 ACCOUNT_ACTIVATION_TOKEN.make_token(user)
             )
-            send_mail('Email Verification', content, 'assa.staff@gmail.com', [email], fail_silently=False)
-            #email = EmailMessage('Confirm your email for ASSA', content, to=[email])
-            #email.send()
-            
+            send_mail(
+                'Email Verification',
+                content, 'assa.staff@gmail.com',
+                [email],
+                fail_silently=False
+            )
         except (KeyError, ValueError, JSONDecodeError, IntegrityError):
             return HttpResponseBadRequest()
         return HttpResponse(status=201)
@@ -275,12 +277,12 @@ def api_timetable_id_course(request, timetable_id):
             try:
                 timetable = Timetable.objects.get(pk=timetable_id)
                 course = Course.objects.get(pk=course_id)
-                time_list=[]
+                time_list = []
                 for course_time in CustomCourseTime.objects.filter(timetable=timetable):
                     time_list.append(course_time)
                 for course_time in CourseTime.objects.filter(course=course):
                     for in_time in time_list:
-                        if not (course_time.weekday!=in_time.weekday or course_time.start_time>=in_time.end_time or course_time.end_time<=in_time.start_time):
+                        if not (course_time.weekday != in_time.weekday or course_time.start_time >= in_time.end_time or course_time.end_time <= in_time.start_time):
                             return HttpResponseBadRequest()
                 custom_course = CustomCourse(timetable=timetable, course=course, color=color)
                 custom_course.save()
@@ -352,33 +354,24 @@ def api_timetable_id_custom_course(request, timetable_id):
 def api_course(request):
     if request.method == 'GET':
         course_list = Course.objects.all()
-        cf_view_result=cf_view(request.user)
-        cf_score_result=cf_score(request.user)
+        cf_view_result = cf_view(request.user)
+        cf_score_result = cf_score(request.user)
         start = int(request.GET.get('start'))
         end = int(request.GET.get('end'))
         course_list = [course for course
-                        in filter(lambda course: searcher(course,0,request.GET), course_list)]
+                       in filter(lambda course: searcher(course, 0, request.GET), course_list)]
         course_list = sorted(course_list, key=lambda course: -cf_view_result[course.id])
         course_len = len(course_list)
         get_result = []
-        if start>=course_len:
+        if start >= course_len:
             return JsonResponse([], safe=False)
-        for i in range(start,course_len):
-            if i>end:
+        for i in range(start, course_len):
+            if i > end:
                 break
-            course_data=course_list[i].data()
-            course_data['expected']=cf_score_result[course_data['id']]
+            course_data = course_list[i].data()
+            course_data['expected'] = cf_score_result[course_data['id']]
             get_result.append(course_data)
         return JsonResponse(get_result, safe=False)
-    return HttpResponseNotAllowed(['GET'])
-
-@auth_func
-def api_building(request):
-    if request.method == 'GET':
-        building_list = Building.objects.all()
-        building_list = [building.data() for building
-                         in building_list]
-        return JsonResponse(building_list, safe=False)
     return HttpResponseNotAllowed(['GET'])
 
 @ensure_csrf_cookie
@@ -393,6 +386,6 @@ def api_building(request):
         bd_list = Building.objects.all()
         text_search = request.GET.get('name')
         search_result = [bd.data() for bd
-                        in filter(lambda bd: has_text(bd.name,text_search), bd_list)]
+                         in filter(lambda bd: has_text(bd.name, text_search), bd_list)]
         return JsonResponse(search_result, safe=False)
     return HttpResponseNotAllowed(['GET'])

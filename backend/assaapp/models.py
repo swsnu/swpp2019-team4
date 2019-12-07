@@ -46,7 +46,7 @@ class User(AbstractBaseUser):
                                           related_name='user_main', on_delete=models.SET_NULL)
     friends = models.ManyToManyField('self', symmetrical=True)
     friends_request = models.ManyToManyField('self', symmetrical=False)
-    
+
     days_per_week = models.IntegerField(default=5)
     credit_min = models.IntegerField(default=1)
     credit_max = models.IntegerField(default=18)
@@ -154,9 +154,9 @@ class Building(models.Model):
 
     def __str__(self):
         return self.name
-    
-    def data(self) :
-        return {'name' : self.name, 
+
+    def data(self):
+        return {'name' : self.name,
                 'lat' : self.latitude,
                 'lng' : self.longitude}
 
@@ -200,7 +200,6 @@ class CustomCourse(models.Model):
 
     def set_custom_course_time(self, times):
         custom_course_time_list = CustomCourseTime.objects.filter(course=self)
-        building = Building.objects.get(id=0)
         lectureroom = ''
         for time in custom_course_time_list:
             time.delete()
