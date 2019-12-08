@@ -76,12 +76,11 @@ class CourseMap extends Component {
         <button type="button" onClick={() => { this.searchBuilding(); }}>검색</button>
 
         <div>
-          {this.state.isSearchBuilding ? building_list : (
-            <input
-              value={this.props.building ? this.props.building.detail : ''}
-              onChange={(event) => { this.props.set({ ...this.props.building, detail: event.target.value, name: this.props.building.name }); }}
-            />
-          )}
+          {this.state.isSearchBuilding ? building_list : null}
+          <input
+          value={this.props.building ? this.props.building.detail : ''}
+          onChange={(event) => { this.props.set({ ...this.props.building, detail: event.target.value, name: this.props.building.name }); }}
+        />
         </div>
       </div>
     );
