@@ -40,12 +40,13 @@ class CourseMap extends Component {
   }
 
   updateCenter() {
-    console.log(this.props.building.name)
-    var center = this.props.list.filter((building) => building.name === this.props.building.name)
+    console.log(this.props.building.name);
+    const center = this.props.list.filter((building) => building.name === this.props.building.name);
     if (center.length > 0 && !(this.props.building.lat === center[0].lat && this.props.building.lng === center[0].lng)) {
-      this.props.set({ ...this.props.building, lat:center[0].lat, lng:center[0].lng})
+      this.props.set({ ...this.props.building, lat: center[0].lat, lng: center[0].lng });
     }
   }
+
   render() {
     const datalist = this.props.list.map((building) => <option key={building.name}>{building.name}</option>);
     const editBuilding = (
