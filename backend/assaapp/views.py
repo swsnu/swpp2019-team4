@@ -1,4 +1,5 @@
 import json
+import re
 from json import JSONDecodeError
 import random
 from django.db import transaction
@@ -14,6 +15,16 @@ from recommend.views import cf_view, cf_score, searcher, has_text
 from assaapp.models import User, Timetable, Course, CourseTime, \
     CustomCourse, CustomCourseTime, Building
 from .tokens import ACCOUNT_ACTIVATION_TOKEN
+
+def has_same_text(text, match_text):
+    temp_text = match_text[0]
+    if ('동' != match_text[0][len(match_text[0])-1]):
+        temp_text += '동'
+    regex = re.compile('^[0-9]+[동]?')
+    result = regex.findall(text)
+    if (len(result) > 0):
+        return result[0] == temp_text
+    return False
 
 def auth_func(func):
     def wrapper_function(*args, **kwargs):
@@ -384,6 +395,12 @@ def api_building(request):
     if request.method == 'GET':
         bd_list = Building.objects.all()
         text_search = request.GET.get('name')
+        regex = re.compile('^[0-9]+[동]?$')
+        result = regex.findall(text_search)
+        if(len(result) == 1):
+            search_result = [bd.data() for bd
+                             in filter(lambda bd: has_same_text(bd.name, result), bd_list)]
+            return JsonResponse(search_result, safe=False)
         search_result = [bd.data() for bd
                          in filter(lambda bd: has_text(bd.name, text_search), bd_list)]
         return JsonResponse(search_result, safe=False)
