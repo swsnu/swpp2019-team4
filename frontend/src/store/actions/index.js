@@ -45,4 +45,5 @@ export {
   setRatedSearchable,
   setUnratedSearchable,
   searchBuildings,
+  autoComplete,
 } from './user';
