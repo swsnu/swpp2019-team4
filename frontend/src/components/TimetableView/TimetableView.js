@@ -69,8 +69,8 @@ class TimetableView extends Component {
               {
                 index: i,
                 title: this.props.text ? this.props.courses[i].title : '',
-                top: ((startTime % 60) / 60) * heightunit + "rem",
-                length: ((endTime - startTime) / 60) * heightunit + "rem",
+                top: `${((startTime % 60) / 60) * heightunit}rem`,
+                length: `${((endTime - startTime) / 60) * heightunit}rem`,
                 color: this.props.courses[i].color,
                 opacity: (this.props.courses[i].opacity === undefined) ? 1.0 : this.props.courses[i].opacity,
               },
@@ -80,7 +80,7 @@ class TimetableView extends Component {
       }
     }
     for (let i = 0; i < 7; i += 1) {
-      tablehtmlIth.push(<th key={i} style={{height: (heightunit / 2) + "rem"}}>{this.props.text ? tableHeaderString[i] : ''}</th>);
+      tablehtmlIth.push(<th key={i} style={{ height: `${heightunit / 2}rem` }}>{this.props.text ? tableHeaderString[i] : ''}</th>);
     }
     tablehtml.push(<tr key={-1}>{tablehtmlIth}</tr>);
     tablehtml.push(
@@ -106,10 +106,10 @@ class TimetableView extends Component {
       );
       for (let j = 0; j < 6; j += 1) {
         if (coursesList[j][i].length === 0) {
-          tablehtmlIth.push(<td key={1000 * i + j + 1001} style={{height: heightunit + "rem"}} className="timetable-hour-bar" />);
+          tablehtmlIth.push(<td key={1000 * i + j + 1001} style={{ height: `${heightunit}rem` }} className="timetable-hour-bar" />);
         } else {
           tablehtmlIth.push(
-            <td key={1000 * i + j} style={{height: heightunit + "rem"}} className="timetable-hour-bar">
+            <td key={1000 * i + j} style={{ height: `${heightunit}rem` }} className="timetable-hour-bar">
               {
                 coursesList[j][i].map(
                   (course) => {
@@ -124,14 +124,14 @@ class TimetableView extends Component {
                           backgroundColor: course.color,
                           opacity: course.opacity,
                           zIndex: course.opacity > 0.9 ? 5 : 10,
-                          cursor: this.props.link ? "pointer" : "default"
+                          cursor: this.props.link ? 'pointer' : 'default',
                         }}
                         role="button"
                         tabIndex="0"
-                        data-toggle={this.props.link ? "modal" : ""}
+                        data-toggle={this.props.link ? 'modal' : ''}
                         data-target={dataTarget}
-                        onClick={() => this.props.link ? this.openCourseDetail(this.props.courses[course.index]) : null}
-                        onKeyDown={() => this.props.link ? this.openCourseDetail(this.props.courses[course.index]) : null}
+                        onClick={() => (this.props.link ? this.openCourseDetail(this.props.courses[course.index]) : null)}
+                        onKeyDown={() => (this.props.link ? this.openCourseDetail(this.props.courses[course.index]) : null)}
                       >
                         <div className="title px-1 text-black">
                           <b>{course.title}</b>

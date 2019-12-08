@@ -11,8 +11,13 @@ class CourseDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      index: -1,
       title: '',
-      time: [],
+      time: [{
+        building: '',
+        detail: '',
+      },
+      ],
       color: '',
     };
     this.timeString = (time) => {
@@ -35,9 +40,10 @@ class CourseDetail extends Component {
     return true;
   }
 
-  setPosition(building) {
-    this.setState({ center: { lat: parseFloat(building.lat), lng: parseFloat(building.lng) } });
+  setPosition(index) {
+    this.setState({ index });
   }
+
 
   setToProps(props) {
     const times = props.course.time.map((time) => ({
@@ -46,7 +52,18 @@ class CourseDetail extends Component {
       end_time: this.timeString(time.end_time),
       building: time.building,
     }));
-    this.setState({ title: props.course.title, color: props.course.color, time: times });
+    this.setState({
+      index: -1, title: props.course.title, color: props.course.color, time: times,
+    });
+  }
+
+  handlePosition(building, index) {
+    if (index === -1) return;
+    this.setState((prevState) => {
+      const { time } = prevState;
+      time[index].building = building;
+      return { time };
+    });
   }
 
   appendTime() {
@@ -56,6 +73,12 @@ class CourseDetail extends Component {
         week_day: 0,
         start_time: '12:00',
         end_time: '13:00',
+        building: {
+          lat: 0,
+          lng: 0,
+          name: '',
+          detail: '',
+        },
       });
       return { time };
     });
@@ -67,6 +90,7 @@ class CourseDetail extends Component {
       time.splice(index, 1);
       return { time };
     });
+    this.setState({ index: -1 });
   }
 
   handleWeekday(index, value) {
@@ -144,7 +168,7 @@ class CourseDetail extends Component {
             className="px-1 btn btn-simple btn-sm"
             type="button"
             id="show-position-button"
-            onClick={() => this.setPosition(segment.building)}
+            onClick={() => this.setPosition(index, segment.building)}
           >
             <div className="oi oi-map-marker small px-2" />
           </button>
@@ -166,15 +190,18 @@ class CourseDetail extends Component {
             className="px-1 btn btn-simple btn-sm"
             type="button"
             id="show-position-button"
-            onClick={() => this.setPosition(segment.building)}
+            onClick={() => this.setPosition(index, segment.building)}
           >
             <div className="oi oi-map-marker small px-2" />
           </button>
         </div>
       ));
     }
-
+    const lat = this.state.index !== -1 ? parseFloat(this.state.time[this.state.index].building.lat) : 0;
+    const lng = this.state.index !== -1 ? parseFloat(this.state.time[this.state.index].building.lng) : 0;
+    const center = { lat, lng };
     return (
+
       <div className="CourseDetail modal fade" id={this.props.id} tabIndex="-1" role="dialog">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
@@ -289,7 +316,10 @@ class CourseDetail extends Component {
                     <td>지도</td>
                     <td>
                       <CourseMap
-                        center={this.state.center}
+                        center={center}
+                        building={this.state.index !== -1 ? this.state.time[this.state.index].building : { name: '', detail: '' }}
+                        set={(building) => { this.handlePosition(building, this.state.index); }}
+                        editable={this.props.editable}
                       />
                     </td>
                   </tr>

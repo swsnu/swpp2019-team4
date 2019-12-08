@@ -517,6 +517,13 @@ TimetableManagement.propTypes = {
     is_authenticated: PropTypes.bool,
     timetable_main: PropTypes.number,
   }).isRequired,
+  setCourses: PropTypes.func.isRequired,
+  onPostCourseTemp: PropTypes.func.isRequired,
+  onDeleteCourseTemp: PropTypes.func.isRequired,
+  searched: PropTypes.arrayOf(PropTypes.shape({
+
+  })).isRequired,
+  searchable: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => ({
