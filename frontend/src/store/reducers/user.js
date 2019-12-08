@@ -201,9 +201,9 @@ const reducer = (state = initialState, action) => {
     case actionTypes.SET_UNRATED_SEARCHABLE:
       return { ...state, unratedSearched: false };
     case actionTypes.SEARCH_BUILDINGS:
-      return { ...state, building_list: action.building_list, search_auto_complete: action.building_list.length === 1 ? true : false};
+      return { ...state, building_list: action.building_list, search_auto_complete: action.building_list.length === 1 };
     case actionTypes.AUTO_COMPLETE:
-      return { ...state, search_auto_complete: false}
+      return { ...state, search_auto_complete: false };
     default:
       return { ...state };
   }
