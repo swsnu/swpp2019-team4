@@ -314,7 +314,7 @@ def api_custom_course_id(request, custom_course_id):
             return HttpResponseNotFound()
         except (KeyError, JSONDecodeError, IntegrityError):
             return HttpResponseBadRequest()
-        except (Building.DoexNotExist):
+        except (Building.DoesNotExist):
             return HttpResponseBadRequest()
     if request.method == 'DELETE':
         try:
@@ -340,7 +340,6 @@ def api_timetable_id_custom_course(request, timetable_id):
                 timetable = Timetable.objects.get(pk=timetable_id)
                 custom_course = CustomCourse(timetable=timetable, color=color, title=title)
                 custom_course.save()
-                print(time_list)
                 custom_course.set_custom_course_time(time_list)
                 custom_course.save()
             return JsonResponse(timetable.data(), safe=False)

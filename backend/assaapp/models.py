@@ -204,13 +204,24 @@ class CustomCourse(models.Model):
         for time in custom_course_time_list:
             time.delete()
         for time in times:
-            CustomCourseTime(timetable=self.timetable, course=self,
-                             weekday=time['week_day'],
-                             start_time=time['start_time'],
-                             end_time=time['end_time'],
-                             building=Building.objects.get(name=time['building']['name']),
-                             detail=time['building']['detail'],
-                             lectureroom=lectureroom).save()
+            try:
+                building=Building.objects.get(name=time['building']['name'])
+                CustomCourseTime(timetable=self.timetable, course=self,
+                                weekday=time['week_day'],
+                                start_time=time['start_time'],
+                                end_time=time['end_time'],
+                                building=building,
+                                detail=time['building']['detail'],
+                                lectureroom=lectureroom).save()
+            except (Building.DoesNotExist):
+                CustomCourseTime(timetable=self.timetable, course=self,
+                                weekday=time['week_day'],
+                                start_time=time['start_time'],
+                                end_time=time['end_time'],
+                                building=Building.objects.get(id=0),
+                                detail=time['building']['detail'],
+                                lectureroom=lectureroom).save()
+
 
     def data(self):
         if self.course is None:

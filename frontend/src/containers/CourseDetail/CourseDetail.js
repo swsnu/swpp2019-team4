@@ -73,6 +73,10 @@ class CourseDetail extends Component {
         week_day: 0,
         start_time: '12:00',
         end_time: '13:00',
+        building: {
+          name: '',
+          detail: '',
+        },
       });
       return { time };
     });
@@ -84,6 +88,7 @@ class CourseDetail extends Component {
       time.splice(index, 1);
       return { time };
     });
+    this.setState({ index: -1 });
   }
 
   handleWeekday(index, value) {
@@ -190,8 +195,8 @@ class CourseDetail extends Component {
         </div>
       ));
     }
-    const lat = this.state.index !== -1 ? parseFloat(this.props.course.time[this.state.index].building.lat) : 0;
-    const lng = this.state.index !== -1 ? parseFloat(this.props.course.time[this.state.index].building.lng) : 0;
+    const lat = !this.props.newCourse && this.state.index !== -1 ? parseFloat(this.props.course.time[this.state.index].building.lat) : 0;
+    const lng = !this.props.newCourse && this.state.index !== -1 ? parseFloat(this.props.course.time[this.state.index].building.lng) : 0;
     const center = !this.props.newCourse && this.state.index !== -1 ? { lat, lng } : { lat: 0, lng: 0 };
     return (
 
@@ -310,7 +315,7 @@ class CourseDetail extends Component {
                     <td>
                       <CourseMap
                         center={center}
-                        building={this.state.index !== -1 ? this.state.time[this.state.index].building : null}
+                        building={this.state.index !== -1 ? this.state.time[this.state.index].building : { name: '', detail: '' }}
                         set={(building) => { this.handlePosition(building, this.state.index); }}
                         editable={this.props.editable}
                       />
