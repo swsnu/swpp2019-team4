@@ -39,26 +39,32 @@ class CourseMap extends Component {
     this.props.onSearchBuildings(this.props.building.name);
   }
 
-
+  updateCenter() {
+    console.log(this.props.building.name)
+    var center = this.props.list.filter((building) => building.name === this.props.building.name)
+    if (center.length > 0 && !(this.props.building.lat === center[0].lat && this.props.building.lng === center[0].lng)) {
+      this.props.set({ ...this.props.building, lat:center[0].lat, lng:center[0].lng})
+    }
+  }
   render() {
     const datalist = this.props.list.map((building) => <option key={building.name}>{building.name}</option>);
     const editBuilding = (
       <div>
         <div>
-          <datalist id="suggestions">
+          <datalist id="suggestions" onChange={this.updateCenter()}>
             {datalist}
           </datalist>
           <input
             autoComplete="on"
             list="suggestions"
             value={this.props.building ? this.props.building.name : ''}
-            onChange={(event) => { this.props.set({ name: event.target.value, detail: this.props.building.detail }); }}
+            onChange={(event) => { this.props.set({ ...this.props.building, name: event.target.value, detail: this.props.building.detail }); }}
           />
         </div>
         <button type="button" onClick={() => { this.searchBuilding(); }}>검색</button>
         <input
           value={this.props.building ? this.props.building.detail : ''}
-          onChange={(event) => { this.props.set({ detail: event.target.value, name: this.props.building.name }); }}
+          onChange={(event) => { this.props.set({ ...this.props.building, detail: event.target.value, name: this.props.building.name }); }}
         />
       </div>
     );

@@ -74,6 +74,8 @@ class CourseDetail extends Component {
         start_time: '12:00',
         end_time: '13:00',
         building: {
+          lat: 0,
+          lng: 0,
           name: '',
           detail: '',
         },
@@ -195,9 +197,9 @@ class CourseDetail extends Component {
         </div>
       ));
     }
-    const lat = !this.props.newCourse && this.state.index !== -1 ? parseFloat(this.props.course.time[this.state.index].building.lat) : 0;
-    const lng = !this.props.newCourse && this.state.index !== -1 ? parseFloat(this.props.course.time[this.state.index].building.lng) : 0;
-    const center = !this.props.newCourse && this.state.index !== -1 ? { lat, lng } : { lat: 0, lng: 0 };
+    const lat = this.state.index !== -1 ? parseFloat(this.state.time[this.state.index].building.lat) : 0;
+    const lng = this.state.index !== -1 ? parseFloat(this.state.time[this.state.index].building.lng) : 0;
+    const center = this.state.index !== -1 ? { lat, lng } : { lat: 0, lng: 0 };
     return (
 
       <div className="CourseDetail modal fade" id={this.props.id} tabIndex="-1" role="dialog">
