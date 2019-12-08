@@ -199,7 +199,7 @@ class CourseDetail extends Component {
     }
     const lat = this.state.index !== -1 ? parseFloat(this.state.time[this.state.index].building.lat) : 0;
     const lng = this.state.index !== -1 ? parseFloat(this.state.time[this.state.index].building.lng) : 0;
-    const center = this.state.index !== -1 ? { lat, lng } : { lat: 0, lng: 0 };
+    const center = { lat, lng };
     return (
 
       <div className="CourseDetail modal fade" id={this.props.id} tabIndex="-1" role="dialog">

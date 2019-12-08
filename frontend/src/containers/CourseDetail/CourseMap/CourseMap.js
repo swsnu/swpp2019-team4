@@ -27,10 +27,13 @@ class CourseMap extends Component {
 
   shouldComponentUpdate(nextProps) {
     if (this.props.auto !== nextProps.auto && nextProps.auto) {
-      if (nextProps.auto) {
-        this.updateCenter(nextProps.list[0].name, nextProps.list)
-      }
+      this.setState({isSearchBuilding:false})
+      this.updateCenter(nextProps.list[0].name, nextProps.list)
+      return true;
+    }
+    if (nextProps.auto) {
       this.props.autoComplete()
+      return true;
     }
     if (this.props.building !== nextProps.building) {
       return true;
@@ -52,14 +55,12 @@ class CourseMap extends Component {
 
   updateCenter(name, list) {
     const center = list.filter((building) => building.name === name);
-    this.setState({isSearchBuilding:false})
     if (center.length > 0 && !(this.props.building.lat === center[0].lat && this.props.building.lng === center[0].lng)) {
       this.props.set({ ...this.props.building, name: name, lat: center[0].lat, lng: center[0].lng });
     }
   }
 
   render() {
-    
     const building_list = this.props.list.map((building) =>
       <button type='button' id={building.name} key={building.name} onClick={() => this.updateCenter(building.name, this.props.list)}>{building.name}</button>
     );
