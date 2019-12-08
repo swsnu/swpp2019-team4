@@ -55,6 +55,7 @@ class CourseMap extends Component {
 
   updateCenter(name, list) {
     const center = list.filter((building) => building.name === name);
+    this.setState({ isSearchBuilding: false });
     if (center.length > 0 && !(this.props.building.lat === center[0].lat && this.props.building.lng === center[0].lng)) {
       this.props.set({
         ...this.props.building, name, lat: center[0].lat, lng: center[0].lng,
