@@ -295,6 +295,9 @@ def run_recommendation (user):
 
     answer = sample(answer[:min(100, len(answer))], min(20, len(answer)))
 
+    if not answer:
+        answer.append([])
+
     formatted_answer = []
     for timetable in answer:
         formatted_courses = []
