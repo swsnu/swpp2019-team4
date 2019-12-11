@@ -22,5 +22,6 @@ urlpatterns = [
     path('customCourse/<int:custom_course_id>/',
          views.api_custom_course_id, name='custom_course_id'),
     path('course/', views.api_course, name='course'),
+    path('building/', views.api_building, name='building'),
     path('recommend/', include('recommend.urls'))
 ]
