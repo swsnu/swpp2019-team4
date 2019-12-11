@@ -15,11 +15,8 @@ class RecommendResult extends Component {
   }
 
   componentDidMount() {
-    this.props.onGetRecommend()
-      .then((res) => {
-        console.log(res)
-        return this.setState((prevState) => ({...prevState, calculating: false}))
-      });
+    this.props.onPostRecommend()
+      .then((res) => this.setState((prevState) => ({...prevState, calculating: false})));
   }
 
   changeview(newcourses) {
@@ -32,7 +29,6 @@ class RecommendResult extends Component {
         const timetable_id = res.timetable.id
         const courses = this.state.courses
         for (let i = 0; i < courses.length; i += 1) {
-          console.log(courses[i])
           this.props.onPostCourse(timetable_id, courses[i].id)
         }
       })
@@ -115,7 +111,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  onGetRecommend: () => dispatch(actionCreators.getRecommend()),
+  onPostRecommend: () => dispatch(actionCreators.postRecommend()),
   onPostTimetable: (title, semester) => dispatch(actionCreators.postTimetable(title, semester)),
   onPostCourse: (timetable_id, course_id) => dispatch(actionCreators.postCourse(timetable_id, course_id)),
 });

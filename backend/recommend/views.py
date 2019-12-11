@@ -5,7 +5,7 @@ from django.forms.models import model_to_dict
 from django.http import HttpResponse, HttpResponseNotAllowed, \
     JsonResponse, HttpResponseBadRequest, HttpResponseNotFound
 from assaapp.models import User, Course, Timetable, CustomCourse
-from recommend.models import CoursePref, TimePref
+from recommend.models import CoursePref, TimePref, RecommendTimetable
 from recommend.recommend import run_recommendation
 
 def cf_score(user):
@@ -441,10 +441,19 @@ def api_timepref_id(request, timepref_id):
     return HttpResponseNotAllowed(['GET', 'POST', 'DELETE'])
 
 @auth_func
-def api_recommend (request) :
+def api_recommend (request):
     if request.method == 'GET':
-        return JsonResponse(run_recommendation(request.user), safe=False)
-    return HttpResponseNotAllowed(['GET'])
+        recommend = RecommendTimetable.objects.filter(user=request.user)
+        recommend_data = [recommend_timetable.data() for recommend_timetable in recommend]
+        return JsonResponse(recommend_data, safe=False)
+    if request.method == 'POST':
+        recommend = run_recommendation(request.user)
+        recommend_data = [recommend_timetable.data() for recommend_timetable in recommend]
+        return JsonResponse(recommend_data, safe=False)
+    if request.method == 'DELETE':
+        recommend = RecommendTimetable.objects.filter(user=request.user).delete()
+        return HttpResponse(status=200)
+    return HttpResponseNotAllowed(['GET', 'POST', 'DELETE'])
 
 @auth_func
 def api_constraints (request):

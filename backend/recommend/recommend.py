@@ -1,5 +1,5 @@
 from assaapp.models import User, Course, CourseTime
-from recommend.models import CoursePref, TimePref
+from recommend.models import CoursePref, TimePref, RecommendTimetable, RecommendCourse
 from functools import cmp_to_key
 from random import sample
 
@@ -295,19 +295,21 @@ def run_recommendation (user):
 
     answer = sample(answer[:min(100, len(answer))], min(20, len(answer)))
 
-    if not answer:
-        answer.append([])
-
-    formatted_answer = []
+    converted_answer = []
     for timetable in answer:
-        formatted_courses = []
+        recommend_timetable = RecommendTimetable(user=user)
+        recommend_timetable.save()
         for converted_course in timetable[1]:
-            course = course_map[converted_course.get_id()]
             course_pref = user_data.get_course_pref(converted_course)
-            color_dict = {'color': color_gradient[round(course_pref)]}
-            course_data = course.data()
-            course_data.update(color_dict)
-            formatted_courses.append(course_data)
-        formatted_answer.append({'course': formatted_courses})
+            recommend_course = RecommendCourse(timetable=recommend_timetable,
+                                               course=course_map[converted_course.get_id()],
+                                               color=color_gradient[round(course_pref)])
+            recommend_course.save()
+        converted_answer.append(recommend_timetable)
+    
+    if not converted_answer:
+        empty_timetable = RecommendTimetable(user=user)
+        empty_timetable.save()
+        converted_answer.append(empty_timetable)
 
-    return formatted_answer
+    return converted_answer

@@ -32,6 +32,8 @@ export {
   deleteCourse,
   deleteTimetable,
   getRecommend,
+  postRecommend,
+  deleteRecommend,
   editConstraints,
   putConstraints,
   putTimePref,
