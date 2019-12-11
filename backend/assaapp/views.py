@@ -18,7 +18,7 @@ from .tokens import ACCOUNT_ACTIVATION_TOKEN
 
 def has_same_text(text, match_text):
     temp_text = match_text[0]
-    if ('동' != match_text[0][len(match_text[0])-1]):
+    if ('동' != match_text[0][-1]):
         temp_text += '동'
     regex = re.compile('^[0-9]+[동]?')
     result = regex.findall(text)
@@ -395,7 +395,7 @@ def api_building(request):
     if request.method == 'GET':
         bd_list = Building.objects.all()
         text_search = request.GET.get('name')
-        regex = re.compile('^[0-9]+[동]?$')
+        regex = re.compile('^[0-9]+[\-1|\-2]?[동]?$')
         result = regex.findall(text_search)
         if(len(result) == 1):
             search_result = [bd.data() for bd
