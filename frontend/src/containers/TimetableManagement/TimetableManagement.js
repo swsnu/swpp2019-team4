@@ -531,7 +531,6 @@ const mapStateToProps = (state) => ({
   timetables: state.user.timetables,
   courses: state.user.courses,
   timetable: state.user.timetable,
-  course: state.user.timetable.course,
   searched: state.user.searched,
 });
 
