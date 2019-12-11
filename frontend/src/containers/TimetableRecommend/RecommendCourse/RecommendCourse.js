@@ -265,6 +265,7 @@ class RecommendCourse extends Component {
             <li className="nav-item">
               <a
                 className="nav-link active w-100"
+                id="rated-tab-clicker"
                 data-toggle="tab"
                 href="#rated-tab"
                 role="tab"
@@ -278,6 +279,7 @@ class RecommendCourse extends Component {
             <li className="nav-item">
               <a
                 className="nav-link w-100"
+                id="unrated-tab-clicker"
                 data-toggle="tab"
                 href="#unrated-tab"
                 role="tab"

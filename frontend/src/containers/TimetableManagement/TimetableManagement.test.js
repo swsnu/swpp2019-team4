@@ -97,7 +97,7 @@ describe('TimetableManagement test', () => {
   let spyGetUser;
   let spyGetSignout;
   let spyGetTimetables;
-  let spyGetCourses;
+  let spySetCourses;
   let spyGetTimetable;
   let spyPostTimetable;
   let spyPostCourse;
@@ -112,7 +112,7 @@ describe('TimetableManagement test', () => {
       .mockImplementation(() => () => {});
     spyGetTimetables = jest.spyOn(actionCreators, 'getTimetables')
       .mockImplementation(() => () => {});
-    spyGetCourses = jest.spyOn(actionCreators, 'getCourses')
+    spySetCourses = jest.spyOn(actionCreators, 'setCourses')
       .mockImplementation(() => () => {});
     spyGetTimetable = jest.spyOn(actionCreators, 'getTimetable')
       .mockImplementation(() => () => {});
@@ -175,8 +175,9 @@ describe('TimetableManagement test', () => {
 
   it('should call search when pressed search button', () => {
     const component = mount(timetableManagement(stubState));
+    expect(spySetCourses).toBeCalledTimes(1);
     component.find('.SearchBar button').simulate('click');
-    expect(spyGetCourses).toBeCalledTimes(1);
+    expect(spySetCourses).toBeCalledTimes(2);
   });
 
   it('should change value when typing in search', () => {
