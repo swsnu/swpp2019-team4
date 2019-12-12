@@ -297,14 +297,6 @@ class CourseDetail extends Component {
                   {!isCustom
                     ? (
                       <tr>
-                        <td>장소</td>
-                        <td>{course.location}</td>
-                      </tr>
-                    )
-                    : null}
-                  {!isCustom
-                    ? (
-                      <tr>
                         <td>링크</td>
                         <td><a href={href} rel="noopener noreferrer" target="_blank">세부 정보</a></td>
                       </tr>

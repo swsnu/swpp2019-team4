@@ -90,7 +90,7 @@ class CourseMap extends Component {
     );
     return (
       <div>
-        {this.props.editable ? null : this.props.building.name}
+        {this.props.editable ? null : this.props.building.name + ' ' + this.props.building.detail}
         <div>
           <GoogleMapWrapper
             googleMapURL={'https://maps.googleapis.com/maps/api/js?'
