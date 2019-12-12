@@ -15,11 +15,14 @@ class RecommendResult extends Component {
   }
 
   componentDidMount() {
-    this.props.onGetRecommend()
-      .then((res) => {
-        console.log(res);
-        return this.setState((prevState) => ({ ...prevState, calculating: false }));
-      });
+    if(this.props.timetable.length === 0) {
+      this.props.onGetRecommend()
+        .then((res) => {
+          if(res.timetables.length === 0) {
+            this.props.onPostRecommend();
+          }
+        });
+    }
   }
 
   changeview(newcourses) {
@@ -32,14 +35,13 @@ class RecommendResult extends Component {
         const timetable_id = res.timetable.id;
         const { courses } = this.state;
         for (let i = 0; i < courses.length; i += 1) {
-          console.log(courses[i]);
-          this.props.onPostCourse(timetable_id, courses[i].id);
+          this.props.onPostCourse(timetable_id, courses[i].id)
         }
       });
   }
 
   render() {
-    if (this.state.calculating) {
+    if(this.props.timetable.length === 0) {
       return (
         <div className="RecommendResult loading">
           <h1>계산하는 중입니다...</h1>
@@ -116,6 +118,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   onGetRecommend: () => dispatch(actionCreators.getRecommend()),
+  onPostRecommend: () => dispatch(actionCreators.postRecommend()),
   onPostTimetable: (title, semester) => dispatch(actionCreators.postTimetable(title, semester)),
   onPostCourse: (timetable_id, course_id) => dispatch(actionCreators.postCourse(timetable_id, course_id)),
 });

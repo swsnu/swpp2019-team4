@@ -52,7 +52,7 @@ class User(AbstractBaseUser):
     credit_max = models.IntegerField(default=18)
     major_min = models.IntegerField(default=0)
     major_max = models.IntegerField(default=18)
-
+    last_recommend_page = models.IntegerField(default=0)
 
     objects = UserManager()
 
@@ -84,6 +84,11 @@ class User(AbstractBaseUser):
 
     def data_small(self):
         return {'id': self.id, 'email': self.email, 'username': self.username}
+    
+    def data_constraint (self):
+        return {'days_per_week': self.days_per_week,
+                'credit_min': self.credit_min, 'credit_max': self.credit_max,
+                'major_min': self.major_min, 'major_max': self.major_max}
 
 class Course(models.Model):
     semester = models.CharField(max_length=8, default='default')
