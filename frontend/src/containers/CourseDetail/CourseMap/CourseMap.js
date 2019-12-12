@@ -70,7 +70,6 @@ class CourseMap extends Component {
   }
 
   render() {
-    console.log(this.props.origin);
     const building_list = this.props.list.map((building) => <button type="button" id={building.name} key={building.name} onClick={() => this.updateCenter(building.name, this.props.list)}>{building.name}</button>);
     const editBuilding = (
       <div>
