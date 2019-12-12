@@ -166,11 +166,12 @@ class Building(models.Model):
                 'lat' : self.latitude,
                 'lng' : self.longitude}
 
-    def detail_data(self, detail):
+    def detail_data(self, detail, lectureroom):
         return {'name' : self.name,
                 'lat' : self.latitude,
                 'lng' : self.longitude,
-                'detail' : detail}
+                'detail' : lectureroom if detail == '' else detail
+                }
 
 class CourseTime(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -280,4 +281,4 @@ class CustomCourseTime(models.Model):
                               +self.start_time.minute,
                 'end_time': self.end_time.hour*60
                             +self.end_time.minute,
-                'building' : self.building.detail_data(self.detail)}
+                'building' : self.building.detail_data(self.detail, self.lectureroom)}

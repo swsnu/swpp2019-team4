@@ -22,6 +22,7 @@ class CourseMap extends Component {
     super(props);
     this.state = {
       isSearchBuilding: false,
+      isSearchFail: false,
     };
   }
 
@@ -63,6 +64,11 @@ class CourseMap extends Component {
     }
   }
 
+  reset() {
+    this.props.set(this.props.origin);
+    this.setState({ isSearchBuilding: false });
+  }
+
   render() {
     const building_list = this.props.list.map((building) => <button type="button" id={building.name} key={building.name} onClick={() => this.updateCenter(building.name, this.props.list)}>{building.name}</button>);
     const editBuilding = (
@@ -73,28 +79,35 @@ class CourseMap extends Component {
             onChange={(event) => { this.props.set({ ...this.props.building, name: event.target.value, detail: this.props.building.detail }); }}
           />
         </div>
+        <div>{this.props.list.length === 0 && this.state.isSearchBuilding ? '건물을 못 찾았습니다' : ''}</div>
         <button type="button" onClick={() => { this.searchBuilding(); }}>검색</button>
-
+        <button type="button" onClick={() => { this.reset(); }}>원래 위치로</button>
         <div>
           {this.state.isSearchBuilding ? building_list : null}
           <input
-          value={this.props.building ? this.props.building.detail : ''}
-          onChange={(event) => { this.props.set({ ...this.props.building, detail: event.target.value, name: this.props.building.name }); }}
-        />
+            value={this.props.building ? this.props.building.detail : ''}
+            onChange={(event) => { this.props.set({ ...this.props.building, detail: event.target.value, name: this.props.building.name }); }}
+          />
         </div>
       </div>
     );
     return (
       <div>
-        <GoogleMapWrapper
-          googleMapURL={'https://maps.googleapis.com/maps/api/js?'
-          + 'key=AIzaSyC2MiVSeJrRHzbm68f6ST_u37KTNFPH1JU&libraries=places'}
-          loadingElement={<div style={{ height: '20rem' }} />}
-          containerElement={<div style={{ height: '20rem' }} />}
-          mapElement={<div style={{ height: '20rem' }} />}
-          center={this.props.center}
-        />
-        {this.props.editable ? editBuilding : null}
+        {this.props.editable ? null : `${this.props.building.name} ${this.props.building.detail}`}
+        {!(this.props.building.lat !== undefined && this.props.building.lng !== undefined) ? null
+          : (
+            <div>
+              <GoogleMapWrapper
+                googleMapURL={'https://maps.googleapis.com/maps/api/js?'
+            + 'key=AIzaSyC2MiVSeJrRHzbm68f6ST_u37KTNFPH1JU&libraries=places'}
+                loadingElement={<div style={{ height: '20rem' }} />}
+                containerElement={<div style={{ height: '20rem' }} />}
+                mapElement={<div style={{ height: '20rem' }} />}
+                center={this.props.center}
+              />
+              {this.props.editable ? editBuilding : null}
+            </div>
+          )}
       </div>
     );
   }
@@ -102,7 +115,9 @@ class CourseMap extends Component {
 
 CourseMap.defaultProps = {
   center: { lat: 0, lng: 0 },
-  building: { name: '', detail: '', lat: 0, lng: 0},
+  building: {
+    name: '', detail: '', lat: 0, lng: 0,
+  },
 };
 
 CourseMap.propTypes = {
@@ -119,7 +134,7 @@ CourseMap.propTypes = {
   }).isRequired,
   set: PropTypes.func.isRequired,
   onSearchBuildings: PropTypes.func.isRequired,
-  auto: PropTypes.bool.isRequired
+  auto: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => ({

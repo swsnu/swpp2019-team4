@@ -224,7 +224,7 @@ class Friend extends Component {
                 : (
                   <div>
                     <div style={{ height: '30px' }} />
-                    <TimetableView id="timetable-table" height={20} courses={[]} timeline/>
+                    <TimetableView id="timetable-table" height={20} courses={[]} timeline />
                   </div>
                 )
             }

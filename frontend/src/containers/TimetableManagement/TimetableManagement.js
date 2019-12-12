@@ -345,7 +345,7 @@ class TimetableManagement extends Component {
                 aria-expanded="false"
               >
                 <b>{this.state.semester}</b>
-                <div className="oi oi-chevron-bottom pl-2"></div>
+                <div className="oi oi-chevron-bottom pl-2" />
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdown-semester">
                 <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-2' })}>
@@ -441,8 +441,8 @@ class TimetableManagement extends Component {
                 aria-expanded="false"
                 aria-labelledby="Timetable Dropdown"
               >
-                <div className="oi oi-chevron-bottom"></div>
-                </button>
+                <div className="oi oi-chevron-bottom" />
+              </button>
               <div
                 className="dropdown-menu dropdown-menu-right"
                 id="timetable-list"
