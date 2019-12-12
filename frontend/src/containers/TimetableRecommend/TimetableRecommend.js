@@ -128,7 +128,7 @@ class TimetableRecommend extends Component {
               {content}
             </div>
             <div className="pt-2 pb-4 d-flex justify-content-around">
-              {this.state.index !== 0
+              {this.state.index !== 0 && this.state.index !== 3
                 ? (
                   <button
                     type="button"
@@ -154,7 +154,21 @@ class TimetableRecommend extends Component {
 다음
                   </button>
                 )
-                : null}
+                : (
+                  <button
+                    type="button"
+                    className="btn btn-dark"
+                    id="recommend-next-button"
+                    disabled={!this.state.valid}
+                    style={{ width: '300px' }}
+                    onClick={() => {
+                      this.movePage(-3);
+                      this.props.onDeleteRecommend();
+                    }}
+                  >
+처음부터 다시 추천받기
+                  </button>
+                )}
             </div>
           </div>
         </div>
@@ -183,6 +197,7 @@ const mapDispatchToProps = (dispatch) => ({
   onPutConstraints: (consts) => dispatch(actionCreators.putConstraints(consts)),
   onPutTimePref: (time_pref) => dispatch(actionCreators.putTimePref(time_pref)),
   onPutCoursePref: (changedCourses) => dispatch(actionCreators.putCoursepref(changedCourses)),
+  onDeleteRecommend: () => dispatch(actionCreators.deleteRecommend()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableRecommend);
