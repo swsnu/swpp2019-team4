@@ -79,9 +79,9 @@ class CourseMap extends Component {
             onChange={(event) => { this.props.set({ ...this.props.building, name: event.target.value, detail: this.props.building.detail }); }}
           />
         </div>
-        <div>{this.props.list.length === 0 && this.state.isSearchBuilding ? '건물을 못 찾았습니다' : ''}</div>
+        <div>{this.props.list.length === 0 && this.state.isSearchBuilding ? '건물을못찾았습니다' : ''}</div>
         <button type="button" onClick={() => { this.searchBuilding(); }}>검색</button>
-        <button type="button" onClick={() => { this.reset(); }}>원래 위치로</button>
+        <button type="button" onClick={() => { this.reset(); }}>원래위치로</button>
         <div>
           {this.state.isSearchBuilding ? building_list : null}
           <input
