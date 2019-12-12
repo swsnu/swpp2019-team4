@@ -475,4 +475,4 @@ def api_constraints (request):
         user.major_max = major_max
         user.save()
         return HttpResponse(status=200)
-    return HttpResponseNotAllowed(['PUT'])
+    return HttpResponseNotAllowed(['GET', 'PUT'])

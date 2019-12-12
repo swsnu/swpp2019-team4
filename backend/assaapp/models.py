@@ -52,7 +52,7 @@ class User(AbstractBaseUser):
     credit_max = models.IntegerField(default=18)
     major_min = models.IntegerField(default=0)
     major_max = models.IntegerField(default=18)
-
+    last_recommend_page = models.IntegerField(default=0)
 
     objects = UserManager()
 
