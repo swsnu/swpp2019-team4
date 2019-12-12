@@ -9,12 +9,34 @@ import TimetableRecommend from './TimetableRecommend';
 
 import * as actionCreators from '../../store/actions/user';
 
-const stubState = {
+const stubStateZero = {
   user: { is_authenticated: true, timetable_main: 0 },
+  recommended_timetables: [],
+  last_page: 0,
+};
+
+const stubStateOne = {
+  user: { is_authenticated: true, timetable_main: 0 },
+  recommended_timetables: [],
+  last_page: 1,
+};
+
+const stubStateTwo = {
+  user: { is_authenticated: true, timetable_main: 0 },
+  recommended_timetables: [],
+  last_page: 2,
+};
+
+const stubStateThree = {
+  user: { is_authenticated: true, timetable_main: 0 },
+  recommended_timetables: [],
+  last_page: 3,
 };
 
 const stubStateFalse = {
   user: { is_authenticated: false, timetable_main: 0 },
+  recommended_timetables: [],
+  last_page: 0,
 };
 
 function window(state) {
@@ -69,8 +91,8 @@ describe('<TimetableRecommend />', () => {
 
   afterEach(() => { jest.clearAllMocks(); });
 
-  it('Recommendation page render test', () => {
-    const component = mount(window(stubState));
+  it('Recommendation page zero render test', () => {
+    const component = mount(window(stubStateZero));
     const topbar = component.find('.TopBar');
     expect(topbar.length).toBe(1);
     expect(component.find('#recommend-back-button').length).toBe(0);
@@ -79,27 +101,49 @@ describe('<TimetableRecommend />', () => {
     component.find('#valid-button').simulate('click');
     expect(component.find('.Recommend_0').length).toBe(1);
     component.find('#recommend-next-button').at(0).simulate('click');
-    expect(component.find('.Recommend_1').length).toBe(1);
+    expect(component.find('.small').length).toBe(4);
+    expect(component.find('.bar').length).toBe(3);
+  });
+
+  it('Recommendation page one render test', () => {
+    const component = mount(window(stubStateOne));
+    const topbar = component.find('.TopBar');
+    expect(topbar.length).toBe(1);
     expect(component.find('#recommend-back-button').length).toBe(1);
     expect(component.find('#recommend-next-button').length).toBe(1);
-    component.find('#recommend-next-button').at(0).simulate('click');
-    expect(component.find('.Recommend_2').length).toBe(1);
-    component.find('#recommend-next-button').at(0).simulate('click');
-    expect(component.find('.Recommend_3').length).toBe(1);
-    expect(component.find('#recommend-back-button').length).toBe(1);
-    expect(component.find('#recommend-next-button').length).toBe(0);
-    component.find('#recommend-back-button').at(0).simulate('click');
-    expect(component.find('.Recommend_2').length).toBe(1);
-    component.find('#recommend-back-button').at(0).simulate('click');
     expect(component.find('.Recommend_1').length).toBe(1);
+    component.find('#recommend-next-button').at(0).simulate('click');
+    expect(component.find('.small').length).toBe(4);
+    expect(component.find('.bar').length).toBe(3);
+  });
+
+  it('Recommendation page two render test', () => {
+    const component = mount(window(stubStateTwo));
+    const topbar = component.find('.TopBar');
+    expect(topbar.length).toBe(1);
+    expect(component.find('#recommend-back-button').length).toBe(1);
+    expect(component.find('#recommend-next-button').length).toBe(1);
+    expect(component.find('.Recommend_2').length).toBe(1);
     component.find('#recommend-back-button').at(0).simulate('click');
-    expect(component.find('.Recommend_0').length).toBe(1);
+    component.find('#recommend-next-button').at(0).simulate('click');
+    expect(component.find('.small').length).toBe(4);
+    expect(component.find('.bar').length).toBe(3);
+  });
+
+  it('Recommendation page three render test', () => {
+    const component = mount(window(stubStateThree));
+    const topbar = component.find('.TopBar');
+    expect(topbar.length).toBe(1);
+    expect(component.find('#recommend-back-button').length).toBe(0);
+    expect(component.find('#recommend-next-button').length).toBe(1);
+    expect(component.find('.Recommend_3').length).toBe(1);
+    component.find('#recommend-next-button').at(0).simulate('click');
     expect(component.find('.small').length).toBe(4);
     expect(component.find('.bar').length).toBe(3);
   });
 
   it('should call signout when pressed logout button', () => {
-    const component = mount(window(stubState));
+    const component = mount(window(stubStateZero));
     component.find('#logout-button').simulate('click');
     expect(spyGetSignout).toBeCalledTimes(1);
   });

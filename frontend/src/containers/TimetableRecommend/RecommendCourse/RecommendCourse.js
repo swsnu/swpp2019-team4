@@ -72,6 +72,18 @@ class RecommendCourse extends Component {
     document.removeEventListener('mouseup', this.mouseUpListener, true);
   }
 
+  shouldComponentUpdate(nextprops) {
+    if (nextprops.searched) {
+      this.resetSearch();
+    }
+    return true;
+  }
+
+  resetSearch(){
+    this.props.searchable();
+    if(this.state.searching)this.setState({ searching: false });
+  }
+
   mouseUpListener() {
     if (!this.is_mount) return;
     const cur_list = this.props.changedCourses;
@@ -284,10 +296,6 @@ class RecommendCourse extends Component {
   }
 
   render() {
-    if (this.props.searched) {
-      this.props.searchable();
-      this.setState({ searching: false });
-    }
     const ratedview = [];
     const unratedview = [];
     if (this.props.ratedCourse !== undefined) {

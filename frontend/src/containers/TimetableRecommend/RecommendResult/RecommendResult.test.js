@@ -9,6 +9,7 @@ import RecommendResult from './RecommendResult';
 
 const stubState = {
   user: { is_authenticated: true },
+  recommended_timetables: [],
 };
 
 jest.mock('../../../components/TimetableView/TimetableView', () => jest.fn((props) => (
@@ -80,11 +81,5 @@ describe('RecommendResult test', () => {
 
   it('should render timetableRecommend', () => {
     const component = mount(timetableRecommend(stubState));
-    expect(component.find('.recommended-timetable-space').length).toBe(1);
-    expect(component.find('#save-button').length).toBe(1);
-    expect(component.find('#close-button').length).toBe(1);
-    component.find('.recommended-timetable-space').simulate('click');
-    component.find('.recommended-timetable-space').simulate('keydown');
-    component.find('#close-button').simulate('click');
   });
 });

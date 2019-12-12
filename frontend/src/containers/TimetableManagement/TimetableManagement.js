@@ -79,6 +79,18 @@ class TimetableManagement extends Component {
     this.is_mount = false;
   }
 
+
+  shouldComponentUpdate(nextprops) {
+    if (nextprops.searched) {
+      this.resetSearch();
+    }
+    return true;
+  }
+  resetSearch(){
+    this.props.searchable();
+    if(this.state.searching)this.setState({ searching: false });
+  }
+
   handleLogout() {
     this.props.onLogout();
   }
@@ -256,10 +268,6 @@ class TimetableManagement extends Component {
       return (
         <Redirect to="/login" />
       );
-    }
-    if (this.props.searched) {
-      this.props.searchable();
-      this.setState({ searching: false });
     }
     const timetableList = this.props.timetables.filter((timetable) => timetable.id !== this.props.timetable.id)
       .map((item) => (
