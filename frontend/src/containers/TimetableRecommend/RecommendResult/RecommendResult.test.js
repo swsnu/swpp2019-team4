@@ -9,6 +9,38 @@ import RecommendResult from './RecommendResult';
 
 const stubState = {
   user: { is_authenticated: true },
+  recommended_timetables: [{
+    id: 1,
+    course: [
+      {
+        time: [
+          {
+            week_day: 0,
+            start_time: 660,
+            end_time: 750,
+          },
+          {
+            week_day: 2,
+            start_time: 1020,
+            end_time: 1110,
+          },
+          {
+            week_day: 3,
+            start_time: 1110,
+            end_time: 1230,
+          },
+        ],
+        name: '자료구조',
+        color: '#2BC366',
+        course_number: 'M1522.000900',
+        lecture_number: '001',
+      },
+    ],
+  },],
+};
+
+const stubStateEmpty = {
+  user: { is_authenticated: true },
   recommended_timetables: [],
 };
 
@@ -20,36 +52,6 @@ jest.mock('../../../components/TimetableView/TimetableView', () => jest.fn((prop
 
 function timetableRecommend(state) {
   const mockStore = getMockStore(state);
-  const recommendlist = [
-    {
-      id: 1,
-      course: [
-        {
-          time: [
-            {
-              week_day: 0,
-              start_time: 660,
-              end_time: 750,
-            },
-            {
-              week_day: 2,
-              start_time: 1020,
-              end_time: 1110,
-            },
-            {
-              week_day: 3,
-              start_time: 1110,
-              end_time: 1230,
-            },
-          ],
-          name: '자료구조',
-          color: '#2BC366',
-          course_number: 'M1522.000900',
-          lecture_number: '001',
-        },
-      ],
-    },
-  ];
   return (
     <Provider store={mockStore}>
       <ConnectedRouter history={createBrowserHistory()}>
@@ -59,7 +61,6 @@ function timetableRecommend(state) {
             exact
             render={() => (
               <RecommendResult
-                timetable={recommendlist}
                 closePopup={() => 1}
               />
             )}
@@ -81,5 +82,9 @@ describe('RecommendResult test', () => {
 
   it('should render timetableRecommend', () => {
     const component = mount(timetableRecommend(stubState));
+  });
+  
+  it('should render timetableRecommend Empty', () => {
+    const component = mount(timetableRecommend(stubStateEmpty));
   });
 });
