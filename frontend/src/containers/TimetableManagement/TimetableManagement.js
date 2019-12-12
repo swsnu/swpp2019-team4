@@ -461,6 +461,7 @@ class TimetableManagement extends Component {
               height={20}
               courses={this.props.timetable.course}
               editable
+              timeline
             />
             <CourseDetail
               id="custom-course-detail"

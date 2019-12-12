@@ -16,6 +16,22 @@ class TimetableView extends Component {
         time: [],
       },
     };
+    this.timeString = (time) => {
+      const hour = Math.floor(time / 60);
+      const minute = time - hour * 60;
+      const hourString = `${hour}`;
+      const minuteString = minute < 10 ? `0${minute}` : `${minute}`;
+      return `${hourString}:${minuteString}`;
+    };
+    this.forceUpdate = this.forceUpdate.bind(this);
+  }
+
+  componentDidMount() {
+    setInterval(this.forceUpdate, 30000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.forceUpdate);
   }
 
   openCourseDetail(course) {
@@ -48,8 +64,8 @@ class TimetableView extends Component {
     const date = new Date();
     const dateLocal = new Date(date.getTime() + 9 * 60 * 60000); // Hardcoded utc+9
     const time = dateLocal.getUTCHours() * 60 + dateLocal.getUTCMinutes();
-    const isCurrentBar = minHour * 60 < time && time < maxHour * 60;
-    const currentPad = Math.round((time / 60 - minHour) * heightunit);
+    const isCurrentBar = this.props.timeline && minHour * 60 < time && time < maxHour * 60;
+    const currentPad = ((time % 60) / 60) * heightunit;
 
     for (let i = 0; i < maxHour - minHour; i += 1) {
       for (let j = 0; j < 6; j += 1) {
@@ -83,35 +99,30 @@ class TimetableView extends Component {
       tablehtmlIth.push(<th key={i} style={{ height: `${heightunit / 2}rem` }}>{this.props.text ? tableHeaderString[i] : ''}</th>);
     }
     tablehtml.push(<tr key={-1}>{tablehtmlIth}</tr>);
-    tablehtml.push(
-      <tr style={{ borderColor: 'transparent' }} key={0}>
-        <td colSpan={8}>
-          {
-          isCurrentBar
-            ? <div id="timetable-current-bar" style={{ top: `${currentPad}rem` }} />
-            : null
-        }
-        </td>
-      </tr>,
-    );
-    for (let i = 0; i < maxHour - minHour; i += 1) {
+    for (let i = minHour; i < maxHour; i += 1) {
       tablehtmlIth = [];
       tablehtmlIth.push(
         <td
           className="timetable-hour-bar text-right pr-2 py-0 small text-black-50"
           key={1000 * i + 1000}
         >
-          {this.props.text ? `${i + minHour}` : ''}
+        {
+        isCurrentBar && i === dateLocal.getUTCHours() && <div id="timetable-current-bar" style={{ top: `calc(${currentPad}rem - 1px)` }} />
+        }
+        {isCurrentBar && i === dateLocal.getUTCHours() 
+        && <div className="rounded-sm" id="timetable-current-time" style={{ top: `${currentPad - .5}rem` }} > {this.timeString(time)} </div>
+        }
+          {this.props.text ? `${i}` : ''}
         </td>,
       );
       for (let j = 0; j < 6; j += 1) {
-        if (coursesList[j][i].length === 0) {
-          tablehtmlIth.push(<td key={1000 * i + j + 1001} style={{ height: `${heightunit}rem` }} className="timetable-hour-bar" />);
-        } else {
           tablehtmlIth.push(
             <td key={1000 * i + j} style={{ height: `${heightunit}rem` }} className="timetable-hour-bar">
+        {
+        isCurrentBar && i === dateLocal.getUTCHours() && <div id="timetable-current-bar" style={{ top: `calc(${currentPad}rem - 1px)` }} />
+        }
               {
-                coursesList[j][i].map(
+                coursesList[j][i - minHour].map(
                   (course) => {
                     const dataTarget = this.props.link ? '#course-detail' : '';
                     return (
@@ -137,14 +148,12 @@ class TimetableView extends Component {
                           <b>{course.title}</b>
                         </div>
                       </div>
-
                     );
                   },
                 )
               }
             </td>,
           );
-        }
       }
       tablehtml.push(<tr key={-i - 2}>{tablehtmlIth}</tr>);
     }
@@ -175,6 +184,7 @@ TimetableView.defaultProps = {
   text: true,
   link: true,
   editable: false,
+  timeline: false,
 };
 
 TimetableView.propTypes = {
@@ -193,5 +203,6 @@ TimetableView.propTypes = {
   text: PropTypes.bool,
   link: PropTypes.bool,
   editable: PropTypes.bool,
+  timeline: PropTypes.bool,
 };
 export default TimetableView;
