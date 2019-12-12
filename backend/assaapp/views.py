@@ -289,7 +289,7 @@ def api_timetable_id_course(request, timetable_id):
                 timetable = Timetable.objects.get(pk=timetable_id)
                 course = Course.objects.get(pk=course_id)
                 try:
-                    CustomCourse(timetable=timetable,course=course)
+                    CustomCourse.objects.get(timetable=timetable,course=course)
                     return HttpResponseBadRequest()
                 except CustomCourse.DoesNotExist:
                     time_list = []
