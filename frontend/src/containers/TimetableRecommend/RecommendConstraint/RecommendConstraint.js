@@ -50,7 +50,7 @@ class RecommendConstraint extends Component {
     this.setState({ consts: newConsts, days_per_week_valid: valid });
     this.props.handleValid(this.state.credit_valid && this.state.credit_min_valid
       && this.state.credit_max_valid && valid);
-    this.props.onEditConstraints(newConsts);
+    this.props.onPutConstraints(newConsts);
   }
 
   handleCreditMin(value) {
@@ -67,7 +67,7 @@ class RecommendConstraint extends Component {
                            && this.state.major_valid
                            && this.state.major_min_valid
                            && this.state.major_max_valid);
-    this.props.onEditConstraints(newConsts);
+    this.props.onPutConstraints(newConsts);
   }
 
   handleCreditMax(value) {
@@ -84,7 +84,7 @@ class RecommendConstraint extends Component {
                            && this.state.major_valid
                            && this.state.major_min_valid
                            && this.state.major_max_valid);
-    this.props.onEditConstraints(newConsts);
+    this.props.onPutConstraints(newConsts);
   }
 
   handleMajorMin(value) {
@@ -101,7 +101,7 @@ class RecommendConstraint extends Component {
                            && valid
                            && minValid
                            && this.state.major_max_valid);
-    this.props.onEditConstraints(newConsts);
+    this.props.onPutConstraints(newConsts);
   }
 
   handleMajorMax(value) {
@@ -118,7 +118,7 @@ class RecommendConstraint extends Component {
                            && valid
                            && this.state.major_min_valid
                            && maxValid);
-    this.props.onEditConstraints(newConsts);
+    this.props.onPutConstraints(newConsts);
   }
 
   render() {
@@ -196,7 +196,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  onEditConstraints: (consts) => dispatch(actionCreators.editConstraints(consts)),
+  onPutConstraints: (consts) => dispatch(actionCreators.putConstraints(consts)),
   onGetConstraints: () => dispatch(actionCreators.getConstraints()),
 });
 

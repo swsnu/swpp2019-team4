@@ -37,12 +37,6 @@ class TimetableRecommend extends Component {
   }
 
   movePage(offset) {
-    if (this.props.index === 0) {
-      this.props.onPutConstraints(this.props.constraints);
-    }
-    if (this.props.index === 1) {
-      this.props.onPutTimePref(this.state.time_pref);
-    }
     if (this.props.index === 2) {
       this.props.onPutCoursePref(this.props.changedCourses);
     }
@@ -62,12 +56,7 @@ class TimetableRecommend extends Component {
         content = (<RecommendConstraint handleValid={(value) => this.handleValid(value)} />);
         break;
       case 1:
-        content = (
-          <RecommendTime
-            handleValid={(value) => this.handleValid(value)}
-            handleTimePref={(value) => this.handleTimePref(value)}
-          />
-        );
+        content = (<RecommendTime handleValid={(value) => this.handleValid(value)} />);
         break;
       case 2:
         content = (<RecommendCourse handleValid={(value) => this.handleValid(value)} />);
