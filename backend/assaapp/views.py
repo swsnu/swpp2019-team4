@@ -288,17 +288,21 @@ def api_timetable_id_course(request, timetable_id):
             try:
                 timetable = Timetable.objects.get(pk=timetable_id)
                 course = Course.objects.get(pk=course_id)
-                time_list = []
-                for course_time in CustomCourseTime.objects.filter(timetable=timetable):
-                    time_list.append(course_time)
-                for course_time in CourseTime.objects.filter(course=course):
-                    for in_time in time_list:
-                        if not (course_time.weekday != in_time.weekday or course_time.start_time >= in_time.end_time or course_time.end_time <= in_time.start_time):
-                            return HttpResponseBadRequest()
-                custom_course = CustomCourse(timetable=timetable, course=course, color=color)
-                custom_course.save()
-                custom_course.set_course_time()
-                return JsonResponse(timetable.data(), safe=False)
+                try:
+                    CustomCourse(timetable=timetable,course=course)
+                    return HttpResponseBadRequest()
+                except CustomCourse.DoesNotExist:
+                    time_list = []
+                    for course_time in CustomCourseTime.objects.filter(timetable=timetable):
+                        time_list.append(course_time)
+                    for course_time in CourseTime.objects.filter(course=course):
+                        for in_time in time_list:
+                            if not (course_time.weekday != in_time.weekday or course_time.start_time >= in_time.end_time or course_time.end_time <= in_time.start_time):
+                                return HttpResponseBadRequest()
+                    custom_course = CustomCourse(timetable=timetable, course=course, color=color)
+                    custom_course.save()
+                    custom_course.set_course_time()
+                    return JsonResponse(timetable.data(), safe=False)
             except (Timetable.DoesNotExist, Course.DoesNotExist):
                 return HttpResponseNotFound()
         except (KeyError, JSONDecodeError):
