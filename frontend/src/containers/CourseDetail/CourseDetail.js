@@ -125,6 +125,41 @@ class CourseDetail extends Component {
     setTimeout(() => this.setToProps(this.props), 500);
   }
 
+  validcheck(){
+    if(this.props.courses===undefined||this.props.course===undefined)return false;
+    for(let i=0;i<this.state.time.length;i++){
+      let time=this.state.time[i];
+      let st=time.start_time;
+      let et=time.end_time;
+      if(st===undefined||et===undefined)return false;
+      if(st.length==4)st='0'+st;
+      if(et.length==4)et='0'+et;
+      if(st>et)return false;
+      for(let j=0;j<this.props.courses.length;j++){
+        if(this.props.course.id===this.props.courses[j].id)continue;
+        for(let k=0;k<this.props.courses[j].time.length;k++){
+          let innerTime=this.props.courses[j].time[k];
+          let innerst=this.timeString(innerTime.start_time);
+          let inneret=this.timeString(innerTime.end_time);
+          if(innerst.length==4)innerst='0'+innerst;
+          if(inneret.length==4)inneret='0'+inneret;
+          if(time.week_day!=innerTime.week_day||st>=inneret||et<=innerst)continue;
+          return false;
+        }
+      }
+      for(let j=0;j<i;j++){
+        let innerTime=this.state.time[j];
+        let innerst=innerTime.start_time;
+        let inneret=innerTime.end_time;
+        if(innerst.length==4)innerst='0'+innerst;
+        if(inneret.length==4)inneret='0'+inneret;
+        if(time.week_day!=innerTime.week_day||st>=inneret||et<=innerst)continue;
+        return false;
+      }
+    }
+    return true;
+  }
+
   render() {
     const { course } = this.props;
     const isCustom = course.is_custom;
@@ -351,14 +386,26 @@ class CourseDetail extends Component {
                     </button>
                   )
                   : (
-                    <button
+                    this.validcheck()?
+                    (<button
                       type="button"
                       className="btn btn-dark"
                       data-dismiss="modal"
                       onClick={() => this.updateCourse()}
                     >
                       수정
-                    </button>
+                    </button>)
+                    :
+                    (<button
+                      type="button"
+                      className="btn btn-dark"
+                      data-dismiss="modal"
+                      onClick={() => this.updateCourse()}
+                      title={"1. 시간이 겹치지 않는지 확인하세요.\n2. 시작 시간이 끝나는 시간보다 뒤인지 확인하세요."}
+                      disabled
+                    >
+                      수정
+                    </button>)
                   )
                 }
                   </div>
@@ -383,7 +430,8 @@ class CourseDetail extends Component {
   }
 }
 
-const mapStateToProps = () => ({
+const mapStateToProps = (state) => ({
+  courses: state.user.timetable.course,
 });
 
 const mapDispatchToProps = (dispatch) => ({
