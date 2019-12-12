@@ -46,7 +46,7 @@ class User(AbstractBaseUser):
                                           related_name='user_main', on_delete=models.SET_NULL)
     friends = models.ManyToManyField('self', symmetrical=True)
     friends_request = models.ManyToManyField('self', symmetrical=False)
-    
+
     days_per_week = models.IntegerField(default=5)
     credit_min = models.IntegerField(default=1)
     credit_max = models.IntegerField(default=18)
@@ -153,12 +153,24 @@ class Timetable(models.Model):
         return {'id': self.id, 'title': self.title, 'semester': self.semester}
 
 class Building(models.Model):
-    name = models.CharField(max_length=8, default='default')
+    name = models.CharField(max_length=64, default='default')
+    repre_name = models.CharField(max_length=16, default='default')
     latitude = models.DecimalField(max_digits=16, decimal_places=8)
     longitude = models.DecimalField(max_digits=16, decimal_places=8)
 
     def __str__(self):
         return self.name
+
+    def data(self):
+        return {'name' : self.name,
+                'lat' : self.latitude,
+                'lng' : self.longitude}
+
+    def detail_data(self, detail):
+        return {'name' : self.name,
+                'lat' : self.latitude,
+                'lng' : self.longitude,
+                'detail' : detail}
 
 class CourseTime(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -192,6 +204,32 @@ class CustomCourse(models.Model):
                              building=course_time.building,
                              lectureroom=course_time.lectureroom).save()
 
+    def set_custom_course_time(self, times):
+        custom_course_time_list = CustomCourseTime.objects.filter(course=self)
+        lectureroom = ''
+        
+        for time in custom_course_time_list:
+            time.delete()
+        for time in times:
+            try:
+                building=Building.objects.get(name=time['building']['name'])
+                CustomCourseTime(timetable=self.timetable, course=self,
+                                weekday=time['week_day'],
+                                start_time=time['start_time'],
+                                end_time=time['end_time'],
+                                building=building,
+                                detail=time['building']['detail'],
+                                lectureroom=lectureroom).save()
+            except (Building.DoesNotExist):
+                CustomCourseTime(timetable=self.timetable, course=self,
+                                weekday=time['week_day'],
+                                start_time=time['start_time'],
+                                end_time=time['end_time'],
+                                building=Building.objects.get(id=0),
+                                detail=time['building']['detail'],
+                                lectureroom=lectureroom).save()
+
+
     def data(self):
         if self.course is None:
             course_time = [
@@ -208,12 +246,13 @@ class CustomCourse(models.Model):
 
         course = Course.objects.get(pk=self.course.id)
         course_time = [course_time.data() for course_time
-                       in CourseTime.objects.filter(course=course)]
+                       in CustomCourseTime.objects.filter(course=self)]
+        title = course.title if self.title == 'default' else self.title
         return {
             'id': self.id,
             'is_custom': False,
             'color': self.color,
-            'title': course.title,
+            'title': title,
             'lecture_number': course.lecture_number,
             'course_number': course.course_number,
             'credit': course.credit,
@@ -228,7 +267,8 @@ class CustomCourse(models.Model):
 class CustomCourseTime(models.Model):
     timetable = models.ForeignKey('Timetable', on_delete=models.CASCADE)
     course = models.ForeignKey('CustomCourse', on_delete=models.CASCADE)
-    building = models.ForeignKey(Building, on_delete=models.CASCADE)
+    building = models.ForeignKey('Building', on_delete=models.CASCADE)
+    detail = models.TextField(default='')
     lectureroom = models.CharField(max_length=8, default='default')
     weekday = models.IntegerField(default=0)
     start_time = models.TimeField()
@@ -239,4 +279,5 @@ class CustomCourseTime(models.Model):
                 'start_time': self.start_time.hour*60
                               +self.start_time.minute,
                 'end_time': self.end_time.hour*60
-                            +self.end_time.minute,}
+                            +self.end_time.minute,
+                'building' : self.building.detail_data(self.detail)}

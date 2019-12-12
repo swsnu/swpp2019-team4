@@ -199,17 +199,18 @@ def cf_view(user):
             course_score[course]=(course_score[course]/relation_abs_sum)+relation_base
     return course_score
 
+def has_text(text,match_text):
+    if match_text:
+        matched = 0
+        for char in text:
+            if char == match_text[matched]:
+                matched += 1
+            if matched == len(match_text):
+                return True
+        return False
+    return True
+
 def searcher(course, score, request_get):
-    def has_text(text,match_text):
-        if match_text:
-            matched = 0
-            for char in text:
-                if char == match_text[matched]:
-                    matched += 1
-                if matched == len(match_text):
-                    return True
-            return False
-        return True
     search_dict = {}
     search_dict['title'] = request_get.get('title')
     search_dict['classification'] = request_get.get('classification')

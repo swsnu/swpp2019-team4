@@ -7,8 +7,8 @@ import TimetableView from '../../components/TimetableView/TimetableView';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import TopBar from '../../components/TopBar/TopBar';
 import CourseElement from './CourseElement/CourseElement';
-import CustomCourse from '../CustomCourse/CustomCourse';
-// import './TimetableManagement.css';
+import CourseDetail from '../CourseDetail/CourseDetail';
+import './TimetableManagement.css';
 
 class TimetableManagement extends Component {
   constructor(props) {
@@ -138,8 +138,8 @@ class TimetableManagement extends Component {
   }
 
   search() {
-    if(this.state.searching)return;
-    this.setState({searching:true});
+    if (this.state.searching) return;
+    this.setState({ searching: true });
     if (this.state.searchdetail) {
       this.setState({
         realValues: this.state.searchValues,
@@ -219,9 +219,8 @@ class TimetableManagement extends Component {
     const tempCourse = {
       ...course, temp: true, color: '#d3d3d3', opacity: 0.5,
     };
-    
+
     this.props.onPostCourseTemp(tempCourse);
-    
   }
 
   handleMouseLeave(course) {
@@ -248,16 +247,19 @@ class TimetableManagement extends Component {
     }
   }
 
+  openCourseDetail(course) {
+    this.setState((prevState) => ({ ...prevState, selectedCourse: course }));
+  }
+
   render() {
     if (this.props.storedUser.is_authenticated === false) {
       return (
         <Redirect to="/login" />
       );
     }
-    if(this.props.searched)
-    {
+    if (this.props.searched) {
       this.props.searchable();
-      this.setState({searching:false});
+      this.setState({ searching: false });
     }
     const timetableList = this.props.timetables.filter((timetable) => timetable.id !== this.props.timetable.id)
       .map((item) => (
@@ -300,15 +302,31 @@ class TimetableManagement extends Component {
       <CourseElement
         key={course.id}
         course={course}
-        addon={[(
-          <button
-            key="1"
-            type="button"
-            className="btn btn-simple btn-sm"
-            onClick={() => this.deleteCourse(course.id)}
-          >
-            <div className="oi oi-minus small" />
-          </button>)]}
+        addon={[
+          (
+            <button
+              key="2"
+              type="button"
+              data-toggle="modal"
+              data-target="#edit-course-detail"
+              id="edit-course-button"
+              className="btn btn-simple btn-sm"
+              onClick={() => this.openCourseDetail(course)}
+            >
+              <div className="oi oi-pencil small" />
+            </button>
+          ),
+          (
+            <button
+              key="1"
+              type="button"
+              className="btn btn-simple btn-sm"
+              onClick={() => this.deleteCourse(course.id)}
+            >
+              <div className="oi oi-minus small" />
+            </button>
+          ),
+        ]}
       />
     ));
 
@@ -319,14 +337,15 @@ class TimetableManagement extends Component {
           <div className="col-6">
             <div className="dropdown">
               <button
-                className="btn dropdown-toggle"
+                className="btn btn-like-form"
                 type="button"
                 id="semester-select"
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
               >
-                {this.state.semester}
+                <b>{this.state.semester}</b>
+                <div className="oi oi-chevron-bottom pl-2"></div>
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdown-semester">
                 <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-2' })}>
@@ -394,7 +413,7 @@ class TimetableManagement extends Component {
                   type="button"
                   className="btn btn-simple"
                   data-toggle="modal"
-                  data-target="#custom-course"
+                  data-target="#custom-course-detail"
                   id="custom-course-button"
                 >
                   <div className="oi oi-plus small px-2" />
@@ -407,21 +426,23 @@ class TimetableManagement extends Component {
             <div className="dropdown d-flex justify-content-center">
               <input
                 type="text"
-                className="form-simple text-center w-50"
+                className="form-control text-center w-50 font-weight-bold rounded-no-right"
                 id="timetable-title-input"
                 value={this.state.title}
                 onChange={(event) => this.setState({ title: event.target.value })}
                 onBlur={() => this.props.onEditTimetable(this.props.timetable.id, this.state.title)}
               />
               <button
-                className="btn dropdown-toggle"
+                className="btn btn-like-form rounded-no-left"
                 type="button"
                 id="dropdown-timetable"
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
                 aria-labelledby="Timetable Dropdown"
-              />
+              >
+                <div className="oi oi-chevron-bottom"></div>
+                </button>
               <div
                 className="dropdown-menu dropdown-menu-right"
                 id="timetable-list"
@@ -443,10 +464,18 @@ class TimetableManagement extends Component {
               height={20}
               courses={this.props.timetable.course}
               editable
+              timeline
             />
-            <CustomCourse
-              id="custom-course"
+            <CourseDetail
+              id="custom-course-detail"
+              newCourse
+              editable
               timetableId={this.props.timetable.id}
+            />
+            <CourseDetail
+              id="edit-course-detail"
+              course={this.state.selectedCourse}
+              editable
             />
           </div>
         </div>
@@ -492,6 +521,13 @@ TimetableManagement.propTypes = {
     is_authenticated: PropTypes.bool,
     timetable_main: PropTypes.number,
   }).isRequired,
+  setCourses: PropTypes.func.isRequired,
+  onPostCourseTemp: PropTypes.func.isRequired,
+  onDeleteCourseTemp: PropTypes.func.isRequired,
+  searched: PropTypes.arrayOf(PropTypes.shape({
+
+  })).isRequired,
+  searchable: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -499,8 +535,7 @@ const mapStateToProps = (state) => ({
   timetables: state.user.timetables,
   courses: state.user.courses,
   timetable: state.user.timetable,
-  course: state.user.timetable.course,
-  searched: state.user.searched
+  searched: state.user.searched,
 });
 
 const mapDispatchToProps = (dispatch) => ({

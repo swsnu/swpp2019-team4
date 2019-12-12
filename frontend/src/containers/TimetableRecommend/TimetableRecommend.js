@@ -62,8 +62,12 @@ class TimetableRecommend extends Component {
         content = (<RecommendConstraint handleValid={(value) => this.handleValid(value)} />);
         break;
       case 1:
-        content = (<RecommendTime handleValid={(value) => this.handleValid(value)}
-                                  handleTimePref={(value) => this.handleTimePref(value)} />);
+        content = (
+          <RecommendTime
+            handleValid={(value) => this.handleValid(value)}
+            handleTimePref={(value) => this.handleTimePref(value)}
+          />
+        );
         break;
       case 2:
         content = (<RecommendCourse handleValid={(value) => this.handleValid(value)} />);

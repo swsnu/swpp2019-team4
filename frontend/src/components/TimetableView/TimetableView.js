@@ -16,6 +16,22 @@ class TimetableView extends Component {
         time: [],
       },
     };
+    this.timeString = (time) => {
+      const hour = Math.floor(time / 60);
+      const minute = time - hour * 60;
+      const hourString = `${hour}`;
+      const minuteString = minute < 10 ? `0${minute}` : `${minute}`;
+      return `${hourString}:${minuteString}`;
+    };
+    this.forceUpdate = this.forceUpdate.bind(this);
+  }
+
+  componentDidMount() {
+    setInterval(this.forceUpdate, 30000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.forceUpdate);
   }
 
   openCourseDetail(course) {
@@ -43,13 +59,13 @@ class TimetableView extends Component {
     const coursesList = [[], [], [], [], [], []];
     const tablehtml = [];
     let tablehtmlIth = [];
-    const heightunit = this.props.height * 2;
+    const heightunit = this.props.height / 8.5;
 
     const date = new Date();
     const dateLocal = new Date(date.getTime() + 9 * 60 * 60000); // Hardcoded utc+9
     const time = dateLocal.getUTCHours() * 60 + dateLocal.getUTCMinutes();
-    const isCurrentBar = minHour * 60 < time && time < maxHour * 60;
-    const currentPad = Math.round((time / 60 - minHour) * heightunit);
+    const isCurrentBar = this.props.timeline && minHour * 60 < time && time < maxHour * 60;
+    const currentPad = ((time % 60) / 60) * heightunit;
 
     for (let i = 0; i < maxHour - minHour; i += 1) {
       for (let j = 0; j < 6; j += 1) {
@@ -69,8 +85,8 @@ class TimetableView extends Component {
               {
                 index: i,
                 title: this.props.text ? this.props.courses[i].title : '',
-                top: (Math.round(((startTime % 60) / 60) * heightunit) - 1),
-                length: (Math.round(((endTime - startTime) / 60) * heightunit)),
+                top: `${((startTime % 60) / 60) * heightunit}rem`,
+                length: `${((endTime - startTime) / 60) * heightunit}rem`,
                 color: this.props.courses[i].color,
                 opacity: (this.props.courses[i].opacity === undefined) ? 1.0 : this.props.courses[i].opacity,
               },
@@ -80,38 +96,42 @@ class TimetableView extends Component {
       }
     }
     for (let i = 0; i < 7; i += 1) {
-      tablehtmlIth.push(<th key={i} height={heightunit / 2}>{this.props.text ? tableHeaderString[i] : ''}</th>);
+      tablehtmlIth.push(
+        <th key={i} style={{ height: `${heightunit / 2}rem` }}>
+          {this.props.text ? tableHeaderString[i] : ''}
+        </th>,
+      );
     }
     tablehtml.push(<tr key={-1}>{tablehtmlIth}</tr>);
-    tablehtml.push(
-      <tr style={{ borderColor: 'transparent' }} key={0}>
-        <td colSpan={8}>
-          {
-          isCurrentBar
-            ? <div id="timetable-current-bar" style={{ top: `${currentPad}px` }} />
-            : null
-        }
-        </td>
-      </tr>,
-    );
-    for (let i = 0; i < maxHour - minHour; i += 1) {
+    for (let i = minHour; i < maxHour; i += 1) {
       tablehtmlIth = [];
       tablehtmlIth.push(
         <td
           className="timetable-hour-bar text-right pr-2 py-0 small text-black-50"
           key={1000 * i + 1000}
         >
-          {this.props.text ? `${i + minHour}` : ''}
+          {
+        isCurrentBar && i === dateLocal.getUTCHours()
+        && <div id="timetable-current-bar" style={{ top: `calc(${currentPad}rem - 1px)` }} />
+        }
+          {isCurrentBar && i === dateLocal.getUTCHours()
+        && (
+        <div className="rounded-sm" id="timetable-current-time" style={{ top: `${currentPad - 0.5}rem` }}>
+          {this.timeString(time)}
+        </div>
+        )}
+          {this.props.text ? `${i}` : ''}
         </td>,
       );
       for (let j = 0; j < 6; j += 1) {
-        if (coursesList[j][i].length === 0) {
-          tablehtmlIth.push(<td key={1000 * i + j + 1001} height={heightunit} className="timetable-hour-bar" />);
-        } else {
-          tablehtmlIth.push(
-            <td key={1000 * i + j} height={heightunit} className="timetable-hour-bar">
-              {
-                coursesList[j][i].map(
+        tablehtmlIth.push(
+          <td key={1000 * i + j} style={{ height: `${heightunit}rem` }} className="timetable-hour-bar">
+            {
+        isCurrentBar && i === dateLocal.getUTCHours()
+        && <div id="timetable-current-bar" style={{ top: `calc(${currentPad}rem - 1px)` }} />
+        }
+            {
+                coursesList[j][i - minHour].map(
                   (course) => {
                     const dataTarget = this.props.link ? '#course-detail' : '';
                     return (
@@ -119,31 +139,32 @@ class TimetableView extends Component {
                         className="square rounded-sm"
                         key={course.index * 1000 + j}
                         style={{
-                          height: `${course.length}px`,
-                          top: `${course.top}px`,
+                          height: course.length,
+                          top: course.top,
                           backgroundColor: course.color,
                           opacity: course.opacity,
                           zIndex: course.opacity > 0.9 ? 5 : 10,
+                          cursor: this.props.link ? 'pointer' : 'default',
                         }}
                         role="button"
                         tabIndex="0"
-                        data-toggle="modal"
+                        data-toggle={this.props.link ? 'modal' : ''}
                         data-target={dataTarget}
-                        onClick={() => this.openCourseDetail(this.props.courses[course.index])}
-                        onKeyDown={() => this.openCourseDetail(this.props.courses[course.index])}
+                        onClick={() => (this.props.link
+                          ? this.openCourseDetail(this.props.courses[course.index]) : null)}
+                        onKeyDown={() => (this.props.link
+                          ? this.openCourseDetail(this.props.courses[course.index]) : null)}
                       >
                         <div className="title px-1 text-black">
                           <b>{course.title}</b>
                         </div>
                       </div>
-
                     );
                   },
                 )
               }
-            </td>,
-          );
-        }
+          </td>,
+        );
       }
       tablehtml.push(<tr key={-i - 2}>{tablehtmlIth}</tr>);
     }
@@ -174,6 +195,7 @@ TimetableView.defaultProps = {
   text: true,
   link: true,
   editable: false,
+  timeline: false,
 };
 
 TimetableView.propTypes = {
@@ -187,10 +209,12 @@ TimetableView.propTypes = {
       end_time: PropTypes.number,
       week_day: PropTypes.number,
     })),
+    opacity: PropTypes.number,
   })),
   height: PropTypes.number.isRequired,
   text: PropTypes.bool,
   link: PropTypes.bool,
   editable: PropTypes.bool,
+  timeline: PropTypes.bool,
 };
 export default TimetableView;
