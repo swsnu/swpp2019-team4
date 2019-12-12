@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as actionCreators from '../../../store/actions/index';
 import TimetableView from '../../../components/TimetableView/TimetableView';
+import LoadingView from '../../../components/LoadingView/LoadingView';
 import './RecommendResult.css';
 
 class RecommendResult extends Component {
@@ -42,11 +43,7 @@ class RecommendResult extends Component {
 
   render() {
     if(this.props.timetable.length === 0) {
-      return (
-        <div className="RecommendResult loading">
-          <h1>계산하는 중입니다...</h1>
-        </div>
-      );
+      return <LoadingView/>;
     }
     const tableviewlist = [];
     for (let i = 0; i < this.props.timetable.length; i += 1) {

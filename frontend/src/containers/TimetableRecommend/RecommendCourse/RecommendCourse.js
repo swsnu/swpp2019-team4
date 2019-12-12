@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import SearchBar from '../../../components/SearchBar/SearchBar';
+import LoadingView from '../../../components/LoadingView/LoadingView';
 import './RecommendCourse.css';
 import * as actionCreators from '../../../store/actions/index';
 
@@ -48,6 +49,8 @@ class RecommendCourse extends Component {
       searching: false,
       commandMatch: 0,
       prv_changed: [],
+      rated_initial_loading: true,
+      unrated_initial_loading: true,
     };
     this.timeToString = (time) => {
       const hour = parseInt(time / 60, 10);
@@ -61,8 +64,10 @@ class RecommendCourse extends Component {
 
   componentDidMount() {
     this.props.handleValid(true);
-    this.props.setRatedCourse(0, 49, this.state.realValues);
-    this.props.setUnratedCourse(0, 49, this.state.realValues);
+    this.props.setRatedCourse(0, 49, this.state.realValues)
+      .then(() => this.setState({rated_initial_loading: false}));
+    this.props.setUnratedCourse(0, 49, this.state.realValues)
+      .then(() => this.setState({unrated_initial_loading: false}));
     this.is_mount = true;
     document.addEventListener('mouseup', this.mouseUpListener, true);
   }
@@ -290,12 +295,18 @@ class RecommendCourse extends Component {
     }
     const ratedview = [];
     const unratedview = [];
-    if (this.props.ratedCourse !== undefined) {
+    if(this.state.rated_initial_loading) {
+      ratedview.push(<LoadingView/>);
+    }
+    else if (this.props.ratedCourse !== undefined) {
       for (let i = 0; i < this.props.ratedCourse.length; i += 1) {
         ratedview.push(this.courseElement(this.props.ratedCourse[i]));
       }
     }
-    if (this.props.unratedCourse !== undefined) {
+    if(this.state.unrated_initial_loading) {
+      unratedview.push(<LoadingView/>);
+    }
+    else if (this.props.unratedCourse !== undefined) {
       for (let i = 0; i < this.props.unratedCourse.length; i += 1) {
         unratedview.push(this.courseElement(this.props.unratedCourse[i]));
       }
