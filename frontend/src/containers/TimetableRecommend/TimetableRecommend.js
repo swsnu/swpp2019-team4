@@ -118,9 +118,8 @@ class TimetableRecommend extends Component {
                 ? (
                   <button
                     type="button"
-                    className="btn btn-simple mx-auto"
+                    className="btn btn-simple mx-auto text-nowrap overflow-hidden"
                     id="recommend-back-button"
-                    style={{ width: '100px' }}
                     onClick={() => this.movePage(-1)}
                   >
                     <h1 className="oi oi-chevron-left my-0"/>
@@ -140,10 +139,9 @@ class TimetableRecommend extends Component {
                 ? (
                   <button
                     type="button"
-                    className="btn btn-simple mx-auto"
+                    className="btn btn-simple mx-auto text-nowrap overflow-hidden"
                     id="recommend-next-button"
                     disabled={!this.state.valid}
-                    style={{ width: '100px' }}
                     onClick={() => this.movePage(1)}
                   >
                     <h1 className="oi oi-chevron-right my-0"/>
@@ -154,10 +152,9 @@ class TimetableRecommend extends Component {
                 : (
                   <button
                     type="button"
-                    className="btn btn-simple mx-auto"
+                    className="btn btn-simple mx-auto text-nowrap overflow-hidden"
                     id="recommend-next-button"
                     disabled={!this.state.valid || this.props.timetable.length === 0}
-                    style={{ width: '300px' }}
                     onClick={() => {
                       this.movePage(-3);
                       this.props.onDeleteRecommend();

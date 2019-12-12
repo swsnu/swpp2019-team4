@@ -125,8 +125,8 @@ class RecommendConstraint extends Component {
     return (
       <div className="RecommendConstraint h-100 d-flex flex-column justify-content-center">
         <div className="form-group row mx-0 my-2">
-          <label htmlFor="days-range-input" className="col-2 offset-2 text-right col-form-label"><b>주 N일제</b></label>
-          <div className="col-4">
+          <label htmlFor="days-range-input" className="col-4 text-right col-form-label"><b>주 N일제</b></label>
+          <div className="col-6">
             <input
               type="number"
               className={`form-control ${this.state.days_per_week_valid ? 'is-valid' : 'is-invalid'}`}
@@ -137,8 +137,8 @@ class RecommendConstraint extends Component {
           </div>
         </div>
         <div className="form-group row mx-0 my-2">
-          <label className="col-2 offset-2 text-right col-form-label" htmlFor="credit-min-input"><b>학점 범위</b></label>
-          <div className="col-2">
+          <label className="col-4 text-right col-form-label" htmlFor="credit-min-input"><b>학점 범위</b></label>
+          <div className="col-3">
             <input
               type="number"
               className={`form-control ${this.state.credit_valid
@@ -148,7 +148,7 @@ class RecommendConstraint extends Component {
               onChange={(event) => this.handleCreditMin(event.target.value)}
             />
           </div>
-          <div className="col-2">
+          <div className="col-3">
             <input
               type="number"
               className={`form-control ${this.state.credit_valid
@@ -160,8 +160,8 @@ class RecommendConstraint extends Component {
           </div>
         </div>
         <div className="form-group row mx-0 my-2">
-          <label className="col-2 offset-2 text-right col-form-label" htmlFor="major-min-input"><b>전공 과목 학점 범위</b></label>
-          <div className="col-2">
+          <label className="col-4 text-right col-form-label" htmlFor="major-min-input"><b>전공 과목 학점 범위</b></label>
+          <div className="col-3">
             <input
               type="number"
               className={`form-control ${this.state.major_valid
@@ -171,7 +171,7 @@ class RecommendConstraint extends Component {
               onChange={(event) => this.handleMajorMin(event.target.value)}
             />
           </div>
-          <div className="col-2">
+          <div className="col-3">
             <input
               type="number"
               className={`form-control ${this.state.major_valid
