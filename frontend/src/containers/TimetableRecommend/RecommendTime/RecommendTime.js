@@ -6,7 +6,7 @@ import './RecommendTime.css';
 class RecommendTime extends Component {
   constructor(props) {
     super(props);
-    const colorTable = this.props.color_table.slice()
+    const colorTable = this.props.color_table.slice();
     this.is_mount = false;
     this.state = {
       mouse_down: false,

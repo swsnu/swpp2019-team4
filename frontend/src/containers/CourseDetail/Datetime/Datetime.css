@@ -1,0 +1,12 @@
+.Datetime td {
+  border: none !important;
+}
+
+.Datetime .dropdown-menu {
+  min-width: 0rem !important;
+}
+
+.Datetime .click {
+  cursor: pointer;
+  user-select: none;
+}
