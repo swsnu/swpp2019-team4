@@ -8,7 +8,7 @@ import SearchBar from '../../components/SearchBar/SearchBar';
 import TopBar from '../../components/TopBar/TopBar';
 import CourseElement from './CourseElement/CourseElement';
 import CourseDetail from '../CourseDetail/CourseDetail';
-// import './TimetableManagement.css';
+import './TimetableManagement.css';
 
 class TimetableManagement extends Component {
   constructor(props) {
@@ -337,14 +337,15 @@ class TimetableManagement extends Component {
           <div className="col-6">
             <div className="dropdown">
               <button
-                className="btn dropdown-toggle"
+                className="btn btn-like-form"
                 type="button"
                 id="semester-select"
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
               >
-                {this.state.semester}
+                <b>{this.state.semester}</b>
+                <div className="oi oi-chevron-bottom pl-2" />
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdown-semester">
                 <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-2' })}>
@@ -425,21 +426,23 @@ class TimetableManagement extends Component {
             <div className="dropdown d-flex justify-content-center">
               <input
                 type="text"
-                className="form-simple text-center w-50"
+                className="form-control text-center w-50 font-weight-bold rounded-no-right"
                 id="timetable-title-input"
                 value={this.state.title}
                 onChange={(event) => this.setState({ title: event.target.value })}
                 onBlur={() => this.props.onEditTimetable(this.props.timetable.id, this.state.title)}
               />
               <button
-                className="btn dropdown-toggle"
+                className="btn btn-like-form rounded-no-left"
                 type="button"
                 id="dropdown-timetable"
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
                 aria-labelledby="Timetable Dropdown"
-              />
+              >
+                <div className="oi oi-chevron-bottom" />
+              </button>
               <div
                 className="dropdown-menu dropdown-menu-right"
                 id="timetable-list"
@@ -461,6 +464,7 @@ class TimetableManagement extends Component {
               height={20}
               courses={this.props.timetable.course}
               editable
+              timeline
             />
             <CourseDetail
               id="custom-course-detail"

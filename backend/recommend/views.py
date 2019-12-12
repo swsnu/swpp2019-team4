@@ -5,7 +5,7 @@ from django.forms.models import model_to_dict
 from django.http import HttpResponse, HttpResponseNotAllowed, \
     JsonResponse, HttpResponseBadRequest, HttpResponseNotFound
 from assaapp.models import User, Course, Timetable, CustomCourse
-from recommend.models import CoursePref, TimePref
+from recommend.models import CoursePref, TimePref, RecommendTimetable
 from recommend.recommend import run_recommendation
 
 def cf_score(user):
@@ -399,9 +399,14 @@ def api_coursepref_id(request, course_id):
 @auth_func
 def api_timepref(request):
     if request.method == 'GET':
-        time_data = [model_to_dict(each_data)
-                     for each_data in TimePref.objects.filter(user=request.user)]
-        return JsonResponse(time_data, safe=False)
+        time_data = [time_pref.data()
+                     for time_pref in TimePref.objects.filter(user=request.user)]
+        table = [ [0] * 6 for i in range(26) ]
+        for time_pref in time_data:
+            x = (time_pref['start_hour']-8) * 2 + time_pref['start_minute']//30
+            y = time_pref['weekday']
+            table[x][y] = time_pref['score']
+        return JsonResponse(table, safe=False)
     if request.method == 'PUT':
         try:
             body = json.loads(request.body.decode())
@@ -442,13 +447,24 @@ def api_timepref_id(request, timepref_id):
     return HttpResponseNotAllowed(['GET', 'POST', 'DELETE'])
 
 @auth_func
-def api_recommend (request) :
+def api_recommend (request):
     if request.method == 'GET':
-        return JsonResponse(run_recommendation(request.user), safe=False)
-    return HttpResponseNotAllowed(['GET'])
+        recommend = RecommendTimetable.objects.filter(user=request.user)
+        recommend_data = [recommend_timetable.data() for recommend_timetable in recommend]
+        return JsonResponse(recommend_data, safe=False)
+    if request.method == 'POST':
+        recommend = run_recommendation(request.user)
+        recommend_data = [recommend_timetable.data() for recommend_timetable in recommend]
+        return JsonResponse(recommend_data, safe=False)
+    if request.method == 'DELETE':
+        recommend = RecommendTimetable.objects.filter(user=request.user).delete()
+        return HttpResponse(status=200)
+    return HttpResponseNotAllowed(['GET', 'POST', 'DELETE'])
 
 @auth_func
 def api_constraints (request):
+    if request.method == 'GET':
+        return JsonResponse(request.user.data_constraint(), safe=False)
     if request.method == 'PUT':
         try:
             body = json.loads(request.body.decode())
@@ -467,4 +483,21 @@ def api_constraints (request):
         user.major_max = major_max
         user.save()
         return HttpResponse(status=200)
-    return HttpResponseNotAllowed(['PUT'])
+    return HttpResponseNotAllowed(['GET', 'PUT'])
+
+@auth_func
+def api_lastpage (request):
+    if request.method == 'GET':
+        return JsonResponse(request.user.last_recommend_page, safe=False)
+    if request.method == 'PUT':
+        try:
+            body = json.loads(request.body.decode())
+            user = request.user
+            print(body)
+            last_page = body['last_page']
+        except (KeyError, JSONDecodeError):
+            return HttpResponseBadRequest()
+        user.last_recommend_page = last_page
+        user.save()
+        return HttpResponse(status=200)
+    return HttpResponseNotAllowed(['GET', 'PUT'])
