@@ -401,7 +401,7 @@ class CourseDetail extends Component {
                       className="btn btn-dark"
                       data-dismiss="modal"
                       onClick={() => this.updateCourse()}
-                      title={"1. 시간이 다른 과목과 겹치지 않는지 확인하세요.\n2. 시간이 서로 겹치지 않는지 확인하세요.\n3. 시작 시간이 끝나는 시간보다 뒤인지 확인하세요."}
+                      title={"1. 시간이 겹치지 않는지 확인하세요.\n2. 시작 시간이 끝나는 시간보다 뒤인지 확인하세요."}
                       disabled
                     >
                       수정
