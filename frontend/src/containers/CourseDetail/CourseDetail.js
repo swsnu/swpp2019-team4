@@ -18,6 +18,7 @@ class CourseDetail extends Component {
         detail: '',
       },
       ],
+      tempBuilding:{},
       color: '',
     };
     this.timeString = (time) => {
@@ -42,6 +43,7 @@ class CourseDetail extends Component {
 
   setPosition(index) {
     this.setState({ index });
+    this.setState({ tempBuilding: this.state.time[index].building})
   }
 
 
@@ -353,6 +355,7 @@ class CourseDetail extends Component {
                       <CourseMap
                         center={center}
                         building={this.state.index !== -1 ? this.state.time[this.state.index].building : { name: '', detail: '' }}
+                        origin={this.state.index !== -1 ? this.state.tempBuilding : { name: '', detail: '' }}
                         set={(building) => { this.handlePosition(building, this.state.index); }}
                         editable={this.props.editable}
                       />
