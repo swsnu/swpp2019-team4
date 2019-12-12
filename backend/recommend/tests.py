@@ -68,8 +68,8 @@ class RecommendTestCase(TestCase):
                    course=Course.objects.get(id=5), score=0).save()
         response = self.get('/api/recommend/coursepref/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(10, len(json.loads(response.content.decode())))
-        self.assertEqual(10.0, json.loads(response.content.decode())[0]['score'])
+        self.assertEqual(2, len(json.loads(response.content.decode())))
+        self.assertEqual(10, json.loads(response.content.decode())[0]['score'])
 
     def test_get_coursepref(self):
         response = self.get('/api/recommend/coursepref/1/')
@@ -177,22 +177,30 @@ class RecommendTestCase(TestCase):
                             json.dumps({'weekday':0, 'start_time':"12:00"}),
                             content_type='application/json')
         self.assertEqual(response.status_code, 400)
+        table=[]
+        table_row=[1,1,1,1,1,1]
+        for i in range(26):
+            table.append(table_row)
         response = self.put('/api/recommend/timepref/',
-                            json.dumps({'score':0, 'weekday':0, 'start_time':"12:00"}),
-                            content_type='application/json')
-        self.assertEqual(response.status_code, 201)
-        response = self.get('/api/recommend/timepref/')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(1, len(json.loads(response.content.decode())))
-        self.assertEqual(0, json.loads(response.content.decode())[0]['score'])
-        response = self.put('/api/recommend/timepref/',
-                            json.dumps({'score':1, 'weekday':0, 'start_time':"12:00"}),
+                            json.dumps({'table':table}),
                             content_type='application/json')
         self.assertEqual(response.status_code, 200)
         response = self.get('/api/recommend/timepref/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(1, len(json.loads(response.content.decode())))
+        self.assertEqual(156, len(json.loads(response.content.decode())))
         self.assertEqual(1, json.loads(response.content.decode())[0]['score'])
+        table=[]
+        table_row=[2,2,2,2,2,2]
+        for i in range(26):
+            table.append(table_row)
+        response = self.put('/api/recommend/timepref/',
+                            json.dumps({'table':table}),
+                            content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        response = self.get('/api/recommend/timepref/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(156, len(json.loads(response.content.decode())))
+        self.assertEqual(2, json.loads(response.content.decode())[0]['score'])
 
     def test_get_timepref_id(self):
         response = self.get('/api/recommend/timepref/1/')
