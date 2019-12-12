@@ -47,6 +47,7 @@ class RecommendCourse extends Component {
       searchdetail: false,
       searching: false,
       commandMatch: 0,
+      prv_changed: [],
     };
     this.timeToString = (time) => {
       const hour = parseInt(time / 60, 10);
@@ -54,12 +55,47 @@ class RecommendCourse extends Component {
       const minuteString = (time % 60 === 0 ? '' : '.5');
       return `${hourString}${minuteString}`;
     };
+    this.is_mount = false;
+    this.mouseUpListener = this.mouseUpListener.bind(this);
   }
 
   componentDidMount() {
     this.props.handleValid(true);
     this.props.setRatedCourse(0, 49, this.state.realValues);
     this.props.setUnratedCourse(0, 49, this.state.realValues);
+    this.is_mount = true;
+    document.addEventListener('mouseup', this.mouseUpListener, true);
+  }
+
+  componentWillUnmount() {
+    this.is_mount = false;
+    document.removeEventListener('mouseup', this.mouseUpListener, true);
+  }
+
+  mouseUpListener() {
+    if (!this.is_mount) return;
+    const cur_list = this.props.changedCourses;
+    const prv_list = this.state.prv_changed;
+    var new_list = [];
+    var is_same = true;
+    for(var i=0;i<cur_list.length;i++) {
+      const cur_id = cur_list[i].id;
+      const cur_score = cur_list[i].score;
+      new_list.push({id:cur_id, score:cur_score});
+      if(i >= prv_list.length) {
+        is_same = false;
+        continue;
+      }
+      const prv_id = prv_list[i].id;
+      const prv_score = prv_list[i].score;
+      if(cur_id !== prv_id || cur_score !== prv_score) {
+        is_same = false;
+      }
+    }
+    if(!is_same) {
+      this.props.onPutCoursePref(cur_list);
+    }
+    this.setState({prv_changed: new_list});
   }
 
   segmentToString(weekDay, startTime) {
