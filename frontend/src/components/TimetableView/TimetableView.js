@@ -96,7 +96,11 @@ class TimetableView extends Component {
       }
     }
     for (let i = 0; i < 7; i += 1) {
-      tablehtmlIth.push(<th key={i} style={{ height: `${heightunit / 2}rem` }}>{this.props.text ? tableHeaderString[i] : ''}</th>);
+      tablehtmlIth.push(
+        <th key={i} style={{ height: `${heightunit / 2}rem` }}>
+          {this.props.text ? tableHeaderString[i] : ''}
+        </th>,
+      );
     }
     tablehtml.push(<tr key={-1}>{tablehtmlIth}</tr>);
     for (let i = minHour; i < maxHour; i += 1) {
@@ -106,22 +110,27 @@ class TimetableView extends Component {
           className="timetable-hour-bar text-right pr-2 py-0 small text-black-50"
           key={1000 * i + 1000}
         >
-        {
-        isCurrentBar && i === dateLocal.getUTCHours() && <div id="timetable-current-bar" style={{ top: `calc(${currentPad}rem - 1px)` }} />
+          {
+        isCurrentBar && i === dateLocal.getUTCHours()
+        && <div id="timetable-current-bar" style={{ top: `calc(${currentPad}rem - 1px)` }} />
         }
-        {isCurrentBar && i === dateLocal.getUTCHours() 
-        && <div className="rounded-sm" id="timetable-current-time" style={{ top: `${currentPad - .5}rem` }} > {this.timeString(time)} </div>
-        }
+          {isCurrentBar && i === dateLocal.getUTCHours()
+        && (
+        <div className="rounded-sm" id="timetable-current-time" style={{ top: `${currentPad - 0.5}rem` }}>
+          {this.timeString(time)}
+        </div>
+        )}
           {this.props.text ? `${i}` : ''}
         </td>,
       );
       for (let j = 0; j < 6; j += 1) {
-          tablehtmlIth.push(
-            <td key={1000 * i + j} style={{ height: `${heightunit}rem` }} className="timetable-hour-bar">
-        {
-        isCurrentBar && i === dateLocal.getUTCHours() && <div id="timetable-current-bar" style={{ top: `calc(${currentPad}rem - 1px)` }} />
+        tablehtmlIth.push(
+          <td key={1000 * i + j} style={{ height: `${heightunit}rem` }} className="timetable-hour-bar">
+            {
+        isCurrentBar && i === dateLocal.getUTCHours()
+        && <div id="timetable-current-bar" style={{ top: `calc(${currentPad}rem - 1px)` }} />
         }
-              {
+            {
                 coursesList[j][i - minHour].map(
                   (course) => {
                     const dataTarget = this.props.link ? '#course-detail' : '';
@@ -141,8 +150,10 @@ class TimetableView extends Component {
                         tabIndex="0"
                         data-toggle={this.props.link ? 'modal' : ''}
                         data-target={dataTarget}
-                        onClick={() => (this.props.link ? this.openCourseDetail(this.props.courses[course.index]) : null)}
-                        onKeyDown={() => (this.props.link ? this.openCourseDetail(this.props.courses[course.index]) : null)}
+                        onClick={() => (this.props.link
+                          ? this.openCourseDetail(this.props.courses[course.index]) : null)}
+                        onKeyDown={() => (this.props.link
+                          ? this.openCourseDetail(this.props.courses[course.index]) : null)}
                       >
                         <div className="title px-1 text-black">
                           <b>{course.title}</b>
@@ -152,8 +163,8 @@ class TimetableView extends Component {
                   },
                 )
               }
-            </td>,
-          );
+          </td>,
+        );
       }
       tablehtml.push(<tr key={-i - 2}>{tablehtmlIth}</tr>);
     }
@@ -198,6 +209,7 @@ TimetableView.propTypes = {
       end_time: PropTypes.number,
       week_day: PropTypes.number,
     })),
+    opacity: PropTypes.number,
   })),
   height: PropTypes.number.isRequired,
   text: PropTypes.bool,
