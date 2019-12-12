@@ -54,7 +54,7 @@ class Main extends Component {
         <TopBar id="topbar" logout={() => this.handleLogout()} />
         <div className="row w-100">
           <div className="Content-left col-8 pl-5">
-            <TimetableView id="timetable-table" height={20} courses={courses} timeline/>
+            <TimetableView id="timetable-table" height={20} courses={courses} timeline />
           </div>
           <div className="Content-right col-4 pr-5">
             {friendListView}
