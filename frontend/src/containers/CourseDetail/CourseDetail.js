@@ -126,8 +126,7 @@ class CourseDetail extends Component {
   }
 
   validcheck(){
-    if(this.props.courses===undefined)return false;
-    console.log(this.state.time);
+    if(this.props.courses===undefined||this.props.course===undefined)return false;
     for(let i=0;i<this.state.time.length;i++){
       let time=this.state.time[i];
       let st=time.start_time;
@@ -137,15 +136,25 @@ class CourseDetail extends Component {
       if(et.length==4)et='0'+et;
       if(st>et)return false;
       for(let j=0;j<this.props.courses.length;j++){
+        if(this.props.course.id===this.props.courses[j].id)continue;
         for(let k=0;k<this.props.courses[j].time.length;k++){
           let innerTime=this.props.courses[j].time[k];
           let innerst=this.timeString(innerTime.start_time);
           let inneret=this.timeString(innerTime.end_time);
           if(innerst.length==4)innerst='0'+innerst;
           if(inneret.length==4)inneret='0'+inneret;
-          if(time.week_day!==innerTime.week_day||st>=inneret||et<=innerst)continue;
+          if(time.week_day!=innerTime.week_day||st>=inneret||et<=innerst)continue;
           return false;
         }
+      }
+      for(let j=0;j<i;j++){
+        let innerTime=this.state.time[j];
+        let innerst=innerTime.start_time;
+        let inneret=innerTime.end_time;
+        if(innerst.length==4)innerst='0'+innerst;
+        if(inneret.length==4)inneret='0'+inneret;
+        if(time.week_day!=innerTime.week_day||st>=inneret||et<=innerst)continue;
+        return false;
       }
     }
     return true;
@@ -392,6 +401,7 @@ class CourseDetail extends Component {
                       className="btn btn-dark"
                       data-dismiss="modal"
                       onClick={() => this.updateCourse()}
+                      title="1. 시간이 다른 과목과 겹치지 않는지 확인하세요. 2. 시간이 서로 겹치지 않는지 확인하세요. 3. 시작 시간이 끝나는 시간보다 뒤인지 확인하세요."
                       disabled
                     >
                       수정
