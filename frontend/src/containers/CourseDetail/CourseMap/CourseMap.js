@@ -22,6 +22,7 @@ class CourseMap extends Component {
     super(props);
     this.state = {
       isSearchBuilding: false,
+      isSearchFail: false,
     };
   }
 
@@ -77,6 +78,7 @@ class CourseMap extends Component {
             onChange={(event) => { this.props.set({ ...this.props.building, name: event.target.value, detail: this.props.building.detail }); }}
           />
         </div>
+        <div>{this.props.list.length === 0 && this.state.isSearchBuilding ?'valid한 building을 입력해주세요 ^^7' : ''}</div>
         <button type="button" onClick={() => { this.searchBuilding(); }}>검색</button>
         <button type="button" onClick={() => { this.reset(); }}>원래위치로</button>
         <div>
