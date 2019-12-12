@@ -2,11 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import './RecommendTime.css';
+import * as actionCreators from '../../../store/actions/index';
 
 class RecommendTime extends Component {
   constructor(props) {
     super(props);
-    const colorTable = this.props.color_table.slice()
+    var colorTable = []
+    for(var i = 0; i < 26; i++) {
+      colorTable.push([3, 3, 3, 3, 3, 3]);
+    }
     this.is_mount = false;
     this.state = {
       mouse_down: false,
@@ -20,7 +24,12 @@ class RecommendTime extends Component {
   componentDidMount() {
     this.is_mount = true;
     this.props.handleValid(true);
-    this.props.handleTimePref(this.props.color_table);
+    this.props.onGetTimePref()
+      .then(() => {
+        const color_table = this.props.color_table.slice();
+        this.setState({color_table: color_table});
+        this.props.handleTimePref(color_table);
+      });
     document.addEventListener('mouseup', this.mouseUpListener, true);
     document.addEventListener('mousedown', this.mouseDownListener, true);
   }
@@ -155,4 +164,8 @@ const mapStateToProps = (state) => ({
   color_table: state.user.time_pref_table,
 });
 
-export default connect(mapStateToProps, null)(RecommendTime);
+const mapDispatchToProps = (dispatch) => ({
+  onGetTimePref: () => dispatch(actionCreators.getTimePref()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RecommendTime);

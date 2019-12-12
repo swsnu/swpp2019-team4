@@ -159,7 +159,7 @@ class TimetableRecommend extends Component {
                     type="button"
                     className="btn btn-dark"
                     id="recommend-next-button"
-                    disabled={!this.state.valid}
+                    disabled={!this.state.valid || this.props.timetable.length === 0}
                     style={{ width: '300px' }}
                     onClick={() => {
                       this.movePage(-3);
@@ -190,6 +190,7 @@ const mapStateToProps = (state) => ({
   constraints: state.user.constraints,
   changedCourses: state.user.changed_courses,
   index: state.user.last_page,
+  timetable: state.user.recommended_timetables
 });
 
 const mapDispatchToProps = (dispatch) => ({

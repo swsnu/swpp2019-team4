@@ -11,6 +11,11 @@ class TimePref(models.Model):
     weekday = models.IntegerField(default=0)
     start_time = models.TimeField()
     score = models.IntegerField(default=3)
+    def data(self):
+        return {'weekday': self.weekday,
+                'start_hour': self.start_time.hour,
+                'start_minute': self.start_time.minute,
+                'score': self.score}
 
 class RecommendCourse(models.Model):
     timetable = models.ForeignKey('RecommendTimetable', on_delete=models.CASCADE)

@@ -38,6 +38,7 @@ export {
   putLastPage,
   editConstraints,
   putConstraints,
+  getTimePref,
   putTimePref,
   getRatedCourse,
   getUnratedCourse,

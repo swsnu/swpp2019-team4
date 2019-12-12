@@ -398,9 +398,14 @@ def api_coursepref_id(request, course_id):
 @auth_func
 def api_timepref(request):
     if request.method == 'GET':
-        time_data = [model_to_dict(each_data)
-                     for each_data in TimePref.objects.filter(user=request.user)]
-        return JsonResponse(time_data, safe=False)
+        time_data = [time_pref.data()
+                     for time_pref in TimePref.objects.filter(user=request.user)]
+        table = [ [0] * 6 for i in range(26) ]
+        for time_pref in time_data:
+            x = (time_pref['start_hour']-8) * 2 + time_pref['start_minute']//30
+            y = time_pref['weekday']
+            table[x][y] = time_pref['score']
+        return JsonResponse(table, safe=False)
     if request.method == 'PUT':
         try:
             body = json.loads(request.body.decode())
