@@ -37,9 +37,6 @@ class TimetableRecommend extends Component {
   }
 
   movePage(offset) {
-    if (this.props.index === 2) {
-      this.props.onPutCoursePref(this.props.changedCourses);
-    }
     this.props.onPutLastPage(this.props.index + offset);
   }
 
