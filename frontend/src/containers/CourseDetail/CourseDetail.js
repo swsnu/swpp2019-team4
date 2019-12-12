@@ -394,7 +394,7 @@ class CourseDetail extends Component {
                       type="button"
                       className="btn btn-dark"
                       data-dismiss="modal"
-                      onClick={() => this.updateCourse()}
+                      onClick={() => {this.updateCourse(); setTimeout(() => this.setToProps(this.props), 500)}}
                     >
                       수정
                     </button>)
@@ -403,7 +403,7 @@ class CourseDetail extends Component {
                       type="button"
                       className="btn btn-dark"
                       data-dismiss="modal"
-                      onClick={() => this.updateCourse()}
+                      onClick={() => {this.updateCourse(); setTimeout(() => this.setToProps(this.props), 500)}}
                       title={"1. 시간이 겹치지 않는지 확인하세요.\n2. 시작 시간이 끝나는 시간보다 뒤인지 확인하세요."}
                       disabled
                     >

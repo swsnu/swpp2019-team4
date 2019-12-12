@@ -26,7 +26,7 @@ class CourseMap extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    if (this.props.auto !== nextProps.auto && nextProps.auto) {
+     if (this.props.auto !== nextProps.auto && nextProps.auto) {
       this.setState({ isSearchBuilding: false });
       this.updateCenter(nextProps.list[0].name, nextProps.list);
       return true;
@@ -64,7 +64,6 @@ class CourseMap extends Component {
   }
 
   reset() {
-    console.log(this.props.origin)
     this.props.set(this.props.origin)
   }
   render() {
@@ -91,7 +90,7 @@ class CourseMap extends Component {
     );
     return (
       <div>
-        {this.props.editable ?  null : this.props.building.name}
+        {this.props.editable ? null : this.props.building.name}
         <div>
           <GoogleMapWrapper
             googleMapURL={'https://maps.googleapis.com/maps/api/js?'
