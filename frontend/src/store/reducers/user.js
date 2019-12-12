@@ -58,6 +58,7 @@ const initialState = {
   searched: false,
   ratedSearched: false,
   unratedSearched: false,
+  last_page: 0,
 };
 
 const reducer = (state = initialState, action) => {
@@ -158,6 +159,9 @@ const reducer = (state = initialState, action) => {
     }
     case actionTypes.GET_RECOMMEND: {
       return { ...state, recommended_timetables: action.timetables }
+    }
+    case actionTypes.GET_LAST_PAGE: {
+      return { ...state, last_page: action.last_page }
     }
     case actionTypes.EDIT_CONSTRAINTS: {
       return { ...state, constraints: action.constraints }

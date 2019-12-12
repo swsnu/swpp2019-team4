@@ -34,6 +34,8 @@ export {
   getRecommend,
   postRecommend,
   deleteRecommend,
+  getLastPage,
+  putLastPage,
   editConstraints,
   putConstraints,
   putTimePref,

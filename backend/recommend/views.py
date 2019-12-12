@@ -476,3 +476,20 @@ def api_constraints (request):
         user.save()
         return HttpResponse(status=200)
     return HttpResponseNotAllowed(['GET', 'PUT'])
+
+@auth_func
+def api_lastpage (request):
+    if request.method == 'GET':
+        return JsonResponse(request.user.last_recommend_page, safe=False)
+    if request.method == 'PUT':
+        try:
+            body = json.loads(request.body.decode())
+            user = request.user
+            print(body)
+            last_page = body['last_page']
+        except (KeyError, JSONDecodeError):
+            return HttpResponseBadRequest()
+        user.last_recommend_page = last_page
+        user.save()
+        return HttpResponse(status=200)
+    return HttpResponseNotAllowed(['GET', 'PUT'])
