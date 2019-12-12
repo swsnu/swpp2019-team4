@@ -7,23 +7,41 @@ import * as actionCreators from '../../../store/actions/index';
 class RecommendConstraint extends Component {
   constructor(props) {
     super(props);
-    let consts = this.props.constraints
+    const consts = this.props.constraints;
     this.state = {
       consts: consts,
-      credit_min_valid: (consts.credit_min >= 1 &&
-                         consts.credit_min <= 21),
-      credit_max_valid: (consts.credit_max >= 1 &&
-                         consts.credit_max <= 21),
-      credit_valid: (consts.credit_min <= consts.credit_max),
-      major_min_valid: (consts.major_min >= 0 &&
-                        consts.major_min <= 21),
-      major_max_valid: (consts.major_max >= 0 &&
-                        consts.major_max <= 21),
-      major_valid: (consts.major_min <= consts.credit_max),
-      days_per_week: consts.days_per_week,
-      days_per_week_valid: (consts.days_per_week >= 1 &&
-                            consts.days_per_week <= 6),
+      credit_min_valid: false,
+      credit_max_valid: false,
+      credit_valid: false,
+      major_min_valid: false,
+      major_max_valid: false,
+      major_valid: false,
+      days_per_week: false,
+      days_per_week_valid: false,
     };
+  }
+
+  componentDidMount() {
+    this.props.onGetConstraints()
+      .then(() => {
+        const consts = this.props.constraints;
+        this.setState({
+          consts: consts,
+          credit_min_valid: (consts.credit_min >= 1 &&
+                            consts.credit_min <= 21),
+          credit_max_valid: (consts.credit_max >= 1 &&
+                            consts.credit_max <= 21),
+          credit_valid: (consts.credit_min <= consts.credit_max),
+          major_min_valid: (consts.major_min >= 0 &&
+                            consts.major_min <= 21),
+          major_max_valid: (consts.major_max >= 0 &&
+                            consts.major_max <= 21),
+          major_valid: (consts.major_min <= consts.credit_max),
+          days_per_week: consts.days_per_week,
+          days_per_week_valid: (consts.days_per_week >= 1 &&
+                                consts.days_per_week <= 6),
+        });
+      })
   }
 
   handleDaysPerWeek(value) {
@@ -179,6 +197,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   onEditConstraints: (consts) => dispatch(actionCreators.editConstraints(consts)),
+  onGetConstraints: () => dispatch(actionCreators.getConstraints()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecommendConstraint);

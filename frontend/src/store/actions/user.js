@@ -138,6 +138,10 @@ export const putLastPage = (last_page) => (dispatch) => axios.put('/api/recommen
 export const editConstraints = (consts) => (dispatch) => 
   dispatch({ type: actionTypes.EDIT_CONSTRAINTS, constraints: consts });
 
+export const getConstraints = () => (dispatch) => axios.get('/api/recommend/constraints/')
+  .then((res) => dispatch({ type: actionTypes.EDIT_CONSTRAINTS, constraints: res.data }))
+  .catch(() => {});
+
 export const putConstraints = (consts) => (dispatch) => axios.put('/api/recommend/constraints/', consts)
   .then((res) => dispatch({ type: actionTypes.EDIT_CONSTRAINTS, constraints: consts }))
   .catch(() => {});

@@ -462,6 +462,8 @@ def api_recommend (request):
 
 @auth_func
 def api_constraints (request):
+    if request.method == 'GET':
+        return JsonResponse(request.user.data_constraint(), safe=False)
     if request.method == 'PUT':
         try:
             body = json.loads(request.body.decode())

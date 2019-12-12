@@ -37,6 +37,7 @@ export {
   getLastPage,
   putLastPage,
   editConstraints,
+  getConstraints,
   putConstraints,
   getTimePref,
   putTimePref,
