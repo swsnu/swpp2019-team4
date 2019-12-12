@@ -127,7 +127,7 @@ class RecommendTime extends Component {
     }
     return (
       <div className="RecommendTime row m-0">
-        <table className="w-100 col-6 offset-2" id="recommend-time-table">
+        <table className="w-100 col-7 offset-1" id="recommend-time-table">
           <colgroup>
             <col span="1" style={{ width: '10%' }} />
             <col span="1" style={{ width: '15%' }} />

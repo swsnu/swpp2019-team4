@@ -93,12 +93,12 @@ class TimetableRecommend extends Component {
       <div className="TimetableRecommend d-flex flex-column">
         <TopBar id="topbar" logout={() => this.handleLogout()} />
         <div className="row flex-grow-1" style={{ minHeight: 0 }}>
-          <div className="col-2 d-flex flex-column justify-content-center" id="recommend-progress">
-            <table>
+          <div className="col-3 d-flex flex-column justify-content-center" id="recommend-progress">
+            <table className="mx-auto">
               <tbody>
                 <tr className={progressStatus[0]}>
                   <td><div className="oi oi-link-intact" /></td>
-                  <td className="small">{this.props.index === 0 ? '조건 선택' : ''}</td>
+                  <td className="">{this.props.index === 0 ? '조건 선택' : ''}</td>
                 </tr>
                 <tr className={this.props.index > 0 ? 'progress-past' : 'progress-future'}>
                   <td><div className="bar" /></td>
@@ -106,7 +106,7 @@ class TimetableRecommend extends Component {
                 </tr>
                 <tr className={progressStatus[1]}>
                   <td><div className="oi oi-clock" /></td>
-                  <td className="small">{this.props.index === 1 ? '시간 선택' : ''}</td>
+                  <td className="">{this.props.index === 1 ? '시간 선택' : ''}</td>
                 </tr>
                 <tr className={this.props.index > 1 ? 'progress-past' : 'progress-future'}>
                   <td><div className="bar" /></td>
@@ -114,7 +114,7 @@ class TimetableRecommend extends Component {
                 </tr>
                 <tr className={progressStatus[2]}>
                   <td><div className="oi oi-book" /></td>
-                  <td className="small">{this.props.index === 2 ? '과목 선택' : ''}</td>
+                  <td className="">{this.props.index === 2 ? '과목 선택' : ''}</td>
                 </tr>
                 <tr className={this.props.index > 2 ? 'progress-past' : 'progress-future'}>
                   <td><div className="bar" /></td>
@@ -122,46 +122,53 @@ class TimetableRecommend extends Component {
                 </tr>
                 <tr className={progressStatus[3]}>
                   <td><div className="oi oi-calendar" /></td>
-                  <td className="small">{this.props.index === 3 ? '결과 확인' : ''}</td>
+                  <td className="">{this.props.index === 3 ? '결과 확인' : ''}</td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <div className="col-10 h-100 d-flex flex-column">
-            <div className="recommend-content flex-grow-1 overflow-auto" style={{ minHeight: 0 }}>
-              {content}
-            </div>
-            <div className="pt-2 pb-4 d-flex justify-content-around">
+          <div className="col-1 h-100 d-flex align-items-center">
               {this.props.index !== 0 && this.props.index !== 3
                 ? (
                   <button
                     type="button"
-                    className="btn btn-outline-dark"
+                    className="btn btn-simple mx-auto"
                     id="recommend-back-button"
                     style={{ width: '100px' }}
                     onClick={() => this.movePage(-1)}
                   >
-이전
+                    <h1 className="oi oi-chevron-left my-0"/>
+                    <br/>
+                    {'이전'}
                   </button>
                 )
                 : null}
+          </div>
+          <div className="col-6 h-100 d-flex flex-column">
+            <div className="recommend-content flex-grow-1 overflow-auto" style={{ minHeight: 0 }}>
+              {content}
+            </div>
+          </div>
+          <div className="col-1 h-100 d-flex align-items-center">
               {this.props.index !== 3
                 ? (
                   <button
                     type="button"
-                    className="btn btn-dark"
+                    className="btn btn-simple mx-auto"
                     id="recommend-next-button"
                     disabled={!this.state.valid}
                     style={{ width: '100px' }}
                     onClick={() => this.movePage(1)}
                   >
-다음
+                    <h1 className="oi oi-chevron-right my-0"/>
+                    <br/>
+                    {'다음'}
                   </button>
                 )
                 : (
                   <button
                     type="button"
-                    className="btn btn-dark"
+                    className="btn btn-simple mx-auto"
                     id="recommend-next-button"
                     disabled={!this.state.valid || this.props.timetable.length === 0}
                     style={{ width: '300px' }}
@@ -170,10 +177,11 @@ class TimetableRecommend extends Component {
                       this.props.onDeleteRecommend();
                     }}
                   >
-처음부터 다시 추천받기
+                    <h1 className="oi oi-chevron-right"/>
+                    <br/>
+                    {'처음으로'}
                   </button>
                 )}
-            </div>
           </div>
         </div>
       </div>

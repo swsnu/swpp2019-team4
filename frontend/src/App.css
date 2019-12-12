@@ -55,6 +55,11 @@ body {
   color: #000000;
 }
 
+.btn-simple:focus, .btn-simple:active {
+  outline: none !important;
+  box-shadow: none;
+}
+
 .form-simple {
   display: inline-block;
   font-weight: 400;
