@@ -207,7 +207,7 @@ class CourseDetail extends Component {
             id="show-position-button"
             onClick={() => this.setPosition(index, segment.building)}
           >
-            <div className="oi oi-map-marker small px-2" />
+            <div className={"oi oi-map-marker small px-2 " + ( this.state.index == index ? "text-danger" : "")} />
           </button>
           <button
             className="px-1 btn btn-simple btn-sm"
@@ -222,28 +222,25 @@ class CourseDetail extends Component {
     } else {
       timeDiv = this.state.time.map((segment, index) => (
         <div className="d-flex flex-row align-items-center my-0" key={index}>
-          <div>{`${weekDay[segment.week_day]} ${segment.start_time} - ${segment.end_time}`}</div>
+          <div>{`${weekDay[segment.week_day]} ${segment.start_time} - ${segment.end_time} | ${segment.building.name} ${segment.building.detail}`}</div>
           <button
-            className="px-1 btn btn-simple btn-sm"
+            className="px-1 btn btn-simple btn-sm ml-auto"
             type="button"
             id="show-position-button"
             onClick={() => this.setPosition(index, segment.building)}
           >
-            <div className="oi oi-map-marker small px-2" />
+            <div className={"oi oi-map-marker small px-2 " + ( this.state.index == index ? "text-danger" : "")} />
           </button>
         </div>
       ));
     }
-    const lat = this.state.index !== -1 ? parseFloat(this.state.time[this.state.index].building.lat) : 0;
-    const lng = this.state.index !== -1 ? parseFloat(this.state.time[this.state.index].building.lng) : 0;
-    const center = { lat, lng };
     return (
-
       <div className="CourseDetail modal fade" id={this.props.id} tabIndex="-1" role="dialog">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-body">
-              <table className="table">
+              <div className="row">
+              <table className="table col-6">
                 <colgroup>
                   <col span="1" style={{ width: '6rem' }} />
                 </colgroup>
@@ -303,7 +300,7 @@ class CourseDetail extends Component {
                     )
                     : null}
                   <tr>
-                    <td>시간</td>
+                    <td>시간 및 장소</td>
                     <td>
                       {timeDiv}
                       { this.props.editable
@@ -341,14 +338,17 @@ class CourseDetail extends Component {
                       </div>
                     </td>
                   </tr>
+                </tbody>
+              </table>
+              <table className="table col-6">
+                <tbody>
                   <tr>
-                    <td>지도</td>
+                    <td style={{width: "4rem"}}>지도</td>
                     <td>
                       <CourseMap
-                        center={center}
+                        style={{height: "20rem"}}
                         building={this.state.index !== -1 ? this.state.time[this.state.index].building : { name: '', detail: '' }}
-                        origin={this.state.index !== -1 ? this.state.tempBuilding : { name: '', detail: '' }}
-                        set={(building) => { this.handlePosition(building, this.state.index); }}
+                        onChange={(building) => { this.handlePosition(building, this.state.index); }}
                         editable={this.props.editable}
                       />
                     </td>
@@ -420,7 +420,7 @@ class CourseDetail extends Component {
                   </div>
                 )
             }
-          </div>
+          </div></div>
         </div>
       </div>
     );

@@ -5,6 +5,7 @@ import {
   withScriptjs, withGoogleMap, GoogleMap, Marker,
 } from 'react-google-maps';
 import * as actionCreators from '../../../store/actions/index';
+import './CourseMap.css';
 
 const GoogleMapWrapper = withScriptjs(withGoogleMap((props) => (
   <GoogleMap
@@ -30,18 +31,9 @@ class CourseMap extends Component {
     if (this.props.auto !== nextProps.auto && nextProps.auto) {
       this.setState({ isSearchBuilding: false });
       this.updateCenter(nextProps.list[0].name, nextProps.list);
-      return true;
     }
-    if (nextProps.auto) {
+    else if (nextProps.auto) {
       this.props.autoComplete();
-      return true;
-    }
-    if (this.props.building !== nextProps.building) {
-      return true;
-    }
-    if (this.props.center && this.props.center.lat === nextProps.center.lat
-      && this.props.center.lng === nextProps.center.lng) {
-      return true;
     }
     return true;
   }
@@ -58,54 +50,85 @@ class CourseMap extends Component {
     const center = list.filter((building) => building.name === name);
     this.setState({ isSearchBuilding: false });
     if (center.length > 0 && !(this.props.building.lat === center[0].lat && this.props.building.lng === center[0].lng)) {
-      this.props.set({
+      this.props.onChange({
         ...this.props.building, name, lat: center[0].lat, lng: center[0].lng,
       });
     }
   }
 
-  reset() {
-    this.props.set(this.props.origin);
-    this.setState({ isSearchBuilding: false });
+  enterKey(event) {
+    if (event.keyCode === 13) {
+      this.searchBuilding();
+    }
   }
 
   render() {
-    const building_list = this.props.list.map((building) => <button type="button" id={building.name} key={building.name} onClick={() => this.updateCenter(building.name, this.props.list)}>{building.name}</button>);
+    const building_list = this.props.list.map((building, index) => (
+      <div key={index}>
+        <div className="d-flex flex-row w-100 align-items-center justify-content-between">
+          <div>
+          {building.name}</div>
+          <button 
+          type="button" 
+          className="btn btn-sm btn-outline-dark"
+          id={building.name} 
+          key={building.name} 
+          onClick={() => this.updateCenter(building.name, this.props.list)}>
+            선택
+          </button>
+        </div>
+        <hr className="my-1"/>
+      </div>
+      )
+    );
     const editBuilding = (
       <div>
-        <div>
-          <input
-            value={this.props.building ? this.props.building.name : ''}
-            onChange={(event) => { this.props.set({ ...this.props.building, name: event.target.value, detail: this.props.building.detail }); }}
-          />
-        </div>
-        <div>{this.props.list.length === 0 && this.state.isSearchBuilding ? '건물을 못 찾았습니다' : ''}</div>
-        <button type="button" onClick={() => { this.searchBuilding(); }}>검색</button>
-        <button type="button" onClick={() => { this.reset(); }}>원래 위치로</button>
-        <div>
-          {this.state.isSearchBuilding ? building_list : null}
-          <input
-            value={this.props.building ? this.props.building.detail : ''}
-            onChange={(event) => { this.props.set({ ...this.props.building, detail: event.target.value, name: this.props.building.name }); }}
-          />
+        <div className="row my-2 mx-1">
+          <div className="col-7 d-flex flex-row px-1">
+            <input
+              className="form-control form-control-sm flex-grow-1"
+              placeholder="건물"
+              value={this.props.building ? this.props.building.name : ''}
+              onKeyDown={(event) => this.enterKey(event)}
+              onChange={(event) => { this.props.onChange({ ...this.props.building, name: event.target.value, detail: this.props.building.detail }); }}
+            />
+            <button type="button" className="btn btn-dark btn-sm" style={{width: "4rem"}} 
+              onClick={() => { this.searchBuilding(); }}>검색</button>
+          </div>
+          <div className="col-5 px-1">
+            <input
+              className="form-control form-control-sm"
+              placeholder="세부 장소"
+              value={this.props.building ? this.props.building.detail : ''}
+              onChange={(event) => { this.props.onChange({ ...this.props.building, detail: event.target.value, name: this.props.building.name }); }}
+            />
+          </div>
         </div>
       </div>
     );
     return (
-      <div>
-        {this.props.editable ? null : `${this.props.building.name} ${this.props.building.detail}`}
-        {!(this.props.building.lat !== undefined && this.props.building.lng !== undefined) ? null
+      <div className="CourseMap">
+        {!(this.props.building.lat !== undefined && this.props.building.lng !== undefined) ?
+          (
+            <div id="map-alt" style={this.props.style}>
+              <div id="map-alt-text"> 장소를 선택하세요. </div>
+            </div>
+          )
           : (
             <div>
               <GoogleMapWrapper
                 googleMapURL={'https://maps.googleapis.com/maps/api/js?'
             + 'key=AIzaSyC2MiVSeJrRHzbm68f6ST_u37KTNFPH1JU&libraries=places'}
-                loadingElement={<div style={{ height: '20rem' }} />}
-                containerElement={<div style={{ height: '20rem' }} />}
-                mapElement={<div style={{ height: '20rem' }} />}
-                center={this.props.center}
+                loadingElement={<div style={this.props.style} />}
+                containerElement={<div style={this.props.style} />}
+                mapElement={<div style={this.props.style} />}
+                center={{lat: 1 * this.props.building.lat, lng: 1 * this.props.building.lng}}
               />
               {this.props.editable ? editBuilding : null}
+              <div>{this.props.list.length === 0 && this.state.isSearchBuilding ? '건물을 찾지 못했습니다.' : ''}</div>
+              <div className="overflow-auto" style={{maxHeight: "10rem"}}>
+                {this.state.isSearchBuilding ? building_list : null}
+              </div>
             </div>
           )}
       </div>
@@ -114,9 +137,8 @@ class CourseMap extends Component {
 }
 
 CourseMap.defaultProps = {
-  center: { lat: 0, lng: 0 },
   building: {
-    name: '', detail: '', lat: 0, lng: 0,
+    name: '', detail: '', lat: '0', lng: '0',
   },
 };
 
@@ -124,10 +146,6 @@ CourseMap.propTypes = {
   building: PropTypes.shape({
     name: PropTypes.string,
     detail: PropTypes.string,
-  }),
-  center: PropTypes.shape({
-    lat: PropTypes.number,
-    lng: PropTypes.number,
   }),
   list: PropTypes.shape({
     map: PropTypes.func,
