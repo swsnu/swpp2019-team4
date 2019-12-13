@@ -28,7 +28,7 @@ export const getFriend = () => (dispatch) => axios.get('/api/user/friend/')
 
 export const getTimetable = (timetableId) => (dispatch) => axios.get(`/api/timetable/${timetableId}/`)
   .then((res) => dispatch({ type: actionTypes.GET_TIMETABLE, timetable: res.data }))
-  .catch(() => dispatch({ type: actionTypes.GET_TIMETABLE, timetable: {course: []}}));
+  .catch(() => dispatch({ type: actionTypes.GET_TIMETABLE, timetable: { course: [] } }));
 
 export const editTimetable = (timetableId, title) => (dispatch) => axios.put(`/api/timetable/${timetableId}/`, {
   title,

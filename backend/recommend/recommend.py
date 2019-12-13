@@ -322,7 +322,7 @@ def run_recommendation(user):
     for timetable in answer:
         recommend_timetable = RecommendTimetable(user=user)
         recommend_timetable.save()
-        for index, converted_course in enumerate(timetable[1]):
+        for _, converted_course in enumerate(timetable[1]):
             course_pref = user_data.get_course_pref(converted_course)
             color = color_gradient[round(course_pref)]
             recommend_course = RecommendCourse(timetable=recommend_timetable,

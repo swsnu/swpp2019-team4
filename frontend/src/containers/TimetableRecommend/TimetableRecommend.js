@@ -184,9 +184,6 @@ TimetableRecommend.propTypes = {
   onPutLastPage: PropTypes.func.isRequired,
   onDeleteRecommend: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
-  onGetLastPage: PropTypes.func.isRequired,
-  onPutLastPage: PropTypes.func.isRequired,
-  onDeleteRecommend: PropTypes.func.isRequired,
   storedUser: PropTypes.shape({
     is_authenticated: PropTypes.bool,
   }).isRequired,
