@@ -758,4 +758,365 @@ describe('user action test', () => {
         done();
       });
   });
+  
+  it('should call putCoursePref', (done) => {
+    axios.put = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 201, data: null });
+    }));
+    store.dispatch(actionCreators.putCoursepref())
+      .then(() => {
+        expect(axios.put).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  it('should .catch when putCoursePref failed', (done) => {
+    axios.put = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.putCoursepref())
+      .then(() => {
+        expect(axios.put).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  it('should call searchBuildings', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 201, data: [{name: "SNU", lat:0, lng:0, detail:''}] });
+    }));
+    store.dispatch(actionCreators.searchBuildings("SNU"))
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        expect(reducer.mock.results[0].value.building_list).toStrictEqual(
+          [{name: "SNU", lat:0, lng:0, detail:''}]
+        )
+        done();
+      });
+  });
+
+  it('should .catch when searchBuildings failed', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.searchBuildings("SNU"))
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  
+  it('should call putTimePref', (done) => {
+    axios.put = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 201, data: [] });
+    }));
+    store.dispatch(actionCreators.putTimePref([]))
+      .then(() => {
+        expect(axios.put).toHaveBeenCalledTimes(1);
+        expect(reducer.mock.results[0].value.time_pref_table).toStrictEqual([]);
+        done();
+      });
+  });
+
+  it('should .catch when putTimePref failed', (done) => {
+    axios.put = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.putTimePref([]))
+      .then(() => {
+        expect(axios.put).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  
+  it('should call getTimePref', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 201, data: [] });
+    }));
+    store.dispatch(actionCreators.getTimePref())
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        expect(reducer.mock.results[0].value.time_pref_table).toStrictEqual([])
+        done();
+      });
+  });
+
+  it('should .catch when getTimePref failed', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.getTimePref())
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+    
+  it('should call putConstraints', (done) => {
+    axios.put = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 201, data: [] });
+    }));
+    store.dispatch(actionCreators.putConstraints([]))
+      .then(() => {
+        expect(axios.put).toHaveBeenCalledTimes(1);
+        expect(reducer.mock.results[0].value.constraints).toStrictEqual([]);
+        done();
+      });
+  });
+
+  it('should .catch when putConstraints failed', (done) => {
+    axios.put = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.putConstraints([]))
+      .then(() => {
+        expect(axios.put).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  
+  it('should call getConstraints', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 201, data: [] });
+    }));
+    store.dispatch(actionCreators.getConstraints([]))
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        expect(reducer.mock.results[0].value.constraints).toStrictEqual([])
+        done();
+      });
+  });
+
+  it('should .catch when getConstraints failed', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.getConstraints([]))
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+        
+  it('should call putLastPage', (done) => {
+    axios.put = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 201, data: [] });
+    }));
+    store.dispatch(actionCreators.putLastPage([]))
+      .then(() => {
+        expect(axios.put).toHaveBeenCalledTimes(1);
+        expect(reducer.mock.results[0].value.last_page).toStrictEqual([]);
+        done();
+      });
+  });
+
+  it('should .catch when putLastPage failed', (done) => {
+    axios.put = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.putLastPage([]))
+      .then(() => {
+        expect(axios.put).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  it('should call getLastPage', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 201, data: [] });
+    }));
+    store.dispatch(actionCreators.getLastPage([]))
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        expect(reducer.mock.results[0].value.last_page).toStrictEqual([])
+        done();
+      });
+  });
+
+  it('should .catch when getLastPage failed', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.getLastPage([]))
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  
+  it('should call getRecommend', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 201, data: [] });
+    }));
+    store.dispatch(actionCreators.getRecommend([]))
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        expect(reducer.mock.results[0].value.timetables).toStrictEqual([])
+        done();
+      });
+  });
+
+  it('should .catch when getRecommend failed', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.getRecommend([]))
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  
+  it('should call postRecommend', (done) => {
+    axios.post = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 201, data: [] });
+    }));
+    store.dispatch(actionCreators.postRecommend([]))
+      .then(() => {
+        expect(axios.post).toHaveBeenCalledTimes(1);
+        expect(reducer.mock.results[0].value.timetables).toStrictEqual([])
+        done();
+      });
+  });
+
+  it('should .catch when postRecommend failed', (done) => {
+    axios.post = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.postRecommend([]))
+      .then(() => {
+        expect(axios.post).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  
+  it('should call deleteRecommend', (done) => {
+    axios.delete = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 201, data: [] });
+    }));
+    store.dispatch(actionCreators.deleteRecommend([]))
+      .then(() => {
+        expect(axios.delete).toHaveBeenCalledTimes(1);
+        expect(reducer.mock.results[0].value.timetables).toStrictEqual([])
+        done();
+      });
+  });
+
+  it('should .catch when deleteRecommend failed', (done) => {
+    axios.delete = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.deleteRecommend([]))
+      .then(() => {
+        expect(axios.delete).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+
+  it('should call editTimetable', (done) => {
+    axios.put = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 201, data: [] });
+    }));
+    store.dispatch(actionCreators.editTimetable([]))
+      .then(() => {
+        expect(axios.put).toHaveBeenCalledTimes(1);
+        expect(reducer.mock.results[0].value.timetable).toStrictEqual([])
+        done();
+      });
+  });
+
+  it('should .catch when editTimetable failed', (done) => {
+    axios.put = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.editTimetable([]))
+      .then(() => {
+        expect(axios.put).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  it('should call editCourse', (done) => {
+    axios.put = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 201, data: [] });
+    }));
+    store.dispatch(actionCreators.editCourse(0, {}))
+      .then(() => {
+        expect(axios.put).toHaveBeenCalledTimes(1);
+        expect(reducer.mock.results[0].value.timetable).toStrictEqual([])
+        done();
+      });
+  });
+
+  it('should .catch when editCourse failed', (done) => {
+    axios.put = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.editCourse(0, {}))
+      .then(() => {
+        expect(axios.put).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  it('should call setCourses', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 201, data: [] });
+    }));
+    store.dispatch(actionCreators.setCourses(0, 50, {
+      title: '',
+      classification: '',
+      department: '',
+      degree_program: '',
+      academic_year: '',
+      course_number: '',
+      lecture_number: '',
+      professor: '',
+      language: '',
+      min_credit: '',
+      max_credit: '',
+      min_score: '',
+      max_score: '',
+    }))
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        expect(reducer.mock.results[0].value.course_list).toStrictEqual([])
+        done();
+      });
+  });
+
+  it('should .catch when setCourses failed', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    store.dispatch(actionCreators.setCourses(0, 50, {
+      title: '',
+      classification: '',
+      department: '',
+      degree_program: '',
+      academic_year: '',
+      course_number: '',
+      lecture_number: '',
+      professor: '',
+      language: '',
+      min_credit: '',
+      max_credit: '',
+      min_score: '',
+      max_score: '',
+    }
+    ))
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
 });
