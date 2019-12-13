@@ -135,16 +135,18 @@ class CourseDetail extends Component {
       if (st.length === 4)st = `0${st}`;
       if (et.length === 4)et = `0${et}`;
       if (st > et) return false;
-      for (let j = 0; j < this.props.courses.length; j++) {
-        if (this.props.course.id === this.props.courses[j].id) continue;
-        for (let k = 0; k < this.props.courses[j].time.length; k++) {
-          const innerTime = this.props.courses[j].time[k];
-          let innerst = this.timeString(innerTime.start_time);
-          let inneret = this.timeString(innerTime.end_time);
-          if (innerst.length === 4) innerst = `0${innerst}`;
-          if (inneret.length === 4) inneret = `0${inneret}`;
-          if (time.week_day * 1 !== innerTime.week_day * 1 || st >= inneret || et <= innerst) continue;
-          return false;
+      for (let j = 0; j < this.props.courses.length; j += 1) {
+        if (this.props.course.id !== this.props.courses[j].id) {
+          for (let k = 0; k < this.props.courses[j].time.length; k += 1) {
+            const innerTime = this.props.courses[j].time[k];
+            let innerst = this.timeString(innerTime.start_time);
+            let inneret = this.timeString(innerTime.end_time);
+            if (innerst.length === 4) innerst = `0${innerst}`;
+            if (inneret.length === 4) inneret = `0${inneret}`;
+            if (!(time.week_day * 1 !== innerTime.week_day * 1 || st >= inneret || et <= innerst)) {
+              return false;
+            }
+          }
         }
       }
       for (let j = 0; j < i; j += 1) {
@@ -153,8 +155,9 @@ class CourseDetail extends Component {
         let inneret = innerTime.end_time;
         if (innerst.length === 4)innerst = `0${innerst}`;
         if (inneret.length === 4)inneret = `0${inneret}`;
-        if (time.week_day * 1 != innerTime.week_day * 1 || st >= inneret || et <= innerst) continue;
-        return false;
+        if (!(time.week_day * 1 !== innerTime.week_day * 1 || st >= inneret || et <= innerst)) {
+          return false;
+        }
       }
     }
     return true;
@@ -205,7 +208,7 @@ class CourseDetail extends Component {
             id="show-position-button"
             onClick={() => this.setPosition(index, segment.building)}
           >
-            <div className={`oi oi-map-marker small px-2 ${this.state.index == index ? 'text-danger' : ''}`} />
+            <div className={`oi oi-map-marker small px-2 ${this.state.index === index ? 'text-danger' : ''}`} />
           </button>
           <button
             className="px-1 btn btn-simple btn-sm"
@@ -220,17 +223,73 @@ class CourseDetail extends Component {
     } else {
       timeDiv = this.state.time.map((segment, index) => (
         <div className="d-flex flex-row align-items-center my-0" key={index}>
-          <div>{`${weekDay[segment.week_day]} ${segment.start_time} - ${segment.end_time} | ${segment.building.name} ${segment.building.detail}`}</div>
+          <div>
+            {`${weekDay[segment.week_day]} ${segment.start_time} - ${segment.end_time} |`
+          + ` ${segment.building.name} ${segment.building.detail}`}
+          </div>
           <button
             className="px-1 btn btn-simple btn-sm ml-auto"
             type="button"
             id="show-position-button"
             onClick={() => this.setPosition(index, segment.building)}
           >
-            <div className={`oi oi-map-marker small px-2 ${this.state.index == index ? 'text-danger' : ''}`} />
+            <div className={
+              `oi oi-map-marker small px-2 ${this.state.index === index ? 'text-danger' : ''}`
+}
+            />
           </button>
         </div>
       ));
+    }
+    let editButton = null;
+    if (this.props.newCourse) {
+      if (this.validcheck()) {
+        editButton = (
+          <button
+            type="button"
+            className="btn btn-dark"
+            onClick={() => this.postCustom()}
+            data-dismiss="modal"
+          >
+            생성
+          </button>
+        );
+      } else {
+        editButton = (
+          <button
+            type="button"
+            className="btn btn-dark"
+            data-dismiss="modal"
+            title={'1. 시간이 겹치지 않는지 확인하세요.\n2. 시작 시간이 끝나는 시간보다 뒤인지 확인하세요.'}
+            disabled
+          >
+            생성
+          </button>
+        );
+      }
+    } else if (this.validcheck()) {
+      editButton = (
+        <button
+          type="button"
+          className="btn btn-dark"
+          data-dismiss="modal"
+          onClick={() => { this.updateCourse(); }}
+        >
+        수정
+        </button>
+      );
+    } else {
+      editButton = (
+        <button
+          type="button"
+          className="btn btn-dark"
+          data-dismiss="modal"
+          title={'1. 시간이 겹치지 않는지 확인하세요.\n2. 시작 시간이 끝나는 시간보다 뒤인지 확인하세요.'}
+          disabled
+        >
+        수정
+        </button>
+      );
     }
     return (
       <div className="CourseDetail modal fade" id={this.props.id} tabIndex="-1" role="dialog">
@@ -345,7 +404,11 @@ class CourseDetail extends Component {
                       <td>
                         <CourseMap
                           style={{ height: '20rem' }}
-                          building={this.state.index !== -1 ? this.state.time[this.state.index].building : { name: '', detail: '' }}
+                          building={
+                            this.state.index !== -1
+                              ? this.state.time[this.state.index].building
+                              : { name: '', detail: '' }
+                          }
                           onChange={(building) => { this.handlePosition(building, this.state.index); }}
                           editable={this.props.editable}
                         />
@@ -366,43 +429,7 @@ class CourseDetail extends Component {
                     >
                 취소
                     </button>
-                    {
-                this.props.newCourse
-                  ? (
-                    <button
-                      type="button"
-                      className="btn btn-dark"
-                      onClick={() => this.postCustom()}
-                      data-dismiss="modal"
-                    >
-                      생성
-                    </button>
-                  )
-                  : (
-                    this.validcheck()
-                      ? (
-                        <button
-                          type="button"
-                          className="btn btn-dark"
-                          data-dismiss="modal"
-                          onClick={() => { this.updateCourse(); }}
-                        >
-                      수정
-                        </button>
-                      )
-                      : (
-                        <button
-                          type="button"
-                          className="btn btn-dark"
-                          data-dismiss="modal"
-                          title={'1. 시간이 겹치지 않는지 확인하세요.\n2. 시작 시간이 끝나는 시간보다 뒤인지 확인하세요.'}
-                          disabled
-                        >
-                      수정
-                        </button>
-                      )
-                  )
-                }
+                    {editButton}
                   </div>
                 )
                 : (
@@ -487,22 +514,6 @@ CourseDetail.propTypes = {
     })).isRequired,
     is_custom: PropTypes.bool,
   }),
-  courses: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number,
-    title: PropTypes.string,
-    color: PropTypes.string,
-    lecture_number: PropTypes.string,
-    course_number: PropTypes.string,
-    credit: PropTypes.number,
-    professor: PropTypes.string,
-    location: PropTypes.string,
-    time: PropTypes.arrayOf(PropTypes.shape({
-      start_time: PropTypes.number,
-      end_time: PropTypes.number,
-      week_day: PropTypes.number,
-    })).isRequired,
-    is_custom: PropTypes.bool,
-  })).isRequired,
   onEditCourse: PropTypes.func.isRequired,
   onPostCustomCourse: PropTypes.func.isRequired,
 };
