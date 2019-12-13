@@ -235,7 +235,13 @@ const SearchBar = (props) => {
       <div className="input-group-append">
         {(props.searching
           ? (
-            <button className="btn btn-dark" type="button" id="recommend-search-button" onClick={props.onSearch} disabled>
+            <button
+              className="btn btn-dark"
+              type="button"
+              id="recommend-search-button"
+              onClick={props.onSearch}
+              disabled
+            >
               <div className="oi oi-magnifying-glass" />
             </button>
           )
@@ -274,6 +280,7 @@ SearchBar.propTypes = {
     academic_year: PropTypes.string,
     title: PropTypes.string,
   }).isRequired,
+  searching: PropTypes.bool.isRequired,
 };
 
 

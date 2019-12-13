@@ -188,7 +188,7 @@ describe('user action test', () => {
     axios.get = jest.fn(() => new Promise((resolve) => {
       resolve({ status: 204, data: null });
     }));
-    const searchValues={
+    const searchValues = {
       title: 'T',
       classification: 'C',
       department: 'D',
@@ -203,7 +203,7 @@ describe('user action test', () => {
       min_score: 0,
       max_score: 10,
     };
-    store.dispatch(actionCreators.getCourses(0,49,searchValues))
+    store.dispatch(actionCreators.getCourses(0, 49, searchValues))
       .then(() => {
         expect(axios.get).toHaveBeenCalledTimes(1);
         done();
@@ -214,7 +214,7 @@ describe('user action test', () => {
     axios.get = jest.fn(() => new Promise((resolve, reject) => {
       reject(new Error(''));
     }));
-    const searchValues={
+    const searchValues = {
       title: 'TI',
       classification: 'CL',
       department: 'DE',
@@ -229,7 +229,7 @@ describe('user action test', () => {
       min_score: 0,
       max_score: 10,
     };
-    store.dispatch(actionCreators.getCourses(0,49,searchValues))
+    store.dispatch(actionCreators.getCourses(0, 49, searchValues))
       .then(() => {
         expect(axios.get).toHaveBeenCalledTimes(1);
         done();
@@ -558,7 +558,7 @@ describe('user action test', () => {
     axios.get = jest.fn(() => new Promise((resolve) => {
       resolve({ status: 204, data: null });
     }));
-    const searchValues={
+    const searchValues = {
       title: 'T',
       classification: 'C',
       department: 'D',
@@ -573,7 +573,7 @@ describe('user action test', () => {
       min_score: 0,
       max_score: 10,
     };
-    store.dispatch(actionCreators.getRatedCourse(0,49,searchValues))
+    store.dispatch(actionCreators.getRatedCourse(0, 49, searchValues))
       .then(() => {
         expect(axios.get).toHaveBeenCalledTimes(1);
         done();
@@ -584,7 +584,7 @@ describe('user action test', () => {
     axios.get = jest.fn(() => new Promise((resolve, reject) => {
       reject(new Error(''));
     }));
-    const searchValues={
+    const searchValues = {
       title: 'TI',
       classification: 'CL',
       department: 'DE',
@@ -599,7 +599,7 @@ describe('user action test', () => {
       min_score: 0,
       max_score: 10,
     };
-    store.dispatch(actionCreators.getRatedCourse(0,49,searchValues))
+    store.dispatch(actionCreators.getRatedCourse(0, 49, searchValues))
       .then(() => {
         expect(axios.get).toHaveBeenCalledTimes(1);
         done();
@@ -609,7 +609,7 @@ describe('user action test', () => {
     axios.get = jest.fn(() => new Promise((resolve) => {
       resolve({ status: 204, data: null });
     }));
-    const searchValues={
+    const searchValues = {
       title: 'T',
       classification: 'C',
       department: 'D',
@@ -624,7 +624,7 @@ describe('user action test', () => {
       min_score: 0,
       max_score: 10,
     };
-    store.dispatch(actionCreators.getUnratedCourse(0,49,searchValues))
+    store.dispatch(actionCreators.getUnratedCourse(0, 49, searchValues))
       .then(() => {
         expect(axios.get).toHaveBeenCalledTimes(1);
         done();
@@ -635,7 +635,7 @@ describe('user action test', () => {
     axios.get = jest.fn(() => new Promise((resolve, reject) => {
       reject(new Error(''));
     }));
-    const searchValues={
+    const searchValues = {
       title: 'TI',
       classification: 'CL',
       department: 'DE',
@@ -650,7 +650,7 @@ describe('user action test', () => {
       min_score: 0,
       max_score: 10,
     };
-    store.dispatch(actionCreators.getUnratedCourse(0,49,searchValues))
+    store.dispatch(actionCreators.getUnratedCourse(0, 49, searchValues))
       .then(() => {
         expect(axios.get).toHaveBeenCalledTimes(1);
         done();
@@ -660,7 +660,7 @@ describe('user action test', () => {
     axios.get = jest.fn(() => new Promise((resolve) => {
       resolve({ status: 204, data: null });
     }));
-    const searchValues={
+    const searchValues = {
       title: 'T',
       classification: 'C',
       department: 'D',
@@ -675,7 +675,7 @@ describe('user action test', () => {
       min_score: 0,
       max_score: 10,
     };
-    store.dispatch(actionCreators.setRatedCourse(0,49,searchValues))
+    store.dispatch(actionCreators.setRatedCourse(0, 49, searchValues))
       .then(() => {
         expect(axios.get).toHaveBeenCalledTimes(1);
         done();
@@ -686,7 +686,7 @@ describe('user action test', () => {
     axios.get = jest.fn(() => new Promise((resolve, reject) => {
       reject(new Error(''));
     }));
-    const searchValues={
+    const searchValues = {
       title: 'TI',
       classification: 'CL',
       department: 'DE',
@@ -701,7 +701,7 @@ describe('user action test', () => {
       min_score: 0,
       max_score: 10,
     };
-    store.dispatch(actionCreators.setRatedCourse(0,49,searchValues))
+    store.dispatch(actionCreators.setRatedCourse(0, 49, searchValues))
       .then(() => {
         expect(axios.get).toHaveBeenCalledTimes(1);
         done();
@@ -711,7 +711,7 @@ describe('user action test', () => {
     axios.get = jest.fn(() => new Promise((resolve) => {
       resolve({ status: 204, data: null });
     }));
-    const searchValues={
+    const searchValues = {
       title: 'T',
       classification: 'C',
       department: 'D',
@@ -726,7 +726,7 @@ describe('user action test', () => {
       min_score: 0,
       max_score: 10,
     };
-    store.dispatch(actionCreators.setUnratedCourse(0,49,searchValues))
+    store.dispatch(actionCreators.setUnratedCourse(0, 49, searchValues))
       .then(() => {
         expect(axios.get).toHaveBeenCalledTimes(1);
         done();
@@ -737,7 +737,7 @@ describe('user action test', () => {
     axios.get = jest.fn(() => new Promise((resolve, reject) => {
       reject(new Error(''));
     }));
-    const searchValues={
+    const searchValues = {
       title: 'TI',
       classification: 'CL',
       department: 'DE',
@@ -752,7 +752,7 @@ describe('user action test', () => {
       min_score: 0,
       max_score: 10,
     };
-    store.dispatch(actionCreators.setUnratedCourse(0,49,searchValues))
+    store.dispatch(actionCreators.setUnratedCourse(0, 49, searchValues))
       .then(() => {
         expect(axios.get).toHaveBeenCalledTimes(1);
         done();

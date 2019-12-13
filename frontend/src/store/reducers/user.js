@@ -4,7 +4,7 @@ const initialState = {
   user: {
     is_authenticated: null,
   },
-  building_list: [],
+  buildingList: [],
   timetable: { course: [] },
   timetable_friend: { course: [] },
   timetables: [],
@@ -33,7 +33,7 @@ const initialState = {
   searched: false,
   ratedSearched: false,
   unratedSearched: false,
-  last_page: 0,
+  lastPage: 0,
 };
 
 const reducer = (state = initialState, action) => {
@@ -138,7 +138,7 @@ const reducer = (state = initialState, action) => {
       return { ...state, recommended_timetables: action.timetables };
     }
     case actionTypes.GET_LAST_PAGE: {
-      return { ...state, last_page: action.last_page }
+      return { ...state, lastPage: action.lastPage };
     }
     case actionTypes.EDIT_CONSTRAINTS: {
       return { ...state, constraints: action.constraints };
@@ -159,11 +159,21 @@ const reducer = (state = initialState, action) => {
     case actionTypes.SET_UNRATED_COURSE:
       return { ...state, unrated_course: action.course_list, unratedSearched: true };
     case actionTypes.PUT_COURSEPREF_TEMP: {
-      const ratedCourse = state.rated_course.map(({ id, score, ...item }) => (id === action.coursepref.id ? { id, score: action.coursepref.score, ...item } : { id, score, ...item }));
-      const unratedCourse = state.unrated_course.map(({ id, score, ...item }) => (id === action.coursepref.id ? { id, score: action.coursepref.score, ...item } : { id, score, ...item }));
+      const ratedCourse = state.rated_course.map(
+        ({ id, score, ...item }) => (
+          id === action.coursepref.id ? { id, score: action.coursepref.score, ...item } : { id, score, ...item }
+          ),
+      );
+      const unratedCourse = state.unrated_course.map(
+        ({ id, score, ...item }) => (
+          id === action.coursepref.id ? { id, score: action.coursepref.score, ...item } : { id, score, ...item }
+          ),
+      );
       const targetCourse = state.changed_courses.filter((item) => item.id === action.coursepref.id);
       if (targetCourse.length > 0) {
-        state.changed_courses = state.changed_courses.map(({ id, score }) => (id === action.coursepref.id ? { id, score: action.coursepref.score } : { id, score }));
+        state.changed_courses = state.changed_courses.map(
+          ({ id, score }) => (id === action.coursepref.id ? { id, score: action.coursepref.score } : { id, score }),
+        );
       } else {
         state.changed_courses.push(action.coursepref);
       }
@@ -178,7 +188,7 @@ const reducer = (state = initialState, action) => {
     case actionTypes.SET_UNRATED_SEARCHABLE:
       return { ...state, unratedSearched: false };
     case actionTypes.SEARCH_BUILDINGS:
-      return { ...state, building_list: action.building_list, search_auto_complete: action.building_list.length === 1 };
+      return { ...state, buildingList: action.buildingList, search_auto_complete: action.buildingList.length === 1 };
     case actionTypes.AUTO_COMPLETE:
       return { ...state, search_auto_complete: false };
     default:

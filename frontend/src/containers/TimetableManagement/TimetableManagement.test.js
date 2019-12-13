@@ -48,7 +48,7 @@ const stubState = {
       }],
     }],
   },
-  building_list:[],
+  building_list: [],
 };
 const stubStateFalse = {
   user: {
@@ -102,9 +102,7 @@ describe('TimetableManagement test', () => {
   let spyGetTimetable;
   let spyPostTimetable;
   let spyPostCourse;
-  let spyPostCustomCourse;
   let spyPostMainTimetable;
-  let spyDeleteCourse;
   let spyDeleteTimetable;
   beforeEach(() => {
     spyGetUser = jest.spyOn(actionCreators, 'getUser')
@@ -122,10 +120,6 @@ describe('TimetableManagement test', () => {
     spyPostCourse = jest.spyOn(actionCreators, 'postCourse')
       .mockImplementation(() => () => {});
     spyPostMainTimetable = jest.spyOn(actionCreators, 'postMainTimetable')
-      .mockImplementation(() => () => {});
-    spyPostCustomCourse = jest.spyOn(actionCreators, 'postCustomCourse')
-      .mockImplementation(() => () => {});
-    spyDeleteCourse = jest.spyOn(actionCreators, 'deleteCourse')
       .mockImplementation(() => () => {});
     spyDeleteTimetable = jest.spyOn(actionCreators, 'deleteTimetable')
       .mockImplementation(() => () => {});

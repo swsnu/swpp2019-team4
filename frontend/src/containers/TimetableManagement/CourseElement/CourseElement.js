@@ -10,19 +10,6 @@ const CourseElement = (props) => {
     return `${weekDayName[weekDay]}${hourString}${minuteString}`;
   };
   const { course } = props;
-  const colorGradient = [
-    '#FC466B',
-    '#E94879',
-    '#D64A87',
-    '#C34D96',
-    '#B04FA4',
-    '#9D52B3',
-    '#8A54C1',
-    '#7756CF',
-    '#6459DE',
-    '#515BEC',
-    '#3F5EFB',
-  ];
   let timeString = '';
   for (let i = 0; i < course.time.length; i += 1) {
     timeString += segmentToString(course.time[i].week_day, course.time[i].start_time);
@@ -38,7 +25,9 @@ const CourseElement = (props) => {
             {props.course.is_custom ? course.title : `${course.title} (${course.lecture_number})`}
           </div>
           <div className="text-black-50 text-left small" id="recommend-course-abstract" style={{ minHeight: '1rem' }}>
-            {props.course.is_custom ? ' ' : `${course.professor} | ${course.credit}학점 | ${timeString} | ${course.location}`}
+            {props.course.is_custom
+              ? ' '
+              : `${course.professor} | ${course.credit}학점 | ${timeString} | ${course.location}`}
           </div>
         </div>
         {props.addon}

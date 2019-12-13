@@ -75,20 +75,15 @@ class TimetableManagement extends Component {
     this.props.setCourses(0, 49, this.state.searchValues);
   }
 
-  componentWillUnmount() {
-    this.is_mount = false;
-  }
-
-
   shouldComponentUpdate(nextprops) {
     if (nextprops.searched) {
       this.resetSearch();
     }
     return true;
   }
-  resetSearch(){
-    this.props.searchable();
-    if(this.state.searching)this.setState({ searching: false });
+
+  componentWillUnmount() {
+    this.is_mount = false;
   }
 
   handleLogout() {
@@ -249,12 +244,21 @@ class TimetableManagement extends Component {
     this.setState({ searchdetail: !this.state.searchdetail });
   }
 
+  resetSearch() {
+    this.props.searchable();
+    if (this.state.searching) this.setState({ searching: false });
+  }
+
   scrollHandler(scrollTop) {
     const pageSize = 50;
     const scrollSize = pageSize * 60;
     if (this.state.showCourses && this.state.scrollLimit < scrollTop) {
       this.setState({ scrollLimit: this.state.scrollLimit + scrollSize });
-      this.props.onGetCourses(this.state.searchCourseCount, this.state.searchCourseCount + pageSize - 1, this.state.realValues);
+      this.props.onGetCourses(
+        this.state.searchCourseCount,
+        this.state.searchCourseCount + pageSize - 1,
+        this.state.realValues,
+      );
       this.setState({ searchCourseCount: this.state.searchCourseCount + pageSize });
     }
   }
@@ -401,7 +405,13 @@ class TimetableManagement extends Component {
               </li>
             </ul>
 
-            <div className="tab-content overflow-y-auto mb-4" style={{ height: '30rem' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
+            <div
+              className="tab-content overflow-y-auto mb-4"
+              style={{ height: '30rem' }}
+              onScroll={(event) => {
+                this.scrollHandler(event.target.scrollTop);
+              }}
+            >
               <div
                 className={`tab-pane ${this.state.showCourses ? 'active' : ''}`}
                 id="searched-tab"
@@ -532,9 +542,6 @@ TimetableManagement.propTypes = {
   setCourses: PropTypes.func.isRequired,
   onPostCourseTemp: PropTypes.func.isRequired,
   onDeleteCourseTemp: PropTypes.func.isRequired,
-  searched: PropTypes.arrayOf(PropTypes.shape({
-
-  })).isRequired,
   searchable: PropTypes.bool.isRequired,
 };
 

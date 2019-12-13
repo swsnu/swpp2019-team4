@@ -30,11 +30,10 @@ class Login extends Component {
       .then(() => {
         if (this.is_mount) {
           this.setState((prevState) => ({ ...prevState, login_failed: true }));
-        }
-        else {
+        } else {
           this.props.onGetLastPage()
             .then(() => {
-              if(this.props.last_page !== 3) {
+              if (this.props.lastPage !== 3) {
                 this.props.onPutLastPage(0);
               }
             });
@@ -154,14 +153,14 @@ Login.propTypes = {
 
 const mapStateToProps = (state) => ({
   storedUser: state.user.user,
-  last_page: state.user.last_page,
+  lastPage: state.user.lastPage,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onLogin: (email, password) => dispatch(actionCreators.postSignin(email, password)),
   onGetUser: () => dispatch(actionCreators.getUser()),
   onGetLastPage: () => dispatch(actionCreators.getLastPage()),
-  onPutLastPage: (last_page) => dispatch(actionCreators.putLastPage(last_page)),
+  onPutLastPage: (lastPage) => dispatch(actionCreators.putLastPage(lastPage)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

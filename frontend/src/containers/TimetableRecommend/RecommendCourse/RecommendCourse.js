@@ -67,11 +67,6 @@ class RecommendCourse extends Component {
     document.addEventListener('mouseup', this.mouseUpListener, true);
   }
 
-  componentWillUnmount() {
-    this.is_mount = false;
-    document.removeEventListener('mouseup', this.mouseUpListener, true);
-  }
-
   shouldComponentUpdate(nextprops) {
     if (nextprops.searched) {
       this.resetSearch();
@@ -79,35 +74,35 @@ class RecommendCourse extends Component {
     return true;
   }
 
-  resetSearch(){
-    this.props.searchable();
-    if(this.state.searching)this.setState({ searching: false });
+  componentWillUnmount() {
+    this.is_mount = false;
+    document.removeEventListener('mouseup', this.mouseUpListener, true);
   }
 
   mouseUpListener() {
     if (!this.is_mount) return;
-    const cur_list = this.props.changedCourses;
-    const prv_list = this.state.prv_changed;
-    var new_list = [];
-    var is_same = true;
-    for(var i=0;i<cur_list.length;i++) {
-      const cur_id = cur_list[i].id;
-      const cur_score = cur_list[i].score;
-      new_list.push({id:cur_id, score:cur_score});
-      if(i >= prv_list.length) {
-        is_same = false;
-        continue;
-      }
-      const prv_id = prv_list[i].id;
-      const prv_score = prv_list[i].score;
-      if(cur_id !== prv_id || cur_score !== prv_score) {
-        is_same = false;
+    const curList = this.props.changedCourses;
+    const prvList = this.state.prv_changed;
+    const newList = [];
+    let isSame = true;
+    for (let i = 0; i < curList.length; i += 1) {
+      const curId = curList[i].id;
+      const curScore = curList[i].score;
+      newList.push({ id: curId, score: curScore });
+      if (i >= prvList.length) {
+        isSame = false;
+      } else {
+        const prvId = prvList[i].id;
+        const prvScore = prvList[i].score;
+        if (curId !== prvId || curScore !== prvScore) {
+          isSame = false;
+        }
       }
     }
-    if(!is_same) {
-      this.props.onPutCoursePref(cur_list);
+    if (!isSame) {
+      this.props.onPutCoursePref(curList);
     }
-    this.setState({prv_changed: new_list});
+    this.setState({ prv_changed: newList });
   }
 
   segmentToString(weekDay, startTime) {
@@ -119,18 +114,27 @@ class RecommendCourse extends Component {
     const pageSize = 50;
     const scrollSize = pageSize * 60;
     if (this.state.tabview === 0 && this.state.ratedScrollLimit < scrollTop) {
-      this.setState({ ratedScrollLimit: this.state.ratedScrollLimit + scrollSize });
-      this.props.getRatedCourse(this.state.ratedCourseCount, this.state.ratedCourseCount + pageSize - 1, this.state.realValues);
-      this.setState({ ratedCourseCount: this.state.ratedCourseCount + pageSize });
+      this.setState((prevState) => ({ ratedScrollLimit: prevState.ratedScrollLimit + scrollSize }));
+      this.props.getRatedCourse(this.state.ratedCourseCount,
+        this.state.ratedCourseCount + pageSize - 1,
+        this.state.realValues);
+      this.setState((prevState) => ({ ratedCourseCount: prevState.ratedCourseCount + pageSize }));
     } else if (this.state.tabview === 1 && this.state.unratedScrollLimit < scrollTop) {
-      this.setState({ unratedScrollLimit: this.state.unratedScrollLimit + scrollSize });
-      this.props.getUnratedCourse(this.state.unratedCourseCount, this.state.unratedCourseCount + pageSize - 1, this.state.realValues);
-      this.setState({ unratedCourseCount: this.state.unratedCourseCount + pageSize });
+      this.setState((prevState) => ({ unratedScrollLimit: prevState.unratedScrollLimit + scrollSize }));
+      this.props.getUnratedCourse(this.state.unratedCourseCount,
+        this.state.unratedCourseCount + pageSize - 1,
+        this.state.realValues);
+      this.setState((prevState) => ({ unratedCourseCount: prevState.unratedCourseCount + pageSize }));
     }
   }
 
   onSearchToggle() {
-    this.setState({ searchdetail: !this.state.searchdetail });
+    this.setState((prevState) => ({ searchdetail: !prevState.searchdetail }));
+  }
+
+  resetSearch() {
+    this.props.searchable();
+    if (this.state.searching) this.setState({ searching: false });
   }
 
   changeTab(tab) {
@@ -218,13 +222,13 @@ class RecommendCourse extends Component {
     if (this.state.searching) return;
     this.setState({ searching: true });
     if (this.state.searchdetail) {
-      this.setState({
-        realValues: this.state.searchValues,
+      this.setState((prevState) => ({
+        realValues: prevState.searchValues,
         ratedScrollLimit: 1500,
         unratedScrollLimit: 1500,
         ratedCourseCount: 50,
         unratedCourseCount: 50,
-      });
+      }));
       this.props.setRatedCourse(0, 49, this.state.searchValues);
       this.props.setUnratedCourse(0, 49, this.state.searchValues);
     } else {
@@ -310,45 +314,59 @@ class RecommendCourse extends Component {
     }
     return (
       <div className="RecommendCourse h-100">
-          <ul className="nav nav-tabs nav-justified" id="recommend-course-tab" role="tablist">
-            <li className="nav-item">
-              <a
-                className="nav-link active w-100"
-                id="rated-tab-clicker"
-                data-toggle="tab"
-                href="#rated-tab"
-                role="tab"
-                aria-controls="rated"
-                aria-selected="true"
-                onClick={() => { this.changeTab(0); }}
-              >
+        <ul className="nav nav-tabs nav-justified" id="recommend-course-tab" role="tablist">
+          <li className="nav-item">
+            <a
+              className="nav-link active w-100"
+              id="rated-tab-clicker"
+              data-toggle="tab"
+              href="#rated-tab"
+              role="tab"
+              aria-controls="rated"
+              aria-selected="true"
+              onClick={() => { this.changeTab(0); }}
+            >
 평가
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className="nav-link w-100"
-                id="unrated-tab-clicker"
-                data-toggle="tab"
-                href="#unrated-tab"
-                role="tab"
-                aria-controls="unrated"
-                aria-selected="false"
-                onClick={() => { this.changeTab(1); }}
-              >
+            </a>
+          </li>
+          <li className="nav-item">
+            <a
+              className="nav-link w-100"
+              id="unrated-tab-clicker"
+              data-toggle="tab"
+              href="#unrated-tab"
+              role="tab"
+              aria-controls="unrated"
+              aria-selected="false"
+              onClick={() => { this.changeTab(1); }}
+            >
 미평가
-              </a>
-            </li>
-          </ul>
-          <SearchBar value={this.state.searchValues} onChange={(event, type) => this.searchOnChange(event, type)} onKeyDown={() => this.enterKey()} onToggle={() => this.onSearchToggle()} togglestatus={this.state.searchdetail} onSearch={() => this.search()} searchScore searching={this.state.searching} />
-          <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: 'calc(100% - 8rem)' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
-            <div className="tab-pane show active" id="rated-tab" role="tabpanel" aria-labelledby="rated-tab">
-              {ratedview}
-            </div>
-            <div className="tab-pane" id="unrated-tab" role="tabpanel" aria-labelledby="unrated-tab">
-              {unratedview}
-            </div>
+            </a>
+          </li>
+        </ul>
+        <SearchBar
+          value={this.state.searchValues}
+          onChange={(event, type) => this.searchOnChange(event, type)}
+          onKeyDown={() => this.enterKey()}
+          onToggle={() => this.onSearchToggle()}
+          togglestatus={this.state.searchdetail}
+          onSearch={() => this.search()}
+          searchScore
+          searching={this.state.searching}
+        />
+        <div
+          className="tab-content overflow-y-auto"
+          id="myTabContent"
+          style={{ height: 'calc(100% - 8rem)' }}
+          onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}
+        >
+          <div className="tab-pane show active" id="rated-tab" role="tabpanel" aria-labelledby="rated-tab">
+            {ratedview}
           </div>
+          <div className="tab-pane" id="unrated-tab" role="tabpanel" aria-labelledby="unrated-tab">
+            {unratedview}
+          </div>
+        </div>
       </div>
     );
   }

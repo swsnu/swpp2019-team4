@@ -43,7 +43,7 @@ class CourseDetail extends Component {
 
   setPosition(index) {
     this.setState({ index });
-    this.setState({ tempBuilding: this.state.time[index].building });
+    this.setState((prevState) => ({ tempBuilding: prevState.time[index].building }));
   }
 
 
@@ -129,34 +129,37 @@ class CourseDetail extends Component {
 
   validcheck() {
     if (this.props.courses === undefined || this.props.course === undefined) return false;
-    for (let i = 0; i < this.state.time.length; i++) {
+    for (let i = 0; i < this.state.time.length; i += 1) {
       const time = this.state.time[i];
       let st = time.start_time;
       let et = time.end_time;
       if (st === undefined || et === undefined) return false;
-      if (st.length == 4)st = `0${st}`;
-      if (et.length == 4)et = `0${et}`;
+      if (st.length === 4)st = `0${st}`;
+      if (et.length === 4)et = `0${et}`;
       if (st > et) return false;
-      for (let j = 0; j < this.props.courses.length; j++) {
-        if (this.props.course.id === this.props.courses[j].id) continue;
-        for (let k = 0; k < this.props.courses[j].time.length; k++) {
-          const innerTime = this.props.courses[j].time[k];
-          let innerst = this.timeString(innerTime.start_time);
-          let inneret = this.timeString(innerTime.end_time);
-          if (innerst.length == 4)innerst = `0${innerst}`;
-          if (inneret.length == 4)inneret = `0${inneret}`;
-          if (time.week_day != innerTime.week_day || st >= inneret || et <= innerst) continue;
-          return false;
+      for (let j = 0; j < this.props.courses.length; j += 1) {
+        if (this.props.course.id !== this.props.courses[j].id) {
+          for (let k = 0; k < this.props.courses[j].time.length; k += 1) {
+            const innerTime = this.props.courses[j].time[k];
+            let innerst = this.timeString(innerTime.start_time);
+            let inneret = this.timeString(innerTime.end_time);
+            if (innerst.length === 4)innerst = `0${innerst}`;
+            if (inneret.length === 4)inneret = `0${inneret}`;
+            if (time.week_day * 1 === innerTime.week_day * 1 && st < inneret && et > innerst) {
+              return false;
+            }
+          }
         }
       }
-      for (let j = 0; j < i; j++) {
+      for (let j = 0; j < i; j += 1) {
         const innerTime = this.state.time[j];
         let innerst = innerTime.start_time;
         let inneret = innerTime.end_time;
-        if (innerst.length == 4)innerst = `0${innerst}`;
-        if (inneret.length == 4)inneret = `0${inneret}`;
-        if (time.week_day != innerTime.week_day || st >= inneret || et <= innerst) continue;
-        return false;
+        if (innerst.length === 4)innerst = `0${innerst}`;
+        if (inneret.length === 4)inneret = `0${inneret}`;
+        if (time.week_day * 1 === innerTime.week_day * 1 && st < inneret && et > innerst) {
+          return false;
+        }
       }
     }
     return true;
@@ -237,6 +240,41 @@ class CourseDetail extends Component {
     const lat = this.state.index !== -1 ? parseFloat(this.state.time[this.state.index].building.lat) : 0;
     const lng = this.state.index !== -1 ? parseFloat(this.state.time[this.state.index].building.lng) : 0;
     const center = { lat, lng };
+    const editbutton = this.props.newCourse
+      ? (
+        <button
+          type="button"
+          className="btn btn-dark"
+          onClick={() => this.postCustom()}
+          data-dismiss="modal"
+        >
+        생성
+        </button>
+      )
+      : (
+        this.validcheck()
+          ? (
+            <button
+              type="button"
+              className="btn btn-dark"
+              data-dismiss="modal"
+              onClick={() => { this.updateCourse(); }}
+            >
+        수정
+            </button>
+          )
+          : (
+            <button
+              type="button"
+              className="btn btn-dark"
+              data-dismiss="modal"
+              title={'1. 시간이 겹치지 않는지 확인하세요.\n2. 시작 시간이 끝나는 시간보다 뒤인지 확인하세요.'}
+              disabled
+            >
+        수정
+            </button>
+          )
+      );
     return (
 
       <div className="CourseDetail modal fade" id={this.props.id} tabIndex="-1" role="dialog">
@@ -346,7 +384,11 @@ class CourseDetail extends Component {
                     <td>
                       <CourseMap
                         center={center}
-                        building={this.state.index !== -1 ? this.state.time[this.state.index].building : { name: '', detail: '' }}
+                        building={
+                          this.state.index !== -1
+                            ? this.state.time[this.state.index].building
+                            : { name: '', detail: '' }
+                        }
                         origin={this.state.index !== -1 ? this.state.tempBuilding : { name: '', detail: '' }}
                         set={(building) => { this.handlePosition(building, this.state.index); }}
                         editable={this.props.editable}
@@ -368,43 +410,7 @@ class CourseDetail extends Component {
                     >
                 취소
                     </button>
-                    {
-                this.props.newCourse
-                  ? (
-                    <button
-                      type="button"
-                      className="btn btn-dark"
-                      onClick={() => this.postCustom()}
-                      data-dismiss="modal"
-                    >
-                      생성
-                    </button>
-                  )
-                  : (
-                    this.validcheck()
-                      ? (
-                        <button
-                          type="button"
-                          className="btn btn-dark"
-                          data-dismiss="modal"
-                          onClick={() => { this.updateCourse() }}
-                        >
-                      수정
-                        </button>
-                      )
-                      : (
-                        <button
-                          type="button"
-                          className="btn btn-dark"
-                          data-dismiss="modal"
-                          title={'1. 시간이 겹치지 않는지 확인하세요.\n2. 시작 시간이 끝나는 시간보다 뒤인지 확인하세요.'}
-                          disabled
-                        >
-                      수정
-                        </button>
-                      )
-                  )
-                }
+                    {editbutton}
                   </div>
                 )
                 : (

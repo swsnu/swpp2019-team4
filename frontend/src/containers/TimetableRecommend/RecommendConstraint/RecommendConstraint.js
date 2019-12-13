@@ -9,14 +9,13 @@ class RecommendConstraint extends Component {
     super(props);
     const consts = this.props.constraints;
     this.state = {
-      consts: consts,
+      consts,
       credit_min_valid: false,
       credit_max_valid: false,
       credit_valid: false,
       major_min_valid: false,
       major_max_valid: false,
       major_valid: false,
-      days_per_week: false,
       days_per_week_valid: false,
     };
   }
@@ -26,22 +25,21 @@ class RecommendConstraint extends Component {
       .then(() => {
         const consts = this.props.constraints;
         this.setState({
-          consts: consts,
-          credit_min_valid: (consts.credit_min >= 1 &&
-                            consts.credit_min <= 21),
-          credit_max_valid: (consts.credit_max >= 1 &&
-                            consts.credit_max <= 21),
+          consts,
+          credit_min_valid: (consts.credit_min >= 1
+                            && consts.credit_min <= 21),
+          credit_max_valid: (consts.credit_max >= 1
+                            && consts.credit_max <= 21),
           credit_valid: (consts.credit_min <= consts.credit_max),
-          major_min_valid: (consts.major_min >= 0 &&
-                            consts.major_min <= 21),
-          major_max_valid: (consts.major_max >= 0 &&
-                            consts.major_max <= 21),
+          major_min_valid: (consts.major_min >= 0
+                            && consts.major_min <= 21),
+          major_max_valid: (consts.major_max >= 0
+                            && consts.major_max <= 21),
           major_valid: (consts.major_min <= consts.credit_max),
-          days_per_week: consts.days_per_week,
-          days_per_week_valid: (consts.days_per_week >= 1 &&
-                                consts.days_per_week <= 6),
+          days_per_week_valid: (consts.days_per_week >= 1
+                                && consts.days_per_week <= 6),
         });
-      })
+      });
   }
 
   handleDaysPerWeek(value) {

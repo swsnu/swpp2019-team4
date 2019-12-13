@@ -68,7 +68,7 @@ const stubState = {
       }],
     }],
   },
-  building_list:[],
+  building_list: [],
 };
 
 function window(course) {

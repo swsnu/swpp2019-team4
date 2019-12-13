@@ -15,7 +15,6 @@ class TimetableRecommend extends Component {
     super(props);
     this.state = {
       valid: true,
-      time_pref: [],
     };
   }
 
@@ -30,10 +29,6 @@ class TimetableRecommend extends Component {
 
   handleValid(value) {
     this.setState({ valid: value });
-  }
-
-  handleTimePref(value) {
-    this.setState({ time_pref: value });
   }
 
   movePage(offset) {
@@ -114,20 +109,20 @@ class TimetableRecommend extends Component {
             </table>
           </div>
           <div className="col-1 h-100 d-flex align-items-center">
-              {this.props.index !== 0 && this.props.index !== 3
-                ? (
-                  <button
-                    type="button"
-                    className="btn btn-simple mx-auto text-nowrap overflow-hidden"
-                    id="recommend-back-button"
-                    onClick={() => this.movePage(-1)}
-                  >
-                    <h1 className="oi oi-chevron-left my-0"/>
-                    <br/>
-                    {'이전'}
-                  </button>
-                )
-                : null}
+            {this.props.index !== 0 && this.props.index !== 3
+              ? (
+                <button
+                  type="button"
+                  className="btn btn-simple mx-auto text-nowrap overflow-hidden"
+                  id="recommend-back-button"
+                  onClick={() => this.movePage(-1)}
+                >
+                  <h1 className="oi oi-chevron-left my-0" />
+                  <br />
+                    이전
+                </button>
+              )
+              : null}
           </div>
           <div className="col-6 h-100 d-flex flex-column">
             <div className="recommend-content flex-grow-1" style={{ minHeight: 0 }}>
@@ -135,36 +130,36 @@ class TimetableRecommend extends Component {
             </div>
           </div>
           <div className="col-1 h-100 d-flex align-items-center">
-              {this.props.index !== 3
-                ? (
-                  <button
-                    type="button"
-                    className="btn btn-simple mx-auto text-nowrap overflow-hidden"
-                    id="recommend-next-button"
-                    disabled={!this.state.valid}
-                    onClick={() => this.movePage(1)}
-                  >
-                    <h1 className="oi oi-chevron-right my-0"/>
-                    <br/>
-                    {'다음'}
-                  </button>
-                )
-                : (
-                  <button
-                    type="button"
-                    className="btn btn-simple mx-auto text-nowrap overflow-hidden"
-                    id="recommend-next-button"
-                    disabled={!this.state.valid || this.props.timetable.length === 0}
-                    onClick={() => {
-                      this.movePage(-3);
-                      this.props.onDeleteRecommend();
-                    }}
-                  >
-                    <h1 className="oi oi-chevron-right"/>
-                    <br/>
-                    {'처음으로'}
-                  </button>
-                )}
+            {this.props.index !== 3
+              ? (
+                <button
+                  type="button"
+                  className="btn btn-simple mx-auto text-nowrap overflow-hidden"
+                  id="recommend-next-button"
+                  disabled={!this.state.valid}
+                  onClick={() => this.movePage(1)}
+                >
+                  <h1 className="oi oi-chevron-right my-0" />
+                  <br />
+                    다음
+                </button>
+              )
+              : (
+                <button
+                  type="button"
+                  className="btn btn-simple mx-auto text-nowrap overflow-hidden"
+                  id="recommend-next-button"
+                  disabled={!this.state.valid || this.props.timetable.length === 0}
+                  onClick={() => {
+                    this.movePage(-3);
+                    this.props.onDeleteRecommend();
+                  }}
+                >
+                  <h1 className="oi oi-chevron-right" />
+                  <br />
+                    처음으로
+                </button>
+              )}
           </div>
         </div>
       </div>
@@ -184,17 +179,17 @@ const mapStateToProps = (state) => ({
   storedUser: state.user.user,
   constraints: state.user.constraints,
   changedCourses: state.user.changed_courses,
-  index: state.user.last_page,
-  timetable: state.user.recommended_timetables
+  index: state.user.lastPage,
+  timetable: state.user.recommended_timetables,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onLogout: () => dispatch(actionCreators.getSignout()),
   onGetLastPage: () => dispatch(actionCreators.getLastPage()),
-  onPutLastPage: (last_page) => dispatch(actionCreators.putLastPage(last_page)),
+  onPutLastPage: (lastPage) => dispatch(actionCreators.putLastPage(lastPage)),
   onPutConstraints: (consts) => dispatch(actionCreators.putConstraints(consts)),
-  onPutTimePref: (time_pref) => dispatch(actionCreators.putTimePref(time_pref)),
+  onPutTimePref: (timePref) => dispatch(actionCreators.putTimePref(timePref)),
   onPutCoursePref: (changedCourses) => dispatch(actionCreators.putCoursepref(changedCourses)),
   onDeleteRecommend: () => dispatch(actionCreators.deleteRecommend()),
 });

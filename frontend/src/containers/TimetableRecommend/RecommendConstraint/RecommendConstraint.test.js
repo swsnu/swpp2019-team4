@@ -9,7 +9,9 @@ import RecommendConstraint from './RecommendConstraint';
 
 const stubState = {
   user: { is_authenticated: true, timetable_main: 0 },
-  constraints: {credit_min:15, credit_max:18, major_min:1, major_max:18, days_per_week: 4},
+  constraints: {
+    credit_min: 15, credit_max: 18, major_min: 1, major_max: 18, days_per_week: 4,
+  },
 };
 
 function window(state) {
