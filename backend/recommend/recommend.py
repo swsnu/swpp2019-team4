@@ -30,9 +30,9 @@ def get_constants(user):
     MAX_MAJOR = user.major_max
 
 def get_target_courses(user):
-    all_course = [course for course in Course.objects.all().values()]
+    all_course = list(Course.objects.all().values())
     pref_exist = [False] * MAX_COURSE_ID
-    user_course_pref = [pref for pref in CoursePref.objects.filter(user=user).values()]
+    user_course_pref = list(CoursePref.objects.filter(user=user).values())
     for pref in user_course_pref:
         pref_exist[pref['course_id']] = True
     ret = []
@@ -92,12 +92,12 @@ class ConvertedUserData:
         self._course_pref_table = [DEFAULT_COURSE_PREF] * len(all_course)
         self._time_pref_table = [DEFAULT_TIME_PREF] * TIME_PREF_LEN
 
-        user_course_pref = [pref for pref in CoursePref.objects.filter(user=user).values()]
+        user_course_pref = list(CoursePref.objects.filter(user=user).values())
 
         for pref in user_course_pref:
             self._course_pref_table[self._cid_to_index[pref['course_id']]] = pref['score']
 
-        user_time_pref = [pref for pref in TimePref.objects.filter(user=user).values()]
+        user_time_pref = list(TimePref.objects.filter(user=user).values())
         for pref in user_time_pref:
             start_time = pref['start_time'].hour * 60 + pref['start_time'].minute
             self._time_pref_table[pref['weekday']*HOURS_LEN+(start_time-480)//30] = pref['score']
@@ -118,8 +118,7 @@ class ConvertedCourseData:
         cur_weekday = timeslice // HOURS_LEN
         cur_start_time = 8 * 60 + timeslice % HOURS_LEN * 30
         for course_time in self._course_time_list:
-            if (course_time['start_time'] <= cur_start_time and
-                    cur_start_time <= course_time['end_time'] and
+            if (course_time['start_time'] <= cur_start_time <= course_time['end_time'] and
                     course_time['week_day'] == cur_weekday):
                 return True
         return False
@@ -155,7 +154,7 @@ class ConvertedCourseData:
     def get_course_number(self):
         return self._course_number
 
-    def get_pref(self, user) :
+    def get_pref(self, user):
         c_score = user.get_course_pref(self)
         t_score_list = [user.get_time_pref(tm) for tm in self._timeslice_set.get_list()]
         if t_score_list:
@@ -228,10 +227,10 @@ def run_recommendation(user):
 
     user_data = ConvertedUserData(user)
 
-    all_course_data = list(map(lambda x: ConvertedCourseData(x), get_target_courses(user)))
+    all_course_data = list(map(ConvertedCourseData, get_target_courses(user)))
     all_course_data.sort(key=
                          lambda x: (x.get_timeslice_set().get_list(), user_data.course_score(x)),
-                         reverse = True)
+                         reverse=True)
 
     unique_course_data = []
     valid_course_data = []
@@ -279,19 +278,19 @@ def run_recommendation(user):
             if flag:
                 using_courses.append(course1)
 
-        def termi2(x):
+        def termi2(course_list):
             my_credit = 0
             my_major = 0
-            for course in x:
+            for course in course_list:
                 cur_credit = course.get_credit()
                 my_credit += cur_credit
                 my_major += cur_credit if course.is_major() else 0
             return my_credit > MAX_CREDIT or my_major > MAX_MAJOR
 
-        def appnd2(x):
+        def appnd2(course_list):
             my_credit = 0
             my_major = 0
-            for course in x:
+            for course in course_list:
                 cur_credit = course.get_credit()
                 my_credit += cur_credit
                 my_major += cur_credit if course.is_major() else 0

@@ -210,9 +210,9 @@ class RecommendTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(156, len(json.loads(response.content.decode())))
         self.assertEqual(1, json.loads(response.content.decode())[0]['score'])
-        table=[]
-        table_row=[2, 2, 2, 2, 2, 2]
-        for i in range(26):
+        table = []
+        table_row = [2, 2, 2, 2, 2, 2]
+        for _ in range(26):
             table.append(table_row)
         response = self.put('/api/recommend/timepref/',
                             json.dumps({'table':table}),
@@ -367,8 +367,8 @@ class RecommendTestCase(TestCase):
                             content_type='application/json')
         self.assertEqual(response.status_code, 200)
         response = self.put('/api/recommend/constraints/',
-                             json.dumps({}),
-                             content_type='application/json')
+                            json.dumps({}),
+                            content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
     def test_recommend(self):

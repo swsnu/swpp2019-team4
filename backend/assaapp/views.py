@@ -315,11 +315,12 @@ def api_timetable_id_course(request, timetable_id):
 def api_custom_course_id(request, custom_course_id):
     if request.method == 'PUT':
         try:
-            custom_course = 
-                CustomCourse.objects.select_related('timetable__user').get(pk=custom_course_id)
+            custom_course = CustomCourse.objects.select_related('timetable__user').get(
+                pk=custom_course_id
+            )
             timetable = custom_course.timetable
             if timetable.user != request.user:
-                return HttpResponseNotAllowed()
+                return HttpResponse(status=401)
             req_data = json.loads(request.body.decode())
             keys = ['color', 'title']
             for key in keys:
@@ -336,11 +337,12 @@ def api_custom_course_id(request, custom_course_id):
             return HttpResponseBadRequest()
     if request.method == 'DELETE':
         try:
-            custom_course = CustomCourse.objects
-                            .select_related('timetable').get(pk=custom_course_id)
+            custom_course = CustomCourse.objects.select_related('timetable').get(
+                pk=custom_course_id
+            )
             timetable = custom_course.timetable
             if timetable.user != request.user:
-                return HttpResponseNotAllowed()
+                return HttpResponse(status=401)
             custom_course.delete()
             return JsonResponse(timetable.data())
         except (CustomCourse.DoesNotExist, Timetable.DoesNotExist):
@@ -376,8 +378,7 @@ def api_course(request):
         cf_score_result = cf_score(request.user)
         start = int(request.GET.get('start'))
         end = int(request.GET.get('end'))
-        course_list = [course for course
-                       in filter(lambda course: searcher(course, 0, request.GET), course_list)]
+        course_list = list(filter(lambda course: searcher(course, 0, request.GET), course_list))
         course_list = sorted(course_list, key=lambda course: -cf_view_result[course.id])
         course_len = len(course_list)
         get_result = []
