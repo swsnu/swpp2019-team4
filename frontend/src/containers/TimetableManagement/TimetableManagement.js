@@ -18,7 +18,6 @@ class TimetableManagement extends Component {
       semester: '2019-2',
       title: '',
       showCourses: true,
-      searchdetail: false,
       scrollLimit: 1500,
       searchCourseCount: 50,
       searching: false,
@@ -86,6 +85,7 @@ class TimetableManagement extends Component {
     }
     return true;
   }
+
   resetSearch(){
     this.props.searchable();
     if(this.state.searching)this.setState({ searching: false });
@@ -151,37 +151,13 @@ class TimetableManagement extends Component {
 
   search() {
     if (this.state.searching) return;
-    this.setState({ searching: true });
-    if (this.state.searchdetail) {
-      this.setState({
-        realValues: this.state.searchValues,
-        scrollLimit: 1500,
-        searchCourseCount: 50,
-      });
-      this.props.setCourses(0, 49, this.state.searchValues);
-    } else {
-      const newValue = {
-        title: this.state.searchValues.title,
-        classification: '',
-        department: '',
-        degree_program: '',
-        academic_year: '',
-        course_number: '',
-        lecture_number: '',
-        professor: '',
-        language: '',
-        min_credit: '',
-        max_credit: '',
-        min_score: '',
-        max_score: '',
-      };
-      this.setState({
-        realValues: newValue,
-        scrollLimit: 1500,
-        searchCourseCount: 50,
-      });
-      this.props.setCourses(0, 49, this.state.searchValues);
-    }
+    this.setState({
+      searching: true,
+      realValues: this.state.searchValues,
+      scrollLimit: 1500,
+      searchCourseCount: 50,
+    });
+    this.props.setCourses(0, 49, this.state.searchValues);
     this.showCoursesInSearch();
   }
 
@@ -243,10 +219,6 @@ class TimetableManagement extends Component {
     const newValue = this.state.searchValues;
     newValue[type] = event.target.value;
     this.setState({ searchValues: newValue });
-  }
-
-  onSearchToggle() {
-    this.setState({ searchdetail: !this.state.searchdetail });
   }
 
   scrollHandler(scrollTop) {
@@ -366,8 +338,6 @@ class TimetableManagement extends Component {
               onChange={(event, type) => this.searchOnChange(event, type)}
               onKeyDown={() => this.enterKey()}
               onSearch={() => this.search()}
-              onToggle={() => this.onSearchToggle()}
-              togglestatus={this.state.searchdetail}
               searchScore={false}
               searching={this.state.searching}
             />
