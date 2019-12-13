@@ -83,7 +83,7 @@ class RecommendResult extends Component {
           <div className="timetable-result">
             <TimetableView
               id="timetable-resultview"
-              height={24}
+              height={22}
               courses={this.state.index >= 0 ? this.props.timetable[this.state.index].course : []}
               link={false}
             />

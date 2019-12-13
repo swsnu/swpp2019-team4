@@ -24,9 +24,10 @@ class RecommendTime extends Component {
 
   excludedTime (prv_table) {
     var color_table = []
-    for(var i=0;i<26;i++) {
+    var i, j;
+    for(i=0;i<26;i++) {
       var tmp_table = [];
-      for(var j=0;j<6;j++) {
+      for(j=0;j<6;j++) {
         var color = prv_table[i][j];
         if(color === -1) color = 3;
         tmp_table.push(color);
@@ -34,8 +35,8 @@ class RecommendTime extends Component {
       color_table.push(tmp_table);
     }
     var timetable = this.props.timetable;
-    for(var i=0;i<timetable.course.length;i++) {
-      for(var j=0;j<timetable.course[i].time.length;j++) {
+    for(i=0;i<timetable.course.length;i++) {
+      for(j=0;j<timetable.course[i].time.length;j++) {
         const course_start = Math.floor((timetable.course[i].time[j].start_time-480)/30)
         const course_end = Math.floor((timetable.course[i].time[j].end_time-480)/30)
         const course_weekday = timetable.course[i].time[j].week_day;

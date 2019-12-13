@@ -20,7 +20,6 @@ MIN_CREDIT = 15
 MAX_CREDIT = 18
 MIN_MAJOR = 0
 MAX_MAJOR = 18
-BASE_TIMETABLE = -1
 
 # constant def end
 
@@ -213,10 +212,10 @@ def run_recommendation (user):
     all_course_data.sort(key = lambda x : (x.get_timeslice_set().get_list(), user_data.course_score(x)), reverse = True)
 
     default_courses = []
-    default_timetable = user.recommend_base_timetable.data()
+    default_timetable = user.recommend_base_timetable
     if default_timetable:
         in_default = [ False for i in range(MAX_COURSE_ID) ]
-        for course in default_timetable['course']:
+        for course in default_timetable.data()['course']:
             in_default[course['course_id']] = True
         for course in Course.objects.all().values():
             if in_default[course['id']]:
