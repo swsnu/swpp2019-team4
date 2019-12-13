@@ -53,7 +53,7 @@ export const getCourses = (start, end, searchValues) => (dispatch) => axios.get(
   .catch(() => {});
 
 export const setCourses = (start, end, searchValues) => (dispatch) => {
-  dispatch({ type: actionTypes.RESET_RECOMMEND_COURSES });
+  dispatch({ type: actionTypes.RESET_COURSES });
   axios.get(
     `/api/course/?start=${start}&end=${end}&title=${searchValues.title}`
   + `&classification=${searchValues.classification}&department=${searchValues.department}`
