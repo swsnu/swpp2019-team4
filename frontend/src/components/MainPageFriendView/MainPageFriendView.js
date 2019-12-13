@@ -48,7 +48,7 @@ const MainPageFriendView = (props) => {
           </div>
           <div className="flex-grow-1 text-black-50 text-left px-2">
             <small>
-              {`${friend.department} | ${friend.grade}학년`}
+              {`${friend.department} | ${friend.grade}`}
             </small>
           </div>
         </div>

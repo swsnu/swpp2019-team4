@@ -291,25 +291,6 @@ describe('Reducer', () => {
       },
     );
   });
-  it('should delete course', () => {
-    stubState.courses = [
-      {
-        id: 1,
-        week_day: 0,
-        start_time: 660,
-        end_time: 750,
-        name: '자료구조',
-        color: '#2BC366',
-        course_number: 'M1522.000900',
-        lecture_number: '001',
-      }];
-    expect(stubState.courses.length).toBe(1);
-    const newState = reducer(stubState, {
-      type: actionTypes.DELETE_COURSE,
-      courseId: 1,
-    });
-    expect(newState.courses.length).toBe(0);
-  });
 
   it('should get courses', () => {
     const newState = reducer(stubState, {

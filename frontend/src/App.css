@@ -48,11 +48,20 @@ body {
 }
 
 .btn-simple {
-  color: #888888;
+  color: #00000080;
+}
+
+.btn-simple:disabled {
+  color: #00000080 !important;
 }
 
 .btn-simple:hover {
-  color: #000000;
+  color: #000000FF;
+}
+
+.btn-simple:focus, .btn-simple:active {
+  outline: none !important;
+  box-shadow: none;
 }
 
 .form-simple {

@@ -79,6 +79,18 @@ class TimetableManagement extends Component {
     this.is_mount = false;
   }
 
+
+  shouldComponentUpdate(nextprops) {
+    if (nextprops.searched) {
+      this.resetSearch();
+    }
+    return true;
+  }
+  resetSearch(){
+    this.props.searchable();
+    if(this.state.searching)this.setState({ searching: false });
+  }
+
   handleLogout() {
     this.props.onLogout();
   }
@@ -257,10 +269,6 @@ class TimetableManagement extends Component {
         <Redirect to="/login" />
       );
     }
-    if (this.props.searched) {
-      this.props.searchable();
-      this.setState({ searching: false });
-    }
     const timetableList = this.props.timetables.filter((timetable) => timetable.id !== this.props.timetable.id)
       .map((item) => (
         <li key={item.id} className="dropdown-item p-0 d-flex">
@@ -393,7 +401,7 @@ class TimetableManagement extends Component {
               </li>
             </ul>
 
-            <div className="tab-content overflow-y-auto mb-4" style={{ height: '420px' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
+            <div className="tab-content overflow-y-auto mb-4" style={{ height: '30rem' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
               <div
                 className={`tab-pane ${this.state.showCourses ? 'active' : ''}`}
                 id="searched-tab"
@@ -461,7 +469,7 @@ class TimetableManagement extends Component {
             </div>
             <TimetableView
               id="timetable-table"
-              height={20}
+              height={24}
               courses={this.props.timetable.course}
               editable
               timeline

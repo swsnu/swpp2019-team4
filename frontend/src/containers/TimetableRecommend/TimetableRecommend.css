@@ -6,6 +6,10 @@
   right: 0;
 }
 
+#recommend-progress {
+  border-right: 1px solid #DDDDDD;
+}
+
 #recommend-progress .bar {
   margin-bottom: -1px;
   width: 3px;
@@ -14,18 +18,14 @@
   margin-right: auto;
 }
 
-#recommend-progress table {
-  width: 100%;
-  margin-left: 5rem;
-}
-
 #recommend-progress td:nth-child(odd) {
-  width: 5rem;
+  width: 4rem;
 }
 
 #recommend-progress td:nth-child(even) {
   text-align: left;
   font-weight: 700;
+  width: 5rem;
 }
 
 #recommend-progress .oi {

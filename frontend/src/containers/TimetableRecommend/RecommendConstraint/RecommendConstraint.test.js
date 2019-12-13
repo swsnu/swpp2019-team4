@@ -9,6 +9,7 @@ import RecommendConstraint from './RecommendConstraint';
 
 const stubState = {
   user: { is_authenticated: true, timetable_main: 0 },
+  constraints: {credit_min:15, credit_max:18, major_min:1, major_max:18, days_per_week: 4},
 };
 
 function window(state) {
@@ -38,5 +39,9 @@ describe('<RecommendConstraint />', () => {
     component.find('#credit-min-input').at(0).simulate('change', { target: { value: 1 } });
     expect(component.find('#credit-max-input').length).toBe(1);
     component.find('#credit-max-input').at(0).simulate('change', { target: { value: 18 } });
+    expect(component.find('#credit-min-input').length).toBe(1);
+    component.find('#major-min-input').at(0).simulate('change', { target: { value: 1 } });
+    expect(component.find('#credit-max-input').length).toBe(1);
+    component.find('#major-max-input').at(0).simulate('change', { target: { value: 18 } });
   });
 });

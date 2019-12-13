@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import SearchBar from '../../../components/SearchBar/SearchBar';
-import LoadingView from '../../../components/LoadingView/LoadingView';
 import './RecommendCourse.css';
 import * as actionCreators from '../../../store/actions/index';
 
@@ -75,6 +74,18 @@ class RecommendCourse extends Component {
   componentWillUnmount() {
     this.is_mount = false;
     document.removeEventListener('mouseup', this.mouseUpListener, true);
+  }
+
+  shouldComponentUpdate(nextprops) {
+    if (nextprops.searched) {
+      this.resetSearch();
+    }
+    return true;
+  }
+
+  resetSearch(){
+    this.props.searchable();
+    if(this.state.searching)this.setState({ searching: false });
   }
 
   mouseUpListener() {
@@ -289,14 +300,13 @@ class RecommendCourse extends Component {
   }
 
   render() {
-    if (this.props.searched) {
-      this.props.searchable();
-      this.setState({ searching: false });
-    }
     const ratedview = [];
     const unratedview = [];
     if(this.state.rated_initial_loading) {
-      ratedview.push(<LoadingView/>);
+      ratedview.push(
+        <div className="RecommendCourse loading d-flex align-items-center w-100 h-100">
+          <h1>불러오는 중입니다...</h1>
+        </div>);
     }
     else if (this.props.ratedCourse !== undefined) {
       for (let i = 0; i < this.props.ratedCourse.length; i += 1) {
@@ -304,7 +314,10 @@ class RecommendCourse extends Component {
       }
     }
     if(this.state.unrated_initial_loading) {
-      unratedview.push(<LoadingView/>);
+      unratedview.push(
+        <div className="RecommendCourse loading d-flex align-items-center w-100 h-100">
+          <h1>불러오는 중입니다...</h1>
+        </div>);
     }
     else if (this.props.unratedCourse !== undefined) {
       for (let i = 0; i < this.props.unratedCourse.length; i += 1) {
@@ -312,12 +325,12 @@ class RecommendCourse extends Component {
       }
     }
     return (
-      <div className="RecommendCourse">
-        <div className="col-8 offset-2">
+      <div className="RecommendCourse h-100">
           <ul className="nav nav-tabs nav-justified" id="recommend-course-tab" role="tablist">
             <li className="nav-item">
               <a
                 className="nav-link active w-100"
+                id="rated-tab-clicker"
                 data-toggle="tab"
                 href="#rated-tab"
                 role="tab"
@@ -331,6 +344,7 @@ class RecommendCourse extends Component {
             <li className="nav-item">
               <a
                 className="nav-link w-100"
+                id="unrated-tab-clicker"
                 data-toggle="tab"
                 href="#unrated-tab"
                 role="tab"
@@ -343,7 +357,7 @@ class RecommendCourse extends Component {
             </li>
           </ul>
           <SearchBar value={this.state.searchValues} onChange={(event, type) => this.searchOnChange(event, type)} onKeyDown={() => this.enterKey()} onToggle={() => this.onSearchToggle()} togglestatus={this.state.searchdetail} onSearch={() => this.search()} searchScore searching={this.state.searching} />
-          <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: '350px' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
+          <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: 'calc(100% - 8rem)' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
             <div className="tab-pane show active" id="rated-tab" role="tabpanel" aria-labelledby="rated-tab">
               {ratedview}
             </div>
@@ -351,7 +365,6 @@ class RecommendCourse extends Component {
               {unratedview}
             </div>
           </div>
-        </div>
       </div>
     );
   }

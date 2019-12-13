@@ -261,20 +261,8 @@ def auth_func(func):
 @auth_func
 def api_coursepref(request):
     if request.method == 'GET':
-        cf_result=cf_score(request.user)
-        rated={}
-        course_list=[]
-        all_course=[course.data_small() for course in Course.objects.all()]
-        for course in all_course:
-            rated[course['id']]=False
-        for score_data in CoursePref.objects.filter(user=request.user):
-            rated[score_data.course.id]=True
-        for course in all_course:
-            course_data=course
-            course_data['rated']=rated[course['id']]
-            course_data['score']=cf_result[course['id']]
-            course_list.append(course_data)
-        return JsonResponse(course_list, safe=False)
+        all_pref=[model_to_dict(score_data) for score_data in CoursePref.objects.filter(user=request.user)]
+        return JsonResponse(all_pref, safe=False)
     if request.method == 'PUT':
         try:
             body=request.body.decode()
