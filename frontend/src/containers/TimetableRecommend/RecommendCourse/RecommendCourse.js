@@ -72,6 +72,18 @@ class RecommendCourse extends Component {
     document.removeEventListener('mouseup', this.mouseUpListener, true);
   }
 
+  shouldComponentUpdate(nextprops) {
+    if (nextprops.searched) {
+      this.resetSearch();
+    }
+    return true;
+  }
+
+  resetSearch(){
+    this.props.searchable();
+    if(this.state.searching)this.setState({ searching: false });
+  }
+
   mouseUpListener() {
     if (!this.is_mount) return;
     const cur_list = this.props.changedCourses;
@@ -284,10 +296,6 @@ class RecommendCourse extends Component {
   }
 
   render() {
-    if (this.props.searched) {
-      this.props.searchable();
-      this.setState({ searching: false });
-    }
     const ratedview = [];
     const unratedview = [];
     if (this.props.ratedCourse !== undefined) {
@@ -306,6 +314,7 @@ class RecommendCourse extends Component {
             <li className="nav-item">
               <a
                 className="nav-link active w-100"
+                id="rated-tab-clicker"
                 data-toggle="tab"
                 href="#rated-tab"
                 role="tab"
@@ -319,6 +328,7 @@ class RecommendCourse extends Component {
             <li className="nav-item">
               <a
                 className="nav-link w-100"
+                id="unrated-tab-clicker"
                 data-toggle="tab"
                 href="#unrated-tab"
                 role="tab"

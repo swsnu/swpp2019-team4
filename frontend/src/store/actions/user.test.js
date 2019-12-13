@@ -188,7 +188,22 @@ describe('user action test', () => {
     axios.get = jest.fn(() => new Promise((resolve) => {
       resolve({ status: 204, data: null });
     }));
-    store.dispatch(actionCreators.getCourses())
+    const searchValues={
+      title: 'T',
+      classification: 'C',
+      department: 'D',
+      degree_program: 'D',
+      academic_year: 'A',
+      course_number: 'C',
+      lecture_number: 'L',
+      professor: 'P',
+      language: 'L',
+      min_credit: 0,
+      max_credit: 4,
+      min_score: 0,
+      max_score: 10,
+    };
+    store.dispatch(actionCreators.getCourses(0,49,searchValues))
       .then(() => {
         expect(axios.get).toHaveBeenCalledTimes(1);
         done();
@@ -199,7 +214,22 @@ describe('user action test', () => {
     axios.get = jest.fn(() => new Promise((resolve, reject) => {
       reject(new Error(''));
     }));
-    store.dispatch(actionCreators.getCourses())
+    const searchValues={
+      title: 'TI',
+      classification: 'CL',
+      department: 'DE',
+      degree_program: 'DE',
+      academic_year: 'AC',
+      course_number: 'CO',
+      lecture_number: 'LE',
+      professor: 'PR',
+      language: 'LA',
+      min_credit: 0,
+      max_credit: 4,
+      min_score: 0,
+      max_score: 10,
+    };
+    store.dispatch(actionCreators.getCourses(0,49,searchValues))
       .then(() => {
         expect(axios.get).toHaveBeenCalledTimes(1);
         done();
@@ -521,6 +551,210 @@ describe('user action test', () => {
       .then(() => {
         expect(axios.post).toHaveBeenCalledTimes(1);
         expect(reducer).toHaveBeenCalledTimes(0);
+        done();
+      });
+  });
+  it('should call getRatedCourse', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 204, data: null });
+    }));
+    const searchValues={
+      title: 'T',
+      classification: 'C',
+      department: 'D',
+      degree_program: 'D',
+      academic_year: 'A',
+      course_number: 'C',
+      lecture_number: 'L',
+      professor: 'P',
+      language: 'L',
+      min_credit: 0,
+      max_credit: 4,
+      min_score: 0,
+      max_score: 10,
+    };
+    store.dispatch(actionCreators.getRatedCourse(0,49,searchValues))
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  it('should call getRatedCourse that can be failed', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    const searchValues={
+      title: 'TI',
+      classification: 'CL',
+      department: 'DE',
+      degree_program: 'DE',
+      academic_year: 'AC',
+      course_number: 'CO',
+      lecture_number: 'LE',
+      professor: 'PR',
+      language: 'LA',
+      min_credit: 0,
+      max_credit: 4,
+      min_score: 0,
+      max_score: 10,
+    };
+    store.dispatch(actionCreators.getRatedCourse(0,49,searchValues))
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+  it('should call getUnratedCourse', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 204, data: null });
+    }));
+    const searchValues={
+      title: 'T',
+      classification: 'C',
+      department: 'D',
+      degree_program: 'D',
+      academic_year: 'A',
+      course_number: 'C',
+      lecture_number: 'L',
+      professor: 'P',
+      language: 'L',
+      min_credit: 0,
+      max_credit: 4,
+      min_score: 0,
+      max_score: 10,
+    };
+    store.dispatch(actionCreators.getUnratedCourse(0,49,searchValues))
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  it('should call getUnratedCourse that can be failed', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    const searchValues={
+      title: 'TI',
+      classification: 'CL',
+      department: 'DE',
+      degree_program: 'DE',
+      academic_year: 'AC',
+      course_number: 'CO',
+      lecture_number: 'LE',
+      professor: 'PR',
+      language: 'LA',
+      min_credit: 0,
+      max_credit: 4,
+      min_score: 0,
+      max_score: 10,
+    };
+    store.dispatch(actionCreators.getUnratedCourse(0,49,searchValues))
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+  it('should call setRatedCourse', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 204, data: null });
+    }));
+    const searchValues={
+      title: 'T',
+      classification: 'C',
+      department: 'D',
+      degree_program: 'D',
+      academic_year: 'A',
+      course_number: 'C',
+      lecture_number: 'L',
+      professor: 'P',
+      language: 'L',
+      min_credit: 0,
+      max_credit: 4,
+      min_score: 0,
+      max_score: 10,
+    };
+    store.dispatch(actionCreators.setRatedCourse(0,49,searchValues))
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  it('should call setRatedCourse that can be failed', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    const searchValues={
+      title: 'TI',
+      classification: 'CL',
+      department: 'DE',
+      degree_program: 'DE',
+      academic_year: 'AC',
+      course_number: 'CO',
+      lecture_number: 'LE',
+      professor: 'PR',
+      language: 'LA',
+      min_credit: 0,
+      max_credit: 4,
+      min_score: 0,
+      max_score: 10,
+    };
+    store.dispatch(actionCreators.setRatedCourse(0,49,searchValues))
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+  it('should call setUnratedCourse', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve) => {
+      resolve({ status: 204, data: null });
+    }));
+    const searchValues={
+      title: 'T',
+      classification: 'C',
+      department: 'D',
+      degree_program: 'D',
+      academic_year: 'A',
+      course_number: 'C',
+      lecture_number: 'L',
+      professor: 'P',
+      language: 'L',
+      min_credit: 0,
+      max_credit: 4,
+      min_score: 0,
+      max_score: 10,
+    };
+    store.dispatch(actionCreators.setUnratedCourse(0,49,searchValues))
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        done();
+      });
+  });
+
+  it('should call setUnratedCourse that can be failed', (done) => {
+    axios.get = jest.fn(() => new Promise((resolve, reject) => {
+      reject(new Error(''));
+    }));
+    const searchValues={
+      title: 'TI',
+      classification: 'CL',
+      department: 'DE',
+      degree_program: 'DE',
+      academic_year: 'AC',
+      course_number: 'CO',
+      lecture_number: 'LE',
+      professor: 'PR',
+      language: 'LA',
+      min_credit: 0,
+      max_credit: 4,
+      min_score: 0,
+      max_score: 10,
+    };
+    store.dispatch(actionCreators.setUnratedCourse(0,49,searchValues))
+      .then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
         done();
       });
   });
