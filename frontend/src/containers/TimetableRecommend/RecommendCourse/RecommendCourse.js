@@ -98,8 +98,7 @@ class RecommendCourse extends Component {
   shouldComponentUpdate(nextprops) {
     if (nextprops.searchrated && this.state.tabview === 0) {
       this.resetSearch();
-    }
-    else if(nextprops.searchunrated && this.state.tabview === 1) {
+    } else if (nextprops.searchunrated && this.state.tabview === 1) {
       this.resetSearch();
     }
     return true;
@@ -166,19 +165,20 @@ class RecommendCourse extends Component {
 
   changeTab(tab) {
     this.props.onPutCoursePref(this.props.changedCourses);
-    if(tab === 0){
+    if (tab === 0) {
       this.setState({
         tabview: tab,
         ratedScrollLimit: 1500,
-        ratedCourseCount: 50, });
-        this.props.setRatedCourse(0, 49, this.state.realValuesrated);
-    }
-    else if(tab === 1){
+        ratedCourseCount: 50,
+      });
+      this.props.setRatedCourse(0, 49, this.state.realValuesrated);
+    } else if (tab === 1) {
       this.setState({
         tabview: tab,
         unratedScrollLimit: 1500,
-        unratedCourseCount: 50, });
-        this.props.setUnratedCourse(0, 49, this.state.realValuesunrated);
+        unratedCourseCount: 50,
+      });
+      this.props.setUnratedCourse(0, 49, this.state.realValuesunrated);
     }
   }
 
@@ -251,38 +251,39 @@ class RecommendCourse extends Component {
   }
 
   searchOnChange(event, type) {
-    if(this.state.tabview===0)
-    {
-      const newValue = this.state.searchValuesrated;
-      newValue[type] = event.target.value;
-      this.setState({ searchValuesrated: newValue });
-    }
-    else if(this.state.tabview===1)
-    {
-      const newValue = this.state.searchValuesunrated;
-      newValue[type] = event.target.value;
-      this.setState({ searchValuesunrated: newValue });
+    const value = event.target.value;
+    if (this.state.tabview === 0) {
+      this.setState((prevState) => { 
+        const newValue = prevState.searchValuesrated;
+        newValue[type] = value;
+        return {searchValuesrated: prevState.searchValuesrated}
+      });
+    } else if (this.state.tabview === 1) {
+      this.setState((prevState) => {
+        const newValue = prevState.searchValuesunrated;
+        newValue[type] = value;
+        return {searchValuesunrated: prevState.searchValuesunrated}
+      });
     }
   }
 
   search() {
     if (this.state.searching) return;
-    if(this.state.tabview===0){
-      this.setState({
+    if (this.state.tabview === 0) {
+      this.setState((prevState) => ({
         searching: true,
-        realValuesrated: this.state.searchValuesrated,
+        realValuesrated: prevState.searchValuesrated,
         ratedScrollLimit: 1500,
         ratedCourseCount: 50,
-      });
+      }));
       this.props.setRatedCourse(0, 49, this.state.searchValuesrated);
-    }
-    else if(this.state.tabview===1){
-      this.setState({
+    } else if (this.state.tabview === 1) {
+      this.setState((prevState) => ({
         searching: true,
-        realValuesunrated: this.state.searchValuesunrated,
+        realValuesunrated: prevState.searchValuesunrated,
         unratedScrollLimit: 1500,
         unratedCourseCount: 50,
-      });
+      }));
       this.props.setUnratedCourse(0, 49, this.state.searchValuesunrated);
     }
   }
@@ -315,8 +316,8 @@ class RecommendCourse extends Component {
           unratedCourseCount: 50,
           commandMatch: 0,
         });
-        if(this.state.tabview === 0)this.props.setRatedCourse(0, 49, newValue);
-        else if(this.state.tabview === 1)this.props.setUnratedCourse(0, 49, newValue);
+        if (this.state.tabview === 0) this.props.setRatedCourse(0, 49, newValue);
+        else if (this.state.tabview === 1) this.props.setUnratedCourse(0, 49, newValue);
       } else {
         this.setState((prevState) => ({ commandMatch: prevState.commandMatch + 1 }));
       }
@@ -329,7 +330,6 @@ class RecommendCourse extends Component {
   }
 
   render() {
-    console.log(this.state.searching)
     const ratedview = [];
     const unratedview = [];
     if (this.props.ratedCourse !== undefined) {
@@ -375,7 +375,7 @@ class RecommendCourse extends Component {
           </li>
         </ul>
         <SearchBar
-          value={this.state.tabview===0?this.state.searchValuesrated:this.state.searchValuesunrated}
+          value={this.state.tabview === 0 ? this.state.searchValuesrated : this.state.searchValuesunrated}
           onChange={(event, type) => this.searchOnChange(event, type)}
           onKeyDown={() => this.enterKey()}
           onSearch={() => this.search()}

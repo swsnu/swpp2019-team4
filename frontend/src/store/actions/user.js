@@ -62,7 +62,7 @@ export const setCourses = (start, end, searchValues) => (dispatch) => axios.get(
   + `&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`,
 )
   .then((res) => dispatch({ type: actionTypes.SET_COURSES, course_list: res.data }))
-  .catch(() => {});}
+  .catch(() => {});
 
 export const postCourse = (timetableId, courseId) => (dispatch) => axios.post(
   `/api/timetable/${timetableId}/course/`, { course_id: courseId },
@@ -209,7 +209,7 @@ export const setRatedCourse = (start, end, searchValues) => (dispatch) => axios.
   + `&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`,
 )
   .then((res) => dispatch({ type: actionTypes.SET_RATED_COURSE, course_list: res.data }))
-  .catch(() => {});}
+  .catch(() => {});
 
 export const setUnratedCourse = (start, end, searchValues) => (dispatch) => axios.get(
   `/api/recommend/coursepref/unrated/?start=${start}&end=${end}&title=${searchValues.title}`
@@ -220,7 +220,7 @@ export const setUnratedCourse = (start, end, searchValues) => (dispatch) => axio
   + `&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}`,
 )
   .then((res) => dispatch({ type: actionTypes.SET_UNRATED_COURSE, course_list: res.data }))
-  .catch(() => {});}
+  .catch(() => {});
 
 export const putCourseprefTemp = (id, score) => (dispatch) => dispatch(
   { type: actionTypes.PUT_COURSEPREF_TEMP, coursepref: { id, score } },

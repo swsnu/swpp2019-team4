@@ -94,13 +94,13 @@ class TimetableManagement extends Component {
   }
 
   search() {
-  this.setState({
-    searching: true,
-    realValues: this.state.searchValues,
-    scrollLimit: 1500,
-    searchCourseCount: 50,
-  });
-  this.props.setCourses(0, 49, this.state.searchValues);
+    this.setState((prevState) => ({
+      searching: true,
+      realValues: prevState.searchValues,
+      scrollLimit: 1500,
+      searchCourseCount: 50,
+    }));
+    this.props.setCourses(0, 49, this.state.searchValues);
     this.showCoursesInSearch();
   }
 
@@ -159,7 +159,7 @@ class TimetableManagement extends Component {
   }
 
   searchOnChange(event, type) {
-    const value = event.target.value;
+    const { value } = event.target;
     this.setState((prevState) => {
       const newValue = prevState.searchValues;
       newValue[type] = value;

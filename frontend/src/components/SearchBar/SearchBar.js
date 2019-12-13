@@ -261,7 +261,6 @@ SearchBar.defaultProps = {
 SearchBar.propTypes = {
   searchScore: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
-  onToggle: PropTypes.func.isRequired,
   onSearch: PropTypes.func.isRequired,
   onKeyDown: PropTypes.func.isRequired,
   value: PropTypes.shape({
