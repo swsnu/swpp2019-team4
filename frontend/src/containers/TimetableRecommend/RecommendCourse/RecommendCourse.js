@@ -9,7 +9,7 @@ class RecommendCourse extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchValues: {
+      searchValuesrated: {
         title: '',
         classification: '',
         department: '',
@@ -24,7 +24,37 @@ class RecommendCourse extends Component {
         min_score: '',
         max_score: '',
       },
-      realValues: {
+      realValuesrated: {
+        title: '',
+        classification: '',
+        department: '',
+        degree_program: '',
+        academic_year: '',
+        course_number: '',
+        lecture_number: '',
+        professor: '',
+        language: '',
+        min_credit: '',
+        max_credit: '',
+        min_score: '',
+        max_score: '',
+      },
+      searchValuesunrated: {
+        title: '',
+        classification: '',
+        department: '',
+        degree_program: '',
+        academic_year: '',
+        course_number: '',
+        lecture_number: '',
+        professor: '',
+        language: '',
+        min_credit: '',
+        max_credit: '',
+        min_score: '',
+        max_score: '',
+      },
+      realValuesunrated: {
         title: '',
         classification: '',
         department: '',
@@ -44,7 +74,6 @@ class RecommendCourse extends Component {
       ratedCourseCount: 50,
       unratedCourseCount: 50,
       tabview: 0,
-      searchdetail: false,
       searching: false,
       commandMatch: 0,
       prv_changed: [],
@@ -61,8 +90,7 @@ class RecommendCourse extends Component {
 
   componentDidMount() {
     this.props.handleValid(true);
-    this.props.setRatedCourse(0, 49, this.state.realValues);
-    this.props.setUnratedCourse(0, 49, this.state.realValues);
+    this.props.setRatedCourse(0, 49, this.state.realValuesrated);
     this.is_mount = true;
     document.addEventListener('mouseup', this.mouseUpListener, true);
   }
@@ -73,7 +101,10 @@ class RecommendCourse extends Component {
   }
 
   shouldComponentUpdate(nextprops) {
-    if (nextprops.searched) {
+    if (nextprops.searchrated&&this.state.tabview===0) {
+      this.resetSearch();
+    }
+    else if(nextprops.searchunrated&&this.state.tabview===1){
       this.resetSearch();
     }
     return true;
@@ -120,24 +151,31 @@ class RecommendCourse extends Component {
     const scrollSize = pageSize * 60;
     if (this.state.tabview === 0 && this.state.ratedScrollLimit < scrollTop) {
       this.setState({ ratedScrollLimit: this.state.ratedScrollLimit + scrollSize });
-      this.props.getRatedCourse(this.state.ratedCourseCount, this.state.ratedCourseCount + pageSize - 1, this.state.realValues);
+      this.props.getRatedCourse(this.state.ratedCourseCount, this.state.ratedCourseCount + pageSize - 1, this.state.realValuesrated);
       this.setState({ ratedCourseCount: this.state.ratedCourseCount + pageSize });
     } else if (this.state.tabview === 1 && this.state.unratedScrollLimit < scrollTop) {
       this.setState({ unratedScrollLimit: this.state.unratedScrollLimit + scrollSize });
-      this.props.getUnratedCourse(this.state.unratedCourseCount, this.state.unratedCourseCount + pageSize - 1, this.state.realValues);
+      this.props.getUnratedCourse(this.state.unratedCourseCount, this.state.unratedCourseCount + pageSize - 1, this.state.realValuesunrated);
       this.setState({ unratedCourseCount: this.state.unratedCourseCount + pageSize });
     }
   }
 
-  onSearchToggle() {
-    this.setState({ searchdetail: !this.state.searchdetail });
-  }
-
   changeTab(tab) {
-    this.setState({ tabview: tab });
     this.props.onPutCoursePref(this.props.changedCourses);
-    this.props.setRatedCourse(0, 49, this.state.realValues);
-    this.props.setUnratedCourse(0, 49, this.state.realValues);
+    if(tab===0){
+      this.setState({
+        tabview: tab,
+        ratedScrollLimit: 1500,
+        ratedCourseCount: 50, });
+        this.props.setRatedCourse(0, 49, this.state.realValuesrated);
+    }
+    else if(tab===1){
+      this.setState({
+        tabview: tab,
+        unratedScrollLimit: 1500,
+        unratedCourseCount: 50, });
+        this.props.setUnratedCourse(0, 49, this.state.realValuesunrated);
+    }
   }
 
   courseElement(course) {
@@ -209,49 +247,39 @@ class RecommendCourse extends Component {
   }
 
   searchOnChange(event, type) {
-    const newValue = this.state.searchValues;
-    newValue[type] = event.target.value;
-    this.setState({ searchValues: newValue });
+    if(this.state.tabview===0)
+    {
+      const newValue = this.state.searchValuesrated;
+      newValue[type] = event.target.value;
+      this.setState({ searchValuesrated: newValue });
+    }
+    else if(this.state.tabview===1)
+    {
+      const newValue = this.state.searchValuesunrated;
+      newValue[type] = event.target.value;
+      this.setState({ searchValuesunrated: newValue });
+    }
   }
 
   search() {
     if (this.state.searching) return;
-    this.setState({ searching: true });
-    if (this.state.searchdetail) {
+    if(this.state.tabview===0){
       this.setState({
-        realValues: this.state.searchValues,
+        searching: true,
+        realValuesrated: this.state.searchValuesrated,
         ratedScrollLimit: 1500,
-        unratedScrollLimit: 1500,
         ratedCourseCount: 50,
+      });
+      this.props.setRatedCourse(0, 49, this.state.searchValuesrated);
+    }
+    else if(this.state.tabview===1){
+      this.setState({
+        searching: true,
+        realValuesunrated: this.state.searchValuesunrated,
+        unratedScrollLimit: 1500,
         unratedCourseCount: 50,
       });
-      this.props.setRatedCourse(0, 49, this.state.searchValues);
-      this.props.setUnratedCourse(0, 49, this.state.searchValues);
-    } else {
-      const newValue = {
-        title: this.state.searchValues.title,
-        classification: '',
-        department: '',
-        degree_program: '',
-        academic_year: '',
-        course_number: '',
-        lecture_number: '',
-        professor: '',
-        language: '',
-        min_credit: '',
-        max_credit: '',
-        min_score: '',
-        max_score: '',
-      };
-      this.setState({
-        realValues: newValue,
-        ratedScrollLimit: 1500,
-        unratedScrollLimit: 1500,
-        ratedCourseCount: 50,
-        unratedCourseCount: 50,
-      });
-      this.props.setRatedCourse(0, 49, newValue);
-      this.props.setUnratedCourse(0, 49, newValue);
+      this.props.setUnratedCourse(0, 49, this.state.searchValuesunrated);
     }
   }
 
@@ -275,15 +303,16 @@ class RecommendCourse extends Component {
           max_score: '',
         };
         this.setState({
-          realValues: newValue,
+          realValuesrated: newValue,
+          realValuesunrated: newValue,
           ratedScrollLimit: 1500,
           unratedScrollLimit: 1500,
           ratedCourseCount: 50,
           unratedCourseCount: 50,
           commandMatch: 0,
         });
-        this.props.setRatedCourse(0, 49, newValue);
-        this.props.setUnratedCourse(0, 49, newValue);
+        if(this.state.tabview===0)this.props.setRatedCourse(0, 49, newValue);
+        else if(this.state.tabview===1)this.props.setUnratedCourse(0, 49, newValue);
       } else {
         this.setState({ commandMatch: this.state.commandMatch + 1 });
       }
@@ -340,7 +369,7 @@ class RecommendCourse extends Component {
               </a>
             </li>
           </ul>
-          <SearchBar value={this.state.searchValues} onChange={(event, type) => this.searchOnChange(event, type)} onKeyDown={() => this.enterKey()} onToggle={() => this.onSearchToggle()} togglestatus={this.state.searchdetail} onSearch={() => this.search()} searchScore searching={this.state.searching} />
+          <SearchBar value={this.state.tabview===0?this.state.searchValuesrated:this.state.searchValuesunrated} onChange={(event, type) => this.searchOnChange(event, type)} onKeyDown={() => this.enterKey()} onSearch={() => this.search()} searchScore searching={this.state.searching} />
           <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: 'calc(100% - 8rem)' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
             <div className="tab-pane show active" id="rated-tab" role="tabpanel" aria-labelledby="rated-tab">
               {ratedview}
@@ -361,7 +390,8 @@ RecommendCourse.propTypes = {
 const mapStateToProps = (state) => ({
   ratedCourse: state.user.rated_course,
   unratedCourse: state.user.unrated_course,
-  searched: state.user.ratedSearched && state.user.unratedSearched,
+  searchrated: state.user.ratedSearched,
+  searchunrated: state.user.unratedSearched,
   changedCourses: state.user.changed_courses,
 });
 

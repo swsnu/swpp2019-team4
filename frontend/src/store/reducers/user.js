@@ -79,6 +79,10 @@ const reducer = (state = initialState, action) => {
       const newcourses = state.courses.concat(action.courses);
       return { ...state, courses: newcourses };
     }
+    case actionTypes.RESET_COURSES:
+      return {
+        ...state, courses: [],
+      };
     case actionTypes.SET_COURSES:
       return {
         ...state, courses: action.course_list, searched: true,
@@ -154,6 +158,8 @@ const reducer = (state = initialState, action) => {
       const newlist = state.unrated_course.concat(action.course_list);
       return { ...state, unrated_course: newlist };
     }
+    case actionTypes.RESET_RECOMMEND_COURSES:
+      return { ...state, rated_course: [], unrated_course: [] };
     case actionTypes.SET_RATED_COURSE:
       return { ...state, rated_course: action.course_list, ratedSearched: true };
     case actionTypes.SET_UNRATED_COURSE:
