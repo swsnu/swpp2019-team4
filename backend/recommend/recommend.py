@@ -1,4 +1,4 @@
-from assaapp.models import User, Course, CourseTime, Timetable
+from assaapp.models import User, Course, CourseTime
 from recommend.models import CoursePref, TimePref, RecommendTimetable, RecommendCourse
 from functools import cmp_to_key
 from random import sample
@@ -163,13 +163,13 @@ class ConvertedCourseData:
             t_score = 0
         return (c_score, t_score)
 
-def backtrack (terminate_cond, append_cond, user, candidates, my_score, my_count, my_courses, all_courses, index):
+def backtrack (terminate_cond, append_cond, user, candidates, my_score, my_courses, all_courses, index):
     if index == len(all_courses):
         return
     (cur_score, cur_course) = all_courses[index]
     if len(candidates) == MAX_CANDIDATES:
         worst_candidate_score = candidates[-1][0]
-        max_possible_score = my_score / my_count if my_count > 0 else cur_score
+        max_possible_score = my_score / len(my_courses) if my_courses else cur_score
         if(max_possible_score <= worst_candidate_score):
             return
     flag = True
@@ -181,10 +181,9 @@ def backtrack (terminate_cond, append_cond, user, candidates, my_score, my_count
     if flag:
         my_courses.append(cur_course)
         my_score += cur_score
-        my_count += 1
         if not terminate_cond (my_courses):
             if append_cond (my_courses):
-                candidates.append((my_score/my_count, my_courses.copy()))
+                candidates.append((my_score / len(my_courses), my_courses.copy()))
                 prv_score = 0
                 cur_score = candidates[-1][0]
                 for i in reversed(range(len(candidates)-1)):
@@ -197,11 +196,10 @@ def backtrack (terminate_cond, append_cond, user, candidates, my_score, my_count
                         break
                 if len(candidates) > MAX_CANDIDATES:
                     candidates.pop()
-            backtrack(terminate_cond, append_cond, user, candidates, my_score, my_count, my_courses, all_courses, index+1)
+            backtrack(terminate_cond, append_cond, user, candidates, my_score, my_courses, all_courses, index+1)
         my_courses.pop()
         my_score -= cur_score
-        my_count -= 1
-    backtrack(terminate_cond, append_cond, user, candidates, my_score, my_count, my_courses, all_courses, index+1)
+    backtrack(terminate_cond, append_cond, user, candidates, my_score, my_courses, all_courses, index+1)
 
 def run_recommendation (user):
     get_constants(user)
@@ -210,16 +208,6 @@ def run_recommendation (user):
    
     all_course_data = list(map(lambda x : ConvertedCourseData(x), get_target_courses(user)))
     all_course_data.sort(key = lambda x : (x.get_timeslice_set().get_list(), user_data.course_score(x)), reverse = True)
-
-    default_courses = []
-    default_timetable = user.recommend_base_timetable
-    if default_timetable:
-        in_default = [ False for i in range(MAX_COURSE_ID) ]
-        for course in default_timetable.data()['course']:
-            in_default[course['course_id']] = True
-        for course in Course.objects.all().values():
-            if in_default[course['id']]:
-                default_courses.append(ConvertedCourseData(course))
 
     unique_course_data = []
     valid_course_data = []
@@ -250,7 +238,7 @@ def run_recommendation (user):
         return my_credit >= MIN_CREDIT and x
 
     candidates = []
-    backtrack(termi1, appnd1, user_data, candidates, 0, 0, default_courses, unique_course_data, 0)
+    backtrack(termi1, appnd1, user_data, candidates, 0, [], unique_course_data, 0)
 
     answer = []
     for candidate_pair in candidates:
@@ -285,7 +273,7 @@ def run_recommendation (user):
                 my_major += cur_credit if course.is_major() else 0
             return my_credit >= MIN_CREDIT and my_major >= MIN_MAJOR and x
         
-        backtrack(termi2, appnd2, user, answer, 0, 0, default_courses, using_courses, 0)
+        backtrack(termi2, appnd2, user, answer, 0, [], using_courses, 0)
     
     color_gradient = [
       '#FF0037',
@@ -313,7 +301,7 @@ def run_recommendation (user):
         recommend_timetable.save()
         for index, converted_course in enumerate(timetable[1]):
             course_pref = user_data.get_course_pref(converted_course)
-            color = '#5F68EC' if index < len(default_courses) else color_gradient[round(course_pref)]
+            color = color_gradient[round(course_pref)]
             recommend_course = RecommendCourse(timetable=recommend_timetable,
                                                course=course_map[converted_course.get_id()],
                                                color=color)

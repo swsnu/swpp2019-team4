@@ -53,8 +53,6 @@ class User(AbstractBaseUser):
     major_min = models.IntegerField(default=0)
     major_max = models.IntegerField(default=18)
     last_recommend_page = models.IntegerField(default=0)
-    recommend_base_timetable = models.ForeignKey('Timetable', blank=True, null=True, 
-                                                on_delete=models.SET_NULL, related_name='base')
 
     objects = UserManager()
 
@@ -253,7 +251,6 @@ class CustomCourse(models.Model):
         title = course.title if self.title == 'default' else self.title
         return {
             'id': self.id,
-            'course_id': self.course.id,
             'is_custom': False,
             'color': self.color,
             'title': title,

@@ -484,28 +484,3 @@ def api_lastpage (request):
         user.save()
         return HttpResponse(status=200)
     return HttpResponseNotAllowed(['GET', 'PUT'])
-
-@auth_func
-def api_base (request):
-    if request.method == 'GET':
-        timetable = request.user.recommend_base_timetable
-        if not timetable:
-            timetable_id = -1
-        else:
-            timetable_id = timetable.id
-        return JsonResponse(timetable_id, safe=False)
-    if request.method == 'PUT':
-        try:
-            body = json.loads(request.body.decode())
-            user = request.user
-            timetable_id = body['timetable_id']
-        except (KeyError, JSONDecodeError):
-            return HttpResponseBadRequest()
-        try:
-            timetable = Timetable.objects.get(id=timetable_id)
-        except Timetable.DoesNotExist:
-            timetable = None
-        user.recommend_base_timetable = timetable
-        user.save()
-        return HttpResponse(status=200)
-    return HttpResponseNotAllowed(['GET', 'PUT'])

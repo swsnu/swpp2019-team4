@@ -22,48 +22,13 @@ class RecommendTime extends Component {
     this.mouseDownListener = this.mouseDownListener.bind(this);
   }
 
-  excludedTime(prv_table) {
-    const color_table = [];
-    let i; let
-      j;
-    for (i = 0; i < 26; i++) {
-      const tmp_table = [];
-      for (j = 0; j < 6; j++) {
-        let color = prv_table[i][j];
-        if (color === -1) color = 3;
-        tmp_table.push(color);
-      }
-      color_table.push(tmp_table);
-    }
-    const { timetable } = this.props;
-    for (i = 0; i < timetable.course.length; i++) {
-      for (j = 0; j < timetable.course[i].time.length; j++) {
-        const course_start = Math.floor((timetable.course[i].time[j].start_time - 480) / 30);
-        const course_end = Math.floor((timetable.course[i].time[j].end_time - 480) / 30);
-        const course_weekday = timetable.course[i].time[j].week_day;
-        for (let k = course_start; k <= course_end; k++) {
-          color_table[k][course_weekday] = -1;
-        }
-      }
-    }
-    return color_table;
-  }
-
   componentDidMount() {
     this.is_mount = true;
     this.props.handleValid(true);
-    this.props.onGetTimetables();
     this.props.onGetTimePref()
       .then(() => {
-        const { color_table } = this.props;
-        this.props.onGetRecommendBase()
-          .then(() => {
-            this.props.onGetTimetable(this.props.recommend_base)
-              .then(() => {
-                const excluded_table = this.excludedTime(color_table);
-                this.setState({ color_table: excluded_table });
-              });
-          });
+        const color_table = this.props.color_table.slice();
+        this.setState({ color_table: color_table });
       });
     document.addEventListener('mouseup', this.mouseUpListener, true);
     document.addEventListener('mousedown', this.mouseDownListener, true);
@@ -104,16 +69,6 @@ class RecommendTime extends Component {
     this.setState({ prv_table: new_table, mouse_down: false });
   }
 
-  setBase(timetable_id) {
-    this.props.onPutRecommendBase(timetable_id);
-    this.props.onGetTimetable(timetable_id)
-      .then(() => {
-        const color_table = this.excludedTime(this.state.color_table);
-        this.props.onPutTimePref(color_table);
-        this.setState({ color_table });
-      });
-  }
-
   handleColor(index) {
     this.setState({ color: index });
   }
@@ -122,9 +77,6 @@ class RecommendTime extends Component {
     if (this.state.mouse_down || force) {
       this.setState((prevState) => {
         const colorTable = prevState.color_table;
-        if (colorTable[xIndex][yIndex] === -1) {
-          return prevState;
-        }
         colorTable[xIndex][yIndex] = prevState.color;
         return ({ ...prevState, color_table: colorTable });
       });
@@ -157,9 +109,7 @@ class RecommendTime extends Component {
       }
       for (let j = 0; j < 6; j += 1) {
         const color_index = this.state.color_table[i][j];
-        let color = null;
-        if (color_index === -1) color = '#5F68EC';
-        else color = colorArray[color_index];
+        let color = colorArray[color_index];
         tablehtmlIth.push(
           <td key={1000 * i + j} style={{ backgroundColor: color, cursor: 'crosshair' }}>
             <div
@@ -232,18 +182,11 @@ RecommendTime.propTypes = {
 
 const mapStateToProps = (state) => ({
   color_table: state.user.time_pref_table,
-  timetables: state.user.timetables,
-  timetable: state.user.timetable,
-  recommend_base: state.user.recommend_base_timetable,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onGetTimePref: () => dispatch(actionCreators.getTimePref()),
   onPutTimePref: (table) => dispatch(actionCreators.putTimePref(table)),
-  onGetRecommendBase: () => dispatch(actionCreators.getRecommendBase()),
-  onPutRecommendBase: (timetable_id) => dispatch(actionCreators.putRecommendBase(timetable_id)),
-  onGetTimetable: (timetable_id) => dispatch(actionCreators.getTimetable(timetable_id)),
-  onGetTimetables: () => dispatch(actionCreators.getTimetables()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecommendTime);

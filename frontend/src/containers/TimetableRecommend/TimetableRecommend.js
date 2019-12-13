@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { UncontrolledPopover, PopoverHeader, PopoverBody } from 'reactstrap';
 import * as actionCreators from '../../store/actions/index';
 import TopBar from '../../components/TopBar/TopBar';
-import RecommendChoice from './RecommendChoice/RecommendChoice';
 import RecommendConstraint from './RecommendConstraint/RecommendConstraint';
 import RecommendResult from './RecommendResult/RecommendResult';
 import RecommendTime from './RecommendTime/RecommendTime';
@@ -52,18 +51,15 @@ class TimetableRecommend extends Component {
     let content;
     switch (this.props.index) {
       case 0:
-        content = (<RecommendChoice />);
-        break;
-      case 1:
         content = (<RecommendConstraint handleValid={(value) => this.handleValid(value)} />);
         break;
-      case 2:
+      case 1:
         content = (<RecommendTime handleValid={(value) => this.handleValid(value)} />);
         break;
-      case 3:
+      case 2:
         content = (<RecommendCourse handleValid={(value) => this.handleValid(value)} />);
         break;
-      case 4:
+      case 3:
         content = (<RecommendResult timetable={[{ course: [] }, { course: [] }]} />);
         break;
       default:
@@ -71,8 +67,9 @@ class TimetableRecommend extends Component {
         break;
     }
 
+    const progressLength = 4;
     const progressStatus = [];
-    for (let i = 0; i < 5; i += 1) {
+    for (let i = 0; i < progressLength; i += 1) {
       if (i < this.props.index) {
         progressStatus.push('progress-past');
       } else if (i === this.props.index) {
@@ -80,11 +77,10 @@ class TimetableRecommend extends Component {
       } else progressStatus.push('progress-future');
     }
 
-    const progressLength = 5;
     const progressList = [];
-    const symbolList = ['calendar', 'link-intact', 'clock', 'book', 'list'];
-    const titleList = ['시작', '조건 선택', '시간 선택', '과목 선택', '결과 확인'];
-    const detailList = ['안녕하세요', '이제 시작입니다', '시간을 선택하세요', '과목을 선택할까요', '결과를 확인하려면 500커밋 필요함'];
+    const symbolList = ['link-intact', 'clock', 'book', 'calendar'];
+    const titleList = ['조건 선택', '시간 선택', '과목 선택', '결과 확인'];
+    const detailList = ['이제 시작입니다', '시간을 선택하세요', '과목을 선택할까요', '결과를 확인하려면 500커밋 필요함'];
     for (let i = 0; i < progressLength; i += 1) {
       progressList.push(
         <tr className={progressStatus[i]}>
@@ -125,7 +121,7 @@ class TimetableRecommend extends Component {
             </table>
           </div>
           <div className="col-1 h-100 d-flex align-items-center">
-            {this.props.index !== 0 && this.props.index !== 4
+            {this.props.index !== 0 && this.props.index !== progressLength - 1
               ? (
                 <button
                   type="button"
@@ -146,7 +142,7 @@ class TimetableRecommend extends Component {
             </div>
           </div>
           <div className="col-1 h-100 d-flex align-items-center">
-            {this.props.index !== 4
+            {this.props.index !== progressLength - 1
               ? (
                 <button
                   type="button"
@@ -167,7 +163,7 @@ class TimetableRecommend extends Component {
                   id="recommend-next-button"
                   disabled={!this.state.valid || this.props.timetable.length === 0}
                   onClick={() => {
-                    this.movePage(-4);
+                    this.movePage(-progressLength + 1);
                     this.props.onDeleteRecommend();
                   }}
                 >

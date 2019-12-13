@@ -41,8 +41,6 @@ export {
   putConstraints,
   getTimePref,
   putTimePref,
-  getRecommendBase,
-  putRecommendBase,
   getRatedCourse,
   getUnratedCourse,
   setRatedCourse,
