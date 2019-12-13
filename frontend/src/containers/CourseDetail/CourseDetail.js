@@ -18,7 +18,6 @@ class CourseDetail extends Component {
         detail: '',
       },
       ],
-      tempBuilding: {},
       color: '',
     };
     this.timeString = (time) => {
@@ -43,7 +42,6 @@ class CourseDetail extends Component {
 
   setPosition(index) {
     this.setState({ index });
-    this.setState({ tempBuilding: this.state.time[index].building });
   }
 
 
@@ -129,13 +127,13 @@ class CourseDetail extends Component {
 
   validcheck() {
     if (this.props.courses === undefined || this.props.course === undefined) return false;
-    for (let i = 0; i < this.state.time.length; i++) {
+    for (let i = 0; i < this.state.time.length; i += 1) {
       const time = this.state.time[i];
       let st = time.start_time;
       let et = time.end_time;
       if (st === undefined || et === undefined) return false;
-      if (st.length == 4)st = `0${st}`;
-      if (et.length == 4)et = `0${et}`;
+      if (st.length === 4)st = `0${st}`;
+      if (et.length === 4)et = `0${et}`;
       if (st > et) return false;
       for (let j = 0; j < this.props.courses.length; j++) {
         if (this.props.course.id === this.props.courses[j].id) continue;
@@ -143,9 +141,9 @@ class CourseDetail extends Component {
           const innerTime = this.props.courses[j].time[k];
           let innerst = this.timeString(innerTime.start_time);
           let inneret = this.timeString(innerTime.end_time);
-          if (innerst.length == 4)innerst = `0${innerst}`;
-          if (inneret.length == 4)inneret = `0${inneret}`;
-          if (time.week_day != innerTime.week_day || st >= inneret || et <= innerst) continue;
+          if (innerst.length === 4) innerst = `0${innerst}`;
+          if (inneret.length === 4) inneret = `0${inneret}`;
+          if (time.week_day * 1 !== innerTime.week_day * 1 || st >= inneret || et <= innerst) continue;
           return false;
         }
       }
@@ -153,9 +151,9 @@ class CourseDetail extends Component {
         const innerTime = this.state.time[j];
         let innerst = innerTime.start_time;
         let inneret = innerTime.end_time;
-        if (innerst.length == 4)innerst = `0${innerst}`;
-        if (inneret.length == 4)inneret = `0${inneret}`;
-        if (time.week_day != innerTime.week_day || st >= inneret || et <= innerst) continue;
+        if (innerst.length === 4)innerst = `0${innerst}`;
+        if (inneret.length === 4)inneret = `0${inneret}`;
+        if (time.week_day * 1 != innerTime.week_day * 1 || st >= inneret || et <= innerst) continue;
         return false;
       }
     }
@@ -207,7 +205,7 @@ class CourseDetail extends Component {
             id="show-position-button"
             onClick={() => this.setPosition(index, segment.building)}
           >
-            <div className="oi oi-map-marker small px-2" />
+            <div className={`oi oi-map-marker small px-2 ${this.state.index == index ? 'text-danger' : ''}`} />
           </button>
           <button
             className="px-1 btn btn-simple btn-sm"
@@ -222,91 +220,88 @@ class CourseDetail extends Component {
     } else {
       timeDiv = this.state.time.map((segment, index) => (
         <div className="d-flex flex-row align-items-center my-0" key={index}>
-          <div>{`${weekDay[segment.week_day]} ${segment.start_time} - ${segment.end_time}`}</div>
+          <div>{`${weekDay[segment.week_day]} ${segment.start_time} - ${segment.end_time} | ${segment.building.name} ${segment.building.detail}`}</div>
           <button
-            className="px-1 btn btn-simple btn-sm"
+            className="px-1 btn btn-simple btn-sm ml-auto"
             type="button"
             id="show-position-button"
             onClick={() => this.setPosition(index, segment.building)}
           >
-            <div className="oi oi-map-marker small px-2" />
+            <div className={`oi oi-map-marker small px-2 ${this.state.index == index ? 'text-danger' : ''}`} />
           </button>
         </div>
       ));
     }
-    const lat = this.state.index !== -1 ? parseFloat(this.state.time[this.state.index].building.lat) : 0;
-    const lng = this.state.index !== -1 ? parseFloat(this.state.time[this.state.index].building.lng) : 0;
-    const center = { lat, lng };
     return (
-
       <div className="CourseDetail modal fade" id={this.props.id} tabIndex="-1" role="dialog">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-body">
-              <table className="table">
-                <colgroup>
-                  <col span="1" style={{ width: '6rem' }} />
-                </colgroup>
-                <tbody>
-                  <tr>
-                    <td>제목</td>
-                    <td>
-                      {this.props.editable
-                        ? (
-                          <input
-                            className="title form-control form-control-sm"
-                            value={this.state.title}
-                            onChange={(event) => { this.setState({ title: event.target.value }); }}
-                          />
-                        )
-                        : course.title}
-                    </td>
-                  </tr>
-                  {!isCustom
-                    ? (
-                      <tr>
-                        <td>강좌번호</td>
-                        <td>{course.course_number}</td>
-                      </tr>
-                    )
-                    : null}
-                  {!isCustom
-                    ? (
-                      <tr>
-                        <td>분반번호</td>
-                        <td>{course.lecture_number}</td>
-                      </tr>
-                    )
-                    : null}
-                  {!isCustom
-                    ? (
-                      <tr>
-                        <td>학점</td>
-                        <td>{course.credit}</td>
-                      </tr>
-                    )
-                    : null}
-                  {!isCustom
-                    ? (
-                      <tr>
-                        <td>교수</td>
-                        <td>{course.professor}</td>
-                      </tr>
-                    )
-                    : null}
-                  {!isCustom
-                    ? (
-                      <tr>
-                        <td>링크</td>
-                        <td><a href={href} rel="noopener noreferrer" target="_blank">세부 정보</a></td>
-                      </tr>
-                    )
-                    : null}
-                  <tr>
-                    <td>시간</td>
-                    <td>
-                      {timeDiv}
-                      { this.props.editable
+              <div className="row">
+                <table className="table col-6">
+                  <colgroup>
+                    <col span="1" style={{ width: '6rem' }} />
+                  </colgroup>
+                  <tbody>
+                    <tr>
+                      <td>제목</td>
+                      <td>
+                        {this.props.editable
+                          ? (
+                            <input
+                              className="title form-control form-control-sm"
+                              value={this.state.title}
+                              onChange={(event) => { this.setState({ title: event.target.value }); }}
+                            />
+                          )
+                          : course.title}
+                      </td>
+                    </tr>
+                    {!isCustom
+                      ? (
+                        <tr>
+                          <td>강좌번호</td>
+                          <td>{course.course_number}</td>
+                        </tr>
+                      )
+                      : null}
+                    {!isCustom
+                      ? (
+                        <tr>
+                          <td>분반번호</td>
+                          <td>{course.lecture_number}</td>
+                        </tr>
+                      )
+                      : null}
+                    {!isCustom
+                      ? (
+                        <tr>
+                          <td>학점</td>
+                          <td>{course.credit}</td>
+                        </tr>
+                      )
+                      : null}
+                    {!isCustom
+                      ? (
+                        <tr>
+                          <td>교수</td>
+                          <td>{course.professor}</td>
+                        </tr>
+                      )
+                      : null}
+                    {!isCustom
+                      ? (
+                        <tr>
+                          <td>링크</td>
+                          <td><a href={href} rel="noopener noreferrer" target="_blank">세부 정보</a></td>
+                        </tr>
+                      )
+                      : null}
+                    <tr>
+                      <td>시간 및 장소</td>
+                      <td>
+                        {timeDiv}
+                        { this.props.editable
                       && (
                       <button
                         className="w-100 btn btn-simple btn-sm my-1"
@@ -318,45 +313,48 @@ class CourseDetail extends Component {
                       추가
                       </button>
                       )}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>색상</td>
-                    <td>
-                      <div className="dropdown">
-                        <button
-                          type="button"
-                          id="dropdown-color"
-                          data-toggle="dropdown"
-                          aria-labelledby="Dropdown Color"
-                          disabled={!this.props.editable}
-                          style={{ backgroundColor: this.state.color }}
-                        />
-                        <div className="dropdown-menu">
-                          <TwitterPicker
-                            color={course.color}
-                            onChangeComplete={(color) => this.handleColor(color.hex)}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>색상</td>
+                      <td>
+                        <div className="dropdown">
+                          <button
+                            type="button"
+                            id="dropdown-color"
+                            data-toggle="dropdown"
+                            aria-labelledby="Dropdown Color"
+                            disabled={!this.props.editable}
+                            style={{ backgroundColor: this.state.color }}
                           />
+                          <div className="dropdown-menu">
+                            <TwitterPicker
+                              color={course.color}
+                              onChangeComplete={(color) => this.handleColor(color.hex)}
+                            />
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>지도</td>
-                    <td>
-                      <CourseMap
-                        center={center}
-                        building={this.state.index !== -1 ? this.state.time[this.state.index].building : { name: '', detail: '' }}
-                        origin={this.state.index !== -1 ? this.state.tempBuilding : { name: '', detail: '' }}
-                        set={(building) => { this.handlePosition(building, this.state.index); }}
-                        editable={this.props.editable}
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            {
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table className="table col-6">
+                  <tbody>
+                    <tr>
+                      <td style={{ width: '4rem' }}>지도</td>
+                      <td>
+                        <CourseMap
+                          style={{ height: '20rem' }}
+                          building={this.state.index !== -1 ? this.state.time[this.state.index].building : { name: '', detail: '' }}
+                          onChange={(building) => { this.handlePosition(building, this.state.index); }}
+                          editable={this.props.editable}
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              {
               this.props.editable
                 ? (
                   <div className="modal-footer">
@@ -387,7 +385,7 @@ class CourseDetail extends Component {
                           type="button"
                           className="btn btn-dark"
                           data-dismiss="modal"
-                          onClick={() => { this.updateCourse() }}
+                          onClick={() => { this.updateCourse(); }}
                         >
                       수정
                         </button>
@@ -420,6 +418,7 @@ class CourseDetail extends Component {
                   </div>
                 )
             }
+            </div>
           </div>
         </div>
       </div>
@@ -456,6 +455,22 @@ CourseDetail.propTypes = {
   timetableId: PropTypes.number,
   editable: PropTypes.bool,
   newCourse: PropTypes.bool,
+  courses: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number,
+    title: PropTypes.string,
+    color: PropTypes.string,
+    lecture_number: PropTypes.string,
+    course_number: PropTypes.string,
+    credit: PropTypes.number,
+    professor: PropTypes.string,
+    location: PropTypes.string,
+    time: PropTypes.arrayOf(PropTypes.shape({
+      start_time: PropTypes.number,
+      end_time: PropTypes.number,
+      week_day: PropTypes.number,
+    })).isRequired,
+    is_custom: PropTypes.bool,
+  })).isRequired,
   course: PropTypes.shape({
     id: PropTypes.number,
     title: PropTypes.string,
