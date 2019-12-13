@@ -7,8 +7,8 @@ import * as actionCreators from '../../../store/actions/index';
 class RecommendTime extends Component {
   constructor(props) {
     super(props);
-    var colorTable = []
-    for(var i = 0; i < 26; i++) {
+    const colorTable = [];
+    for (let i = 0; i < 26; i++) {
       colorTable.push([3, 3, 3, 3, 3, 3]);
     }
     this.is_mount = false;
@@ -22,25 +22,26 @@ class RecommendTime extends Component {
     this.mouseDownListener = this.mouseDownListener.bind(this);
   }
 
-  excludedTime (prv_table) {
-    var color_table = []
-    var i, j;
-    for(i=0;i<26;i++) {
-      var tmp_table = [];
-      for(j=0;j<6;j++) {
-        var color = prv_table[i][j];
-        if(color === -1) color = 3;
+  excludedTime(prv_table) {
+    const color_table = [];
+    let i; let
+      j;
+    for (i = 0; i < 26; i++) {
+      const tmp_table = [];
+      for (j = 0; j < 6; j++) {
+        let color = prv_table[i][j];
+        if (color === -1) color = 3;
         tmp_table.push(color);
       }
       color_table.push(tmp_table);
     }
-    var timetable = this.props.timetable;
-    for(i=0;i<timetable.course.length;i++) {
-      for(j=0;j<timetable.course[i].time.length;j++) {
-        const course_start = Math.floor((timetable.course[i].time[j].start_time-480)/30)
-        const course_end = Math.floor((timetable.course[i].time[j].end_time-480)/30)
+    const { timetable } = this.props;
+    for (i = 0; i < timetable.course.length; i++) {
+      for (j = 0; j < timetable.course[i].time.length; j++) {
+        const course_start = Math.floor((timetable.course[i].time[j].start_time - 480) / 30);
+        const course_end = Math.floor((timetable.course[i].time[j].end_time - 480) / 30);
         const course_weekday = timetable.course[i].time[j].week_day;
-        for(var k=course_start;k<=course_end;k++) {
+        for (let k = course_start; k <= course_end; k++) {
           color_table[k][course_weekday] = -1;
         }
       }
@@ -54,13 +55,13 @@ class RecommendTime extends Component {
     this.props.onGetTimetables();
     this.props.onGetTimePref()
       .then(() => {
-        const color_table = this.props.color_table;
+        const { color_table } = this.props;
         this.props.onGetRecommendBase()
           .then(() => {
             this.props.onGetTimetable(this.props.recommend_base)
               .then(() => {
                 const excluded_table = this.excludedTime(color_table);
-                this.setState({color_table: excluded_table});
+                this.setState({ color_table: excluded_table });
               });
           });
       });
@@ -75,39 +76,41 @@ class RecommendTime extends Component {
   }
 
   mouseDownListener(event) {
-    event.preventDefault();
+    if (event.target.id === 'table-square') {
+      event.preventDefault();
+    }
     if (this.is_mount) this.setState({ mouse_down: true });
   }
 
   mouseUpListener() {
     if (!this.is_mount) return;
     const cur_table = this.state.color_table;
-    const prv_table = this.state.prv_table;
-    var new_table = []
-    var is_same = true;
-    for(var i=0;i<26;i++) {
-      var tmp_table = []
-      for(var j=0;j<6;j++) {
+    const { prv_table } = this.state;
+    const new_table = [];
+    let is_same = true;
+    for (let i = 0; i < 26; i++) {
+      const tmp_table = [];
+      for (let j = 0; j < 6; j++) {
         tmp_table.push(cur_table[i][j]);
-        if(cur_table[i][j] !== prv_table[i][j]) {
+        if (cur_table[i][j] !== prv_table[i][j]) {
           is_same = false;
         }
       }
       new_table.push(tmp_table);
     }
-    if(!is_same) {
+    if (!is_same) {
       this.props.onPutTimePref(cur_table);
     }
     this.setState({ prv_table: new_table, mouse_down: false });
   }
 
-  setBase (timetable_id) {
+  setBase(timetable_id) {
     this.props.onPutRecommendBase(timetable_id);
     this.props.onGetTimetable(timetable_id)
       .then(() => {
         const color_table = this.excludedTime(this.state.color_table);
         this.props.onPutTimePref(color_table);
-        this.setState({ color_table: color_table });
+        this.setState({ color_table });
       });
   }
 
@@ -119,7 +122,7 @@ class RecommendTime extends Component {
     if (this.state.mouse_down || force) {
       this.setState((prevState) => {
         const colorTable = prevState.color_table;
-        if(colorTable[xIndex][yIndex] === -1) {
+        if (colorTable[xIndex][yIndex] === -1) {
           return prevState;
         }
         colorTable[xIndex][yIndex] = prevState.color;
@@ -154,8 +157,8 @@ class RecommendTime extends Component {
       }
       for (let j = 0; j < 6; j += 1) {
         const color_index = this.state.color_table[i][j];
-        var color = null;
-        if(color_index === -1) color = '#5F68EC';
+        let color = null;
+        if (color_index === -1) color = '#5F68EC';
         else color = colorArray[color_index];
         tablehtmlIth.push(
           <td key={1000 * i + j} style={{ backgroundColor: color, cursor: 'crosshair' }}>
@@ -196,7 +199,7 @@ class RecommendTime extends Component {
       <div className="RecommendTime row m-0 align-items-center h-100">
         <table className="w-100 col-7 offset-1" id="recommend-time-table">
           <colgroup>
-            <col span="1" style={{ width: '10%' }} /> 
+            <col span="1" style={{ width: '10%' }} />
             <col span="1" style={{ width: '15%' }} />
             <col span="1" style={{ width: '15%' }} />
             <col span="1" style={{ width: '15%' }} />

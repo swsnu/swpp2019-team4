@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { UncontrolledPopover, PopoverHeader, PopoverBody } from 'reactstrap';
 import * as actionCreators from '../../store/actions/index';
 import TopBar from '../../components/TopBar/TopBar';
 import RecommendChoice from './RecommendChoice/RecommendChoice';
@@ -16,7 +17,7 @@ class TimetableRecommend extends Component {
     super(props);
     this.state = {
       valid: true,
-      time_pref: [],
+      show_popover: false,
     };
   }
 
@@ -33,12 +34,12 @@ class TimetableRecommend extends Component {
     this.setState({ valid: value });
   }
 
-  handleTimePref(value) {
-    this.setState({ time_pref: value });
-  }
-
   movePage(offset) {
     this.props.onPutLastPage(this.props.index + offset);
+  }
+
+  toggleUncontrolledPopover() {
+    this.setState((prevState) => ({ show_popover: !prevState.show_popover }));
   }
 
   render() {
@@ -79,6 +80,39 @@ class TimetableRecommend extends Component {
       } else progressStatus.push('progress-future');
     }
 
+    const progressLength = 5;
+    const progressList = [];
+    const symbolList = ['calendar', 'link-intact', 'clock', 'book', 'list'];
+    const titleList = ['시작', '조건 선택', '시간 선택', '과목 선택', '결과 확인'];
+    const detailList = ['안녕하세요', '이제 시작입니다', '시간을 선택하세요', '과목을 선택할까요', '결과를 확인하려면 500커밋 필요함'];
+    for (let i = 0; i < progressLength; i += 1) {
+      progressList.push(
+        <tr className={progressStatus[i]}>
+          <td><div className={`oi oi-${symbolList[i]}`} /></td>
+          <td>{titleList[i]}</td>
+          <td>
+            {this.props.index === i
+              && (
+                <div>
+                  <button id="popover" type="button">?</button>
+                  <UncontrolledPopover placement="right" trigger="focus" target="popover">
+                    <PopoverHeader>{titleList[i]}</PopoverHeader>
+                    <PopoverBody>{detailList[i]}</PopoverBody>
+                  </UncontrolledPopover>
+                </div>
+              )}
+          </td>
+        </tr>,
+      );
+      if (i !== progressLength - 1) {
+        progressList.push(
+          <tr className={this.props.index > i ? 'progress-past' : 'progress-future'}>
+            <td><div className="bar" /></td>
+          </tr>,
+        );
+      }
+    }
+
     return (
       <div className="TimetableRecommend d-flex flex-column overflow-y-auto">
         <TopBar id="topbar" logout={() => this.handleLogout()} />
@@ -86,60 +120,25 @@ class TimetableRecommend extends Component {
           <div className="col-3 d-flex flex-column justify-content-center" id="recommend-progress">
             <table className="mx-auto">
               <tbody>
-                <tr className={progressStatus[0]}>
-                  <td><div className="oi oi-calendar" /></td>
-                  <td className="">{'시작'}</td>
-                </tr>
-                <tr className={this.props.index > 0 ? 'progress-past' : 'progress-future'}>
-                  <td><div className="bar" /></td>
-                  <td />
-                </tr>
-                <tr className={progressStatus[1]}>
-                  <td><div className="oi oi-link-intact" /></td>
-                  <td className="">{'조건 선택'}</td>
-                </tr>
-                <tr className={this.props.index > 1 ? 'progress-past' : 'progress-future'}>
-                  <td><div className="bar" /></td>
-                  <td />
-                </tr>
-                <tr className={progressStatus[2]}>
-                  <td><div className="oi oi-clock" /></td>
-                  <td className="">{'시간 선택'}</td>
-                </tr>
-                <tr className={this.props.index > 2 ? 'progress-past' : 'progress-future'}>
-                  <td><div className="bar" /></td>
-                  <td />
-                </tr>
-                <tr className={progressStatus[3]}>
-                  <td><div className="oi oi-book" /></td>
-                  <td className="">{'과목 선택'}</td>
-                </tr>
-                <tr className={this.props.index > 3 ? 'progress-past' : 'progress-future'}>
-                  <td><div className="bar" /></td>
-                  <td />
-                </tr>
-                <tr className={progressStatus[4]}>
-                  <td><div className="oi oi-list" /></td>
-                  <td className="">{'결과 확인'}</td>
-                </tr>
+                {progressList}
               </tbody>
             </table>
           </div>
           <div className="col-1 h-100 d-flex align-items-center">
-              {this.props.index !== 0 && this.props.index !== 4
-                ? (
-                  <button
-                    type="button"
-                    className="btn btn-simple mx-auto text-nowrap overflow-hidden"
-                    id="recommend-back-button"
-                    onClick={() => this.movePage(-1)}
-                  >
-                    <h1 className="oi oi-chevron-left my-0"/>
-                    <br/>
-                    {'이전'}
-                  </button>
-                )
-                : null}
+            {this.props.index !== 0 && this.props.index !== 4
+              ? (
+                <button
+                  type="button"
+                  className="btn btn-simple mx-auto text-nowrap overflow-hidden"
+                  id="recommend-back-button"
+                  onClick={() => this.movePage(-1)}
+                >
+                  <h1 className="oi oi-chevron-left my-0" />
+                  <br />
+                  <b>이전</b>
+                </button>
+              )
+              : null}
           </div>
           <div className="col-6 h-100 d-flex flex-column">
             <div className="recommend-content flex-grow-1" style={{ minHeight: 0 }}>
@@ -147,36 +146,36 @@ class TimetableRecommend extends Component {
             </div>
           </div>
           <div className="col-1 h-100 d-flex align-items-center">
-              {this.props.index !== 4
-                ? (
-                  <button
-                    type="button"
-                    className="btn btn-simple mx-auto text-nowrap overflow-hidden"
-                    id="recommend-next-button"
-                    disabled={!this.state.valid}
-                    onClick={() => this.movePage(1)}
-                  >
-                    <h1 className="oi oi-chevron-right my-0"/>
-                    <br/>
-                    {'다음'}
-                  </button>
-                )
-                : (
-                  <button
-                    type="button"
-                    className="btn btn-simple mx-auto text-nowrap overflow-hidden"
-                    id="recommend-next-button"
-                    disabled={!this.state.valid || this.props.timetable.length === 0}
-                    onClick={() => {
-                      this.movePage(-4);
-                      this.props.onDeleteRecommend();
-                    }}
-                  >
-                    <h1 className="oi oi-chevron-right"/>
-                    <br/>
-                    {'처음으로'}
-                  </button>
-                )}
+            {this.props.index !== 4
+              ? (
+                <button
+                  type="button"
+                  className="btn btn-simple mx-auto text-nowrap overflow-hidden"
+                  id="recommend-next-button"
+                  disabled={!this.state.valid}
+                  onClick={() => this.movePage(1)}
+                >
+                  <h1 className="oi oi-chevron-right my-0" />
+                  <br />
+                  <b>다음</b>
+                </button>
+              )
+              : (
+                <button
+                  type="button"
+                  className="btn btn-simple mx-auto text-nowrap overflow-hidden"
+                  id="recommend-next-button"
+                  disabled={!this.state.valid || this.props.timetable.length === 0}
+                  onClick={() => {
+                    this.movePage(-4);
+                    this.props.onDeleteRecommend();
+                  }}
+                >
+                  <h1 className="oi oi-chevron-right" />
+                  <br />
+                  <b>처음으로</b>
+                </button>
+              )}
           </div>
         </div>
       </div>
@@ -186,10 +185,15 @@ class TimetableRecommend extends Component {
 
 TimetableRecommend.propTypes = {
   onGetUser: PropTypes.func.isRequired,
+  onGetLastPage: PropTypes.func.isRequired,
+  onPutLastPage: PropTypes.func.isRequired,
+  onDeleteRecommend: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
   storedUser: PropTypes.shape({
     is_authenticated: PropTypes.bool,
   }).isRequired,
+  index: PropTypes.number.isRequired,
+  timetable: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -197,7 +201,7 @@ const mapStateToProps = (state) => ({
   constraints: state.user.constraints,
   changedCourses: state.user.changed_courses,
   index: state.user.last_page,
-  timetable: state.user.recommended_timetables
+  timetable: state.user.recommended_timetables,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -206,7 +210,6 @@ const mapDispatchToProps = (dispatch) => ({
   onGetLastPage: () => dispatch(actionCreators.getLastPage()),
   onPutLastPage: (last_page) => dispatch(actionCreators.putLastPage(last_page)),
   onPutConstraints: (consts) => dispatch(actionCreators.putConstraints(consts)),
-  onPutTimePref: (time_pref) => dispatch(actionCreators.putTimePref(time_pref)),
   onPutCoursePref: (changedCourses) => dispatch(actionCreators.putCoursepref(changedCourses)),
   onDeleteRecommend: () => dispatch(actionCreators.deleteRecommend()),
 });
