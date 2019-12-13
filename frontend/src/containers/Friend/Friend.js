@@ -217,15 +217,14 @@ class Friend extends Component {
                       id="timetable-table"
                       height={20}
                       courses={currentFriend.timetable_main.course}
-                      text
-                      link
+                      timeline
                     />
                   </div>
                 )
                 : (
                   <div>
                     <div style={{ height: '30px' }} />
-                    <TimetableView id="timetable-table" height={20} courses={[]} text link />
+                    <TimetableView id="timetable-table" height={20} courses={[]} timeline />
                   </div>
                 )
             }

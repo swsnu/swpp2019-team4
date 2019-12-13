@@ -52,7 +52,7 @@ class User(AbstractBaseUser):
     credit_max = models.IntegerField(default=18)
     major_min = models.IntegerField(default=0)
     major_max = models.IntegerField(default=18)
-
+    last_recommend_page = models.IntegerField(default=0)
 
     objects = UserManager()
 
@@ -84,6 +84,11 @@ class User(AbstractBaseUser):
 
     def data_small(self):
         return {'id': self.id, 'email': self.email, 'username': self.username}
+    
+    def data_constraint (self):
+        return {'days_per_week': self.days_per_week,
+                'credit_min': self.credit_min, 'credit_max': self.credit_max,
+                'major_min': self.major_min, 'major_max': self.major_max}
 
 class Course(models.Model):
     semester = models.CharField(max_length=8, default='default')
@@ -161,11 +166,12 @@ class Building(models.Model):
                 'lat' : self.latitude,
                 'lng' : self.longitude}
 
-    def detail_data(self, detail):
+    def detail_data(self, detail, lectureroom):
         return {'name' : self.name,
                 'lat' : self.latitude,
                 'lng' : self.longitude,
-                'detail' : detail}
+                'detail' : lectureroom if detail == '' else detail
+                }
 
 class CourseTime(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -275,4 +281,4 @@ class CustomCourseTime(models.Model):
                               +self.start_time.minute,
                 'end_time': self.end_time.hour*60
                             +self.end_time.minute,
-                'building' : self.building.detail_data(self.detail)}
+                'building' : self.building.detail_data(self.detail, self.lectureroom)}

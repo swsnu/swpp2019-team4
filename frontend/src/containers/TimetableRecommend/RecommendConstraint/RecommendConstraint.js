@@ -9,21 +9,39 @@ class RecommendConstraint extends Component {
     super(props);
     const consts = this.props.constraints;
     this.state = {
-      consts,
-      credit_min_valid: (consts.credit_min >= 1
-                         && consts.credit_min <= 21),
-      credit_max_valid: (consts.credit_max >= 1
-                         && consts.credit_max <= 21),
-      credit_valid: (consts.credit_min <= consts.credit_max),
-      major_min_valid: (consts.major_min >= 0
-                        && consts.major_min <= 21),
-      major_max_valid: (consts.major_max >= 0
-                        && consts.major_max <= 21),
-      major_valid: (consts.major_min <= consts.credit_max),
-      days_per_week: consts.days_per_week,
-      days_per_week_valid: (consts.days_per_week >= 1
-                            && consts.days_per_week <= 6),
+      consts: consts,
+      credit_min_valid: false,
+      credit_max_valid: false,
+      credit_valid: false,
+      major_min_valid: false,
+      major_max_valid: false,
+      major_valid: false,
+      days_per_week: false,
+      days_per_week_valid: false,
     };
+  }
+
+  componentDidMount() {
+    this.props.onGetConstraints()
+      .then(() => {
+        const consts = this.props.constraints;
+        this.setState({
+          consts: consts,
+          credit_min_valid: (consts.credit_min >= 1 &&
+                            consts.credit_min <= 21),
+          credit_max_valid: (consts.credit_max >= 1 &&
+                            consts.credit_max <= 21),
+          credit_valid: (consts.credit_min <= consts.credit_max),
+          major_min_valid: (consts.major_min >= 0 &&
+                            consts.major_min <= 21),
+          major_max_valid: (consts.major_max >= 0 &&
+                            consts.major_max <= 21),
+          major_valid: (consts.major_min <= consts.credit_max),
+          days_per_week: consts.days_per_week,
+          days_per_week_valid: (consts.days_per_week >= 1 &&
+                                consts.days_per_week <= 6),
+        });
+      })
   }
 
   handleDaysPerWeek(value) {
@@ -32,7 +50,7 @@ class RecommendConstraint extends Component {
     this.setState({ consts: newConsts, days_per_week_valid: valid });
     this.props.handleValid(this.state.credit_valid && this.state.credit_min_valid
       && this.state.credit_max_valid && valid);
-    this.props.onEditConstraints(newConsts);
+    this.props.onPutConstraints(newConsts);
   }
 
   handleCreditMin(value) {
@@ -49,7 +67,7 @@ class RecommendConstraint extends Component {
                            && this.state.major_valid
                            && this.state.major_min_valid
                            && this.state.major_max_valid);
-    this.props.onEditConstraints(newConsts);
+    this.props.onPutConstraints(newConsts);
   }
 
   handleCreditMax(value) {
@@ -66,7 +84,7 @@ class RecommendConstraint extends Component {
                            && this.state.major_valid
                            && this.state.major_min_valid
                            && this.state.major_max_valid);
-    this.props.onEditConstraints(newConsts);
+    this.props.onPutConstraints(newConsts);
   }
 
   handleMajorMin(value) {
@@ -83,7 +101,7 @@ class RecommendConstraint extends Component {
                            && valid
                            && minValid
                            && this.state.major_max_valid);
-    this.props.onEditConstraints(newConsts);
+    this.props.onPutConstraints(newConsts);
   }
 
   handleMajorMax(value) {
@@ -100,7 +118,7 @@ class RecommendConstraint extends Component {
                            && valid
                            && this.state.major_min_valid
                            && maxValid);
-    this.props.onEditConstraints(newConsts);
+    this.props.onPutConstraints(newConsts);
   }
 
   render() {
@@ -178,7 +196,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  onEditConstraints: (consts) => dispatch(actionCreators.editConstraints(consts)),
+  onPutConstraints: (consts) => dispatch(actionCreators.putConstraints(consts)),
+  onGetConstraints: () => dispatch(actionCreators.getConstraints()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecommendConstraint);

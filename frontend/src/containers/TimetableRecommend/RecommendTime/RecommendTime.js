@@ -2,16 +2,21 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import './RecommendTime.css';
+import * as actionCreators from '../../../store/actions/index';
 
 class RecommendTime extends Component {
   constructor(props) {
     super(props);
-    const colorTable = this.props.color_table.slice();
+    var colorTable = []
+    for(var i = 0; i < 26; i++) {
+      colorTable.push([3, 3, 3, 3, 3, 3]);
+    }
     this.is_mount = false;
     this.state = {
       mouse_down: false,
       color: 0,
       color_table: colorTable,
+      prv_table: colorTable,
     };
     this.mouseUpListener = this.mouseUpListener.bind(this);
     this.mouseDownListener = this.mouseDownListener.bind(this);
@@ -20,7 +25,11 @@ class RecommendTime extends Component {
   componentDidMount() {
     this.is_mount = true;
     this.props.handleValid(true);
-    this.props.handleTimePref(this.props.color_table);
+    this.props.onGetTimePref()
+      .then(() => {
+        const color_table = this.props.color_table.slice();
+        this.setState({color_table: color_table});
+      });
     document.addEventListener('mouseup', this.mouseUpListener, true);
     document.addEventListener('mousedown', this.mouseDownListener, true);
   }
@@ -37,7 +46,25 @@ class RecommendTime extends Component {
   }
 
   mouseUpListener() {
-    if (this.is_mount) this.setState({ mouse_down: false });
+    if (!this.is_mount) return;
+    const cur_table = this.state.color_table;
+    const prv_table = this.state.prv_table;
+    var new_table = []
+    var is_same = true;
+    for(var i=0;i<26;i++) {
+      var tmp_table = []
+      for(var j=0;j<6;j++) {
+        tmp_table.push(cur_table[i][j]);
+        if(cur_table[i][j] !== prv_table[i][j]) {
+          is_same = false;
+        }
+      }
+      new_table.push(tmp_table);
+    }
+    if(!is_same) {
+      this.props.onPutTimePref(cur_table);
+    }
+    this.setState({ prv_table: new_table, mouse_down: false });
   }
 
   handleColor(index) {
@@ -49,7 +76,6 @@ class RecommendTime extends Component {
       this.setState((prevState) => {
         const colorTable = prevState.color_table;
         colorTable[xIndex][yIndex] = prevState.color;
-        this.props.handleTimePref(colorTable);
         return ({ ...prevState, color_table: colorTable });
       });
     }
@@ -155,4 +181,9 @@ const mapStateToProps = (state) => ({
   color_table: state.user.time_pref_table,
 });
 
-export default connect(mapStateToProps, null)(RecommendTime);
+const mapDispatchToProps = (dispatch) => ({
+  onGetTimePref: () => dispatch(actionCreators.getTimePref()),
+  onPutTimePref: (table) => dispatch(actionCreators.putTimePref(table))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RecommendTime);

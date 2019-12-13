@@ -15,13 +15,13 @@ class TimetableRecommend extends Component {
     super(props);
     this.state = {
       valid: true,
-      index: 0,
       time_pref: [],
     };
   }
 
   componentDidMount() {
     this.props.onGetUser();
+    this.props.onGetLastPage();
   }
 
   handleLogout() {
@@ -37,16 +37,7 @@ class TimetableRecommend extends Component {
   }
 
   movePage(offset) {
-    if (this.state.index === 0) {
-      this.props.onPutConstraints(this.props.constraints);
-    }
-    if (this.state.index === 1) {
-      this.props.onPutTimePref(this.state.time_pref);
-    }
-    if (this.state.index === 2) {
-      this.props.onPutCoursePref(this.props.changedCourses);
-    }
-    this.setState((prevState) => ({ ...prevState, index: prevState.index + offset }));
+    this.props.onPutLastPage(this.props.index + offset);
   }
 
   render() {
@@ -57,17 +48,12 @@ class TimetableRecommend extends Component {
     }
 
     let content;
-    switch (this.state.index) {
+    switch (this.props.index) {
       case 0:
         content = (<RecommendConstraint handleValid={(value) => this.handleValid(value)} />);
         break;
       case 1:
-        content = (
-          <RecommendTime
-            handleValid={(value) => this.handleValid(value)}
-            handleTimePref={(value) => this.handleTimePref(value)}
-          />
-        );
+        content = (<RecommendTime handleValid={(value) => this.handleValid(value)} />);
         break;
       case 2:
         content = (<RecommendCourse handleValid={(value) => this.handleValid(value)} />);
@@ -82,9 +68,9 @@ class TimetableRecommend extends Component {
 
     const progressStatus = [];
     for (let i = 0; i < 4; i += 1) {
-      if (i < this.state.index) {
+      if (i < this.props.index) {
         progressStatus.push('progress-past');
-      } else if (i === this.state.index) {
+      } else if (i === this.props.index) {
         progressStatus.push('progress-working');
       } else progressStatus.push('progress-future');
     }
@@ -98,31 +84,31 @@ class TimetableRecommend extends Component {
               <tbody>
                 <tr className={progressStatus[0]}>
                   <td><div className="oi oi-link-intact" /></td>
-                  <td className="small">{this.state.index === 0 ? '조건 선택' : ''}</td>
+                  <td className="small">{this.props.index === 0 ? '조건 선택' : ''}</td>
                 </tr>
-                <tr className={this.state.index > 0 ? 'progress-past' : 'progress-future'}>
+                <tr className={this.props.index > 0 ? 'progress-past' : 'progress-future'}>
                   <td><div className="bar" /></td>
                   <td />
                 </tr>
                 <tr className={progressStatus[1]}>
                   <td><div className="oi oi-clock" /></td>
-                  <td className="small">{this.state.index === 1 ? '시간 선택' : ''}</td>
+                  <td className="small">{this.props.index === 1 ? '시간 선택' : ''}</td>
                 </tr>
-                <tr className={this.state.index > 1 ? 'progress-past' : 'progress-future'}>
+                <tr className={this.props.index > 1 ? 'progress-past' : 'progress-future'}>
                   <td><div className="bar" /></td>
                   <td />
                 </tr>
                 <tr className={progressStatus[2]}>
                   <td><div className="oi oi-book" /></td>
-                  <td className="small">{this.state.index === 2 ? '과목 선택' : ''}</td>
+                  <td className="small">{this.props.index === 2 ? '과목 선택' : ''}</td>
                 </tr>
-                <tr className={this.state.index > 2 ? 'progress-past' : 'progress-future'}>
+                <tr className={this.props.index > 2 ? 'progress-past' : 'progress-future'}>
                   <td><div className="bar" /></td>
                   <td />
                 </tr>
                 <tr className={progressStatus[3]}>
                   <td><div className="oi oi-calendar" /></td>
-                  <td className="small">{this.state.index === 3 ? '결과 확인' : ''}</td>
+                  <td className="small">{this.props.index === 3 ? '결과 확인' : ''}</td>
                 </tr>
               </tbody>
             </table>
@@ -132,7 +118,7 @@ class TimetableRecommend extends Component {
               {content}
             </div>
             <div className="pt-2 pb-4 d-flex justify-content-around">
-              {this.state.index !== 0
+              {this.props.index !== 0 && this.props.index !== 3
                 ? (
                   <button
                     type="button"
@@ -145,7 +131,7 @@ class TimetableRecommend extends Component {
                   </button>
                 )
                 : null}
-              {this.state.index !== 3
+              {this.props.index !== 3
                 ? (
                   <button
                     type="button"
@@ -158,7 +144,21 @@ class TimetableRecommend extends Component {
 다음
                   </button>
                 )
-                : null}
+                : (
+                  <button
+                    type="button"
+                    className="btn btn-dark"
+                    id="recommend-next-button"
+                    disabled={!this.state.valid || this.props.timetable.length === 0}
+                    style={{ width: '300px' }}
+                    onClick={() => {
+                      this.movePage(-3);
+                      this.props.onDeleteRecommend();
+                    }}
+                  >
+처음부터 다시 추천받기
+                  </button>
+                )}
             </div>
           </div>
         </div>
@@ -179,14 +179,19 @@ const mapStateToProps = (state) => ({
   storedUser: state.user.user,
   constraints: state.user.constraints,
   changedCourses: state.user.changed_courses,
+  index: state.user.last_page,
+  timetable: state.user.recommended_timetables
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onLogout: () => dispatch(actionCreators.getSignout()),
+  onGetLastPage: () => dispatch(actionCreators.getLastPage()),
+  onPutLastPage: (last_page) => dispatch(actionCreators.putLastPage(last_page)),
   onPutConstraints: (consts) => dispatch(actionCreators.putConstraints(consts)),
   onPutTimePref: (time_pref) => dispatch(actionCreators.putTimePref(time_pref)),
   onPutCoursePref: (changedCourses) => dispatch(actionCreators.putCoursepref(changedCourses)),
+  onDeleteRecommend: () => dispatch(actionCreators.deleteRecommend()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableRecommend);
