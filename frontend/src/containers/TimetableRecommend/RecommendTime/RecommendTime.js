@@ -110,7 +110,7 @@ class RecommendTime extends Component {
         tablehtmlIth.push(
           <td key={1000 * i + j} style={{ backgroundColor: color, cursor: 'crosshair' }}>
             <div
-              style={{ height: '15px' }}
+              style={{ height: '1.1rem' }}
               id="table-square"
               role="button"
               tabIndex="-1"
@@ -126,7 +126,7 @@ class RecommendTime extends Component {
     for (let i = colorArray.length - 1; i >= 0; i -= 1) {
       colorhtml.push(
         <tr key={i}>
-          <td>
+          <td width={52}>
             <div
               className={`my-2 circle ${this.state.color === i ? 'oi oi-check' : ''}`}
               style={{ backgroundColor: colorArray[i] }}
@@ -143,8 +143,8 @@ class RecommendTime extends Component {
       );
     }
     return (
-      <div className="RecommendTime row m-0">
-        <table className="w-100 col-6 offset-2" id="recommend-time-table">
+      <div className="RecommendTime row m-0 align-items-center h-100">
+        <table className="w-100 col-7 offset-1" id="recommend-time-table">
           <colgroup>
             <col span="1" style={{ width: '10%' }} />
             <col span="1" style={{ width: '15%' }} />

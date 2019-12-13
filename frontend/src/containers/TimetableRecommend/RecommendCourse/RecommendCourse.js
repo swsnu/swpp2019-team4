@@ -301,8 +301,7 @@ class RecommendCourse extends Component {
       }
     }
     return (
-      <div className="RecommendCourse">
-        <div className="col-8 offset-2">
+      <div className="RecommendCourse h-100">
           <ul className="nav nav-tabs nav-justified" id="recommend-course-tab" role="tablist">
             <li className="nav-item">
               <a
@@ -332,7 +331,7 @@ class RecommendCourse extends Component {
             </li>
           </ul>
           <SearchBar value={this.state.searchValues} onChange={(event, type) => this.searchOnChange(event, type)} onKeyDown={() => this.enterKey()} onToggle={() => this.onSearchToggle()} togglestatus={this.state.searchdetail} onSearch={() => this.search()} searchScore searching={this.state.searching} />
-          <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: '350px' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
+          <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: 'calc(100% - 8rem)' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
             <div className="tab-pane show active" id="rated-tab" role="tabpanel" aria-labelledby="rated-tab">
               {ratedview}
             </div>
@@ -340,7 +339,6 @@ class RecommendCourse extends Component {
               {unratedview}
             </div>
           </div>
-        </div>
       </div>
     );
   }

@@ -9,7 +9,7 @@ class RecommendResult extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      courses: [],
+      index: -1,
       calculating: true,
     };
   }
@@ -25,25 +25,27 @@ class RecommendResult extends Component {
     }
   }
 
-  changeview(newcourses) {
-    this.setState((prevState) => ({ ...prevState, courses: newcourses }));
+  changeview(index) {
+    this.setState((prevState) => ({ ...prevState, index: index }));
   }
 
   onClickSave() {
-    this.props.onPostTimetable('New timetable', '')
-      .then((res) => {
-        const timetable_id = res.timetable.id;
-        const { courses } = this.state;
-        for (let i = 0; i < courses.length; i += 1) {
-          this.props.onPostCourse(timetable_id, courses[i].id)
-        }
-      });
+    if (this.state.index >= 0) {
+      this.props.onPostTimetable('추천 시간표 ' + (this.state.index + 1), '')
+        .then((res) => {
+          const timetable_id = res.timetable.id;
+          const courses = this.props.timetable[this.state.index].course;
+          for (let i = 0; i < courses.length; i += 1) {
+            this.props.onPostCourse(timetable_id, courses[i].id)
+          }
+        });
+    }
   }
 
   render() {
     if(this.props.timetable.length === 0) {
       return (
-        <div className="RecommendResult loading">
+        <div className="RecommendResult loading d-flex align-items-center w-100 h-100">
           <h1>계산하는 중입니다...</h1>
         </div>
       );
@@ -56,49 +58,35 @@ class RecommendResult extends Component {
           className="recommended-timetable-space"
           role="button"
           tabIndex={0}
-          onClick={() => this.changeview(this.props.timetable[i].course)}
-          onKeyDown={() => this.changeview(this.props.timetable[i].course)}
+          onClick={() => this.changeview(i)}
+          onKeyDown={() => this.changeview(i)}
         >
+          <h1 className="timetable-one-index"><b>{i + 1}</b></h1>
           <TimetableView
             id="timetable-one-result"
-            height={4}
+            height={6}
             courses={this.props.timetable[i].course}
             text={false}
             link={false}
-            title=""
           />
         </div>,
       );
     }
     return (
-      <div className="RecommendResult row">
-        <div className="recommended-result-list col-3">
+      <div className="RecommendResult row h-100 overflow-hidden">
+        <div className="recommended-result-list col-3 overflow-auto" style={{height: "calc(100% - 3rem)"}}>
           {tableviewlist}
         </div>
-        <div className="timetable-result-space col-9">
+        <div className="timetable-result-space col-9 overflow-auto" style={{height: "calc(100% - 3rem)"}}>
+          <div className="float-left mt-2 ml-2"><b>{this.state.index >= 0 && ('추천 시간표 ' + (this.state.index + 1))} </b> </div>
+          <button type="button" className="btn btn-outline-dark float-right mb-2" id="save-button" onClick={() => this.onClickSave()} disabled={this.state.index < 0}>{'시간표 저장'}</button>
           <div className="timetable-result">
             <TimetableView
               id="timetable-resultview"
               height={24}
-              courses={this.state.courses}
-              text
+              courses={this.state.index >= 0 ? this.props.timetable[this.state.index].course : []}
               link={false}
-              title=""
             />
-          </div>
-          <div className="buttons">
-            <div className="save-space">
-              <button type="button" id="save-button" style={{ width: '100%' }} onClick={() => this.onClickSave()}>SAVE</button>
-            </div>
-            <div className="close-space">
-              <button
-                type="button"
-                id="close-button"
-                style={{ width: '100%' }}
-              >
-CLOSE
-              </button>
-            </div>
           </div>
         </div>
       </div>
