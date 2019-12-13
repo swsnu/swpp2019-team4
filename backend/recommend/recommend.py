@@ -294,7 +294,7 @@ def run_recommendation(user):
                 cur_credit = course.get_credit()
                 my_credit += cur_credit
                 my_major += cur_credit if course.is_major() else 0
-            return my_credit >= MIN_CREDIT and my_major >= MIN_MAJOR and x
+            return my_credit >= MIN_CREDIT and my_major >= MIN_MAJOR and course_list
 
         backtrack(termi2, appnd2, user, answer, 0, [], using_courses, 0)
 

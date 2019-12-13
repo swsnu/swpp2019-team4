@@ -1,0 +1,12 @@
+.CourseMap #map-alt {
+  background-color: #DDDDDD;
+  position: relative;
+}
+
+.CourseMap #map-alt-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: gray;
+}

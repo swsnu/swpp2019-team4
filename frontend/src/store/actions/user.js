@@ -237,7 +237,7 @@ export const setRatedSearchable = () => (dispatch) => dispatch({ type: actionTyp
 export const setUnratedSearchable = () => (dispatch) => dispatch({ type: actionTypes.SET_UNRATED_SEARCHABLE });
 
 export const searchBuildings = (name) => (dispatch) => axios.get(`/api/building/?name=${name}`)
-  .then((res) => dispatch({ type: actionTypes.SEARCH_BUILDINGS, building_list: res.data }))
+  .then((res) => dispatch({ type: actionTypes.SEARCH_BUILDINGS, buildingList: res.data }))
   .catch(() => {});
 
 export const autoComplete = () => (dispatch) => dispatch({ type: actionTypes.AUTO_COMPLETE });
