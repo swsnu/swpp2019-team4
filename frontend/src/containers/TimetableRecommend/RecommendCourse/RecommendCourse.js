@@ -251,18 +251,18 @@ class RecommendCourse extends Component {
   }
 
   searchOnChange(event, type) {
-    const value = event.target.value;
+    const { value } = event.target;
     if (this.state.tabview === 0) {
-      this.setState((prevState) => { 
+      this.setState((prevState) => {
         const newValue = prevState.searchValuesrated;
         newValue[type] = value;
-        return {searchValuesrated: prevState.searchValuesrated}
+        return { searchValuesrated: prevState.searchValuesrated };
       });
     } else if (this.state.tabview === 1) {
       this.setState((prevState) => {
         const newValue = prevState.searchValuesunrated;
         newValue[type] = value;
-        return {searchValuesunrated: prevState.searchValuesunrated}
+        return { searchValuesunrated: prevState.searchValuesunrated };
       });
     }
   }
