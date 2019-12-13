@@ -402,18 +402,14 @@ def api_timepref(request):
             user = request.user
         except (KeyError, JSONDecodeError):
             return HttpResponseBadRequest()
+        TimePref.objects.filter(user=user).delete()
         for i in range(26):
             for j in range(6):
                 weekday = j
                 score = table[i][j]
                 start_time = str(8+i//2) + ":" + ("30" if i%2 == 1 else "00")
-                try:
-                    time_data = TimePref.objects.get(user=user, weekday=weekday, start_time=start_time)
-                    time_data.score = score
-                    time_data.save()
-                except TimePref.DoesNotExist:
-                    new_score = TimePref(user=user, score=score, weekday=weekday, start_time=start_time)
-                    new_score.save()
+                new_score = TimePref(user=user, score=score, weekday=weekday, start_time=start_time)
+                new_score.save()
         return HttpResponse(status=200)
     return HttpResponseNotAllowed(['GET', 'PUT'])
 
