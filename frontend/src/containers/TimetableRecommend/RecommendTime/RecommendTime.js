@@ -174,7 +174,7 @@ class RecommendTime extends Component {
       for (let j = 0; j < 6; j += 1) {
         const color_index = this.state.color_table[i][j];
         var color = null;
-        if(color_index === -1) color = '#000000';
+        if(color_index === -1) color = '#5F68EC';
         else color = colorArray[color_index];
         tablehtmlIth.push(
           <td key={1000 * i + j} style={{ backgroundColor: color, cursor: 'crosshair' }}>

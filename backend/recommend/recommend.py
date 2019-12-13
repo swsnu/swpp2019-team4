@@ -311,11 +311,12 @@ def run_recommendation (user):
     for timetable in answer:
         recommend_timetable = RecommendTimetable(user=user)
         recommend_timetable.save()
-        for converted_course in timetable[1]:
+        for index, converted_course in enumerate(timetable[1]):
             course_pref = user_data.get_course_pref(converted_course)
+            color = '#5F68EC' if index < len(default_courses) else color_gradient[round(course_pref)]
             recommend_course = RecommendCourse(timetable=recommend_timetable,
                                                course=course_map[converted_course.get_id()],
-                                               color=color_gradient[round(course_pref)])
+                                               color=color)
             recommend_course.save()
         converted_answer.append(recommend_timetable)
     

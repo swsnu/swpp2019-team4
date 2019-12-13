@@ -146,17 +146,17 @@ class RecommendCourse extends Component {
 
   courseElement(course) {
     const colorGradient = [
-      '#FC466B',
-      '#E94879',
-      '#D64A87',
-      '#C34D96',
-      '#B04FA4',
-      '#9D52B3',
-      '#8A54C1',
-      '#7756CF',
-      '#6459DE',
-      '#515BEC',
-      '#3F5EFB',
+      '#FF0037',
+      '#EB1637',
+      '#D72C37',
+      '#C34237',
+      '#AF5837',
+      '#9B6E37',
+      '#878437',
+      '#739A37',
+      '#5FB037',
+      '#4BC637',
+      '#37DC37',
     ];
     const { score } = course;
     let timeString = '';
