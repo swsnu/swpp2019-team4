@@ -24,7 +24,6 @@ const SearchBar = (props) => {
           data-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded="false"
-          onClick={props.onToggle}
         >
           <div className={`oi oi-target ${exist ? 'text-danger' : ''}`} />
         </button>

@@ -9,7 +9,7 @@ class RecommendCourse extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchValues: {
+      searchValuesrated: {
         title: '',
         classification: '',
         department: '',
@@ -24,7 +24,37 @@ class RecommendCourse extends Component {
         min_score: '',
         max_score: '',
       },
-      realValues: {
+      realValuesrated: {
+        title: '',
+        classification: '',
+        department: '',
+        degree_program: '',
+        academic_year: '',
+        course_number: '',
+        lecture_number: '',
+        professor: '',
+        language: '',
+        min_credit: '',
+        max_credit: '',
+        min_score: '',
+        max_score: '',
+      },
+      searchValuesunrated: {
+        title: '',
+        classification: '',
+        department: '',
+        degree_program: '',
+        academic_year: '',
+        course_number: '',
+        lecture_number: '',
+        professor: '',
+        language: '',
+        min_credit: '',
+        max_credit: '',
+        min_score: '',
+        max_score: '',
+      },
+      realValuesunrated: {
         title: '',
         classification: '',
         department: '',
@@ -44,7 +74,6 @@ class RecommendCourse extends Component {
       ratedCourseCount: 50,
       unratedCourseCount: 50,
       tabview: 0,
-      searchdetail: false,
       searching: false,
       commandMatch: 0,
       prv_changed: [],
@@ -61,14 +90,16 @@ class RecommendCourse extends Component {
 
   componentDidMount() {
     this.props.handleValid(true);
-    this.props.setRatedCourse(0, 49, this.state.realValues);
-    this.props.setUnratedCourse(0, 49, this.state.realValues);
+    this.props.setRatedCourse(0, 49, this.state.realValuesrated);
     this.is_mount = true;
     document.addEventListener('mouseup', this.mouseUpListener, true);
   }
 
   shouldComponentUpdate(nextprops) {
-    if (nextprops.searched) {
+    if (nextprops.searchrated && this.state.tabview === 0) {
+      this.resetSearch();
+    }
+    else if(nextprops.searchunrated && this.state.tabview === 1) {
       this.resetSearch();
     }
     return true;
@@ -77,28 +108,6 @@ class RecommendCourse extends Component {
   componentWillUnmount() {
     this.is_mount = false;
     document.removeEventListener('mouseup', this.mouseUpListener, true);
-  }
-
-  onSearchToggle() {
-    this.setState((prevState) => ({ searchdetail: !prevState.searchdetail }));
-  }
-
-  scrollHandler(scrollTop) {
-    const pageSize = 50;
-    const scrollSize = pageSize * 60;
-    if (this.state.tabview === 0 && this.state.ratedScrollLimit < scrollTop) {
-      this.setState((prevState) => ({ ratedScrollLimit: prevState.ratedScrollLimit + scrollSize }));
-      this.props.getRatedCourse(this.state.ratedCourseCount,
-        this.state.ratedCourseCount + pageSize - 1,
-        this.state.realValues);
-      this.setState((prevState) => ({ ratedCourseCount: prevState.ratedCourseCount + pageSize }));
-    } else if (this.state.tabview === 1 && this.state.unratedScrollLimit < scrollTop) {
-      this.setState((prevState) => ({ unratedScrollLimit: prevState.unratedScrollLimit + scrollSize }));
-      this.props.getUnratedCourse(this.state.unratedCourseCount,
-        this.state.unratedCourseCount + pageSize - 1,
-        this.state.realValues);
-      this.setState((prevState) => ({ unratedCourseCount: prevState.unratedCourseCount + pageSize }));
-    }
   }
 
   segmentToString(weekDay, startTime) {
@@ -137,11 +146,40 @@ class RecommendCourse extends Component {
     this.setState({ prv_changed: newList });
   }
 
+  scrollHandler(scrollTop) {
+    const pageSize = 50;
+    const scrollSize = pageSize * 60;
+    if (this.state.tabview === 0 && this.state.ratedScrollLimit < scrollTop) {
+      this.setState((prevState) => ({ ratedScrollLimit: prevState.ratedScrollLimit + scrollSize }));
+      this.props.getRatedCourse(this.state.ratedCourseCount,
+        this.state.ratedCourseCount + pageSize - 1,
+        this.state.realValuesrated);
+      this.setState((prevState) => ({ ratedCourseCount: prevState.ratedCourseCount + pageSize }));
+    } else if (this.state.tabview === 1 && this.state.unratedScrollLimit < scrollTop) {
+      this.setState((prevState) => ({ unratedScrollLimit: prevState.unratedScrollLimit + scrollSize }));
+      this.props.getUnratedCourse(this.state.unratedCourseCount,
+        this.state.unratedCourseCount + pageSize - 1,
+        this.state.realValuesunrated);
+      this.setState((prevState) => ({ unratedCourseCount: prevState.unratedCourseCount + pageSize }));
+    }
+  }
+
   changeTab(tab) {
-    this.setState({ tabview: tab });
     this.props.onPutCoursePref(this.props.changedCourses);
-    this.props.setRatedCourse(0, 49, this.state.realValues);
-    this.props.setUnratedCourse(0, 49, this.state.realValues);
+    if(tab === 0){
+      this.setState({
+        tabview: tab,
+        ratedScrollLimit: 1500,
+        ratedCourseCount: 50, });
+        this.props.setRatedCourse(0, 49, this.state.realValuesrated);
+    }
+    else if(tab === 1){
+      this.setState({
+        tabview: tab,
+        unratedScrollLimit: 1500,
+        unratedCourseCount: 50, });
+        this.props.setUnratedCourse(0, 49, this.state.realValuesunrated);
+    }
   }
 
   courseElement(course) {
@@ -213,53 +251,39 @@ class RecommendCourse extends Component {
   }
 
   searchOnChange(event, type) {
-    this.setState((prevState) => {
-      const newValue = prevState.searchValues;
+    if(this.state.tabview===0)
+    {
+      const newValue = this.state.searchValuesrated;
       newValue[type] = event.target.value;
-      return { searchValues: newValue };
-    });
+      this.setState({ searchValuesrated: newValue });
+    }
+    else if(this.state.tabview===1)
+    {
+      const newValue = this.state.searchValuesunrated;
+      newValue[type] = event.target.value;
+      this.setState({ searchValuesunrated: newValue });
+    }
   }
 
   search() {
     if (this.state.searching) return;
-    this.setState({ searching: true });
-    if (this.state.searchdetail) {
-      this.setState((prevState) => ({
-        realValues: prevState.searchValues,
+    if(this.state.tabview===0){
+      this.setState({
+        searching: true,
+        realValuesrated: this.state.searchValuesrated,
         ratedScrollLimit: 1500,
-        unratedScrollLimit: 1500,
         ratedCourseCount: 50,
-        unratedCourseCount: 50,
-      }));
-      this.props.setRatedCourse(0, 49, this.state.searchValues);
-      this.props.setUnratedCourse(0, 49, this.state.searchValues);
-    } else {
-      this.setState((prevState) => {
-        const newValue = {
-          title: prevState.searchValues.title,
-          classification: '',
-          department: '',
-          degree_program: '',
-          academic_year: '',
-          course_number: '',
-          lecture_number: '',
-          professor: '',
-          language: '',
-          min_credit: '',
-          max_credit: '',
-          min_score: '',
-          max_score: '',
-        };
-        this.props.setRatedCourse(0, 49, newValue);
-        this.props.setUnratedCourse(0, 49, newValue);
-        return {
-          realValues: newValue,
-          ratedScrollLimit: 1500,
-          unratedScrollLimit: 1500,
-          ratedCourseCount: 50,
-          unratedCourseCount: 50,
-        };
       });
+      this.props.setRatedCourse(0, 49, this.state.searchValuesrated);
+    }
+    else if(this.state.tabview===1){
+      this.setState({
+        searching: true,
+        realValuesunrated: this.state.searchValuesunrated,
+        unratedScrollLimit: 1500,
+        unratedCourseCount: 50,
+      });
+      this.props.setUnratedCourse(0, 49, this.state.searchValuesunrated);
     }
   }
 
@@ -283,15 +307,16 @@ class RecommendCourse extends Component {
           max_score: '',
         };
         this.setState({
-          realValues: newValue,
+          realValuesrated: newValue,
+          realValuesunrated: newValue,
           ratedScrollLimit: 1500,
           unratedScrollLimit: 1500,
           ratedCourseCount: 50,
           unratedCourseCount: 50,
           commandMatch: 0,
         });
-        this.props.setRatedCourse(0, 49, newValue);
-        this.props.setUnratedCourse(0, 49, newValue);
+        if(this.state.tabview === 0)this.props.setRatedCourse(0, 49, newValue);
+        else if(this.state.tabview === 1)this.props.setUnratedCourse(0, 49, newValue);
       } else {
         this.setState((prevState) => ({ commandMatch: prevState.commandMatch + 1 }));
       }
@@ -304,6 +329,7 @@ class RecommendCourse extends Component {
   }
 
   render() {
+    console.log(this.state.searching)
     const ratedview = [];
     const unratedview = [];
     if (this.props.ratedCourse !== undefined) {
@@ -349,11 +375,9 @@ class RecommendCourse extends Component {
           </li>
         </ul>
         <SearchBar
-          value={this.state.searchValues}
+          value={this.state.tabview===0?this.state.searchValuesrated:this.state.searchValuesunrated}
           onChange={(event, type) => this.searchOnChange(event, type)}
           onKeyDown={() => this.enterKey()}
-          onToggle={() => this.onSearchToggle()}
-          togglestatus={this.state.searchdetail}
           onSearch={() => this.search()}
           searchScore
           searching={this.state.searching}
@@ -416,7 +440,8 @@ RecommendCourse.propTypes = {
 const mapStateToProps = (state) => ({
   ratedCourse: state.user.rated_course,
   unratedCourse: state.user.unrated_course,
-  searched: state.user.ratedSearched && state.user.unratedSearched,
+  searchrated: state.user.ratedSearched,
+  searchunrated: state.user.unratedSearched,
   changedCourses: state.user.changed_courses,
 });
 

@@ -18,7 +18,6 @@ class TimetableManagement extends Component {
       semester: '2019-2',
       title: '',
       showCourses: true,
-      searchdetail: false,
       scrollLimit: 1500,
       searchCourseCount: 50,
       searching: false,
@@ -86,10 +85,6 @@ class TimetableManagement extends Component {
     this.is_mount = false;
   }
 
-  onSearchToggle() {
-    this.setState((prevState) => ({ searchdetail: !prevState.searchdetail }));
-  }
-
   showCoursesInSearch() {
     this.setState({ showCourses: true });
   }
@@ -99,42 +94,13 @@ class TimetableManagement extends Component {
   }
 
   search() {
-    if (this.state.searching) return;
-    this.setState({ searching: true });
-    if (this.state.searchdetail) {
-      this.setState((prevState) => {
-        this.props.setCourses(0, 49, prevState.searchValues);
-        return {
-          realValues: prevState.searchValues,
-          scrollLimit: 1500,
-          searchCourseCount: 50,
-        };
-      });
-    } else {
-      this.setState((prevState) => {
-        const newValue = {
-          title: prevState.searchValues.title,
-          classification: '',
-          department: '',
-          degree_program: '',
-          academic_year: '',
-          course_number: '',
-          lecture_number: '',
-          professor: '',
-          language: '',
-          min_credit: '',
-          max_credit: '',
-          min_score: '',
-          max_score: '',
-        };
-        return {
-          realValues: newValue,
-          scrollLimit: 1500,
-          searchCourseCount: 50,
-        };
-      });
-      this.props.setCourses(0, 49, this.state.searchValues);
-    }
+  this.setState({
+    searching: true,
+    realValues: this.state.searchValues,
+    scrollLimit: 1500,
+    searchCourseCount: 50,
+  });
+  this.props.setCourses(0, 49, this.state.searchValues);
     this.showCoursesInSearch();
   }
 
@@ -193,9 +159,10 @@ class TimetableManagement extends Component {
   }
 
   searchOnChange(event, type) {
+    const value = event.target.value;
     this.setState((prevState) => {
       const newValue = prevState.searchValues;
-      newValue[type] = event.target.value;
+      newValue[type] = value;
       return { searchValues: newValue };
     });
   }
@@ -376,8 +343,6 @@ class TimetableManagement extends Component {
               onChange={(event, type) => this.searchOnChange(event, type)}
               onKeyDown={() => this.enterKey()}
               onSearch={() => this.search()}
-              onToggle={() => this.onSearchToggle()}
-              togglestatus={this.state.searchdetail}
               searchScore={false}
               searching={this.state.searching}
             />

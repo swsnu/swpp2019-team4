@@ -174,7 +174,7 @@ const reducer = (state = initialState, action) => {
         ),
       );
       const targetCourse = state.changed_courses.filter((item) => item.id === action.coursepref.id);
-      let newChangedCourses = null;
+      let newChangedCourses = state.changed_courses;
       if (targetCourse.length > 0) {
         newChangedCourses = state.changed_courses.map(
           ({ id, score }) => (id === action.coursepref.id ? { id, score: action.coursepref.score } : { id, score }),
