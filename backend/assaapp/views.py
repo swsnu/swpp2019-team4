@@ -18,11 +18,11 @@ from .tokens import ACCOUNT_ACTIVATION_TOKEN
 
 def has_same_text(text, match_text):
     temp_text = match_text[0]
-    if ('동' != match_text[0][-1]):
+    if (match_text[0][-1] != '동'):
         temp_text += '동'
     regex = re.compile('^[0-9]+[동]?')
     result = regex.findall(text)
-    if (len(result) > 0):
+    if result:
         return result[0] == temp_text
     return False
 
@@ -289,7 +289,7 @@ def api_timetable_id_course(request, timetable_id):
                 timetable = Timetable.objects.get(pk=timetable_id)
                 course = Course.objects.get(pk=course_id)
                 try:
-                    CustomCourse.objects.get(timetable=timetable,course=course)
+                    CustomCourse.objects.get(timetable=timetable, course=course)
                     return HttpResponseBadRequest()
                 except CustomCourse.DoesNotExist:
                     time_list = []
@@ -297,7 +297,9 @@ def api_timetable_id_course(request, timetable_id):
                         time_list.append(course_time)
                     for course_time in CourseTime.objects.filter(course=course):
                         for in_time in time_list:
-                            if not (course_time.weekday != in_time.weekday or course_time.start_time >= in_time.end_time or course_time.end_time <= in_time.start_time):
+                            if not (course_time.weekday != in_time.weekday
+                                    or course_time.start_time >= in_time.end_time
+                                    or course_time.end_time <= in_time.start_time):
                                 return HttpResponseBadRequest()
                     custom_course = CustomCourse(timetable=timetable, course=course, color=color)
                     custom_course.save()
@@ -313,7 +315,8 @@ def api_timetable_id_course(request, timetable_id):
 def api_custom_course_id(request, custom_course_id):
     if request.method == 'PUT':
         try:
-            custom_course = CustomCourse.objects.select_related('timetable__user').get(pk=custom_course_id)
+            custom_course = 
+                CustomCourse.objects.select_related('timetable__user').get(pk=custom_course_id)
             timetable = custom_course.timetable
             if timetable.user != request.user:
                 return HttpResponseNotAllowed()
@@ -333,7 +336,8 @@ def api_custom_course_id(request, custom_course_id):
             return HttpResponseBadRequest()
     if request.method == 'DELETE':
         try:
-            custom_course = CustomCourse.objects.select_related('timetable').get(pk=custom_course_id)
+            custom_course = CustomCourse.objects
+                            .select_related('timetable').get(pk=custom_course_id)
             timetable = custom_course.timetable
             if timetable.user != request.user:
                 return HttpResponseNotAllowed()
@@ -399,7 +403,7 @@ def api_building(request):
     if request.method == 'GET':
         bd_list = Building.objects.all()
         text_search = request.GET.get('name')
-        regex = re.compile('^[0-9]+[\-1|\-2]?[동]?$')
+        regex = re.compile(r'^[0-9]+[\-1|\-2]?[동]?$')
         result = regex.findall(text_search)
         if(len(result) == 1):
             search_result = [bd.data() for bd

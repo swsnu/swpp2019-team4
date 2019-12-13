@@ -152,51 +152,53 @@ def cf_score(user):
 def cf_view(user):
     all_course = [course.id for course in Course.objects.all()]
     all_coursepref = [model_to_dict(score_data) for score_data in CoursePref.objects.all()]
-    user_coursepref = [model_to_dict(score_data) for score_data in CoursePref.objects.filter(user=user)]
+    user_coursepref = [model_to_dict(score_data)
+                       for score_data in CoursePref.objects.filter(user=user)]
     all_user = [person.id for person in User.objects.all()]
     user_id = user.id
 
     course_size=len(all_course)
 
-    user_score={}
-    user_sum={}
-    user_one={}
+    user_score = {}
+    user_sum = {}
+    user_one = {}
 
-    relation={}
-    relation_sum=0.0
-    relation_abs_sum=0.0
+    relation = {}
+    relation_sum = 0.0
+    relation_abs_sum = 0.0
 
-    course_score={}
+    course_score = {}
 
     for person in all_user:
-        user_sum[person]=0
-        user_one[person]=0
+        user_sum[person] = 0
+        user_one[person] = 0
     for course in all_course:
-        user_score[course]=0
-        course_score[course]=0.0
+        user_score[course] = 0
+        course_score[course] = 0.0
     for score_data in user_coursepref:
-        user_score[score_data['course']]=1
+        user_score[score_data['course']] = 1
     for score_data in all_coursepref:
-        user_sum[score_data['user']]+=1
-        if user_score[score_data['course']]==1:
-            user_one[score_data['user']]+=1
+        user_sum[score_data['user']] += 1
+        if user_score[score_data['course']] == 1:
+            user_one[score_data['user']] += 1
     for person in all_user:
         if person==user_id:
             continue
-        relation[person]=1.0-(2.0*user_sum[user_id]+2.0*user_sum[person]-4.0*user_one[person])/course_size
-        relation_sum+=relation[person]
-        relation_abs_sum+=abs(relation[person])
+        relation_up = 2.0 * user_sum[user_id] + 2.0 * user_sum[person] - 4.0 * user_one[person]
+        relation[person] = 1.0 - relation_up / course_size
+        relation_sum += relation[person]
+        relation_abs_sum += abs(relation[person])
     for score_data in all_coursepref:
-        if score_data['user']==user_id:
+        if score_data['user'] == user_id:
             continue
-        course_score[score_data['course']]+=relation[score_data['user']]
-    if relation_abs_sum==0.0:
+        course_score[score_data['course']] += relation[score_data['user']]
+    if relation_abs_sum == 0.0:
         for course in all_course:
-            course_score[course]=0.5
+            course_score[course] = 0.5
     else:
-        relation_base=0.5-relation_sum/relation_abs_sum/2.0
+        relation_base = 0.5 - relation_sum / relation_abs_sum / 2.0
         for course in all_course:
-            course_score[course]=(course_score[course]/relation_abs_sum)+relation_base
+            course_score[course] = (course_score[course] / relation_abs_sum) + relation_base
     return course_score
 
 def has_text(text,match_text):
@@ -246,34 +248,35 @@ def searcher(course, score, request_get):
             has_text(course.lecture_number,search_dict['lecture_number']) and
             has_text(course.professor,search_dict['professor']) and
             has_text(course.language,search_dict['language']) and
-            course.credit<=search_dict['max_credit'] and
-            course.credit>=search_dict['min_credit'] and
-            score<=search_dict['max_score'] and
-            score>=search_dict['min_score'])
+            course.credit <= search_dict['max_credit'] and
+            course.credit >= search_dict['min_credit'] and
+            score <= search_dict['max_score'] and
+            score >= search_dict['min_score'])
 
 def auth_func(func):
     def wrapper_function(*args, **kwargs):
         if args[0].user.is_authenticated:
             return func(*args, **kwargs)
-        return HttpResponse(status=401)
+        return HttpResponse(status = 401)
     return wrapper_function
 
 @auth_func
 def api_coursepref(request):
     if request.method == 'GET':
-        all_pref=[model_to_dict(score_data) for score_data in CoursePref.objects.filter(user=request.user)]
+        all_pref = [model_to_dict(score_data)
+                  for score_data in CoursePref.objects.filter(user=request.user)]
         return JsonResponse(all_pref, safe=False)
     if request.method == 'PUT':
         try:
-            body=request.body.decode()
-            courses=json.loads(body)['courses']
+            body = request.body.decode()
+            courses = json.loads(body)['courses']
             for course in courses:
                 id = course['id']
                 score = course['score']
                 target_course = Course.objects.get(id=id)
                 try:
                     score_data = CoursePref.objects.get(user=request.user, course=target_course)
-                    score_data.score=score
+                    score_data.score = score
                     score_data.save()
                 except CoursePref.DoesNotExist:
                     new_score = CoursePref(user=request.user, course=target_course, score=score)
@@ -290,54 +293,55 @@ def api_coursepref(request):
 @auth_func
 def api_coursepref_rated(request):
     if request.method == 'GET':
-        cf_view_result=cf_view(request.user)
-        cf_score_result=cf_score(request.user)
-        cf_user=[score_data for score_data in CoursePref.objects.filter(user=request.user)]
+        cf_view_result = cf_view(request.user)
+        cf_score_result = cf_score(request.user)
+        cf_user = [score_data for score_data in CoursePref.objects.filter(user=request.user)]
         start = int(request.GET.get('start'))
         end = int(request.GET.get('end'))
         position = 0
-        course_list=[]
+        course_list = []
         for score_data in cf_user:
             if position>end:
                 break
-            course=score_data.course
-            if position>=start and searcher(course,score_data.score,request.GET):
-                course_data=course.data()
-                course_data['score']=score_data.score
-                course_data['expected']=cf_score_result[course.id]
+            course = score_data.course
+            if position >= start and searcher(course, score_data.score, request.GET):
+                course_data = course.data()
+                course_data['score'] = score_data.score
+                course_data['expected'] = cf_score_result[course.id]
                 course_list.append(course_data)
             if searcher(course,score_data.score,request.GET):
-                position+=1
+                position += 1
         return JsonResponse(course_list, safe=False)
     return HttpResponseNotAllowed(['GET'])
 
 @auth_func
 def api_coursepref_unrated(request):
     if request.method == 'GET':
-        cf_view_result=cf_view(request.user)
-        cf_score_result=cf_score(request.user)
-        cf_user=[score_data.course.id for score_data in CoursePref.objects.filter(user=request.user)]
+        cf_view_result = cf_view(request.user)
+        cf_score_result = cf_score(request.user)
+        cf_user = [score_data.course.id
+                   for score_data in CoursePref.objects.filter(user=request.user)]
         start = int(request.GET.get('start'))
         end = int(request.GET.get('end'))
         position = 0
-        rated={}
-        course_list=[]
+        rated = {}
+        course_list = []
         all_course = [course for course in Course.objects.all()]
         all_course = sorted(all_course, key=lambda course: -cf_view_result[course.id])
         for course in all_course:
-            rated[course.id]=False
+            rated[course.id] = False
         for score_data in cf_user:
-            rated[score_data]=True
+            rated[score_data] = True
         for course in all_course:
             if position>end:
                 break
-            if position>=start and (not rated[course.id]) and searcher(course,0,request.GET):
-                course_data=course.data()
-                course_data['score']='-'
-                course_data['expected']=cf_score_result[course.id]
+            if position >= start and (not rated[course.id]) and searcher(course,0,request.GET):
+                course_data = course.data()
+                course_data['score'] = '-'
+                course_data['expected'] = cf_score_result[course.id]
                 course_list.append(course_data)
             if (not rated[course.id]) and searcher(course,0,request.GET):
-                position+=1
+                position += 1
         return JsonResponse(course_list, safe=False)
     return HttpResponseNotAllowed(['GET'])
 
@@ -389,11 +393,11 @@ def api_timepref(request):
     if request.method == 'GET':
         time_data = [time_pref.data()
                      for time_pref in TimePref.objects.filter(user=request.user)]
-        table = [ [0] * 6 for i in range(26) ]
+        table = [[0] * 6 for i in range(26)]
         for time_pref in time_data:
-            x = (time_pref['start_hour']-8) * 2 + time_pref['start_minute']//30
-            y = time_pref['weekday']
-            table[x][y] = time_pref['score']
+            x_pos = (time_pref['start_hour']-8) * 2 + time_pref['start_minute']//30
+            y_pos = time_pref['weekday']
+            table[x_pos][y_pos] = time_pref['score']
         return JsonResponse(table, safe=False)
     if request.method == 'PUT':
         try:

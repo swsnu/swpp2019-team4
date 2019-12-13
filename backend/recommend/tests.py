@@ -97,11 +97,11 @@ class RecommendTestCase(TestCase):
                             content_type='application/json')
         self.assertEqual(response.status_code, 400)
         response = self.put('/api/recommend/coursepref/',
-                            json.dumps({'courses':[{'id':1,'score':5},{'id':2,'score':7}]}),
+                            json.dumps({'courses':[{'id':1, 'score':5}, {'id':2, 'score':7}]}),
                             content_type='application/json')
         self.assertEqual(response.status_code, 200)
         response = self.put('/api/recommend/coursepref/',
-                            json.dumps({'courses':[{'id':1,'score':7},{'id':2,'score':7}]}),
+                            json.dumps({'courses':[{'id':1, 'score':7}, {'id':2, 'score':7}]}),
                             content_type='application/json')
         self.assertEqual(response.status_code, 200)
         response = self.get('/api/recommend/coursepref/1/')
@@ -198,9 +198,9 @@ class RecommendTestCase(TestCase):
                             json.dumps({'weekday':0, 'start_time':"12:00"}),
                             content_type='application/json')
         self.assertEqual(response.status_code, 400)
-        table=[]
-        table_row=[1,1,1,1,1,1]
-        for i in range(26):
+        table = []
+        table_row = [1, 1, 1, 1, 1, 1]
+        for _ in range(26):
             table.append(table_row)
         response = self.put('/api/recommend/timepref/',
                             json.dumps({'table':table}),
@@ -211,7 +211,7 @@ class RecommendTestCase(TestCase):
         self.assertEqual(156, len(json.loads(response.content.decode())))
         self.assertEqual(1, json.loads(response.content.decode())[0]['score'])
         table=[]
-        table_row=[2,2,2,2,2,2]
+        table_row=[2, 2, 2, 2, 2, 2]
         for i in range(26):
             table.append(table_row)
         response = self.put('/api/recommend/timepref/',
@@ -287,10 +287,19 @@ class RecommendTestCase(TestCase):
                    course=Course.objects.get(id=1), score=5).save()
         CoursePref(user=User.objects.get(id=1),
                    course=Course.objects.get(id=3), score=5).save()
-        response = self.get('/api/recommend/coursepref/rated/?start=0&end=49&title=swpp&classification=&department=&degree_program=&academic_year=&course_number=&lecture_number=&professor=&language=&min_credit=&max_credit=&min_score=&max_score=')
+        response = self.get('/api/recommend/coursepref/rated/?'+
+                            'start=0&end=49&title=swpp&classification='+
+                            '&department=&degree_program=&academic_year='+
+                            '&course_number=&lecture_number=&professor='+
+                            '&language=&min_credit=&max_credit=&min_score='+
+                            '&max_score=')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(2, len(json.loads(response.content.decode())))
-        response = self.get('/api/recommend/coursepref/rated/?start=0&end=0&title=swpp&classification=&department=&degree_program=&academic_year=&course_number=&lecture_number=&professor=&language=&min_credit=&max_credit=&min_score=&max_score=')
+        response = self.get('/api/recommend/coursepref/rated/?start=0&end=0'+
+                            '&title=swpp&classification=&department='+
+                            '&degree_program=&academic_year=&course_number='+
+                            '&lecture_number=&professor=&language=&min_credit='+
+                            '&max_credit=&min_score=&max_score=')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(1, len(json.loads(response.content.decode())))
 
@@ -314,10 +323,18 @@ class RecommendTestCase(TestCase):
                    course=Course.objects.get(id=1), score=5).save()
         CoursePref(user=User.objects.get(id=1),
                    course=Course.objects.get(id=3), score=5).save()
-        response = self.get('/api/recommend/coursepref/unrated/?start=0&end=49&title=swpp&classification=&department=&degree_program=&academic_year=&course_number=&lecture_number=&professor=&language=&min_credit=&max_credit=&min_score=&max_score=')
+        response = self.get('/api/recommend/coursepref/unrated/?start=0'+
+                            '&end=49&title=swpp&classification=&department='+
+                            '&degree_program=&academic_year=&course_number='+
+                            '&lecture_number=&professor=&language=&min_credit='+
+                            '&max_credit=&min_score=&max_score=')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(8, len(json.loads(response.content.decode())))
-        response = self.get('/api/recommend/coursepref/unrated/?start=0&end=0&title=swpp&classification=&department=&degree_program=&academic_year=&course_number=&lecture_number=&professor=&language=&min_credit=&max_credit=&min_score=&max_score=')
+        response = self.get('/api/recommend/coursepref/unrated/?start=0'+
+                            '&end=0&title=swpp&classification=&department='+
+                            '&degree_program=&academic_year=&course_number='+
+                            '&lecture_number=&professor=&language=&min_credit='+
+                            '&max_credit=&min_score=&max_score=')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(1, len(json.loads(response.content.decode())))
 
@@ -334,20 +351,20 @@ class RecommendTestCase(TestCase):
         response = self.delete('/api/recommend/constraints/')
         self.assertEqual(response.status_code, 405)
         response = self.put('/api/recommend/constraints/',
-                             json.dumps({'days_per_week':4,
-                                         'credit_min':1,
-                                         'credit_max':12,
-                                         'major_min':1,
-                                         'major_max':13,}),
-                             content_type='application/json')
+                            json.dumps({'days_per_week':4,
+                                        'credit_min':1,
+                                        'credit_max':12,
+                                        'major_min':1,
+                                        'major_max':13, }),
+                            content_type='application/json')
         self.assertEqual(response.status_code, 200)
         response = self.put('/api/recommend/constraints/',
-                             json.dumps({'days_per_week':4,
-                                         'credit_min':3,
-                                         'credit_max':5,
-                                         'major_min':1,
-                                         'major_max':2,}),
-                             content_type='application/json')
+                            json.dumps({'days_per_week':4,
+                                        'credit_min':3,
+                                        'credit_max':5,
+                                        'major_min':1,
+                                        'major_max':2, }),
+                            content_type='application/json')
         self.assertEqual(response.status_code, 200)
         response = self.put('/api/recommend/constraints/',
                              json.dumps({}),
