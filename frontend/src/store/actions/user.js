@@ -136,7 +136,7 @@ export const getLastPage = () => (dispatch) => axios.get('/api/recommend/lastpag
   .catch(() => {});
 
 export const putLastPage = (last_page) => (dispatch) => axios.put('/api/recommend/lastpage/', { last_page })
-  .then((res) => dispatch({ type: actionTypes.GET_LAST_PAGE, last_page: last_page }))
+  .then((res) => dispatch({ type: actionTypes.GET_LAST_PAGE, last_page }))
   .catch(() => {});
 
 export const editConstraints = (consts) => (dispatch) => dispatch({ type: actionTypes.EDIT_CONSTRAINTS, constraints: consts });

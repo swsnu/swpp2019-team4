@@ -138,7 +138,7 @@ const reducer = (state = initialState, action) => {
       return { ...state, recommended_timetables: action.timetables };
     }
     case actionTypes.GET_LAST_PAGE: {
-      return { ...state, last_page: action.last_page }
+      return { ...state, last_page: action.last_page };
     }
     case actionTypes.EDIT_CONSTRAINTS: {
       return { ...state, constraints: action.constraints };
