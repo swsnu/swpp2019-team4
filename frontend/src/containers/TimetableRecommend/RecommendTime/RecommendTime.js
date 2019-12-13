@@ -52,14 +52,14 @@ class RecommendTime extends Component {
     const newTable = [];
     let isSame = true;
     for (let i = 0; i < 26; i += 1) {
-      const tmp_table = [];
+      const tmpTable = [];
       for (let j = 0; j < 6; j += 1) {
-        tmp_table.push(curTable[i][j]);
+        tmpTable.push(curTable[i][j]);
         if (curTable[i][j] !== prvTable[i][j]) {
           isSame = false;
         }
       }
-      newTable.push(tmp_table);
+      newTable.push(tmpTable);
     }
     if (!isSame) {
       this.props.onPutTimePref(curTable);
@@ -175,6 +175,9 @@ class RecommendTime extends Component {
 
 RecommendTime.propTypes = {
   handleValid: PropTypes.func.isRequired,
+  onGetTimePref: PropTypes.func.isRequired,
+  onPutTimePref: PropTypes.func.isRequired,
+  inColorTable: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number.isRequired).isRequired).isRequired,
 };
 
 const mapStateToProps = (state) => ({

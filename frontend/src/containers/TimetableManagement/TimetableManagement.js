@@ -86,54 +86,8 @@ class TimetableManagement extends Component {
     this.is_mount = false;
   }
 
-  handleLogout() {
-    this.props.onLogout();
-  }
-
-  postCourse(courseId) {
-    this.props.onPostCourse(this.props.timetable.id, courseId);
-  }
-
-  deleteCourse(courseId) {
-    this.props.onDeleteCourse(courseId);
-  }
-
-  deleteTimetable(timetableId) {
-    this.props.onDeleteTimetable(timetableId);
-  }
-
-  show(timetableId, timetableTitle) {
-    this.setState({
-      title: timetableTitle,
-    });
-    this.props.onGetTimetable(timetableId);
-    this.props.onPostMainTimetable(timetableId);
-    this.showCoursesInTimetable();
-  }
-
-  createEmptyTimetable() {
-    const titleBase = '새 시간표';
-    let titleAdd = '';
-    for (let idx = 1; idx < 100; idx += 1, titleAdd = ` (${idx})`) {
-      const titleAll = titleBase + titleAdd;
-      let isRepetition = false;
-      this.props.timetables.forEach((timetable) => {
-        if (timetable.title === titleAll) {
-          isRepetition = true;
-        }
-      });
-      if (!isRepetition) break;
-    }
-
-    const title = titleBase + titleAdd;
-
-    this.props.onPostTimetable(title, '2019-2')
-      .then(() => {
-        if (this.is_mount) {
-          this.show(this.props.timetables[this.props.timetables.length - 1].id, title);
-        }
-      })
-      .catch(() => {});
+  onSearchToggle() {
+    this.setState((prevState) => ({ searchdetail: !prevState.searchdetail }));
   }
 
   showCoursesInSearch() {
@@ -148,32 +102,36 @@ class TimetableManagement extends Component {
     if (this.state.searching) return;
     this.setState({ searching: true });
     if (this.state.searchdetail) {
-      this.setState({
-        realValues: this.state.searchValues,
-        scrollLimit: 1500,
-        searchCourseCount: 50,
+      this.setState((prevState) => {
+        this.props.setCourses(0, 49, prevState.searchValues);
+        return {
+          realValues: prevState.searchValues,
+          scrollLimit: 1500,
+          searchCourseCount: 50,
+        };
       });
-      this.props.setCourses(0, 49, this.state.searchValues);
     } else {
-      const newValue = {
-        title: this.state.searchValues.title,
-        classification: '',
-        department: '',
-        degree_program: '',
-        academic_year: '',
-        course_number: '',
-        lecture_number: '',
-        professor: '',
-        language: '',
-        min_credit: '',
-        max_credit: '',
-        min_score: '',
-        max_score: '',
-      };
-      this.setState({
-        realValues: newValue,
-        scrollLimit: 1500,
-        searchCourseCount: 50,
+      this.setState((prevState) => {
+        const newValue = {
+          title: prevState.searchValues.title,
+          classification: '',
+          department: '',
+          degree_program: '',
+          academic_year: '',
+          course_number: '',
+          lecture_number: '',
+          professor: '',
+          language: '',
+          min_credit: '',
+          max_credit: '',
+          min_score: '',
+          max_score: '',
+        };
+        return {
+          realValues: newValue,
+          scrollLimit: 1500,
+          searchCourseCount: 50,
+        };
       });
       this.props.setCourses(0, 49, this.state.searchValues);
     }
@@ -212,7 +170,7 @@ class TimetableManagement extends Component {
         });
         this.props.setCourses(0, 49, newValue);
       } else {
-        this.setState({ commandMatch: this.state.commandMatch + 1 });
+        this.setState((prevState) => ({ commandMatch: prevState.commandMatch + 1 }));
       }
     } else {
       this.setState({ commandMatch: 0 });
@@ -235,13 +193,49 @@ class TimetableManagement extends Component {
   }
 
   searchOnChange(event, type) {
-    const newValue = this.state.searchValues;
-    newValue[type] = event.target.value;
-    this.setState({ searchValues: newValue });
+    this.setState((prevState) => {
+      const newValue = prevState.searchValues;
+      newValue[type] = event.target.value;
+      return { searchValues: newValue };
+    });
   }
 
-  onSearchToggle() {
-    this.setState({ searchdetail: !this.state.searchdetail });
+  createEmptyTimetable() {
+    const titleBase = '새 시간표';
+    let titleAdd = '';
+    for (let idx = 1; idx < 100; idx += 1, titleAdd = ` (${idx})`) {
+      const titleAll = titleBase + titleAdd;
+      let isRepetition = false;
+      this.props.timetables.forEach((timetable) => {
+        if (timetable.title === titleAll) {
+          isRepetition = true;
+        }
+      });
+      if (!isRepetition) break;
+    }
+
+    const title = titleBase + titleAdd;
+
+    this.props.onPostTimetable(title, '2019-2')
+      .then(() => {
+        if (this.is_mount) {
+          this.show(this.props.timetables[this.props.timetables.length - 1].id, title);
+        }
+      })
+      .catch(() => {});
+  }
+
+  show(timetableId, timetableTitle) {
+    this.setState({
+      title: timetableTitle,
+    });
+    this.props.onGetTimetable(timetableId);
+    this.props.onPostMainTimetable(timetableId);
+    this.showCoursesInTimetable();
+  }
+
+  postCourse(courseId) {
+    this.props.onPostCourse(this.props.timetable.id, courseId);
   }
 
   resetSearch() {
@@ -249,17 +243,29 @@ class TimetableManagement extends Component {
     if (this.state.searching) this.setState({ searching: false });
   }
 
+  deleteCourse(courseId) {
+    this.props.onDeleteCourse(courseId);
+  }
+
+  deleteTimetable(timetableId) {
+    this.props.onDeleteTimetable(timetableId);
+  }
+
+  handleLogout() {
+    this.props.onLogout();
+  }
+
   scrollHandler(scrollTop) {
     const pageSize = 50;
     const scrollSize = pageSize * 60;
     if (this.state.showCourses && this.state.scrollLimit < scrollTop) {
-      this.setState({ scrollLimit: this.state.scrollLimit + scrollSize });
+      this.setState((prevState) => ({ scrollLimit: prevState.scrollLimit + scrollSize }));
       this.props.onGetCourses(
         this.state.searchCourseCount,
         this.state.searchCourseCount + pageSize - 1,
         this.state.realValues,
       );
-      this.setState({ searchCourseCount: this.state.searchCourseCount + pageSize });
+      this.setState((prevState) => ({ searchCourseCount: prevState.searchCourseCount + pageSize }));
     }
   }
 

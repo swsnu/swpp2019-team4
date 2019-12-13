@@ -45,6 +45,7 @@ CourseElement.propTypes = {
     professor: PropTypes.string,
     credit: PropTypes.number,
     location: PropTypes.string,
+    lecture_number: PropTypes.string,
     time: PropTypes.arrayOf(
       PropTypes.shape({
         week_day: PropTypes.number,

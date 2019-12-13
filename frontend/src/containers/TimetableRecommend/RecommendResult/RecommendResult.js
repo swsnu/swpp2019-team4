@@ -25,21 +25,21 @@ class RecommendResult extends Component {
     }
   }
 
-  changeview(index) {
-    this.setState((prevState) => ({ ...prevState, index }));
-  }
-
   onClickSave() {
     if (this.state.index >= 0) {
       this.props.onPostTimetable(`추천 시간표 ${this.state.index + 1}`, '')
         .then((res) => {
-          const timetable_id = res.timetable.id;
+          const timetableId = res.timetable.id;
           const courses = this.props.timetable[this.state.index].course;
           for (let i = 0; i < courses.length; i += 1) {
-            this.props.onPostCourse(timetable_id, courses[i].id);
+            this.props.onPostCourse(timetableId, courses[i].id);
           }
         });
     }
+  }
+
+  changeview(index) {
+    this.setState((prevState) => ({ ...prevState, index }));
   }
 
   render() {
@@ -85,7 +85,15 @@ class RecommendResult extends Component {
             </b>
             {' '}
           </div>
-          <button type="button" className="btn btn-outline-dark float-right mb-2" id="save-button" onClick={() => this.onClickSave()} disabled={this.state.index < 0}>시간표 저장</button>
+          <button
+            type="button"
+            className="btn btn-outline-dark float-right mb-2"
+            id="save-button"
+            onClick={() => this.onClickSave()}
+            disabled={this.state.index < 0}
+          >
+            시간표 저장
+          </button>
           <div className="timetable-result">
             <TimetableView
               id="timetable-resultview"
@@ -104,6 +112,10 @@ RecommendResult.propTypes = {
   timetable: PropTypes.arrayOf(PropTypes.shape({
     course: PropTypes.arrayOf(PropTypes.shape({})),
   })).isRequired,
+  onGetRecommend: PropTypes.func.isRequired,
+  onPostCourse: PropTypes.func.isRequired,
+  onPostTimetable: PropTypes.func.isRequired,
+  onPostRecommend: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({

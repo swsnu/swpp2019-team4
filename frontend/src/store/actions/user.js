@@ -152,7 +152,7 @@ export const getLastPage = () => (dispatch) => axios.get('/api/recommend/lastpag
   .catch(() => {});
 
 export const putLastPage = (lastPage) => (dispatch) => axios.put('/api/recommend/lastpage/',
-  { 'last_page': lastPage })
+  { last_page: lastPage })
   .then(() => dispatch({ type: actionTypes.GET_LAST_PAGE, lastPage }))
   .catch(() => {});
 

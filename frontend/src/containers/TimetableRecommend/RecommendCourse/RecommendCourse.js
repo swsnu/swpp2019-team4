@@ -79,6 +79,38 @@ class RecommendCourse extends Component {
     document.removeEventListener('mouseup', this.mouseUpListener, true);
   }
 
+  onSearchToggle() {
+    this.setState((prevState) => ({ searchdetail: !prevState.searchdetail }));
+  }
+
+  scrollHandler(scrollTop) {
+    const pageSize = 50;
+    const scrollSize = pageSize * 60;
+    if (this.state.tabview === 0 && this.state.ratedScrollLimit < scrollTop) {
+      this.setState((prevState) => ({ ratedScrollLimit: prevState.ratedScrollLimit + scrollSize }));
+      this.props.getRatedCourse(this.state.ratedCourseCount,
+        this.state.ratedCourseCount + pageSize - 1,
+        this.state.realValues);
+      this.setState((prevState) => ({ ratedCourseCount: prevState.ratedCourseCount + pageSize }));
+    } else if (this.state.tabview === 1 && this.state.unratedScrollLimit < scrollTop) {
+      this.setState((prevState) => ({ unratedScrollLimit: prevState.unratedScrollLimit + scrollSize }));
+      this.props.getUnratedCourse(this.state.unratedCourseCount,
+        this.state.unratedCourseCount + pageSize - 1,
+        this.state.realValues);
+      this.setState((prevState) => ({ unratedCourseCount: prevState.unratedCourseCount + pageSize }));
+    }
+  }
+
+  segmentToString(weekDay, startTime) {
+    const weekDayName = ['월', '화', '수', '목', '금', '토'];
+    return `${weekDayName[weekDay]}${this.timeToString(startTime)}`;
+  }
+
+  resetSearch() {
+    this.props.searchable();
+    if (this.state.searching) this.setState({ searching: false });
+  }
+
   mouseUpListener() {
     if (!this.is_mount) return;
     const curList = this.props.changedCourses;
@@ -103,38 +135,6 @@ class RecommendCourse extends Component {
       this.props.onPutCoursePref(curList);
     }
     this.setState({ prv_changed: newList });
-  }
-
-  segmentToString(weekDay, startTime) {
-    const weekDayName = ['월', '화', '수', '목', '금', '토'];
-    return `${weekDayName[weekDay]}${this.timeToString(startTime)}`;
-  }
-
-  scrollHandler(scrollTop) {
-    const pageSize = 50;
-    const scrollSize = pageSize * 60;
-    if (this.state.tabview === 0 && this.state.ratedScrollLimit < scrollTop) {
-      this.setState((prevState) => ({ ratedScrollLimit: prevState.ratedScrollLimit + scrollSize }));
-      this.props.getRatedCourse(this.state.ratedCourseCount,
-        this.state.ratedCourseCount + pageSize - 1,
-        this.state.realValues);
-      this.setState((prevState) => ({ ratedCourseCount: prevState.ratedCourseCount + pageSize }));
-    } else if (this.state.tabview === 1 && this.state.unratedScrollLimit < scrollTop) {
-      this.setState((prevState) => ({ unratedScrollLimit: prevState.unratedScrollLimit + scrollSize }));
-      this.props.getUnratedCourse(this.state.unratedCourseCount,
-        this.state.unratedCourseCount + pageSize - 1,
-        this.state.realValues);
-      this.setState((prevState) => ({ unratedCourseCount: prevState.unratedCourseCount + pageSize }));
-    }
-  }
-
-  onSearchToggle() {
-    this.setState((prevState) => ({ searchdetail: !prevState.searchdetail }));
-  }
-
-  resetSearch() {
-    this.props.searchable();
-    if (this.state.searching) this.setState({ searching: false });
   }
 
   changeTab(tab) {
@@ -213,9 +213,11 @@ class RecommendCourse extends Component {
   }
 
   searchOnChange(event, type) {
-    const newValue = this.state.searchValues;
-    newValue[type] = event.target.value;
-    this.setState({ searchValues: newValue });
+    this.setState((prevState) => {
+      const newValue = prevState.searchValues;
+      newValue[type] = event.target.value;
+      return { searchValues: newValue };
+    });
   }
 
   search() {
@@ -232,30 +234,32 @@ class RecommendCourse extends Component {
       this.props.setRatedCourse(0, 49, this.state.searchValues);
       this.props.setUnratedCourse(0, 49, this.state.searchValues);
     } else {
-      const newValue = {
-        title: this.state.searchValues.title,
-        classification: '',
-        department: '',
-        degree_program: '',
-        academic_year: '',
-        course_number: '',
-        lecture_number: '',
-        professor: '',
-        language: '',
-        min_credit: '',
-        max_credit: '',
-        min_score: '',
-        max_score: '',
-      };
-      this.setState({
-        realValues: newValue,
-        ratedScrollLimit: 1500,
-        unratedScrollLimit: 1500,
-        ratedCourseCount: 50,
-        unratedCourseCount: 50,
+      this.setState((prevState) => {
+        const newValue = {
+          title: prevState.searchValues.title,
+          classification: '',
+          department: '',
+          degree_program: '',
+          academic_year: '',
+          course_number: '',
+          lecture_number: '',
+          professor: '',
+          language: '',
+          min_credit: '',
+          max_credit: '',
+          min_score: '',
+          max_score: '',
+        };
+        this.props.setRatedCourse(0, 49, newValue);
+        this.props.setUnratedCourse(0, 49, newValue);
+        return {
+          realValues: newValue,
+          ratedScrollLimit: 1500,
+          unratedScrollLimit: 1500,
+          ratedCourseCount: 50,
+          unratedCourseCount: 50,
+        };
       });
-      this.props.setRatedCourse(0, 49, newValue);
-      this.props.setUnratedCourse(0, 49, newValue);
     }
   }
 
@@ -289,7 +293,7 @@ class RecommendCourse extends Component {
         this.props.setRatedCourse(0, 49, newValue);
         this.props.setUnratedCourse(0, 49, newValue);
       } else {
-        this.setState({ commandMatch: this.state.commandMatch + 1 });
+        this.setState((prevState) => ({ commandMatch: prevState.commandMatch + 1 }));
       }
     } else {
       this.setState({ commandMatch: 0 });
@@ -374,6 +378,39 @@ class RecommendCourse extends Component {
 
 RecommendCourse.propTypes = {
   handleValid: PropTypes.func.isRequired,
+  setRatedCourse: PropTypes.func.isRequired,
+  setUnratedCourse: PropTypes.func.isRequired,
+  onPutCoursePref: PropTypes.func.isRequired,
+  getRatedCourse: PropTypes.func.isRequired,
+  getUnratedCourse: PropTypes.func.isRequired,
+  onChangeslider: PropTypes.func.isRequired,
+  ratedCourse: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    professor: PropTypes.string.isRequired,
+    credit: PropTypes.number.isRequired,
+    location: PropTypes.string.isRequired,
+    time: PropTypes.arrayOf({
+      week_day: PropTypes.number.isRequired,
+      start_time: PropTypes.number.isRequired,
+      end_time: PropTypes.number.isRequired,
+    }),
+  })).isRequired,
+  unratedCourse: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    professor: PropTypes.string.isRequired,
+    credit: PropTypes.number.isRequired,
+    location: PropTypes.string.isRequired,
+    time: PropTypes.arrayOf({
+      week_day: PropTypes.number.isRequired,
+      start_time: PropTypes.number.isRequired,
+      end_time: PropTypes.number.isRequired,
+    }),
+  })).isRequired,
+  changedCourses: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    score: PropTypes.number.isRequired,
+  })).isRequired,
+  searchable: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({

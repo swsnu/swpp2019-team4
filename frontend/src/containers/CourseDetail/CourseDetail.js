@@ -240,8 +240,9 @@ class CourseDetail extends Component {
     const lat = this.state.index !== -1 ? parseFloat(this.state.time[this.state.index].building.lat) : 0;
     const lng = this.state.index !== -1 ? parseFloat(this.state.time[this.state.index].building.lng) : 0;
     const center = { lat, lng };
-    const editbutton = this.props.newCourse
-      ? (
+    let editbutton = null;
+    if (this.props.newCourse) {
+      editbutton = (
         <button
           type="button"
           className="btn btn-dark"
@@ -250,31 +251,31 @@ class CourseDetail extends Component {
         >
         생성
         </button>
-      )
-      : (
-        this.validcheck()
-          ? (
-            <button
-              type="button"
-              className="btn btn-dark"
-              data-dismiss="modal"
-              onClick={() => { this.updateCourse(); }}
-            >
-        수정
-            </button>
-          )
-          : (
-            <button
-              type="button"
-              className="btn btn-dark"
-              data-dismiss="modal"
-              title={'1. 시간이 겹치지 않는지 확인하세요.\n2. 시작 시간이 끝나는 시간보다 뒤인지 확인하세요.'}
-              disabled
-            >
-        수정
-            </button>
-          )
       );
+    } else if (this.validcheck()) {
+      editbutton = (
+        <button
+          type="button"
+          className="btn btn-dark"
+          data-dismiss="modal"
+          onClick={() => { this.updateCourse(); }}
+        >
+        수정
+        </button>
+      );
+    } else {
+      editbutton = (
+        <button
+          type="button"
+          className="btn btn-dark"
+          data-dismiss="modal"
+          title={'1. 시간이 겹치지 않는지 확인하세요.\n2. 시작 시간이 끝나는 시간보다 뒤인지 확인하세요.'}
+          disabled
+        >
+        수정
+        </button>
+      );
+    }
     return (
 
       <div className="CourseDetail modal fade" id={this.props.id} tabIndex="-1" role="dialog">
@@ -478,6 +479,22 @@ CourseDetail.propTypes = {
     })).isRequired,
     is_custom: PropTypes.bool,
   }),
+  courses: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number,
+    title: PropTypes.string,
+    color: PropTypes.string,
+    lecture_number: PropTypes.string,
+    course_number: PropTypes.string,
+    credit: PropTypes.number,
+    professor: PropTypes.string,
+    location: PropTypes.string,
+    time: PropTypes.arrayOf(PropTypes.shape({
+      start_time: PropTypes.number,
+      end_time: PropTypes.number,
+      week_day: PropTypes.number,
+    })).isRequired,
+    is_custom: PropTypes.bool,
+  })).isRequired,
   onEditCourse: PropTypes.func.isRequired,
   onPostCustomCourse: PropTypes.func.isRequired,
 };

@@ -71,8 +71,9 @@ function window(state) {
 }
 jest.mock('../../../components/SearchBar/SearchBar', () => jest.fn((props) => (
   <div className="SearchBar">
-    <button id="toggle-button" onClick={() => props.onToggle()}>x</button>
+    <button type="button" id="toggle-button" onClick={() => props.onToggle()}>x</button>
     <button
+      type="button"
       id="change-button"
       onClick={() => {
         props.onChange({ target: { value: 'A' } }, 'title');
@@ -92,7 +93,7 @@ jest.mock('../../../components/SearchBar/SearchBar', () => jest.fn((props) => (
     >
 x
     </button>
-    <button id="search-button" onClick={() => props.onSearch()}>x</button>
+    <button type="button" id="search-button" onClick={() => props.onSearch()}>x</button>
   </div>
 )));
 describe('<RecommendCourse />', () => {

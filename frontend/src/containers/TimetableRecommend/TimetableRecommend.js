@@ -170,9 +170,23 @@ class TimetableRecommend extends Component {
 TimetableRecommend.propTypes = {
   onGetUser: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
+  onGetLastPage: PropTypes.func.isRequired,
+  onPutLastPage: PropTypes.func.isRequired,
+  onDeleteRecommend: PropTypes.func.isRequired,
   storedUser: PropTypes.shape({
     is_authenticated: PropTypes.bool,
   }).isRequired,
+  index: PropTypes.number.isRequired,
+  timetable: PropTypes.arrayOf(PropTypes.shape({
+    course: PropTypes.arrayOf(PropTypes.shape({
+      title: PropTypes.string,
+      time: PropTypes.arrayOf(PropTypes.shape({
+        week_day: PropTypes.number,
+        start_time: PropTypes.number,
+        end_time: PropTypes.number,
+      })),
+    })),
+  })).isRequired,
 };
 
 const mapStateToProps = (state) => ({

@@ -143,6 +143,9 @@ pplication
 Login.propTypes = {
   onGetUser: PropTypes.func.isRequired,
   onLogin: PropTypes.func.isRequired,
+  onGetLastPage: PropTypes.func.isRequired,
+  onPutLastPage: PropTypes.func.isRequired,
+  lastPage: PropTypes.number.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
