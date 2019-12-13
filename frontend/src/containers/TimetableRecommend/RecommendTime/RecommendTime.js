@@ -7,16 +7,16 @@ import * as actionCreators from '../../../store/actions/index';
 class RecommendTime extends Component {
   constructor(props) {
     super(props);
-    var colorTable = []
-    for(var i = 0; i < 26; i++) {
+    const colorTable = [];
+    for (let i = 0; i < 26; i += 1) {
       colorTable.push([3, 3, 3, 3, 3, 3]);
     }
     this.is_mount = false;
     this.state = {
       mouse_down: false,
       color: 0,
-      color_table: colorTable,
-      prv_table: colorTable,
+      inColorTable: colorTable,
+      prvTable: colorTable,
     };
     this.mouseUpListener = this.mouseUpListener.bind(this);
     this.mouseDownListener = this.mouseDownListener.bind(this);
@@ -27,8 +27,8 @@ class RecommendTime extends Component {
     this.props.handleValid(true);
     this.props.onGetTimePref()
       .then(() => {
-        const color_table = this.props.color_table.slice();
-        this.setState({color_table: color_table});
+        const inColorTable = this.props.inColorTable.slice();
+        this.setState({ inColorTable });
       });
     document.addEventListener('mouseup', this.mouseUpListener, true);
     document.addEventListener('mousedown', this.mouseDownListener, true);
@@ -47,24 +47,24 @@ class RecommendTime extends Component {
 
   mouseUpListener() {
     if (!this.is_mount) return;
-    const cur_table = this.state.color_table;
-    const prv_table = this.state.prv_table;
-    var new_table = []
-    var is_same = true;
-    for(var i=0;i<26;i++) {
-      var tmp_table = []
-      for(var j=0;j<6;j++) {
-        tmp_table.push(cur_table[i][j]);
-        if(cur_table[i][j] !== prv_table[i][j]) {
-          is_same = false;
+    const curTable = this.state.inColorTable;
+    const { prvTable } = this.state;
+    const newTable = [];
+    let isSame = true;
+    for (let i = 0; i < 26; i += 1) {
+      const tmpTable = [];
+      for (let j = 0; j < 6; j += 1) {
+        tmpTable.push(curTable[i][j]);
+        if (curTable[i][j] !== prvTable[i][j]) {
+          isSame = false;
         }
       }
-      new_table.push(tmp_table);
+      newTable.push(tmpTable);
     }
-    if(!is_same) {
-      this.props.onPutTimePref(cur_table);
+    if (!isSame) {
+      this.props.onPutTimePref(curTable);
     }
-    this.setState({ prv_table: new_table, mouse_down: false });
+    this.setState({ prvTable: newTable, mouse_down: false });
   }
 
   handleColor(index) {
@@ -74,9 +74,9 @@ class RecommendTime extends Component {
   handleFill(xIndex, yIndex, force) {
     if (this.state.mouse_down || force) {
       this.setState((prevState) => {
-        const colorTable = prevState.color_table;
+        const colorTable = prevState.inColorTable;
         colorTable[xIndex][yIndex] = prevState.color;
-        return ({ ...prevState, color_table: colorTable });
+        return ({ ...prevState, inColorTable: colorTable });
       });
     }
   }
@@ -106,7 +106,7 @@ class RecommendTime extends Component {
         );
       }
       for (let j = 0; j < 6; j += 1) {
-        const color = colorArray[this.state.color_table[i][j]];
+        const color = colorArray[this.state.inColorTable[i][j]];
         tablehtmlIth.push(
           <td key={1000 * i + j} style={{ backgroundColor: color, cursor: 'crosshair' }}>
             <div
@@ -175,15 +175,18 @@ class RecommendTime extends Component {
 
 RecommendTime.propTypes = {
   handleValid: PropTypes.func.isRequired,
+  onGetTimePref: PropTypes.func.isRequired,
+  onPutTimePref: PropTypes.func.isRequired,
+  inColorTable: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number.isRequired).isRequired).isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  color_table: state.user.time_pref_table,
+  inColorTable: state.user.time_pref_table,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onGetTimePref: () => dispatch(actionCreators.getTimePref()),
-  onPutTimePref: (table) => dispatch(actionCreators.putTimePref(table))
+  onPutTimePref: (table) => dispatch(actionCreators.putTimePref(table)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecommendTime);

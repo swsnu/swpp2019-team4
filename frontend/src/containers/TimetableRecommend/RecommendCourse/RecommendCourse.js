@@ -95,50 +95,18 @@ class RecommendCourse extends Component {
     document.addEventListener('mouseup', this.mouseUpListener, true);
   }
 
-  componentWillUnmount() {
-    this.is_mount = false;
-    document.removeEventListener('mouseup', this.mouseUpListener, true);
-  }
-
   shouldComponentUpdate(nextprops) {
-    if (nextprops.searchrated&&this.state.tabview===0) {
+    if (nextprops.searchrated && this.state.tabview === 0) {
       this.resetSearch();
-    }
-    else if(nextprops.searchunrated&&this.state.tabview===1){
+    } else if (nextprops.searchunrated && this.state.tabview === 1) {
       this.resetSearch();
     }
     return true;
   }
 
-  resetSearch(){
-    this.props.searchable();
-    if(this.state.searching)this.setState({ searching: false });
-  }
-
-  mouseUpListener() {
-    if (!this.is_mount) return;
-    const cur_list = this.props.changedCourses;
-    const prv_list = this.state.prv_changed;
-    var new_list = [];
-    var is_same = true;
-    for(var i=0;i<cur_list.length;i++) {
-      const cur_id = cur_list[i].id;
-      const cur_score = cur_list[i].score;
-      new_list.push({id:cur_id, score:cur_score});
-      if(i >= prv_list.length) {
-        is_same = false;
-        continue;
-      }
-      const prv_id = prv_list[i].id;
-      const prv_score = prv_list[i].score;
-      if(cur_id !== prv_id || cur_score !== prv_score) {
-        is_same = false;
-      }
-    }
-    if(!is_same) {
-      this.props.onPutCoursePref(cur_list);
-    }
-    this.setState({prv_changed: new_list});
+  componentWillUnmount() {
+    this.is_mount = false;
+    document.removeEventListener('mouseup', this.mouseUpListener, true);
   }
 
   segmentToString(weekDay, startTime) {
@@ -146,35 +114,71 @@ class RecommendCourse extends Component {
     return `${weekDayName[weekDay]}${this.timeToString(startTime)}`;
   }
 
+  resetSearch() {
+    this.props.searchable();
+    if (this.state.searching) this.setState({ searching: false });
+  }
+
+  mouseUpListener() {
+    if (!this.is_mount) return;
+    const curList = this.props.changedCourses;
+    const prvList = this.state.prv_changed;
+    const newList = [];
+    let isSame = true;
+    for (let i = 0; i < curList.length; i += 1) {
+      const curId = curList[i].id;
+      const curScore = curList[i].score;
+      newList.push({ id: curId, score: curScore });
+      if (i >= prvList.length) {
+        isSame = false;
+      } else {
+        const prvId = prvList[i].id;
+        const prvScore = prvList[i].score;
+        if (curId !== prvId || curScore !== prvScore) {
+          isSame = false;
+        }
+      }
+    }
+    if (!isSame) {
+      this.props.onPutCoursePref(curList);
+    }
+    this.setState({ prv_changed: newList });
+  }
+
   scrollHandler(scrollTop) {
     const pageSize = 50;
     const scrollSize = pageSize * 60;
     if (this.state.tabview === 0 && this.state.ratedScrollLimit < scrollTop) {
-      this.setState({ ratedScrollLimit: this.state.ratedScrollLimit + scrollSize });
-      this.props.getRatedCourse(this.state.ratedCourseCount, this.state.ratedCourseCount + pageSize - 1, this.state.realValuesrated);
-      this.setState({ ratedCourseCount: this.state.ratedCourseCount + pageSize });
+      this.setState((prevState) => ({ ratedScrollLimit: prevState.ratedScrollLimit + scrollSize }));
+      this.props.getRatedCourse(this.state.ratedCourseCount,
+        this.state.ratedCourseCount + pageSize - 1,
+        this.state.realValuesrated);
+      this.setState((prevState) => ({ ratedCourseCount: prevState.ratedCourseCount + pageSize }));
     } else if (this.state.tabview === 1 && this.state.unratedScrollLimit < scrollTop) {
-      this.setState({ unratedScrollLimit: this.state.unratedScrollLimit + scrollSize });
-      this.props.getUnratedCourse(this.state.unratedCourseCount, this.state.unratedCourseCount + pageSize - 1, this.state.realValuesunrated);
-      this.setState({ unratedCourseCount: this.state.unratedCourseCount + pageSize });
+      this.setState((prevState) => ({ unratedScrollLimit: prevState.unratedScrollLimit + scrollSize }));
+      this.props.getUnratedCourse(this.state.unratedCourseCount,
+        this.state.unratedCourseCount + pageSize - 1,
+        this.state.realValuesunrated);
+      this.setState((prevState) => ({ unratedCourseCount: prevState.unratedCourseCount + pageSize }));
     }
   }
 
   changeTab(tab) {
     this.props.onPutCoursePref(this.props.changedCourses);
-    if(tab===0){
+    if (tab === 0) {
       this.setState({
         tabview: tab,
         ratedScrollLimit: 1500,
-        ratedCourseCount: 50, });
-        this.props.setRatedCourse(0, 49, this.state.realValuesrated);
-    }
-    else if(tab===1){
+        ratedCourseCount: 50,
+      });
+      this.props.setRatedCourse(0, 49, this.state.realValuesrated);
+    } else if (tab === 1) {
       this.setState({
         tabview: tab,
         unratedScrollLimit: 1500,
-        unratedCourseCount: 50, });
-        this.props.setUnratedCourse(0, 49, this.state.realValuesunrated);
+        unratedCourseCount: 50,
+      });
+      this.props.setUnratedCourse(0, 49, this.state.realValuesunrated);
     }
   }
 
@@ -247,38 +251,39 @@ class RecommendCourse extends Component {
   }
 
   searchOnChange(event, type) {
-    if(this.state.tabview===0)
-    {
-      const newValue = this.state.searchValuesrated;
-      newValue[type] = event.target.value;
-      this.setState({ searchValuesrated: newValue });
-    }
-    else if(this.state.tabview===1)
-    {
-      const newValue = this.state.searchValuesunrated;
-      newValue[type] = event.target.value;
-      this.setState({ searchValuesunrated: newValue });
+    const { value } = event.target;
+    if (this.state.tabview === 0) {
+      this.setState((prevState) => {
+        const newValue = prevState.searchValuesrated;
+        newValue[type] = value;
+        return { searchValuesrated: prevState.searchValuesrated };
+      });
+    } else if (this.state.tabview === 1) {
+      this.setState((prevState) => {
+        const newValue = prevState.searchValuesunrated;
+        newValue[type] = value;
+        return { searchValuesunrated: prevState.searchValuesunrated };
+      });
     }
   }
 
   search() {
     if (this.state.searching) return;
-    if(this.state.tabview===0){
-      this.setState({
+    if (this.state.tabview === 0) {
+      this.setState((prevState) => ({
         searching: true,
-        realValuesrated: this.state.searchValuesrated,
+        realValuesrated: prevState.searchValuesrated,
         ratedScrollLimit: 1500,
         ratedCourseCount: 50,
-      });
+      }));
       this.props.setRatedCourse(0, 49, this.state.searchValuesrated);
-    }
-    else if(this.state.tabview===1){
-      this.setState({
+    } else if (this.state.tabview === 1) {
+      this.setState((prevState) => ({
         searching: true,
-        realValuesunrated: this.state.searchValuesunrated,
+        realValuesunrated: prevState.searchValuesunrated,
         unratedScrollLimit: 1500,
         unratedCourseCount: 50,
-      });
+      }));
       this.props.setUnratedCourse(0, 49, this.state.searchValuesunrated);
     }
   }
@@ -311,10 +316,10 @@ class RecommendCourse extends Component {
           unratedCourseCount: 50,
           commandMatch: 0,
         });
-        if(this.state.tabview===0)this.props.setRatedCourse(0, 49, newValue);
-        else if(this.state.tabview===1)this.props.setUnratedCourse(0, 49, newValue);
+        if (this.state.tabview === 0) this.props.setRatedCourse(0, 49, newValue);
+        else if (this.state.tabview === 1) this.props.setUnratedCourse(0, 49, newValue);
       } else {
-        this.setState({ commandMatch: this.state.commandMatch + 1 });
+        this.setState((prevState) => ({ commandMatch: prevState.commandMatch + 1 }));
       }
     } else {
       this.setState({ commandMatch: 0 });
@@ -339,45 +344,57 @@ class RecommendCourse extends Component {
     }
     return (
       <div className="RecommendCourse h-100">
-          <ul className="nav nav-tabs nav-justified" id="recommend-course-tab" role="tablist">
-            <li className="nav-item">
-              <a
-                className="nav-link active w-100"
-                id="rated-tab-clicker"
-                data-toggle="tab"
-                href="#rated-tab"
-                role="tab"
-                aria-controls="rated"
-                aria-selected="true"
-                onClick={() => { this.changeTab(0); }}
-              >
+        <ul className="nav nav-tabs nav-justified" id="recommend-course-tab" role="tablist">
+          <li className="nav-item">
+            <a
+              className="nav-link active w-100"
+              id="rated-tab-clicker"
+              data-toggle="tab"
+              href="#rated-tab"
+              role="tab"
+              aria-controls="rated"
+              aria-selected="true"
+              onClick={() => { this.changeTab(0); }}
+            >
 평가
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className="nav-link w-100"
-                id="unrated-tab-clicker"
-                data-toggle="tab"
-                href="#unrated-tab"
-                role="tab"
-                aria-controls="unrated"
-                aria-selected="false"
-                onClick={() => { this.changeTab(1); }}
-              >
+            </a>
+          </li>
+          <li className="nav-item">
+            <a
+              className="nav-link w-100"
+              id="unrated-tab-clicker"
+              data-toggle="tab"
+              href="#unrated-tab"
+              role="tab"
+              aria-controls="unrated"
+              aria-selected="false"
+              onClick={() => { this.changeTab(1); }}
+            >
 미평가
-              </a>
-            </li>
-          </ul>
-          <SearchBar value={this.state.tabview===0?this.state.searchValuesrated:this.state.searchValuesunrated} onChange={(event, type) => this.searchOnChange(event, type)} onKeyDown={() => this.enterKey()} onSearch={() => this.search()} searchScore searching={this.state.searching} />
-          <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: 'calc(100% - 8rem)' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
-            <div className="tab-pane show active" id="rated-tab" role="tabpanel" aria-labelledby="rated-tab">
-              {ratedview}
-            </div>
-            <div className="tab-pane" id="unrated-tab" role="tabpanel" aria-labelledby="unrated-tab">
-              {unratedview}
-            </div>
+            </a>
+          </li>
+        </ul>
+        <SearchBar
+          value={this.state.tabview === 0 ? this.state.searchValuesrated : this.state.searchValuesunrated}
+          onChange={(event, type) => this.searchOnChange(event, type)}
+          onKeyDown={() => this.enterKey()}
+          onSearch={() => this.search()}
+          searchScore
+          searching={this.state.searching}
+        />
+        <div
+          className="tab-content overflow-y-auto"
+          id="myTabContent"
+          style={{ height: 'calc(100% - 8rem)' }}
+          onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}
+        >
+          <div className="tab-pane show active" id="rated-tab" role="tabpanel" aria-labelledby="rated-tab">
+            {ratedview}
           </div>
+          <div className="tab-pane" id="unrated-tab" role="tabpanel" aria-labelledby="unrated-tab">
+            {unratedview}
+          </div>
+        </div>
       </div>
     );
   }
@@ -385,6 +402,39 @@ class RecommendCourse extends Component {
 
 RecommendCourse.propTypes = {
   handleValid: PropTypes.func.isRequired,
+  setRatedCourse: PropTypes.func.isRequired,
+  setUnratedCourse: PropTypes.func.isRequired,
+  onPutCoursePref: PropTypes.func.isRequired,
+  getRatedCourse: PropTypes.func.isRequired,
+  getUnratedCourse: PropTypes.func.isRequired,
+  onChangeslider: PropTypes.func.isRequired,
+  ratedCourse: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    professor: PropTypes.string.isRequired,
+    credit: PropTypes.number.isRequired,
+    location: PropTypes.string.isRequired,
+    time: PropTypes.arrayOf({
+      week_day: PropTypes.number.isRequired,
+      start_time: PropTypes.number.isRequired,
+      end_time: PropTypes.number.isRequired,
+    }),
+  })).isRequired,
+  unratedCourse: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    professor: PropTypes.string.isRequired,
+    credit: PropTypes.number.isRequired,
+    location: PropTypes.string.isRequired,
+    time: PropTypes.arrayOf({
+      week_day: PropTypes.number.isRequired,
+      start_time: PropTypes.number.isRequired,
+      end_time: PropTypes.number.isRequired,
+    }),
+  })).isRequired,
+  changedCourses: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    score: PropTypes.number.isRequired,
+  })).isRequired,
+  searchable: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({

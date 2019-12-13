@@ -40,15 +40,32 @@ export const getTimetableFriend = (timetableId) => (dispatch) => axios.get(`/api
   .then((res) => dispatch({ type: actionTypes.GET_TIMETABLE_FRIEND, timetable: res.data }))
   .catch(() => {});
 
-export const getCourses = (start, end, searchValues) => (dispatch) => axios.get(`/api/course/?start=${start}&end=${end}&title=${searchValues.title}&classification=${searchValues.classification}&department=${searchValues.department}&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}&professor=${searchValues.professor}&language=${searchValues.language}&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`)
+export const getCourses = (start, end, searchValues) => (dispatch) => axios.get(
+  `/api/course/?start=${start}&end=${end}&title=${searchValues.title}`
+  + `&classification=${searchValues.classification}&department=${searchValues.department}`
+  + `&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}`
+  + `&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}`
+  + `&professor=${searchValues.professor}&language=${searchValues.language}`
+  + `&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}`
+  + `&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`,
+)
   .then((res) => dispatch({ type: actionTypes.GET_COURSES, courses: res.data }))
   .catch(() => {});
 
 export const setCourses = (start, end, searchValues) => (dispatch) => {
-  dispatch({ type: actionTypes.RESET_COURSES})
-  axios.get(`/api/course/?start=${start}&end=${end}&title=${searchValues.title}&classification=${searchValues.classification}&department=${searchValues.department}&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}&professor=${searchValues.professor}&language=${searchValues.language}&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`)
-  .then((res) => dispatch({ type: actionTypes.SET_COURSES, course_list: res.data }))
-  .catch(() => {});}
+  dispatch({ type: actionTypes.RESET_COURSES });
+  axios.get(
+    `/api/course/?start=${start}&end=${end}&title=${searchValues.title}`
+  + `&classification=${searchValues.classification}&department=${searchValues.department}`
+  + `&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}`
+  + `&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}`
+  + `&professor=${searchValues.professor}&language=${searchValues.language}`
+  + `&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}`
+  + `&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`,
+  )
+    .then((res) => dispatch({ type: actionTypes.SET_COURSES, course_list: res.data }))
+    .catch(() => {});
+};
 
 export const postCourse = (timetableId, courseId) => (dispatch) => axios.post(
   `/api/timetable/${timetableId}/course/`, { course_id: courseId },
@@ -130,18 +147,21 @@ export const postRecommend = () => (dispatch) => axios.post('/api/recommend/reco
   .catch(() => {});
 
 export const deleteRecommend = () => (dispatch) => axios.delete('/api/recommend/recommend/')
-  .then((res) => dispatch({ type: actionTypes.GET_RECOMMEND, timetables: [] }))
+  .then(() => dispatch({ type: actionTypes.GET_RECOMMEND, timetables: [] }))
   .catch(() => {});
 
 export const getLastPage = () => (dispatch) => axios.get('/api/recommend/lastpage/')
-  .then((res) => dispatch({ type: actionTypes.GET_LAST_PAGE, last_page: res.data }))
+  .then((res) => dispatch({ type: actionTypes.GET_LAST_PAGE, lastPage: res.data }))
   .catch(() => {});
 
-export const putLastPage = (last_page) => (dispatch) => axios.put('/api/recommend/lastpage/', { last_page })
-  .then((res) => dispatch({ type: actionTypes.GET_LAST_PAGE, last_page }))
+export const putLastPage = (lastPage) => (dispatch) => axios.put('/api/recommend/lastpage/',
+  { last_page: lastPage })
+  .then(() => dispatch({ type: actionTypes.GET_LAST_PAGE, lastPage }))
   .catch(() => {});
 
-export const editConstraints = (consts) => (dispatch) => dispatch({ type: actionTypes.EDIT_CONSTRAINTS, constraints: consts });
+export const editConstraints = (consts) => (dispatch) => dispatch(
+  { type: actionTypes.EDIT_CONSTRAINTS, constraints: consts },
+);
 
 export const getConstraints = () => (dispatch) => axios.get('/api/recommend/constraints/')
   .then((res) => dispatch({ type: actionTypes.EDIT_CONSTRAINTS, constraints: res.data }))
@@ -159,25 +179,57 @@ export const putTimePref = (table) => (dispatch) => axios.put('/api/recommend/ti
   .then(() => dispatch({ type: actionTypes.EDIT_TIME_PREF, time_pref_table: table }))
   .catch(() => {});
 
-export const getRatedCourse = (start, end, searchValues) => (dispatch) => axios.get(`/api/recommend/coursepref/rated/?start=${start}&end=${end}&title=${searchValues.title}&classification=${searchValues.classification}&department=${searchValues.department}&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}&professor=${searchValues.professor}&language=${searchValues.language}&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`)
+export const getRatedCourse = (start, end, searchValues) => (dispatch) => axios.get(
+  `/api/recommend/coursepref/rated/?start=${start}&end=${end}&title=${searchValues.title}`
+  + `&classification=${searchValues.classification}&department=${searchValues.department}`
+  + `&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}`
+  + `&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}`
+  + `&professor=${searchValues.professor}&language=${searchValues.language}`
+  + `&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}`
+  + `&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`,
+)
   .then((res) => dispatch({ type: actionTypes.GET_RATED_COURSE, course_list: res.data }))
   .catch(() => {});
 
-export const getUnratedCourse = (start, end, searchValues) => (dispatch) => axios.get(`/api/recommend/coursepref/unrated/?start=${start}&end=${end}&title=${searchValues.title}&classification=${searchValues.classification}&department=${searchValues.department}&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}&professor=${searchValues.professor}&language=${searchValues.language}&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}`)
+export const getUnratedCourse = (start, end, searchValues) => (dispatch) => axios.get(
+  `/api/recommend/coursepref/unrated/?start=${start}&end=${end}&title=${searchValues.title}`
+  + `&classification=${searchValues.classification}&department=${searchValues.department}`
+  + `&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}`
+  + `&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}`
+  + `&professor=${searchValues.professor}&language=${searchValues.language}`
+  + `&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}`,
+)
   .then((res) => dispatch({ type: actionTypes.GET_UNRATED_COURSE, course_list: res.data }))
   .catch(() => {});
 
 export const setRatedCourse = (start, end, searchValues) => (dispatch) => {
-  dispatch({ type: actionTypes.RESET_RECOMMEND_COURSES});
-  axios.get(`/api/recommend/coursepref/rated/?start=${start}&end=${end}&title=${searchValues.title}&classification=${searchValues.classification}&department=${searchValues.department}&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}&professor=${searchValues.professor}&language=${searchValues.language}&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`)
-  .then((res) => dispatch({ type: actionTypes.SET_RATED_COURSE, course_list: res.data }))
-  .catch(() => {});}
+  dispatch({ type: actionTypes.RESET_RECOMMEND_COURSES });
+  axios.get(
+    `/api/recommend/coursepref/rated/?start=${start}&end=${end}&title=${searchValues.title}`
+  + `&classification=${searchValues.classification}&department=${searchValues.department}`
+  + `&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}`
+  + `&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}`
+  + `&professor=${searchValues.professor}&language=${searchValues.language}`
+  + `&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}`
+  + `&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`,
+  )
+    .then((res) => dispatch({ type: actionTypes.SET_RATED_COURSE, course_list: res.data }))
+    .catch(() => {});
+};
 
 export const setUnratedCourse = (start, end, searchValues) => (dispatch) => {
-  dispatch({ type: actionTypes.RESET_RECOMMEND_COURSES});
-  axios.get(`/api/recommend/coursepref/unrated/?start=${start}&end=${end}&title=${searchValues.title}&classification=${searchValues.classification}&department=${searchValues.department}&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}&professor=${searchValues.professor}&language=${searchValues.language}&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}`)
-  .then((res) => dispatch({ type: actionTypes.SET_UNRATED_COURSE, course_list: res.data }))
-  .catch(() => {});}
+  dispatch({ type: actionTypes.RESET_RECOMMEND_COURSES });
+  axios.get(
+    `/api/recommend/coursepref/unrated/?start=${start}&end=${end}&title=${searchValues.title}`
+  + `&classification=${searchValues.classification}&department=${searchValues.department}`
+  + `&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}`
+  + `&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}`
+  + `&professor=${searchValues.professor}&language=${searchValues.language}`
+  + `&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}`,
+  )
+    .then((res) => dispatch({ type: actionTypes.SET_UNRATED_COURSE, course_list: res.data }))
+    .catch(() => {});
+};
 
 export const putCourseprefTemp = (id, score) => (dispatch) => dispatch(
   { type: actionTypes.PUT_COURSEPREF_TEMP, coursepref: { id, score } },
@@ -194,7 +246,7 @@ export const setRatedSearchable = () => (dispatch) => dispatch({ type: actionTyp
 export const setUnratedSearchable = () => (dispatch) => dispatch({ type: actionTypes.SET_UNRATED_SEARCHABLE });
 
 export const searchBuildings = (name) => (dispatch) => axios.get(`/api/building/?name=${name}`)
-  .then((res) => dispatch({ type: actionTypes.SEARCH_BUILDINGS, building_list: res.data }))
+  .then((res) => dispatch({ type: actionTypes.SEARCH_BUILDINGS, buildingList: res.data }))
   .catch(() => {});
 
 export const autoComplete = () => (dispatch) => dispatch({ type: actionTypes.AUTO_COMPLETE });

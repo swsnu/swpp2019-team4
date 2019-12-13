@@ -84,8 +84,8 @@ class User(AbstractBaseUser):
 
     def data_small(self):
         return {'id': self.id, 'email': self.email, 'username': self.username}
-    
-    def data_constraint (self):
+
+    def data_constraint(self):
         return {'days_per_week': self.days_per_week,
                 'credit_min': self.credit_min, 'credit_max': self.credit_max,
                 'major_min': self.major_min, 'major_max': self.major_max}
@@ -171,7 +171,7 @@ class Building(models.Model):
                 'lat' : self.latitude,
                 'lng' : self.longitude,
                 'detail' : lectureroom if detail == '' else detail
-                }
+               }
 
 class CourseTime(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -208,27 +208,27 @@ class CustomCourse(models.Model):
     def set_custom_course_time(self, times):
         custom_course_time_list = CustomCourseTime.objects.filter(course=self)
         lectureroom = ''
-        
+
         for time in custom_course_time_list:
             time.delete()
         for time in times:
             try:
-                building=Building.objects.get(name=time['building']['name'])
+                building = Building.objects.get(name=time['building']['name'])
                 CustomCourseTime(timetable=self.timetable, course=self,
-                                weekday=time['week_day'],
-                                start_time=time['start_time'],
-                                end_time=time['end_time'],
-                                building=building,
-                                detail=time['building']['detail'],
-                                lectureroom=lectureroom).save()
+                                 weekday=time['week_day'],
+                                 start_time=time['start_time'],
+                                 end_time=time['end_time'],
+                                 building=building,
+                                 detail=time['building']['detail'],
+                                 lectureroom=lectureroom).save()
             except (Building.DoesNotExist):
                 CustomCourseTime(timetable=self.timetable, course=self,
-                                weekday=time['week_day'],
-                                start_time=time['start_time'],
-                                end_time=time['end_time'],
-                                building=Building.objects.get(id=0),
-                                detail=time['building']['detail'],
-                                lectureroom=lectureroom).save()
+                                 weekday=time['week_day'],
+                                 start_time=time['start_time'],
+                                 end_time=time['end_time'],
+                                 building=Building.objects.get(id=0),
+                                 detail=time['building']['detail'],
+                                 lectureroom=lectureroom).save()
 
 
     def data(self):

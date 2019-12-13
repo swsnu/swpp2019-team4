@@ -28,5 +28,6 @@ module.exports = {
     "prefer-promise-reject-errors": ["off"],
     "jsx-a11y/label-has-associated-control": ["off"],
     "react/no-array-index-key": ["off"],
+    "jsx-a11y/heading-has-content": ["off"],
   }
 };
