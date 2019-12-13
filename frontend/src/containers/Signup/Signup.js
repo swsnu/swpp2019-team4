@@ -122,7 +122,7 @@ class Signup extends Component {
                 className={`form-control ${this.state.email_valid ? '' : 'is-invalid'}`}
                 type="text"
                 id="email-input"
-                placeholder="Email"
+                placeholder="이메일"
                 value={this.state.email}
                 onChange={(event) => this.setState({ email: event.target.value })}
               />
@@ -131,7 +131,7 @@ class Signup extends Component {
                 className={`form-control ${this.state.password_valid ? '' : 'is-invalid'}`}
                 type="password"
                 id="password-input"
-                placeholder="Password"
+                placeholder="비밀번호"
                 value={this.state.password}
                 onChange={(event) => this.setState({ password: event.target.value })}
               />
@@ -141,7 +141,7 @@ class Signup extends Component {
                 type="password"
                 id="password-confirm-input"
                 value={this.state.password_confirm}
-                placeholder="Password Confirmation"
+                placeholder="비밀번호 확인"
                 onChange={(event) => this.setState({ password_confirm: event.target.value })}
               />
               <div className="small text-left violation-notice feedback">{this.state.password_confirm_notice}</div>
@@ -150,7 +150,7 @@ class Signup extends Component {
                 type="text"
                 id="username-input"
                 value={this.state.username}
-                placeholder="Username"
+                placeholder="이름"
                 onChange={(event) => this.setState({ username: event.target.value })}
               />
               <div className="small text-left violation-notice feedback">{this.state.username_notice}</div>
@@ -159,16 +159,16 @@ class Signup extends Component {
                 type="text"
                 id="department-input"
                 value={this.state.department}
-                placeholder="Department"
+                placeholder="학과"
                 onChange={(event) => this.setState({ department: event.target.value })}
               />
               <div className="small text-left violation-notice feedback"/>
               <input
                 className={'form-control'}
-                type="number"
+                type="text"
                 id="grade-input"
                 value={this.state.grade}
-                placeholder="Grade"
+                placeholder="학번"
                 onChange={(event) => this.setState({ grade: event.target.value })}
               />
               <div className="small text-left violation-notice feedback"/>
