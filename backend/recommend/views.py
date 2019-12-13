@@ -521,5 +521,7 @@ def api_base (request):
             timetable = Timetable.objects.get(id=timetable_id)
         except Timetable.DoesNotExist:
             timetable = None
+        user.recommend_base_timetable = timetable
+        user.save()
         return HttpResponse(status=200)
     return HttpResponseNotAllowed(['GET', 'PUT'])

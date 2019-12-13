@@ -22,7 +22,7 @@ class RecommendTime extends Component {
     this.mouseDownListener = this.mouseDownListener.bind(this);
   }
 
-  excludedTime (timetable_id, prv_table) {
+  excludedTime (prv_table) {
     var color_table = []
     for(var i=0;i<26;i++) {
       var tmp_table = [];
@@ -33,21 +33,17 @@ class RecommendTime extends Component {
       }
       color_table.push(tmp_table);
     }
-    if(timetable_id === -1) return color_table;
-    this.props.onGetTimetable(timetable_id)
-      .then(() => {
-        var timetable = this.props.timetable;
-        for(var i=0;i<timetable.course.length;i++) {
-          for(var j=0;j<timetable.course[i].time.length;j++) {
-            var course_start = Math.floor((timetable.course[i].time[j].start_time-480)/30)
-            var course_end = Math.floor((timetable.course[i].time[j].end_time-480)/30)
-            const course_weekday = timetable.course[i].time[j].week_day;
-            for(var k=course_start;k<=course_end;k++) {
-              color_table[k][course_weekday] = -1;
-            }
-          }
+    var timetable = this.props.timetable;
+    for(var i=0;i<timetable.course.length;i++) {
+      for(var j=0;j<timetable.course[i].time.length;j++) {
+        const course_start = Math.floor((timetable.course[i].time[j].start_time-480)/30)
+        const course_end = Math.floor((timetable.course[i].time[j].end_time-480)/30)
+        const course_weekday = timetable.course[i].time[j].week_day;
+        for(var k=course_start;k<=course_end;k++) {
+          color_table[k][course_weekday] = -1;
         }
-      });
+      }
+    }
     return color_table;
   }
 
@@ -60,8 +56,11 @@ class RecommendTime extends Component {
         const color_table = this.props.color_table;
         this.props.onGetRecommendBase()
           .then(() => {
-            const excluded_table = this.excludedTime(this.props.recommend_base, color_table);
-            this.setState({color_table: excluded_table});
+            this.props.onGetTimetable(this.props.recommend_base)
+              .then(() => {
+                const excluded_table = this.excludedTime(color_table);
+                this.setState({color_table: excluded_table});
+              });
           });
       });
     document.addEventListener('mouseup', this.mouseUpListener, true);
@@ -102,10 +101,13 @@ class RecommendTime extends Component {
   }
 
   setBase (timetable_id) {
-    this.props.onPutRecommendBase(timetable_id)
-    const color_table = this.excludedTime(timetable_id, this.state.color_table);
-    this.props.onPutTimePref(color_table);
-    this.setState({ color_table: color_table });
+    this.props.onPutRecommendBase(timetable_id);
+    this.props.onGetTimetable(timetable_id)
+      .then(() => {
+        const color_table = this.excludedTime(this.state.color_table);
+        this.props.onPutTimePref(color_table);
+        this.setState({ color_table: color_table });
+      });
   }
 
   handleColor(index) {
@@ -171,7 +173,7 @@ class RecommendTime extends Component {
       for (let j = 0; j < 6; j += 1) {
         const color_index = this.state.color_table[i][j];
         var color = null;
-        if(color_index == -1) color = '#000000';
+        if(color_index === -1) color = '#000000';
         else color = colorArray[color_index];
         tablehtmlIth.push(
           <td key={1000 * i + j} style={{ backgroundColor: color, cursor: 'crosshair' }}>
@@ -213,7 +215,7 @@ class RecommendTime extends Component {
         {timetableList}
         <table className="w-100 col-6 offset-2" id="recommend-time-table">
           <colgroup>
-            <col span="1" style={{ width: '10%' }} />
+            <col span="1" style={{ width: '10%' }} /> 
             <col span="1" style={{ width: '15%' }} />
             <col span="1" style={{ width: '15%' }} />
             <col span="1" style={{ width: '15%' }} />
