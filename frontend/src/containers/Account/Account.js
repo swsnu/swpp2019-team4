@@ -25,11 +25,13 @@ class Account extends Component {
       password_valid: true,
       password_confirm_valid: true,
       username_valid: true,
+      grade_valid: true,
 
       password_prev_notice: '',
       password_notice: '',
       password_confirm_notice: '',
       username_notice: '',
+      grade_notice: '',
 
       is_waiting: false,
       is_finished: false,
@@ -68,14 +70,14 @@ class Account extends Component {
     const passwordValid = (password.length >= 8 && password.length <= 32) || !passwordChange;
     const passwordConfirmValid = (password === passwordConfirm) || !passwordChange;
     const usernameValid = (username.length >= 1 && username.length <= 16);
-    const departmentValid = (department === '컴퓨터공학부');
-    const gradeValid = (1 * grade >= 1 && 1 * grade <= 99);
-    const sendValid = passwordPrevValid && passwordValid && passwordConfirmValid && usernameValid;
+    const gradeValid = (grade.length == 2 && grade[0]>='0'&&grade[0]<='9'&& grade[1]>='0'&&grade[1]<='9');
+    const sendValid = passwordPrevValid && passwordValid && passwordConfirmValid && usernameValid && gradeValid;
 
     const passwordPrevNotice = (passwordPrevValid ? '' : '기존 비밀번호를 입력해야 합니다.');
     const passwordNotice = (passwordValid ? '' : '비밀번호는 8자 이상 32자 이하로 구성되어야 합니다.');
     const passwordConfirmNotice = (passwordConfirmValid ? '' : '비밀번호와 비밀번호 확인은 같은 값을 가져야 합니다.');
     const usernameNotice = (usernameValid ? '' : '이름은 1자 이상 32자 이하로 구성되어야 합니다.');
+    const gradeNotice = (gradeValid ? '' : '학번은 두 자리 숫자여야 합니다.');
 
     this.setState((prevState) => ({
       ...prevState,
@@ -83,10 +85,12 @@ class Account extends Component {
       password_valid: passwordValid,
       password_confirm_valid: passwordConfirmValid,
       username_valid: usernameValid,
+      grade_valid: gradeValid,
       password_prev_notice: passwordPrevNotice,
       password_notice: passwordNotice,
       password_confirm_notice: passwordConfirmNotice,
       username_notice: usernameNotice,
+      grade_notice: gradeNotice,
     }));
     if (sendValid) {
       this.setState((prevState) => ({ ...prevState, is_waiting: true }));
@@ -173,13 +177,13 @@ class Account extends Component {
                   </td>
                   <td>
                     <input
-                      className={`form-control`}
+                      className={`form-control ${this.state.grade_valid ? '' : 'is-invalid'}`}
                       type="text"
                       id="grade-input"
                       value={this.state.grade}
                       onChange={(event) => this.setState({ grade: event.target.value })}
                     />
-                    <div className="small text-left text-danger feedback"/>
+                    <div className="small text-left text-danger feedback">{this.state.grade_notice}</div>
                   </td>
                 </tr>
               </tbody>

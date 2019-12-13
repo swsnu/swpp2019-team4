@@ -22,11 +22,13 @@ class Signup extends Component {
       password_valid: true,
       password_confirm_valid: true,
       username_valid: true,
+      grade_valid: true,
 
       email_notice: '',
       password_notice: '',
       password_confirm_notice: '',
       username_notice: '',
+      grade_notice: '',
 
       is_waiting: false,
       is_finished: false,
@@ -43,12 +45,14 @@ class Signup extends Component {
     const passwordValid = (password.length >= 8 && password.length <= 32);
     const passwordConfirmValid = (password === passwordConfirm);
     const usernameValid = (username.length >= 1 && username.length <= 16);
-    const sendValid = emailValid && passwordValid && passwordConfirmValid && usernameValid;
+    const gradeValid = (grade.length == 2 && grade[0]>='0'&&grade[0]<='9'&& grade[1]>='0'&&grade[1]<='9');
+    const sendValid = emailValid && passwordValid && passwordConfirmValid && usernameValid&& gradeValid;
 
     const emailNotice = (emailValid ? '' : '이메일 형식이 올바르지 않습니다.');
     const passwordNotice = (passwordValid ? '' : '비밀번호는 8자 이상 32자 이하로 구성되어야 합니다.');
     const passwordConfirmNotice = (passwordConfirmValid ? '' : '비밀번호와 비밀번호 확인은 같은 값을 가져야 합니다.');
     const usernameNotice = (usernameValid ? '' : '이름은 1자 이상 32자 이하로 구성되어야 합니다.');
+    const gradeNotice = (gradeValid ? '' : '학번은 두 자리 숫자여야 합니다.');
 
     this.setState((prevState) => ({
       ...prevState,
@@ -56,10 +60,12 @@ class Signup extends Component {
       password_valid: passwordValid,
       password_confirm_valid: passwordConfirmValid,
       username_valid: usernameValid,
+      grade_valid: gradeValid,
       email_notice: emailNotice,
       password_notice: passwordNotice,
       password_confirm_notice: passwordConfirmNotice,
       username_notice: usernameNotice,
+      grade_notice: gradeNotice,
     }));
     if (sendValid) {
       this.setState((prevState) => ({ ...prevState, is_waiting: true }));
@@ -164,14 +170,14 @@ class Signup extends Component {
               />
               <div className="small text-left violation-notice feedback"/>
               <input
-                className={'form-control'}
+                className={`form-control ${this.state.grade_valid ? '' : 'is-invalid'}`}
                 type="text"
                 id="grade-input"
                 value={this.state.grade}
                 placeholder="학번"
                 onChange={(event) => this.setState({ grade: event.target.value })}
               />
-              <div className="small text-left violation-notice feedback"/>
+              <div className="small text-left violation-notice feedback">{this.state.grade_notice}</div>
             </div>
             <div className="row m-0">
               <button
