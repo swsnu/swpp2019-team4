@@ -36,7 +36,7 @@ const stubState = {
         lecture_number: '001',
       },
     ],
-  },],
+  }],
 };
 
 const stubStateEmpty = {
@@ -81,10 +81,10 @@ describe('RecommendResult test', () => {
   afterEach(() => jest.clearAllMocks());
 
   it('should render timetableRecommend', () => {
-    const component = mount(timetableRecommend(stubState));
+    mount(timetableRecommend(stubState));
   });
-  
+
   it('should render timetableRecommend Empty', () => {
-    const component = mount(timetableRecommend(stubStateEmpty));
+    mount(timetableRecommend(stubStateEmpty));
   });
 });

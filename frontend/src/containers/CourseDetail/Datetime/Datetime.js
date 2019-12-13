@@ -23,15 +23,15 @@ class Datetime extends Component {
     this.handleChange(this.props.value);
   }
 
-  componentWillUnmount() {
-    document.removeEventListener('click', this.clickListener, true);
-  }
-
   shouldComponentUpdate(nextProps) {
     if (this.props.value !== nextProps.value) {
       this.handleChange(nextProps.value);
     }
     return true;
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.clickListener, true);
   }
 
   clickListener() {

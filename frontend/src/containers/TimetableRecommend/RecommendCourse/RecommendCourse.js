@@ -9,7 +9,7 @@ class RecommendCourse extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchValues: {
+      searchValuesrated: {
         title: '',
         classification: '',
         department: '',
@@ -24,7 +24,37 @@ class RecommendCourse extends Component {
         min_score: '',
         max_score: '',
       },
-      realValues: {
+      realValuesrated: {
+        title: '',
+        classification: '',
+        department: '',
+        degree_program: '',
+        academic_year: '',
+        course_number: '',
+        lecture_number: '',
+        professor: '',
+        language: '',
+        min_credit: '',
+        max_credit: '',
+        min_score: '',
+        max_score: '',
+      },
+      searchValuesunrated: {
+        title: '',
+        classification: '',
+        department: '',
+        degree_program: '',
+        academic_year: '',
+        course_number: '',
+        lecture_number: '',
+        professor: '',
+        language: '',
+        min_credit: '',
+        max_credit: '',
+        min_score: '',
+        max_score: '',
+      },
+      realValuesunrated: {
         title: '',
         classification: '',
         department: '',
@@ -44,12 +74,9 @@ class RecommendCourse extends Component {
       ratedCourseCount: 50,
       unratedCourseCount: 50,
       tabview: 0,
-      searchdetail: false,
       searching: false,
       commandMatch: 0,
       prv_changed: [],
-      rated_initial_loading: true,
-      unrated_initial_loading: true,
     };
     this.timeToString = (time) => {
       const hour = parseInt(time / 60, 10);
@@ -63,12 +90,18 @@ class RecommendCourse extends Component {
 
   componentDidMount() {
     this.props.handleValid(true);
-    this.props.setRatedCourse(0, 49, this.state.realValues)
-      .then(() => this.setState({rated_initial_loading: false}));
-    this.props.setUnratedCourse(0, 49, this.state.realValues)
-      .then(() => this.setState({unrated_initial_loading: false}));
+    this.props.setRatedCourse(0, 49, this.state.realValuesrated);
     this.is_mount = true;
     document.addEventListener('mouseup', this.mouseUpListener, true);
+  }
+
+  shouldComponentUpdate(nextprops) {
+    if (nextprops.searchrated && this.state.tabview === 0) {
+      this.resetSearch();
+    } else if (nextprops.searchunrated && this.state.tabview === 1) {
+      this.resetSearch();
+    }
+    return true;
   }
 
   componentWillUnmount() {
@@ -76,72 +109,77 @@ class RecommendCourse extends Component {
     document.removeEventListener('mouseup', this.mouseUpListener, true);
   }
 
-  shouldComponentUpdate(nextprops) {
-    if (nextprops.searched) {
-      this.resetSearch();
-    }
-    return true;
+  segmentToString(weekDay, startTime) {
+    const weekDayName = ['월', '화', '수', '목', '금', '토'];
+    return `${weekDayName[weekDay]}${this.timeToString(startTime)}`;
   }
 
-  resetSearch(){
+  resetSearch() {
     this.props.searchable();
-    if(this.state.searching)this.setState({ searching: false });
+    if (this.state.searching) this.setState({ searching: false });
   }
 
   mouseUpListener() {
     if (!this.is_mount) return;
-    const cur_list = this.props.changedCourses;
-    const prv_list = this.state.prv_changed;
-    var new_list = [];
-    var is_same = true;
-    for(var i=0;i<cur_list.length;i++) {
-      const cur_id = cur_list[i].id;
-      const cur_score = cur_list[i].score;
-      new_list.push({id:cur_id, score:cur_score});
-      if(i >= prv_list.length) {
-        is_same = false;
-        continue;
-      }
-      const prv_id = prv_list[i].id;
-      const prv_score = prv_list[i].score;
-      if(cur_id !== prv_id || cur_score !== prv_score) {
-        is_same = false;
+    const curList = this.props.changedCourses;
+    const prvList = this.state.prv_changed;
+    const newList = [];
+    let isSame = true;
+    for (let i = 0; i < curList.length; i += 1) {
+      const curId = curList[i].id;
+      const curScore = curList[i].score;
+      newList.push({ id: curId, score: curScore });
+      if (i >= prvList.length) {
+        isSame = false;
+      } else {
+        const prvId = prvList[i].id;
+        const prvScore = prvList[i].score;
+        if (curId !== prvId || curScore !== prvScore) {
+          isSame = false;
+        }
       }
     }
-    if(!is_same) {
-      this.props.onPutCoursePref(cur_list);
+    if (!isSame) {
+      this.props.onPutCoursePref(curList);
     }
-    this.setState({prv_changed: new_list});
-  }
-
-  segmentToString(weekDay, startTime) {
-    const weekDayName = ['월', '화', '수', '목', '금', '토'];
-    return `${weekDayName[weekDay]}${this.timeToString(startTime)}`;
+    this.setState({ prv_changed: newList });
   }
 
   scrollHandler(scrollTop) {
     const pageSize = 50;
     const scrollSize = pageSize * 60;
     if (this.state.tabview === 0 && this.state.ratedScrollLimit < scrollTop) {
-      this.setState({ ratedScrollLimit: this.state.ratedScrollLimit + scrollSize });
-      this.props.getRatedCourse(this.state.ratedCourseCount, this.state.ratedCourseCount + pageSize - 1, this.state.realValues);
-      this.setState({ ratedCourseCount: this.state.ratedCourseCount + pageSize });
+      this.setState((prevState) => ({ ratedScrollLimit: prevState.ratedScrollLimit + scrollSize }));
+      this.props.getRatedCourse(this.state.ratedCourseCount,
+        this.state.ratedCourseCount + pageSize - 1,
+        this.state.realValuesrated);
+      this.setState((prevState) => ({ ratedCourseCount: prevState.ratedCourseCount + pageSize }));
     } else if (this.state.tabview === 1 && this.state.unratedScrollLimit < scrollTop) {
-      this.setState({ unratedScrollLimit: this.state.unratedScrollLimit + scrollSize });
-      this.props.getUnratedCourse(this.state.unratedCourseCount, this.state.unratedCourseCount + pageSize - 1, this.state.realValues);
-      this.setState({ unratedCourseCount: this.state.unratedCourseCount + pageSize });
+      this.setState((prevState) => ({ unratedScrollLimit: prevState.unratedScrollLimit + scrollSize }));
+      this.props.getUnratedCourse(this.state.unratedCourseCount,
+        this.state.unratedCourseCount + pageSize - 1,
+        this.state.realValuesunrated);
+      this.setState((prevState) => ({ unratedCourseCount: prevState.unratedCourseCount + pageSize }));
     }
   }
 
-  onSearchToggle() {
-    this.setState({ searchdetail: !this.state.searchdetail });
-  }
-
   changeTab(tab) {
-    this.setState({ tabview: tab });
     this.props.onPutCoursePref(this.props.changedCourses);
-    this.props.setRatedCourse(0, 49, this.state.realValues);
-    this.props.setUnratedCourse(0, 49, this.state.realValues);
+    if (tab === 0) {
+      this.setState({
+        tabview: tab,
+        ratedScrollLimit: 1500,
+        ratedCourseCount: 50,
+      });
+      this.props.setRatedCourse(0, 49, this.state.realValuesrated);
+    } else if (tab === 1) {
+      this.setState({
+        tabview: tab,
+        unratedScrollLimit: 1500,
+        unratedCourseCount: 50,
+      });
+      this.props.setUnratedCourse(0, 49, this.state.realValuesunrated);
+    }
   }
 
   courseElement(course) {
@@ -213,49 +251,40 @@ class RecommendCourse extends Component {
   }
 
   searchOnChange(event, type) {
-    const newValue = this.state.searchValues;
-    newValue[type] = event.target.value;
-    this.setState({ searchValues: newValue });
+    const { value } = event.target;
+    if (this.state.tabview === 0) {
+      this.setState((prevState) => {
+        const newValue = prevState.searchValuesrated;
+        newValue[type] = value;
+        return { searchValuesrated: prevState.searchValuesrated };
+      });
+    } else if (this.state.tabview === 1) {
+      this.setState((prevState) => {
+        const newValue = prevState.searchValuesunrated;
+        newValue[type] = value;
+        return { searchValuesunrated: prevState.searchValuesunrated };
+      });
+    }
   }
 
   search() {
     if (this.state.searching) return;
-    this.setState({ searching: true });
-    if (this.state.searchdetail) {
-      this.setState({
-        realValues: this.state.searchValues,
+    if (this.state.tabview === 0) {
+      this.setState((prevState) => ({
+        searching: true,
+        realValuesrated: prevState.searchValuesrated,
         ratedScrollLimit: 1500,
-        unratedScrollLimit: 1500,
         ratedCourseCount: 50,
-        unratedCourseCount: 50,
-      });
-      this.props.setRatedCourse(0, 49, this.state.searchValues);
-      this.props.setUnratedCourse(0, 49, this.state.searchValues);
-    } else {
-      const newValue = {
-        title: this.state.searchValues.title,
-        classification: '',
-        department: '',
-        degree_program: '',
-        academic_year: '',
-        course_number: '',
-        lecture_number: '',
-        professor: '',
-        language: '',
-        min_credit: '',
-        max_credit: '',
-        min_score: '',
-        max_score: '',
-      };
-      this.setState({
-        realValues: newValue,
-        ratedScrollLimit: 1500,
+      }));
+      this.props.setRatedCourse(0, 49, this.state.searchValuesrated);
+    } else if (this.state.tabview === 1) {
+      this.setState((prevState) => ({
+        searching: true,
+        realValuesunrated: prevState.searchValuesunrated,
         unratedScrollLimit: 1500,
-        ratedCourseCount: 50,
         unratedCourseCount: 50,
-      });
-      this.props.setRatedCourse(0, 49, newValue);
-      this.props.setUnratedCourse(0, 49, newValue);
+      }));
+      this.props.setUnratedCourse(0, 49, this.state.searchValuesunrated);
     }
   }
 
@@ -279,17 +308,18 @@ class RecommendCourse extends Component {
           max_score: '',
         };
         this.setState({
-          realValues: newValue,
+          realValuesrated: newValue,
+          realValuesunrated: newValue,
           ratedScrollLimit: 1500,
           unratedScrollLimit: 1500,
           ratedCourseCount: 50,
           unratedCourseCount: 50,
           commandMatch: 0,
         });
-        this.props.setRatedCourse(0, 49, newValue);
-        this.props.setUnratedCourse(0, 49, newValue);
+        if (this.state.tabview === 0) this.props.setRatedCourse(0, 49, newValue);
+        else if (this.state.tabview === 1) this.props.setUnratedCourse(0, 49, newValue);
       } else {
-        this.setState({ commandMatch: this.state.commandMatch + 1 });
+        this.setState((prevState) => ({ commandMatch: prevState.commandMatch + 1 }));
       }
     } else {
       this.setState({ commandMatch: 0 });
@@ -302,69 +332,69 @@ class RecommendCourse extends Component {
   render() {
     const ratedview = [];
     const unratedview = [];
-    if(this.state.rated_initial_loading) {
-      ratedview.push(
-        <div className="RecommendCourse loading d-flex align-items-center w-100 h-100">
-          <h1>불러오는 중입니다...</h1>
-        </div>);
-    }
-    else if (this.props.ratedCourse !== undefined) {
+    if (this.props.ratedCourse !== undefined) {
       for (let i = 0; i < this.props.ratedCourse.length; i += 1) {
         ratedview.push(this.courseElement(this.props.ratedCourse[i]));
       }
     }
-    if(this.state.unrated_initial_loading) {
-      unratedview.push(
-        <div className="RecommendCourse loading d-flex align-items-center w-100 h-100">
-          <h1>불러오는 중입니다...</h1>
-        </div>);
-    }
-    else if (this.props.unratedCourse !== undefined) {
+    if (this.props.unratedCourse !== undefined) {
       for (let i = 0; i < this.props.unratedCourse.length; i += 1) {
         unratedview.push(this.courseElement(this.props.unratedCourse[i]));
       }
     }
     return (
       <div className="RecommendCourse h-100">
-          <ul className="nav nav-tabs nav-justified" id="recommend-course-tab" role="tablist">
-            <li className="nav-item">
-              <a
-                className="nav-link active w-100"
-                id="rated-tab-clicker"
-                data-toggle="tab"
-                href="#rated-tab"
-                role="tab"
-                aria-controls="rated"
-                aria-selected="true"
-                onClick={() => { this.changeTab(0); }}
-              >
+        <ul className="nav nav-tabs nav-justified" id="recommend-course-tab" role="tablist">
+          <li className="nav-item">
+            <a
+              className="nav-link active w-100"
+              id="rated-tab-clicker"
+              data-toggle="tab"
+              href="#rated-tab"
+              role="tab"
+              aria-controls="rated"
+              aria-selected="true"
+              onClick={() => { this.changeTab(0); }}
+            >
 평가
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className="nav-link w-100"
-                id="unrated-tab-clicker"
-                data-toggle="tab"
-                href="#unrated-tab"
-                role="tab"
-                aria-controls="unrated"
-                aria-selected="false"
-                onClick={() => { this.changeTab(1); }}
-              >
+            </a>
+          </li>
+          <li className="nav-item">
+            <a
+              className="nav-link w-100"
+              id="unrated-tab-clicker"
+              data-toggle="tab"
+              href="#unrated-tab"
+              role="tab"
+              aria-controls="unrated"
+              aria-selected="false"
+              onClick={() => { this.changeTab(1); }}
+            >
 미평가
-              </a>
-            </li>
-          </ul>
-          <SearchBar value={this.state.searchValues} onChange={(event, type) => this.searchOnChange(event, type)} onKeyDown={() => this.enterKey()} onToggle={() => this.onSearchToggle()} togglestatus={this.state.searchdetail} onSearch={() => this.search()} searchScore searching={this.state.searching} />
-          <div className="tab-content overflow-y-auto" id="myTabContent" style={{ height: 'calc(100% - 8rem)' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
-            <div className="tab-pane show active" id="rated-tab" role="tabpanel" aria-labelledby="rated-tab">
-              {ratedview}
-            </div>
-            <div className="tab-pane" id="unrated-tab" role="tabpanel" aria-labelledby="unrated-tab">
-              {unratedview}
-            </div>
+            </a>
+          </li>
+        </ul>
+        <SearchBar
+          value={this.state.tabview === 0 ? this.state.searchValuesrated : this.state.searchValuesunrated}
+          onChange={(event, type) => this.searchOnChange(event, type)}
+          onKeyDown={() => this.enterKey()}
+          onSearch={() => this.search()}
+          searchScore
+          searching={this.state.searching}
+        />
+        <div
+          className="tab-content overflow-y-auto"
+          id="myTabContent"
+          style={{ height: 'calc(100% - 8rem)' }}
+          onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}
+        >
+          <div className="tab-pane show active" id="rated-tab" role="tabpanel" aria-labelledby="rated-tab">
+            {ratedview}
           </div>
+          <div className="tab-pane" id="unrated-tab" role="tabpanel" aria-labelledby="unrated-tab">
+            {unratedview}
+          </div>
+        </div>
       </div>
     );
   }
@@ -372,12 +402,46 @@ class RecommendCourse extends Component {
 
 RecommendCourse.propTypes = {
   handleValid: PropTypes.func.isRequired,
+  setRatedCourse: PropTypes.func.isRequired,
+  setUnratedCourse: PropTypes.func.isRequired,
+  onPutCoursePref: PropTypes.func.isRequired,
+  getRatedCourse: PropTypes.func.isRequired,
+  getUnratedCourse: PropTypes.func.isRequired,
+  onChangeslider: PropTypes.func.isRequired,
+  ratedCourse: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    professor: PropTypes.string.isRequired,
+    credit: PropTypes.number.isRequired,
+    location: PropTypes.string.isRequired,
+    time: PropTypes.arrayOf({
+      week_day: PropTypes.number.isRequired,
+      start_time: PropTypes.number.isRequired,
+      end_time: PropTypes.number.isRequired,
+    }),
+  })).isRequired,
+  unratedCourse: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    professor: PropTypes.string.isRequired,
+    credit: PropTypes.number.isRequired,
+    location: PropTypes.string.isRequired,
+    time: PropTypes.arrayOf({
+      week_day: PropTypes.number.isRequired,
+      start_time: PropTypes.number.isRequired,
+      end_time: PropTypes.number.isRequired,
+    }),
+  })).isRequired,
+  changedCourses: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    score: PropTypes.number.isRequired,
+  })).isRequired,
+  searchable: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   ratedCourse: state.user.rated_course,
   unratedCourse: state.user.unrated_course,
-  searched: state.user.ratedSearched && state.user.unratedSearched,
+  searchrated: state.user.ratedSearched,
+  searchunrated: state.user.unratedSearched,
   changedCourses: state.user.changed_courses,
 });
 

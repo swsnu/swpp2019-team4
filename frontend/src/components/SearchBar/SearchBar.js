@@ -24,7 +24,6 @@ const SearchBar = (props) => {
           data-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded="false"
-          onClick={props.onToggle}
         >
           <div className={`oi oi-target ${exist ? 'text-danger' : ''}`} />
         </button>
@@ -235,7 +234,13 @@ const SearchBar = (props) => {
       <div className="input-group-append">
         {(props.searching
           ? (
-            <button className="btn btn-dark" type="button" id="recommend-search-button" onClick={props.onSearch} disabled>
+            <button
+              className="btn btn-dark"
+              type="button"
+              id="recommend-search-button"
+              onClick={props.onSearch}
+              disabled
+            >
               <div className="oi oi-magnifying-glass" />
             </button>
           )
@@ -256,7 +261,6 @@ SearchBar.defaultProps = {
 SearchBar.propTypes = {
   searchScore: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
-  onToggle: PropTypes.func.isRequired,
   onSearch: PropTypes.func.isRequired,
   onKeyDown: PropTypes.func.isRequired,
   value: PropTypes.shape({
@@ -274,6 +278,7 @@ SearchBar.propTypes = {
     academic_year: PropTypes.string,
     title: PropTypes.string,
   }).isRequired,
+  searching: PropTypes.bool.isRequired,
 };
 
 

@@ -18,7 +18,6 @@ class TimetableManagement extends Component {
       semester: '2019-2',
       title: '',
       showCourses: true,
-      searchdetail: false,
       scrollLimit: 1500,
       searchCourseCount: 50,
       searching: false,
@@ -75,70 +74,15 @@ class TimetableManagement extends Component {
     this.props.setCourses(0, 49, this.state.searchValues);
   }
 
-  componentWillUnmount() {
-    this.is_mount = false;
-  }
-
-
   shouldComponentUpdate(nextprops) {
     if (nextprops.searched) {
       this.resetSearch();
     }
     return true;
   }
-  resetSearch(){
-    this.props.searchable();
-    if(this.state.searching)this.setState({ searching: false });
-  }
 
-  handleLogout() {
-    this.props.onLogout();
-  }
-
-  postCourse(courseId) {
-    this.props.onPostCourse(this.props.timetable.id, courseId);
-  }
-
-  deleteCourse(courseId) {
-    this.props.onDeleteCourse(courseId);
-  }
-
-  deleteTimetable(timetableId) {
-    this.props.onDeleteTimetable(timetableId);
-  }
-
-  show(timetableId, timetableTitle) {
-    this.setState({
-      title: timetableTitle,
-    });
-    this.props.onGetTimetable(timetableId);
-    this.props.onPostMainTimetable(timetableId);
-    this.showCoursesInTimetable();
-  }
-
-  createEmptyTimetable() {
-    const titleBase = '새 시간표';
-    let titleAdd = '';
-    for (let idx = 1; idx < 100; idx += 1, titleAdd = ` (${idx})`) {
-      const titleAll = titleBase + titleAdd;
-      let isRepetition = false;
-      this.props.timetables.forEach((timetable) => {
-        if (timetable.title === titleAll) {
-          isRepetition = true;
-        }
-      });
-      if (!isRepetition) break;
-    }
-
-    const title = titleBase + titleAdd;
-
-    this.props.onPostTimetable(title, '2019-2')
-      .then(() => {
-        if (this.is_mount) {
-          this.show(this.props.timetables[this.props.timetables.length - 1].id, title);
-        }
-      })
-      .catch(() => {});
+  componentWillUnmount() {
+    this.is_mount = false;
   }
 
   showCoursesInSearch() {
@@ -150,38 +94,13 @@ class TimetableManagement extends Component {
   }
 
   search() {
-    if (this.state.searching) return;
-    this.setState({ searching: true });
-    if (this.state.searchdetail) {
-      this.setState({
-        realValues: this.state.searchValues,
-        scrollLimit: 1500,
-        searchCourseCount: 50,
-      });
-      this.props.setCourses(0, 49, this.state.searchValues);
-    } else {
-      const newValue = {
-        title: this.state.searchValues.title,
-        classification: '',
-        department: '',
-        degree_program: '',
-        academic_year: '',
-        course_number: '',
-        lecture_number: '',
-        professor: '',
-        language: '',
-        min_credit: '',
-        max_credit: '',
-        min_score: '',
-        max_score: '',
-      };
-      this.setState({
-        realValues: newValue,
-        scrollLimit: 1500,
-        searchCourseCount: 50,
-      });
-      this.props.setCourses(0, 49, this.state.searchValues);
-    }
+    this.setState((prevState) => ({
+      searching: true,
+      realValues: prevState.searchValues,
+      scrollLimit: 1500,
+      searchCourseCount: 50,
+    }));
+    this.props.setCourses(0, 49, this.state.searchValues);
     this.showCoursesInSearch();
   }
 
@@ -217,7 +136,7 @@ class TimetableManagement extends Component {
         });
         this.props.setCourses(0, 49, newValue);
       } else {
-        this.setState({ commandMatch: this.state.commandMatch + 1 });
+        this.setState((prevState) => ({ commandMatch: prevState.commandMatch + 1 }));
       }
     } else {
       this.setState({ commandMatch: 0 });
@@ -240,22 +159,80 @@ class TimetableManagement extends Component {
   }
 
   searchOnChange(event, type) {
-    const newValue = this.state.searchValues;
-    newValue[type] = event.target.value;
-    this.setState({ searchValues: newValue });
+    const { value } = event.target;
+    this.setState((prevState) => {
+      const newValue = prevState.searchValues;
+      newValue[type] = value;
+      return { searchValues: newValue };
+    });
   }
 
-  onSearchToggle() {
-    this.setState({ searchdetail: !this.state.searchdetail });
+  createEmptyTimetable() {
+    const titleBase = '새 시간표';
+    let titleAdd = '';
+    for (let idx = 1; idx < 100; idx += 1, titleAdd = ` (${idx})`) {
+      const titleAll = titleBase + titleAdd;
+      let isRepetition = false;
+      this.props.timetables.forEach((timetable) => {
+        if (timetable.title === titleAll) {
+          isRepetition = true;
+        }
+      });
+      if (!isRepetition) break;
+    }
+
+    const title = titleBase + titleAdd;
+
+    this.props.onPostTimetable(title, '2019-2')
+      .then(() => {
+        if (this.is_mount) {
+          this.show(this.props.timetables[this.props.timetables.length - 1].id, title);
+        }
+      })
+      .catch(() => {});
+  }
+
+  show(timetableId, timetableTitle) {
+    this.setState({
+      title: timetableTitle,
+    });
+    this.props.onGetTimetable(timetableId);
+    this.props.onPostMainTimetable(timetableId);
+    this.showCoursesInTimetable();
+  }
+
+  postCourse(courseId) {
+    this.props.onPostCourse(this.props.timetable.id, courseId);
+  }
+
+  resetSearch() {
+    this.props.searchable();
+    if (this.state.searching) this.setState({ searching: false });
+  }
+
+  deleteCourse(courseId) {
+    this.props.onDeleteCourse(courseId);
+  }
+
+  deleteTimetable(timetableId) {
+    this.props.onDeleteTimetable(timetableId);
+  }
+
+  handleLogout() {
+    this.props.onLogout();
   }
 
   scrollHandler(scrollTop) {
     const pageSize = 50;
     const scrollSize = pageSize * 60;
     if (this.state.showCourses && this.state.scrollLimit < scrollTop) {
-      this.setState({ scrollLimit: this.state.scrollLimit + scrollSize });
-      this.props.onGetCourses(this.state.searchCourseCount, this.state.searchCourseCount + pageSize - 1, this.state.realValues);
-      this.setState({ searchCourseCount: this.state.searchCourseCount + pageSize });
+      this.setState((prevState) => ({ scrollLimit: prevState.scrollLimit + scrollSize }));
+      this.props.onGetCourses(
+        this.state.searchCourseCount,
+        this.state.searchCourseCount + pageSize - 1,
+        this.state.realValues,
+      );
+      this.setState((prevState) => ({ searchCourseCount: prevState.searchCourseCount + pageSize }));
     }
   }
 
@@ -366,8 +343,6 @@ class TimetableManagement extends Component {
               onChange={(event, type) => this.searchOnChange(event, type)}
               onKeyDown={() => this.enterKey()}
               onSearch={() => this.search()}
-              onToggle={() => this.onSearchToggle()}
-              togglestatus={this.state.searchdetail}
               searchScore={false}
               searching={this.state.searching}
             />
@@ -401,7 +376,13 @@ class TimetableManagement extends Component {
               </li>
             </ul>
 
-            <div className="tab-content overflow-y-auto mb-4" style={{ height: '30rem' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
+            <div
+              className="tab-content overflow-y-auto mb-4"
+              style={{ height: '30rem' }}
+              onScroll={(event) => {
+                this.scrollHandler(event.target.scrollTop);
+              }}
+            >
               <div
                 className={`tab-pane ${this.state.showCourses ? 'active' : ''}`}
                 id="searched-tab"
@@ -532,9 +513,6 @@ TimetableManagement.propTypes = {
   setCourses: PropTypes.func.isRequired,
   onPostCourseTemp: PropTypes.func.isRequired,
   onDeleteCourseTemp: PropTypes.func.isRequired,
-  searched: PropTypes.arrayOf(PropTypes.shape({
-
-  })).isRequired,
   searchable: PropTypes.bool.isRequired,
 };
 

@@ -70,7 +70,7 @@ class Account extends Component {
     const passwordValid = (password.length >= 8 && password.length <= 32) || !passwordChange;
     const passwordConfirmValid = (password === passwordConfirm) || !passwordChange;
     const usernameValid = (username.length >= 1 && username.length <= 16);
-    const gradeValid = (grade.length == 2 && grade[0]>='0'&&grade[0]<='9'&& grade[1]>='0'&&grade[1]<='9');
+    const gradeValid = (grade.length === 2 && grade[0] >= '0' && grade[0] <= '9' && grade[1] >= '0' && grade[1] <= '9');
     const sendValid = passwordPrevValid && passwordValid && passwordConfirmValid && usernameValid && gradeValid;
 
     const passwordPrevNotice = (passwordPrevValid ? '' : '기존 비밀번호를 입력해야 합니다.');
@@ -162,13 +162,13 @@ class Account extends Component {
                   </td>
                   <td>
                     <input
-                      className={`form-control`}
+                      className="form-control"
                       type="text"
                       id="department-input"
                       value={this.state.department}
                       onChange={(event) => this.setState({ department: event.target.value })}
                     />
-                    <div className="small text-left text-danger feedback"/>
+                    <div className="small text-left text-danger feedback" />
                   </td>
                 </tr>
                 <tr>

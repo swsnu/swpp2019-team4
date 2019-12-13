@@ -16,7 +16,6 @@ class TimetableRecommend extends Component {
     super(props);
     this.state = {
       valid: true,
-      show_popover: false,
     };
   }
 
@@ -185,18 +184,30 @@ TimetableRecommend.propTypes = {
   onPutLastPage: PropTypes.func.isRequired,
   onDeleteRecommend: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
+  onGetLastPage: PropTypes.func.isRequired,
+  onPutLastPage: PropTypes.func.isRequired,
+  onDeleteRecommend: PropTypes.func.isRequired,
   storedUser: PropTypes.shape({
     is_authenticated: PropTypes.bool,
   }).isRequired,
   index: PropTypes.number.isRequired,
-  timetable: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  timetable: PropTypes.arrayOf(PropTypes.shape({
+    course: PropTypes.arrayOf(PropTypes.shape({
+      title: PropTypes.string,
+      time: PropTypes.arrayOf(PropTypes.shape({
+        week_day: PropTypes.number,
+        start_time: PropTypes.number,
+        end_time: PropTypes.number,
+      })),
+    })),
+  })).isRequired,
 };
 
 const mapStateToProps = (state) => ({
   storedUser: state.user.user,
   constraints: state.user.constraints,
   changedCourses: state.user.changed_courses,
-  index: state.user.last_page,
+  index: state.user.lastPage,
   timetable: state.user.recommended_timetables,
 });
 
@@ -204,7 +215,7 @@ const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onLogout: () => dispatch(actionCreators.getSignout()),
   onGetLastPage: () => dispatch(actionCreators.getLastPage()),
-  onPutLastPage: (last_page) => dispatch(actionCreators.putLastPage(last_page)),
+  onPutLastPage: (lastPage) => dispatch(actionCreators.putLastPage(lastPage)),
   onPutConstraints: (consts) => dispatch(actionCreators.putConstraints(consts)),
   onPutCoursePref: (changedCourses) => dispatch(actionCreators.putCoursepref(changedCourses)),
   onDeleteRecommend: () => dispatch(actionCreators.deleteRecommend()),

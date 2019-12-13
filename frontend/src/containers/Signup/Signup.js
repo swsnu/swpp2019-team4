@@ -45,8 +45,8 @@ class Signup extends Component {
     const passwordValid = (password.length >= 8 && password.length <= 32);
     const passwordConfirmValid = (password === passwordConfirm);
     const usernameValid = (username.length >= 1 && username.length <= 16);
-    const gradeValid = (grade.length == 2 && grade[0]>='0'&&grade[0]<='9'&& grade[1]>='0'&&grade[1]<='9');
-    const sendValid = emailValid && passwordValid && passwordConfirmValid && usernameValid&& gradeValid;
+    const gradeValid = (grade.length === 2 && grade[0] >= '0' && grade[0] <= '9' && grade[1] >= '0' && grade[1] <= '9');
+    const sendValid = emailValid && passwordValid && passwordConfirmValid && usernameValid && gradeValid;
 
     const emailNotice = (emailValid ? '' : '이메일 형식이 올바르지 않습니다.');
     const passwordNotice = (passwordValid ? '' : '비밀번호는 8자 이상 32자 이하로 구성되어야 합니다.');
@@ -161,14 +161,14 @@ class Signup extends Component {
               />
               <div className="small text-left violation-notice feedback">{this.state.username_notice}</div>
               <input
-                className={'form-control'}
+                className="form-control"
                 type="text"
                 id="department-input"
                 value={this.state.department}
                 placeholder="학과"
                 onChange={(event) => this.setState({ department: event.target.value })}
               />
-              <div className="small text-left violation-notice feedback"/>
+              <div className="small text-left violation-notice feedback" />
               <input
                 className={`form-control ${this.state.grade_valid ? '' : 'is-invalid'}`}
                 type="text"

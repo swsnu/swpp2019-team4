@@ -9,14 +9,13 @@ class RecommendConstraint extends Component {
     super(props);
     const consts = this.props.constraints;
     this.state = {
-      consts: consts,
+      consts,
       credit_min_valid: false,
       credit_max_valid: false,
       credit_valid: false,
       major_min_valid: false,
       major_max_valid: false,
       major_valid: false,
-      days_per_week: false,
       days_per_week_valid: false,
     };
   }
@@ -26,99 +25,108 @@ class RecommendConstraint extends Component {
       .then(() => {
         const consts = this.props.constraints;
         this.setState({
-          consts: consts,
-          credit_min_valid: (consts.credit_min >= 1 &&
-                            consts.credit_min <= 21),
-          credit_max_valid: (consts.credit_max >= 1 &&
-                            consts.credit_max <= 21),
+          consts,
+          credit_min_valid: (consts.credit_min >= 1
+                            && consts.credit_min <= 21),
+          credit_max_valid: (consts.credit_max >= 1
+                            && consts.credit_max <= 21),
           credit_valid: (consts.credit_min <= consts.credit_max),
-          major_min_valid: (consts.major_min >= 0 &&
-                            consts.major_min <= 21),
-          major_max_valid: (consts.major_max >= 0 &&
-                            consts.major_max <= 21),
+          major_min_valid: (consts.major_min >= 0
+                            && consts.major_min <= 21),
+          major_max_valid: (consts.major_max >= 0
+                            && consts.major_max <= 21),
           major_valid: (consts.major_min <= consts.credit_max),
-          days_per_week: consts.days_per_week,
-          days_per_week_valid: (consts.days_per_week >= 1 &&
-                                consts.days_per_week <= 6),
+          days_per_week_valid: (consts.days_per_week >= 1
+                                && consts.days_per_week <= 6),
         });
-      })
+      });
   }
 
   handleDaysPerWeek(value) {
     const valid = (value <= 6 && value >= 1);
-    const newConsts = { ...this.state.consts, days_per_week: value };
-    this.setState({ consts: newConsts, days_per_week_valid: valid });
+    this.setState((prevState) => {
+      const newConsts = { ...prevState.consts, days_per_week: value };
+      this.props.onPutConstraints(newConsts);
+      return { consts: newConsts, days_per_week_valid: valid };
+    });
     this.props.handleValid(this.state.credit_valid && this.state.credit_min_valid
       && this.state.credit_max_valid && valid);
-    this.props.onPutConstraints(newConsts);
   }
 
   handleCreditMin(value) {
-    const minValue = Number(value);
-    const maxValue = this.state.consts.credit_max;
-    const minValid = (minValue >= 1 && minValue <= 21);
-    const valid = minValue <= maxValue;
-    const newConsts = { ...this.state.consts, credit_min: minValue };
-    this.setState({ consts: newConsts, credit_valid: valid, credit_min_valid: minValid });
-    this.props.handleValid(this.state.days_per_week_valid
-                           && valid
-                           && minValid
-                           && this.state.credit_max_valid
-                           && this.state.major_valid
-                           && this.state.major_min_valid
-                           && this.state.major_max_valid);
-    this.props.onPutConstraints(newConsts);
+    this.setState((prevState) => {
+      const minValue = Number(value);
+      const maxValue = prevState.consts.credit_max;
+      const minValid = (minValue >= 1 && minValue <= 21);
+      const valid = minValue <= maxValue;
+      const newConsts = { ...prevState.consts, credit_min: minValue };
+      this.props.handleValid(prevState.days_per_week_valid
+                             && valid
+                             && minValid
+                             && prevState.credit_max_valid
+                             && prevState.major_valid
+                             && prevState.major_min_valid
+                             && prevState.major_max_valid);
+      this.props.onPutConstraints(newConsts);
+      return { consts: newConsts, credit_valid: valid, credit_min_valid: minValid };
+    });
   }
 
   handleCreditMax(value) {
-    const minValue = this.state.consts.credit_min;
-    const maxValue = Number(value);
-    const maxValid = (maxValue >= 1 && maxValue <= 21);
-    const valid = minValue <= maxValue;
-    const newConsts = { ...this.state.consts, credit_max: maxValue };
-    this.setState({ consts: newConsts, credit_valid: valid, credit_max_valid: maxValid });
-    this.props.handleValid(this.state.days_per_week_valid
-                           && valid
-                           && this.state.credit_min_valid
-                           && maxValid
-                           && this.state.major_valid
-                           && this.state.major_min_valid
-                           && this.state.major_max_valid);
-    this.props.onPutConstraints(newConsts);
+    this.setState((prevState) => {
+      const maxValue = Number(value);
+      const maxValid = (maxValue >= 1 && maxValue <= 21);
+      const minValue = prevState.consts.credit_min;
+      const valid = minValue <= maxValue;
+      const newConsts = { ...prevState.consts, credit_max: maxValue };
+      this.props.handleValid(prevState.days_per_week_valid
+                             && valid
+                             && prevState.credit_min_valid
+                             && maxValid
+                             && prevState.major_valid
+                             && prevState.major_min_valid
+                             && prevState.major_max_valid);
+      this.props.onPutConstraints(newConsts);
+      return { consts: newConsts, credit_valid: valid, credit_max_valid: maxValid };
+    });
   }
 
   handleMajorMin(value) {
-    const minValue = Number(value);
-    const maxValue = this.state.consts.major_max;
-    const minValid = (minValue >= 0 && minValue <= 21);
-    const valid = minValue <= maxValue && minValue <= this.state.consts.credit_max;
-    const newConsts = { ...this.state.consts, major_min: minValue };
-    this.setState({ consts: newConsts, major_valid: valid, major_min_valid: minValid });
-    this.props.handleValid(this.state.days_per_week_valid
-                           && this.state.credit_valid
-                           && this.state.credit_min_valid
-                           && this.state.credit_max_valid
-                           && valid
-                           && minValid
-                           && this.state.major_max_valid);
-    this.props.onPutConstraints(newConsts);
+    this.setState((prevState) => {
+      const minValue = Number(value);
+      const minValid = (minValue >= 0 && minValue <= 21);
+      const maxValue = prevState.consts.major_max;
+      const valid = minValue <= maxValue && minValue <= prevState.consts.credit_max;
+      const newConsts = { ...prevState.consts, major_min: minValue };
+      this.props.handleValid(prevState.days_per_week_valid
+                             && prevState.credit_valid
+                             && prevState.credit_min_valid
+                             && prevState.credit_max_valid
+                             && valid
+                             && minValid
+                             && prevState.major_max_valid);
+      this.props.onPutConstraints(newConsts);
+      return { consts: newConsts, major_valid: valid, major_min_valid: minValid };
+    });
   }
 
   handleMajorMax(value) {
-    const minValue = this.state.consts.major_min;
-    const maxValue = Number(value);
-    const maxValid = (maxValue >= 0 && maxValue <= 21);
-    const valid = minValue <= maxValue && minValue <= this.state.consts.credit_max;
-    const newConsts = { ...this.state.consts, major_max: maxValue };
-    this.setState({ consts: newConsts, major_valid: valid, major_max_valid: maxValid });
-    this.props.handleValid(this.state.days_per_week_valid
-                           && this.state.credit_valid
-                           && this.state.credit_min_valid
-                           && this.state.credit_max_valid
-                           && valid
-                           && this.state.major_min_valid
-                           && maxValid);
-    this.props.onPutConstraints(newConsts);
+    this.setState((prevState) => {
+      const minValue = prevState.consts.major_min;
+      const maxValue = Number(value);
+      const maxValid = (maxValue >= 0 && maxValue <= 21);
+      const valid = minValue <= maxValue && minValue <= prevState.consts.credit_max;
+      const newConsts = { ...prevState.consts, major_max: maxValue };
+      this.props.handleValid(prevState.days_per_week_valid
+                             && prevState.credit_valid
+                             && prevState.credit_min_valid
+                             && prevState.credit_max_valid
+                             && valid
+                             && prevState.major_min_valid
+                             && maxValid);
+      this.props.onPutConstraints(newConsts);
+      return { consts: newConsts, major_valid: valid, major_max_valid: maxValid };
+    });
   }
 
   render() {
@@ -189,6 +197,15 @@ class RecommendConstraint extends Component {
 
 RecommendConstraint.propTypes = {
   handleValid: PropTypes.func.isRequired,
+  onGetConstraints: PropTypes.func.isRequired,
+  onPutConstraints: PropTypes.func.isRequired,
+  constraints: PropTypes.shape({
+    credit_min: PropTypes.number.isRequired,
+    credit_max: PropTypes.number.isRequired,
+    major_min: PropTypes.number.isRequired,
+    major_max: PropTypes.number.isRequired,
+    days_per_week: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
 const mapStateToProps = (state) => ({

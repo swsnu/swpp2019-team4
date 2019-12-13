@@ -326,4 +326,227 @@ describe('Reducer', () => {
       user_id: 2,
     });
   });
+
+  it('should call auto complete', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.AUTO_COMPLETE,
+    });
+    expect(newState.search_auto_complete).toBe(false);
+  });
+
+  it('should call search buildings and toggle auto when buildings length is 1', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.SEARCH_BUILDINGS,
+      building_list: [{}],
+    });
+    expect(newState.building_list).toStrictEqual([{}]);
+    expect(newState.search_auto_complete).toBe(true);
+  });
+
+  it('should call search buildings and not toggle auto when buildings length is not 1', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.SEARCH_BUILDINGS,
+      building_list: [{}, {}],
+    });
+    expect(newState.building_list).toStrictEqual([{}, {}]);
+    expect(newState.search_auto_complete).toBe(false);
+  });
+
+  it('should call set searchable', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.SET_SEARCHABLE,
+    });
+    expect(newState.searched).toBe(false);
+  });
+
+  it('should call set rated searchable', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.SET_RATED_SEARCHABLE,
+    });
+    expect(newState.ratedSearched).toBe(false);
+  });
+
+  it('should call set unrated searchable', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.SET_UNRATED_SEARCHABLE,
+    });
+    expect(newState.unratedSearched).toBe(false);
+  });
+
+  it('should call put coursepref temp and if courespref is not exists then extend changed courses', () => {
+    const stubState2 = {
+      ...stubState, rated_course: [{ id: 0, score: 3 }], unrated_course: [{ id: 0, score: 7 }], changed_courses: [],
+    };
+    const newState = reducer(stubState2, {
+      type: actionTypes.PUT_COURSEPREF_TEMP,
+      coursepref: { id: 0, score: 5 },
+    });
+    expect(newState.rated_course).toStrictEqual([{ id: 0, score: 5 }]);
+    expect(newState.unrated_course).toStrictEqual([{ id: 0, score: 5 }]);
+    expect(newState.changed_courses).toStrictEqual([{ id: 0, score: 5 }]);
+  });
+
+  it('should call put coursepref temp and if courespref is exists then modify changed courses', () => {
+    const stubState2 = {
+      ...stubState,
+      rated_course: [
+        { id: 0, score: 3 },
+        { id: 2, score: 7 },
+      ],
+      unrated_course: [
+        { id: 0, score: 7 },
+        { id: 3, score: 3 },
+      ],
+      changed_courses: [
+        { id: 0, score: 7 },
+        { id: 1, score: 3 },
+      ],
+    };
+    const newState = reducer(stubState2, {
+      type: actionTypes.PUT_COURSEPREF_TEMP,
+      coursepref: { id: 0, score: 5 },
+    });
+    expect(newState.rated_course).toStrictEqual([{ id: 0, score: 5 }, { id: 2, score: 7 }]);
+    expect(newState.unrated_course).toStrictEqual([{ id: 0, score: 5 }, { id: 3, score: 3 }]);
+    expect(newState.changed_courses).toStrictEqual([{ id: 0, score: 5 }, { id: 1, score: 3 }]);
+  });
+
+  it('should call put coursepref', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.PUT_COURSEPREF,
+    });
+    expect(newState.changed_courses).toStrictEqual([]);
+  });
+
+  it('should call set rated courses', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.SET_RATED_COURSE,
+      course_list: [],
+    });
+    expect(newState.rated_course).toStrictEqual([]);
+    expect(newState.ratedSearched).toBe(true);
+  });
+
+  it('should call set unrated courses', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.SET_UNRATED_COURSE,
+      course_list: [],
+    });
+    expect(newState.unrated_course).toStrictEqual([]);
+    expect(newState.unratedSearched).toBe(true);
+  });
+
+  it('should call get rated courses', () => {
+    const stubState2 = { ...stubState, rated_course: [{ id: 0, score: 5 }] };
+    const newState = reducer(stubState2, {
+      type: actionTypes.GET_RATED_COURSE,
+      course_list: [{ id: 1, score: 7 }],
+    });
+    expect(newState.rated_course).toStrictEqual([{ id: 0, score: 5 }, { id: 1, score: 7 }]);
+  });
+
+  it('should call get unrated courses', () => {
+    const stubState2 = { ...stubState, unrated_course: [{ id: 0, score: 5 }] };
+    const newState = reducer(stubState2, {
+      type: actionTypes.GET_UNRATED_COURSE,
+      course_list: [{ id: 1, score: 7 }],
+    });
+    expect(newState.unrated_course).toStrictEqual([{ id: 0, score: 5 }, { id: 1, score: 7 }]);
+  });
+
+  it('should call edit time preferences', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.EDIT_TIME_PREF,
+      time_pref_table: [],
+    });
+    expect(newState.time_pref_table).toStrictEqual([]);
+  });
+
+  it('should call edit constraints', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.EDIT_CONSTRAINTS,
+      constraints: [],
+    });
+    expect(newState.constraints).toStrictEqual([]);
+  });
+
+  it('should call get last page', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.GET_LAST_PAGE,
+      last_page: 2,
+    });
+    expect(newState.last_page).toBe(2);
+  });
+
+  it('should call get recommend', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.GET_RECOMMEND,
+      timetables: [],
+    });
+    expect(newState.recommended_timetables).toStrictEqual([]);
+  });
+
+  it('should call set courses', () => {
+    const newState = reducer(stubState, {
+      type: actionTypes.SET_COURSES,
+      course_list: [],
+    });
+    expect(newState.courses).toStrictEqual([]);
+    expect(newState.searched).toBe(true);
+  });
+
+  it('should call edit timetable', () => {
+    const stubState2 = {
+      ...stubState,
+      timetables: [
+        { id: 0, course: [{ name: '과기글' }, [{ name: '전전회' }]] },
+        { id: 1, course: [{ name: '소개원실' }, [{ name: '인보프' }]] },
+      ],
+    };
+    const newState = reducer(stubState2, {
+      type: actionTypes.EDIT_TIMETABLE,
+      timetable: { id: 1, course: [{ name: '소개원실' }] },
+    });
+    expect(newState.timetables).toStrictEqual([
+      { id: 0, course: [{ name: '과기글' }, [{ name: '전전회' }]] },
+      { id: 1, course: [{ name: '소개원실' }] },
+    ]);
+    expect(newState.timetable).toStrictEqual({ id: 1, course: [{ name: '소개원실' }] });
+  });
+
+  it('should call post course temp', () => {
+    const stubState2 = {
+      ...stubState,
+      timetable: {
+        id: 0,
+        course: [{ id: 0, name: '과기글' }, { id: 1, name: '전전회' }],
+      },
+    };
+    const newState = reducer(stubState2, {
+      type: actionTypes.POST_COURSE_TEMP,
+      course: { id: 2, name: '소개원실' },
+    });
+    expect(newState.timetable.course).toStrictEqual([
+      { id: 0, name: '과기글' }, { id: 1, name: '전전회' }, { id: 2, name: '소개원실' },
+    ]);
+  });
+
+  it('should call delete course temp', () => {
+    const stubState2 = {
+      ...stubState,
+      timetable: {
+        id: 0,
+        course: [
+          { id: 0, name: '과기글' },
+          { id: 1, name: '전전회' },
+          { id: 2, name: '소개원실', temp: true },
+        ],
+      },
+    };
+    const newState = reducer(stubState2, {
+      type: actionTypes.DELETE_COURSE_TEMP,
+      course: { id: 2, name: '소개원실' },
+    });
+    expect(newState.timetable.course).toStrictEqual([{ id: 0, name: '과기글' }, { id: 1, name: '전전회' }]);
+  });
 });

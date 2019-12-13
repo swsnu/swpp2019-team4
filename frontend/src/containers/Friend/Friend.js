@@ -255,7 +255,7 @@ class Friend extends Component {
             </div>
             <div style={{ height: `${2}em` }}><small>{message}</small></div>
             <hr className="m-1" />
-            <div className="overflow-auto" style={{height: "33em"}}>
+            <div className="overflow-auto" style={{ height: '33em' }}>
               <div
                 className="d-flex justify-content-between align-items-center clickable px-3"
                 data-toggle="collapse"
