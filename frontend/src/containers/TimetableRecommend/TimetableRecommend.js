@@ -130,7 +130,7 @@ class TimetableRecommend extends Component {
                 : null}
           </div>
           <div className="col-6 h-100 d-flex flex-column">
-            <div className="recommend-content flex-grow-1 overflow-auto" style={{ minHeight: 0 }}>
+            <div className="recommend-content flex-grow-1" style={{ minHeight: 0 }}>
               {content}
             </div>
           </div>
