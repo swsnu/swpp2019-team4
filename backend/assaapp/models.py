@@ -253,6 +253,7 @@ class CustomCourse(models.Model):
         title = course.title if self.title == 'default' else self.title
         return {
             'id': self.id,
+            'course_id': self.course.id,
             'is_custom': False,
             'color': self.color,
             'title': title,
