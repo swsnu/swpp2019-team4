@@ -1,5 +1,5 @@
 .TimetableRecommend {
-  position: fixed;
+  position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
@@ -13,7 +13,7 @@
 #recommend-progress .bar {
   margin-bottom: -1px;
   width: 3px;
-  height: 5rem;
+  height: 4rem;
   margin-left: auto;
   margin-right: auto;
 }

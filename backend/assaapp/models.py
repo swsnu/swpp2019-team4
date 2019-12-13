@@ -54,7 +54,7 @@ class User(AbstractBaseUser):
     major_max = models.IntegerField(default=18)
     last_recommend_page = models.IntegerField(default=0)
     recommend_base_timetable = models.ForeignKey('Timetable', blank=True, null=True, 
-                                                on_delete='SET_NULL', related_name='base')
+                                                on_delete=models.SET_NULL, related_name='base')
 
     objects = UserManager()
 

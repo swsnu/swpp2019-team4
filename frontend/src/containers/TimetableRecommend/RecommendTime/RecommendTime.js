@@ -135,25 +135,6 @@ class RecommendTime extends Component {
     const tablehtml = [];
     const colorhtml = [];
     let tablehtmlIth = [];
-    const timetableList = this.props.timetables
-      .map((item) => ( 
-        <li key={item.id}>
-          <button
-            type="button"
-            onClick = {() => this.setBase(item.id)}
-          >
-            {item.title}
-          </button>
-        </li>));
-    timetableList.push(<li key={-1}>
-        <button
-          type="button"
-          onClick = {() => this.setBase(-1)}
-        >
-새로운 시간표에서 시작하기
-        </button>
-      </li>
-    )
     for (let i = 0; i < 7; i += 1) {
       tablehtmlIth.push(<th key={i} height={16}>{tableHeaderString[i]}</th>);
     }
@@ -213,7 +194,6 @@ class RecommendTime extends Component {
     }
     return (
       <div className="RecommendTime row m-0 align-items-center h-100">
-        {timetableList}
         <table className="w-100 col-7 offset-1" id="recommend-time-table">
           <colgroup>
             <col span="1" style={{ width: '10%' }} /> 
