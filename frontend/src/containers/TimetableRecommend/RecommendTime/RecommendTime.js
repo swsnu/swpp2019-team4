@@ -22,13 +22,47 @@ class RecommendTime extends Component {
     this.mouseDownListener = this.mouseDownListener.bind(this);
   }
 
+  excludedTime (timetable_id, prv_table) {
+    var color_table = []
+    for(var i=0;i<26;i++) {
+      var tmp_table = [];
+      for(var j=0;j<6;j++) {
+        var color = prv_table[i][j];
+        if(color === -1) color = 3;
+        tmp_table.push(color);
+      }
+      color_table.push(tmp_table);
+    }
+    if(timetable_id === -1) return color_table;
+    this.props.onGetTimetable(timetable_id)
+      .then(() => {
+        var timetable = this.props.timetable;
+        for(var i=0;i<timetable.course.length;i++) {
+          for(var j=0;j<timetable.course[i].time.length;j++) {
+            var course_start = Math.floor((timetable.course[i].time[j].start_time-480)/30)
+            var course_end = Math.floor((timetable.course[i].time[j].end_time-480)/30)
+            const course_weekday = timetable.course[i].time[j].week_day;
+            for(var k=course_start;k<=course_end;k++) {
+              color_table[k][course_weekday] = -1;
+            }
+          }
+        }
+      });
+    return color_table;
+  }
+
   componentDidMount() {
     this.is_mount = true;
     this.props.handleValid(true);
+    this.props.onGetTimetables();
     this.props.onGetTimePref()
       .then(() => {
-        const color_table = this.props.color_table.slice();
-        this.setState({color_table: color_table});
+        const color_table = this.props.color_table;
+        this.props.onGetRecommendBase()
+          .then(() => {
+            const excluded_table = this.excludedTime(this.props.recommend_base, color_table);
+            this.setState({color_table: excluded_table});
+          });
       });
     document.addEventListener('mouseup', this.mouseUpListener, true);
     document.addEventListener('mousedown', this.mouseDownListener, true);
@@ -67,6 +101,13 @@ class RecommendTime extends Component {
     this.setState({ prv_table: new_table, mouse_down: false });
   }
 
+  setBase (timetable_id) {
+    this.props.onPutRecommendBase(timetable_id)
+    const color_table = this.excludedTime(timetable_id, this.state.color_table);
+    this.props.onPutTimePref(color_table);
+    this.setState({ color_table: color_table });
+  }
+
   handleColor(index) {
     this.setState({ color: index });
   }
@@ -75,6 +116,9 @@ class RecommendTime extends Component {
     if (this.state.mouse_down || force) {
       this.setState((prevState) => {
         const colorTable = prevState.color_table;
+        if(colorTable[xIndex][yIndex] === -1) {
+          return prevState;
+        }
         colorTable[xIndex][yIndex] = prevState.color;
         return ({ ...prevState, color_table: colorTable });
       });
@@ -88,6 +132,25 @@ class RecommendTime extends Component {
     const tablehtml = [];
     const colorhtml = [];
     let tablehtmlIth = [];
+    const timetableList = this.props.timetables
+      .map((item) => ( 
+        <li key={item.id}>
+          <button
+            type="button"
+            onClick = {() => this.setBase(item.id)}
+          >
+            {item.title}
+          </button>
+        </li>));
+    timetableList.push(<li key={-1}>
+        <button
+          type="button"
+          onClick = {() => this.setBase(-1)}
+        >
+새로운 시간표에서 시작하기
+        </button>
+      </li>
+    )
     for (let i = 0; i < 7; i += 1) {
       tablehtmlIth.push(<th key={i} height={16}>{tableHeaderString[i]}</th>);
     }
@@ -106,7 +169,10 @@ class RecommendTime extends Component {
         );
       }
       for (let j = 0; j < 6; j += 1) {
-        const color = colorArray[this.state.color_table[i][j]];
+        const color_index = this.state.color_table[i][j];
+        var color = null;
+        if(color_index == -1) color = '#000000';
+        else color = colorArray[color_index];
         tablehtmlIth.push(
           <td key={1000 * i + j} style={{ backgroundColor: color, cursor: 'crosshair' }}>
             <div
@@ -144,6 +210,7 @@ class RecommendTime extends Component {
     }
     return (
       <div className="RecommendTime row m-0">
+        {timetableList}
         <table className="w-100 col-6 offset-2" id="recommend-time-table">
           <colgroup>
             <col span="1" style={{ width: '10%' }} />
@@ -179,11 +246,18 @@ RecommendTime.propTypes = {
 
 const mapStateToProps = (state) => ({
   color_table: state.user.time_pref_table,
+  timetables: state.user.timetables,
+  timetable: state.user.timetable,
+  recommend_base: state.user.recommend_base_timetable,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onGetTimePref: () => dispatch(actionCreators.getTimePref()),
-  onPutTimePref: (table) => dispatch(actionCreators.putTimePref(table))
+  onPutTimePref: (table) => dispatch(actionCreators.putTimePref(table)),
+  onGetRecommendBase: () => dispatch(actionCreators.getRecommendBase()),
+  onPutRecommendBase: (timetable_id) => dispatch(actionCreators.putRecommendBase(timetable_id)),
+  onGetTimetable: (timetable_id) => dispatch(actionCreators.getTimetable(timetable_id)),
+  onGetTimetables: () => dispatch(actionCreators.getTimetables()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecommendTime);

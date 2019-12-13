@@ -34,6 +34,7 @@ const initialState = {
   ratedSearched: false,
   unratedSearched: false,
   last_page: 0,
+  recommend_base_timetable: -1,
 };
 
 const reducer = (state = initialState, action) => {
@@ -145,6 +146,9 @@ const reducer = (state = initialState, action) => {
     }
     case actionTypes.EDIT_TIME_PREF: {
       return { ...state, time_pref_table: action.time_pref_table };
+    }
+    case actionTypes.GET_RECOMMEND_BASE: {
+        return { ...state, recommend_base_timetable: action.timetable_id }
     }
     case actionTypes.GET_RATED_COURSE: {
       const newlist = state.rated_course.concat(action.course_list);
