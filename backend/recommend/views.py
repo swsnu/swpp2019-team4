@@ -1,6 +1,5 @@
 import math
 import json
-from json import JSONDecodeError
 from django.forms.models import model_to_dict
 from django.http import HttpResponse, HttpResponseNotAllowed, \
     JsonResponse, HttpResponseBadRequest, HttpResponseNotFound
@@ -250,7 +249,7 @@ def searcher(course, score, request_get):
             has_text(course.language, search_dict['language']) and
             search_dict['min_credit'] <= course.credit <= search_dict['max_credit'] and
             search_dict['min_score'] <= score <= search_dict['max_score']
-            )
+           )
 
 def auth_func(func):
     def wrapper_function(*args, **kwargs):

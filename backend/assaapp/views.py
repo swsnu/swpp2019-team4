@@ -1,6 +1,5 @@
 import json
 import re
-from json import JSONDecodeError
 import random
 from django.db import transaction
 from django.db.utils import IntegrityError
