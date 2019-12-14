@@ -19,7 +19,10 @@ const SearchBar = (props) => {
     const inputId = "radio " + index;
     return (
         <div className="form-check">
-        <input className="form-check-input" type="radio" name="sortRadio" id={inputId} checked={value['value']}/>
+        <input className="form-check-input" type="radio" name="sortRadio" id={inputId}
+          onChange={() => props.onChange(index, 'sort')}
+          checked={value['value']}
+        />
         <label className="form-check-label" for={inputId}>
           {value['title']}
         </label>
@@ -55,7 +58,7 @@ const SearchBar = (props) => {
                   className="form-control form-control-sm col-8"
                   id="recommend-search-classification"
                   value={props.value.classification}
-                  onChange={(event) => props.onChange(event, 'classification')}
+                  onChange={(event) => props.onChange(event.target.value, 'classification')}
                   onKeyDown={props.onKeyDown}
                 />
               </div>
@@ -71,7 +74,7 @@ const SearchBar = (props) => {
                   className="form-control form-control-sm col-8"
                   id="recommend-search-department"
                   value={props.value.department}
-                  onChange={(event) => props.onChange(event, 'department')}
+                  onChange={(event) => props.onChange(event.target.value, 'department')}
                   onKeyDown={props.onKeyDown}
                 />
               </div>
@@ -87,7 +90,7 @@ const SearchBar = (props) => {
                   className="form-control form-control-sm col-8"
                   id="recommend-search-degree-program"
                   value={props.value.degree_program}
-                  onChange={(event) => props.onChange(event, 'degree_program')}
+                  onChange={(event) => props.onChange(event.target.value, 'degree_program')}
                   onKeyDown={props.onKeyDown}
                 />
               </div>
@@ -103,7 +106,7 @@ const SearchBar = (props) => {
                   className="form-control form-control-sm col-8"
                   id="recommend-search-academic-year"
                   value={props.value.academic_year}
-                  onChange={(event) => props.onChange(event, 'academic_year')}
+                  onChange={(event) => props.onChange(event.target.value, 'academic_year')}
                   onKeyDown={props.onKeyDown}
                 />
               </div>
@@ -119,7 +122,7 @@ const SearchBar = (props) => {
                   className="form-control form-control-sm col-8"
                   id="recommend-search-course-number"
                   value={props.value.course_number}
-                  onChange={(event) => props.onChange(event, 'course_number')}
+                  onChange={(event) => props.onChange(event.target.value, 'course_number')}
                   onKeyDown={props.onKeyDown}
                 />
               </div>
@@ -137,7 +140,7 @@ const SearchBar = (props) => {
                   className="form-control form-control-sm col-8"
                   id="recommend-search-lecture-number"
                   value={props.value.lecture_number}
-                  onChange={(event) => props.onChange(event, 'lecture_number')}
+                  onChange={(event) => props.onChange(event.target.value, 'lecture_number')}
                   onKeyDown={props.onKeyDown}
                 />
               </div>
@@ -153,7 +156,7 @@ const SearchBar = (props) => {
                   className="form-control form-control-sm col-8"
                   id="recommend-search-professor"
                   value={props.value.professor}
-                  onChange={(event) => props.onChange(event, 'professor')}
+                  onChange={(event) => props.onChange(event.target.value, 'professor')}
                   onKeyDown={props.onKeyDown}
                 />
               </div>
@@ -169,7 +172,7 @@ const SearchBar = (props) => {
                   className="form-control form-control-sm col-8"
                   id="recommend-search-language"
                   value={props.value.language}
-                  onChange={(event) => props.onChange(event, 'language')}
+                  onChange={(event) => props.onChange(event.target.value, 'language')}
                   onKeyDown={props.onKeyDown}
                 />
               </div>
@@ -186,7 +189,7 @@ const SearchBar = (props) => {
                   id="recommend-search-min-credit"
                   placeholder="최소"
                   value={props.value.min_credit}
-                  onChange={(event) => props.onChange(event, 'min_credit')}
+                  onChange={(event) => props.onChange(event.target.value, 'min_credit')}
                   onKeyDown={props.onKeyDown}
                 />
                 <input
@@ -195,7 +198,7 @@ const SearchBar = (props) => {
                   id="recommend-search-max-credit"
                   placeholder="최대"
                   value={props.value.max_credit}
-                  onChange={(event) => props.onChange(event, 'max_credit')}
+                  onChange={(event) => props.onChange(event.target.value, 'max_credit')}
                   onKeyDown={props.onKeyDown}
                 />
               </div>
@@ -215,7 +218,7 @@ const SearchBar = (props) => {
                       placeholder="최소"
                       step="0.001"
                       value={props.value.min_score}
-                      onChange={(event) => props.onChange(event, 'min_score')}
+                      onChange={(event) => props.onChange(event.target.value, 'min_score')}
                       onKeyDown={props.onKeyDown}
                     />
                     <input
@@ -225,7 +228,7 @@ const SearchBar = (props) => {
                       placeholder="최대"
                       step="0.001"
                       value={props.value.max_score}
-                      onChange={(event) => props.onChange(event, 'max_score')}
+                      onChange={(event) => props.onChange(event.target.value, 'max_score')}
                       onKeyDown={props.onKeyDown}
                     />
                   </div>
@@ -235,6 +238,7 @@ const SearchBar = (props) => {
           </div>
         </div>
       </div>
+      {radioList.length > 0 && (
       <div className="input-group-prepend dropdown">
         <button
           className="form-control"
@@ -247,17 +251,18 @@ const SearchBar = (props) => {
         >
           <div className="oi oi-sort-ascending"/>
         </button>
-        <div className="dropdown-menu p-4 my-1">
+        <div className="dropdown-menu p-4 my-1" style={{width: "12rem"}}>
           {radioList}
         </div>
       </div>
+      )}
       <input
         type="text"
         className="form-control"
         id="recommend-search-title"
         placeholder="과목명"
         value={props.value.title}
-        onChange={(event) => props.onChange(event, 'title')}
+        onChange={(event) => props.onChange(event.target.value, 'title')}
         onKeyDown={props.onKeyDown}
       />
       <div className="input-group-append">
@@ -291,6 +296,7 @@ SearchBar.defaultProps = {
 SearchBar.propTypes = {
   searchScore: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
+  onChangeSortValue: PropTypes.func.isRequired,
   onSearch: PropTypes.func.isRequired,
   onKeyDown: PropTypes.func.isRequired,
   value: PropTypes.shape({

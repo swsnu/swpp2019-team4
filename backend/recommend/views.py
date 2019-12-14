@@ -327,6 +327,7 @@ def api_coursepref_unrated(request):
                    for score_data in CoursePref.objects.filter(user=request.user)]
         start = int(request.GET.get('start'))
         end = int(request.GET.get('end'))
+        sort_type = int(request.GET.get('sort'))
         position = 0
         rated = {}
         course_list = []
