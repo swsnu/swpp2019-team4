@@ -14,6 +14,19 @@ const SearchBar = (props) => {
       if (props.value[key] !== '') exist = true;
     },
   );
+
+  const radioList = props.sortValue.map((value, index) => {
+    const inputId = "radio " + index;
+    return (
+        <div className="form-check">
+        <input className="form-check-input" type="radio" name="sortRadio" id={inputId} checked={value['value']}/>
+        <label className="form-check-label" for={inputId}>
+          {value['title']}
+        </label>
+      </div>
+    );
+  });
+
   return (
     <div className="SearchBar input-group my-2">
       <div className="input-group-prepend dropdown">
@@ -222,6 +235,22 @@ const SearchBar = (props) => {
           </div>
         </div>
       </div>
+      <div className="input-group-prepend dropdown">
+        <button
+          className="form-control"
+          type="button"
+          id="recommend-search-filter"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          style={{borderRadius: "0"}}
+        >
+          <div className="oi oi-sort-ascending"/>
+        </button>
+        <div className="dropdown-menu p-4 my-1">
+          {radioList}
+        </div>
+      </div>
       <input
         type="text"
         className="form-control"
@@ -256,6 +285,7 @@ const SearchBar = (props) => {
 
 SearchBar.defaultProps = {
   searchScore: false,
+  sortValue: [],
 };
 
 SearchBar.propTypes = {
@@ -278,6 +308,11 @@ SearchBar.propTypes = {
     academic_year: PropTypes.string,
     title: PropTypes.string,
   }).isRequired,
+  sortValue : PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string,
+    title: PropTypes.string,
+    value: PropTypes.bool,
+  })),
   searching: PropTypes.bool.isRequired,
 };
 

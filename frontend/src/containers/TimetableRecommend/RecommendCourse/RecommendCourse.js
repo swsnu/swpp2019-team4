@@ -39,6 +39,8 @@ class RecommendCourse extends Component {
         min_score: '',
         max_score: '',
       },
+      searchSortValuesrated: '평점 순',
+      realSortValuesrated: '평점 순',
       searchValuesunrated: {
         title: '',
         classification: '',
@@ -69,6 +71,8 @@ class RecommendCourse extends Component {
         min_score: '',
         max_score: '',
       },
+      searchSortValuesunrated: '추천 순',
+      realSortValuesunrated: '추천 순',
       ratedScrollLimit: 1500,
       unratedScrollLimit: 1500,
       ratedCourseCount: 50,
@@ -330,6 +334,8 @@ class RecommendCourse extends Component {
   }
 
   render() {
+    const ratedSortTitle = ['평점 오름차순', '평점 내림차순', '가나다순'];
+    const unratedSortTitle = ['추천 순', '가나다순'];
     const ratedview = [];
     const unratedview = [];
     if (this.props.ratedCourse !== undefined) {
@@ -376,12 +382,12 @@ class RecommendCourse extends Component {
         </ul>
         <SearchBar
           value={this.state.tabview === 0 ? this.state.searchValuesrated : this.state.searchValuesunrated}
+          sortValue={[{title: '평점 순', value: true}, {title: '이름 순', value: false}]}
           onChange={(event, type) => this.searchOnChange(event, type)}
           onKeyDown={() => this.enterKey()}
           onSearch={() => this.search()}
-          searchScore
-          searching={this.state.searching}
-        />
+          searchScore 
+          searching={this.state.searching} />
         <div
           className="tab-content overflow-y-auto"
           id="myTabContent"
