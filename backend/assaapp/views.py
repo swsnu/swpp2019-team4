@@ -1,6 +1,7 @@
-import json
 import re
 import random
+import json
+from json import JSONDecodeError
 from django.db import transaction
 from django.db.utils import IntegrityError
 from django.http import HttpResponse, HttpResponseNotAllowed, \

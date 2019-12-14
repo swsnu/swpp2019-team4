@@ -135,7 +135,7 @@ class AssaTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         response = self.post('/api/signup/', json.dumps(content), content_type='application/json')
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(User.objects.get(email='paden@gmail.com').grade, 3)
+        self.assertEqual(User.objects.get(email='paden@gmail.com').grade, '3')
         # test for same email
         response = self.post('/api/signup/', json.dumps(content), content_type='application/json')
         self.assertEqual(response.status_code, 400)

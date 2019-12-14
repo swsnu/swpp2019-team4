@@ -41,7 +41,9 @@ class RecommendTime extends Component {
   }
 
   mouseDownListener(event) {
-    event.preventDefault();
+    if (event.target.id === 'table-square') {
+      event.preventDefault();
+    }
     if (this.is_mount) this.setState({ mouse_down: true });
   }
 

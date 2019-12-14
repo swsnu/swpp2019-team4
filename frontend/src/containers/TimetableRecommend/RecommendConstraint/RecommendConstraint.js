@@ -24,7 +24,7 @@ class RecommendConstraint extends Component {
     this.props.onGetConstraints()
       .then(() => {
         const consts = this.props.constraints;
-        this.setState({
+        const newState = {
           consts,
           credit_min_valid: (consts.credit_min >= 1
                             && consts.credit_min <= 21),
@@ -35,10 +35,19 @@ class RecommendConstraint extends Component {
                             && consts.major_min <= 21),
           major_max_valid: (consts.major_max >= 0
                             && consts.major_max <= 21),
-          major_valid: (consts.major_min <= consts.credit_max),
+          major_valid: (consts.major_min <= consts.major_max 
+                        && consts.major_min <= consts.credit_max),
           days_per_week_valid: (consts.days_per_week >= 1
                                 && consts.days_per_week <= 6),
-        });
+        };
+        this.setState(newState);
+        this.props.handleValid(newState.credit_min_valid
+                         && newState.credit_max_valid
+                         && newState.credit_valid
+                         && newState.major_min_valid
+                         && newState.major_max_valid
+                         && newState.major_valid
+                         && newState.days_per_week_valid);
       });
   }
 
@@ -77,17 +86,20 @@ class RecommendConstraint extends Component {
       const maxValue = Number(value);
       const maxValid = (maxValue >= 1 && maxValue <= 21);
       const minValue = prevState.consts.credit_min;
+      const maxMajor = prevState.consts.major_max;
+      const minMajor = prevState.consts.major_min;
       const valid = minValue <= maxValue;
       const newConsts = { ...prevState.consts, credit_max: maxValue };
+      const majorValid = (minMajor <= maxMajor && minMajor <= maxValue);
       this.props.handleValid(prevState.days_per_week_valid
                              && valid
                              && prevState.credit_min_valid
                              && maxValid
-                             && prevState.major_valid
+                             && majorValid
                              && prevState.major_min_valid
                              && prevState.major_max_valid);
       this.props.onPutConstraints(newConsts);
-      return { consts: newConsts, credit_valid: valid, credit_max_valid: maxValid };
+      return { consts: newConsts, credit_valid: valid, credit_max_valid: maxValid, major_valid: majorValid };
     });
   }
 

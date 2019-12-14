@@ -1,5 +1,6 @@
 import math
 import json
+from json import JSONDecodeError
 from django.forms.models import model_to_dict
 from django.http import HttpResponse, HttpResponseNotAllowed, \
     JsonResponse, HttpResponseBadRequest, HttpResponseNotFound
@@ -401,7 +402,7 @@ def api_timepref(request):
     if request.method == 'GET':
         time_data = [time_pref.data()
                      for time_pref in TimePref.objects.filter(user=request.user)]
-        table = [[0] * 6 for i in range(26)]
+        table = [[3] * 6 for i in range(26)]
         for time_pref in time_data:
             x_pos = (time_pref['start_hour']-8) * 2 + time_pref['start_minute']//30
             y_pos = time_pref['weekday']
@@ -414,27 +415,14 @@ def api_timepref(request):
             user = request.user
         except (KeyError, JSONDecodeError):
             return HttpResponseBadRequest()
+        TimePref.objects.filter(user=user).delete()
         for i in range(26):
             for j in range(6):
                 weekday = j
                 score = table[i][j]
                 start_time = str(8+i//2) + ":" + ("30" if i%2 == 1 else "00")
-                try:
-                    time_data = TimePref.objects.get(
-                        user=user,
-                        weekday=weekday,
-                        start_time=start_time
-                    )
-                    time_data.score = score
-                    time_data.save()
-                except TimePref.DoesNotExist:
-                    new_score = TimePref(
-                        user=user,
-                        score=score,
-                        weekday=weekday,
-                        start_time=start_time
-                    )
-                    new_score.save()
+                new_score = TimePref(user=user, score=score, weekday=weekday, start_time=start_time)
+                new_score.save()
         return HttpResponse(status=200)
     return HttpResponseNotAllowed(['GET', 'PUT'])
 
@@ -483,14 +471,14 @@ def api_constraints(request):
             credit_max = body['credit_max']
             major_min = body['major_min']
             major_max = body['major_max']
-        except (KeyError, JSONDecodeError):
+            user.days_per_week = days_per_week
+            user.credit_min = credit_min
+            user.credit_max = credit_max
+            user.major_min = major_min
+            user.major_max = major_max
+            user.save()
+        except (KeyError, ValueError, JSONDecodeError):
             return HttpResponseBadRequest()
-        user.days_per_week = days_per_week
-        user.credit_min = credit_min
-        user.credit_max = credit_max
-        user.major_min = major_min
-        user.major_max = major_max
-        user.save()
         return HttpResponse(status=200)
     return HttpResponseNotAllowed(['GET', 'PUT'])
 
@@ -502,7 +490,6 @@ def api_lastpage(request):
         try:
             body = json.loads(request.body.decode())
             user = request.user
-            print(body)
             last_page = body['last_page']
         except (KeyError, JSONDecodeError):
             return HttpResponseBadRequest()
