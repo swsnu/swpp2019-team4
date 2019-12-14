@@ -391,7 +391,7 @@ def api_timepref(request):
     if request.method == 'GET':
         time_data = [time_pref.data()
                      for time_pref in TimePref.objects.filter(user=request.user)]
-        table = [[0] * 6 for i in range(26)]
+        table = [[3] * 6 for i in range(26)]
         for time_pref in time_data:
             x_pos = (time_pref['start_hour']-8) * 2 + time_pref['start_minute']//30
             y_pos = time_pref['weekday']
