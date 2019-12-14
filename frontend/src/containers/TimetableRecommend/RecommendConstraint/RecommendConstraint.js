@@ -91,7 +91,7 @@ class RecommendConstraint extends Component {
                              && prevState.major_min_valid
                              && prevState.major_max_valid);
       this.props.onPutConstraints(newConsts);
-      return { consts: newConsts, credit_valid: valid, credit_max_valid: maxValid };
+      return { consts: newConsts, credit_valid: valid, credit_max_valid: maxValid, major_valid: majorValid };
     });
   }
 
