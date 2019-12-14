@@ -4,7 +4,7 @@ const initialState = {
   user: {
     is_authenticated: null,
   },
-  building_list: [],
+  buildingList: [],
   timetable: { course: [] },
   timetable_friend: { course: [] },
   timetables: [],
@@ -28,38 +28,12 @@ const initialState = {
     major_min: 1,
     major_max: 18,
   },
-  time_pref_table: [
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3, 3],
-  ],
+  time_pref_table: [],
   recommended_timetables: [],
   searched: false,
   ratedSearched: false,
   unratedSearched: false,
+  lastPage: 0,
 };
 
 const reducer = (state = initialState, action) => {
@@ -105,6 +79,10 @@ const reducer = (state = initialState, action) => {
       const newcourses = state.courses.concat(action.courses);
       return { ...state, courses: newcourses };
     }
+    case actionTypes.RESET_COURSES:
+      return {
+        ...state, courses: [],
+      };
     case actionTypes.SET_COURSES:
       return {
         ...state, courses: action.course_list, searched: true,
@@ -163,6 +141,9 @@ const reducer = (state = initialState, action) => {
     case actionTypes.GET_RECOMMEND: {
       return { ...state, recommended_timetables: action.timetables };
     }
+    case actionTypes.GET_LAST_PAGE: {
+      return { ...state, lastPage: action.lastPage };
+    }
     case actionTypes.EDIT_CONSTRAINTS: {
       return { ...state, constraints: action.constraints };
     }
@@ -177,20 +158,39 @@ const reducer = (state = initialState, action) => {
       const newlist = state.unrated_course.concat(action.course_list);
       return { ...state, unrated_course: newlist };
     }
+    case actionTypes.RESET_RECOMMEND_COURSES:
+      return { ...state, rated_course: [], unrated_course: [] };
     case actionTypes.SET_RATED_COURSE:
       return { ...state, rated_course: action.course_list, ratedSearched: true };
     case actionTypes.SET_UNRATED_COURSE:
       return { ...state, unrated_course: action.course_list, unratedSearched: true };
     case actionTypes.PUT_COURSEPREF_TEMP: {
-      const ratedCourse = state.rated_course.map(({ id, score, ...item }) => (id === action.coursepref.id ? { id, score: action.coursepref.score, ...item } : { id, score, ...item }));
-      const unratedCourse = state.unrated_course.map(({ id, score, ...item }) => (id === action.coursepref.id ? { id, score: action.coursepref.score, ...item } : { id, score, ...item }));
+      const ratedCourse = state.rated_course.map(
+        ({ id, score, ...item }) => (
+          id === action.coursepref.id ? {
+            id, score: action.coursepref.score, ...item,
+          } : { id, score, ...item }
+        ),
+      );
+      const unratedCourse = state.unrated_course.map(
+        ({ id, score, ...item }) => (
+          id === action.coursepref.id ? {
+            id, score: action.coursepref.score, ...item,
+          } : { id, score, ...item }
+        ),
+      );
       const targetCourse = state.changed_courses.filter((item) => item.id === action.coursepref.id);
+      let newChangedCourses = state.changed_courses;
       if (targetCourse.length > 0) {
-        state.changed_courses = state.changed_courses.map(({ id, score }) => (id === action.coursepref.id ? { id, score: action.coursepref.score } : { id, score }));
+        newChangedCourses = state.changed_courses.map(
+          ({ id, score }) => (id === action.coursepref.id ? { id, score: action.coursepref.score } : { id, score }),
+        );
       } else {
-        state.changed_courses.push(action.coursepref);
+        newChangedCourses.push(action.coursepref);
       }
-      return { ...state, rated_course: ratedCourse, unrated_course: unratedCourse };
+      return {
+        ...state, rated_course: ratedCourse, unrated_course: unratedCourse, changed_courses: newChangedCourses,
+      };
     }
     case actionTypes.PUT_COURSEPREF:
       return { ...state, changed_courses: [] };
@@ -201,7 +201,7 @@ const reducer = (state = initialState, action) => {
     case actionTypes.SET_UNRATED_SEARCHABLE:
       return { ...state, unratedSearched: false };
     case actionTypes.SEARCH_BUILDINGS:
-      return { ...state, building_list: action.building_list, search_auto_complete: action.building_list.length === 1 };
+      return { ...state, buildingList: action.buildingList, search_auto_complete: action.buildingList.length === 1 };
     case actionTypes.AUTO_COMPLETE:
       return { ...state, search_auto_complete: false };
     default:

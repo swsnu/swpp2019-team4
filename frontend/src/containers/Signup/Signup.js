@@ -23,14 +23,12 @@ class Signup extends Component {
       password_confirm_valid: true,
       username_valid: true,
       grade_valid: true,
-      department_valid: true,
 
       email_notice: '',
       password_notice: '',
       password_confirm_notice: '',
       username_notice: '',
       grade_notice: '',
-      department_notice: '',
 
       is_waiting: false,
       is_finished: false,
@@ -47,17 +45,14 @@ class Signup extends Component {
     const passwordValid = (password.length >= 8 && password.length <= 32);
     const passwordConfirmValid = (password === passwordConfirm);
     const usernameValid = (username.length >= 1 && username.length <= 16);
-    const departmentValid = (department === '컴퓨터공학부');
-    const gradeValid = (1 * grade >= 1 && 1 * grade <= 99);
-    const sendValid = emailValid && passwordValid && passwordConfirmValid && usernameValid
-     && departmentValid && gradeValid;
+    const gradeValid = (grade >= 1946 && grade <= 2020);
+    const sendValid = emailValid && passwordValid && passwordConfirmValid && usernameValid && gradeValid;
 
     const emailNotice = (emailValid ? '' : '이메일 형식이 올바르지 않습니다.');
     const passwordNotice = (passwordValid ? '' : '비밀번호는 8자 이상 32자 이하로 구성되어야 합니다.');
     const passwordConfirmNotice = (passwordConfirmValid ? '' : '비밀번호와 비밀번호 확인은 같은 값을 가져야 합니다.');
     const usernameNotice = (usernameValid ? '' : '이름은 1자 이상 32자 이하로 구성되어야 합니다.');
-    const gradeNotice = (gradeValid ? '' : '학년은 1 이상 99 이하의 정수여야 합니다.');
-    const departmentNotice = (departmentValid ? '' : '존재하는 학과를 입력해야 합니다.');
+    const gradeNotice = (gradeValid ? '' : '입학년도는 1946이상 2020이하의 정수여야 합니다.');
 
     this.setState((prevState) => ({
       ...prevState,
@@ -65,13 +60,11 @@ class Signup extends Component {
       password_valid: passwordValid,
       password_confirm_valid: passwordConfirmValid,
       username_valid: usernameValid,
-      department_valid: departmentValid,
       grade_valid: gradeValid,
       email_notice: emailNotice,
       password_notice: passwordNotice,
       password_confirm_notice: passwordConfirmNotice,
       username_notice: usernameNotice,
-      department_notice: departmentNotice,
       grade_notice: gradeNotice,
     }));
     if (sendValid) {
@@ -135,7 +128,7 @@ class Signup extends Component {
                 className={`form-control ${this.state.email_valid ? '' : 'is-invalid'}`}
                 type="text"
                 id="email-input"
-                placeholder="Email"
+                placeholder="이메일"
                 value={this.state.email}
                 onChange={(event) => this.setState({ email: event.target.value })}
               />
@@ -144,7 +137,7 @@ class Signup extends Component {
                 className={`form-control ${this.state.password_valid ? '' : 'is-invalid'}`}
                 type="password"
                 id="password-input"
-                placeholder="Password"
+                placeholder="비밀번호"
                 value={this.state.password}
                 onChange={(event) => this.setState({ password: event.target.value })}
               />
@@ -154,7 +147,7 @@ class Signup extends Component {
                 type="password"
                 id="password-confirm-input"
                 value={this.state.password_confirm}
-                placeholder="Password Confirmation"
+                placeholder="비밀번호 확인"
                 onChange={(event) => this.setState({ password_confirm: event.target.value })}
               />
               <div className="small text-left violation-notice feedback">{this.state.password_confirm_notice}</div>
@@ -163,25 +156,25 @@ class Signup extends Component {
                 type="text"
                 id="username-input"
                 value={this.state.username}
-                placeholder="Username"
+                placeholder="이름"
                 onChange={(event) => this.setState({ username: event.target.value })}
               />
               <div className="small text-left violation-notice feedback">{this.state.username_notice}</div>
               <input
-                className={`form-control ${this.state.department_valid ? '' : 'is-invalid'}`}
+                className="form-control"
                 type="text"
                 id="department-input"
                 value={this.state.department}
-                placeholder="Department"
+                placeholder="학과"
                 onChange={(event) => this.setState({ department: event.target.value })}
               />
-              <div className="small text-left violation-notice feedback">{this.state.department_notice}</div>
+              <div className="small text-left violation-notice feedback" />
               <input
                 className={`form-control ${this.state.grade_valid ? '' : 'is-invalid'}`}
                 type="number"
                 id="grade-input"
                 value={this.state.grade}
-                placeholder="Grade"
+                placeholder="입학년도"
                 onChange={(event) => this.setState({ grade: event.target.value })}
               />
               <div className="small text-left violation-notice feedback">{this.state.grade_notice}</div>

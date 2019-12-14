@@ -8,7 +8,7 @@ import SearchBar from '../../components/SearchBar/SearchBar';
 import TopBar from '../../components/TopBar/TopBar';
 import CourseElement from './CourseElement/CourseElement';
 import CourseDetail from '../CourseDetail/CourseDetail';
-// import './TimetableManagement.css';
+import './TimetableManagement.css';
 
 class TimetableManagement extends Component {
   constructor(props) {
@@ -18,7 +18,6 @@ class TimetableManagement extends Component {
       semester: '2019-2',
       title: '',
       showCourses: true,
-      searchdetail: false,
       scrollLimit: 1500,
       searchCourseCount: 50,
       searching: false,
@@ -75,58 +74,15 @@ class TimetableManagement extends Component {
     this.props.setCourses(0, 49, this.state.searchValues);
   }
 
+  shouldComponentUpdate(nextprops) {
+    if (nextprops.searched) {
+      this.resetSearch();
+    }
+    return true;
+  }
+
   componentWillUnmount() {
     this.is_mount = false;
-  }
-
-  handleLogout() {
-    this.props.onLogout();
-  }
-
-  postCourse(courseId) {
-    this.props.onPostCourse(this.props.timetable.id, courseId);
-  }
-
-  deleteCourse(courseId) {
-    this.props.onDeleteCourse(courseId);
-  }
-
-  deleteTimetable(timetableId) {
-    this.props.onDeleteTimetable(timetableId);
-  }
-
-  show(timetableId, timetableTitle) {
-    this.setState({
-      title: timetableTitle,
-    });
-    this.props.onGetTimetable(timetableId);
-    this.props.onPostMainTimetable(timetableId);
-    this.showCoursesInTimetable();
-  }
-
-  createEmptyTimetable() {
-    const titleBase = '새 시간표';
-    let titleAdd = '';
-    for (let idx = 1; idx < 100; idx += 1, titleAdd = ` (${idx})`) {
-      const titleAll = titleBase + titleAdd;
-      let isRepetition = false;
-      this.props.timetables.forEach((timetable) => {
-        if (timetable.title === titleAll) {
-          isRepetition = true;
-        }
-      });
-      if (!isRepetition) break;
-    }
-
-    const title = titleBase + titleAdd;
-
-    this.props.onPostTimetable(title, '2019-2')
-      .then(() => {
-        if (this.is_mount) {
-          this.show(this.props.timetables[this.props.timetables.length - 1].id, title);
-        }
-      })
-      .catch(() => {});
   }
 
   showCoursesInSearch() {
@@ -138,38 +94,13 @@ class TimetableManagement extends Component {
   }
 
   search() {
-    if (this.state.searching) return;
-    this.setState({ searching: true });
-    if (this.state.searchdetail) {
-      this.setState({
-        realValues: this.state.searchValues,
-        scrollLimit: 1500,
-        searchCourseCount: 50,
-      });
-      this.props.setCourses(0, 49, this.state.searchValues);
-    } else {
-      const newValue = {
-        title: this.state.searchValues.title,
-        classification: '',
-        department: '',
-        degree_program: '',
-        academic_year: '',
-        course_number: '',
-        lecture_number: '',
-        professor: '',
-        language: '',
-        min_credit: '',
-        max_credit: '',
-        min_score: '',
-        max_score: '',
-      };
-      this.setState({
-        realValues: newValue,
-        scrollLimit: 1500,
-        searchCourseCount: 50,
-      });
-      this.props.setCourses(0, 49, this.state.searchValues);
-    }
+    this.setState((prevState) => ({
+      searching: true,
+      realValues: prevState.searchValues,
+      scrollLimit: 1500,
+      searchCourseCount: 50,
+    }));
+    this.props.setCourses(0, 49, this.state.searchValues);
     this.showCoursesInSearch();
   }
 
@@ -205,7 +136,7 @@ class TimetableManagement extends Component {
         });
         this.props.setCourses(0, 49, newValue);
       } else {
-        this.setState({ commandMatch: this.state.commandMatch + 1 });
+        this.setState((prevState) => ({ commandMatch: prevState.commandMatch + 1 }));
       }
     } else {
       this.setState({ commandMatch: 0 });
@@ -227,23 +158,80 @@ class TimetableManagement extends Component {
     this.props.onDeleteCourseTemp(course);
   }
 
-  searchOnChange(event, type) {
-    const newValue = this.state.searchValues;
-    newValue[type] = event.target.value;
-    this.setState({ searchValues: newValue });
+  searchOnChange(value, type) {
+    this.setState((prevState) => {
+      const newValue = prevState.searchValues;
+      newValue[type] = value;
+      return { searchValues: newValue };
+    });
   }
 
-  onSearchToggle() {
-    this.setState({ searchdetail: !this.state.searchdetail });
+  createEmptyTimetable() {
+    const titleBase = '새 시간표';
+    let titleAdd = '';
+    for (let idx = 1; idx < 100; idx += 1, titleAdd = ` (${idx})`) {
+      const titleAll = titleBase + titleAdd;
+      let isRepetition = false;
+      this.props.timetables.forEach((timetable) => {
+        if (timetable.title === titleAll) {
+          isRepetition = true;
+        }
+      });
+      if (!isRepetition) break;
+    }
+
+    const title = titleBase + titleAdd;
+
+    this.props.onPostTimetable(title, '2019-2')
+      .then(() => {
+        if (this.is_mount) {
+          this.show(this.props.timetables[this.props.timetables.length - 1].id, title);
+        }
+      })
+      .catch(() => {});
+  }
+
+  show(timetableId, timetableTitle) {
+    this.setState({
+      title: timetableTitle,
+    });
+    this.props.onGetTimetable(timetableId);
+    this.props.onPostMainTimetable(timetableId);
+    this.showCoursesInTimetable();
+  }
+
+  postCourse(courseId) {
+    this.props.onPostCourse(this.props.timetable.id, courseId);
+  }
+
+  resetSearch() {
+    this.props.searchable();
+    if (this.state.searching) this.setState({ searching: false });
+  }
+
+  deleteCourse(courseId) {
+    this.props.onDeleteCourse(courseId);
+  }
+
+  deleteTimetable(timetableId) {
+    this.props.onDeleteTimetable(timetableId);
+  }
+
+  handleLogout() {
+    this.props.onLogout();
   }
 
   scrollHandler(scrollTop) {
     const pageSize = 50;
     const scrollSize = pageSize * 60;
     if (this.state.showCourses && this.state.scrollLimit < scrollTop) {
-      this.setState({ scrollLimit: this.state.scrollLimit + scrollSize });
-      this.props.onGetCourses(this.state.searchCourseCount, this.state.searchCourseCount + pageSize - 1, this.state.realValues);
-      this.setState({ searchCourseCount: this.state.searchCourseCount + pageSize });
+      this.setState((prevState) => ({ scrollLimit: prevState.scrollLimit + scrollSize }));
+      this.props.onGetCourses(
+        this.state.searchCourseCount,
+        this.state.searchCourseCount + pageSize - 1,
+        this.state.realValues,
+      );
+      this.setState((prevState) => ({ searchCourseCount: prevState.searchCourseCount + pageSize }));
     }
   }
 
@@ -256,10 +244,6 @@ class TimetableManagement extends Component {
       return (
         <Redirect to="/login" />
       );
-    }
-    if (this.props.searched) {
-      this.props.searchable();
-      this.setState({ searching: false });
     }
     const timetableList = this.props.timetables.filter((timetable) => timetable.id !== this.props.timetable.id)
       .map((item) => (
@@ -337,14 +321,15 @@ class TimetableManagement extends Component {
           <div className="col-6">
             <div className="dropdown">
               <button
-                className="btn dropdown-toggle"
+                className="btn btn-like-form"
                 type="button"
                 id="semester-select"
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
               >
-                {this.state.semester}
+                <b>{this.state.semester}</b>
+                <div className="oi oi-chevron-bottom pl-2" />
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdown-semester">
                 <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-2' })}>
@@ -357,8 +342,6 @@ class TimetableManagement extends Component {
               onChange={(event, type) => this.searchOnChange(event, type)}
               onKeyDown={() => this.enterKey()}
               onSearch={() => this.search()}
-              onToggle={() => this.onSearchToggle()}
-              togglestatus={this.state.searchdetail}
               searchScore={false}
               searching={this.state.searching}
             />
@@ -392,7 +375,13 @@ class TimetableManagement extends Component {
               </li>
             </ul>
 
-            <div className="tab-content overflow-y-auto mb-4" style={{ height: '420px' }} onScroll={(event) => { this.scrollHandler(event.target.scrollTop); }}>
+            <div
+              className="tab-content overflow-y-auto mb-4"
+              style={{ height: '30rem' }}
+              onScroll={(event) => {
+                this.scrollHandler(event.target.scrollTop);
+              }}
+            >
               <div
                 className={`tab-pane ${this.state.showCourses ? 'active' : ''}`}
                 id="searched-tab"
@@ -425,21 +414,23 @@ class TimetableManagement extends Component {
             <div className="dropdown d-flex justify-content-center">
               <input
                 type="text"
-                className="form-simple text-center w-50"
+                className="form-control text-center w-50 font-weight-bold rounded-no-right"
                 id="timetable-title-input"
                 value={this.state.title}
                 onChange={(event) => this.setState({ title: event.target.value })}
                 onBlur={() => this.props.onEditTimetable(this.props.timetable.id, this.state.title)}
               />
               <button
-                className="btn dropdown-toggle"
+                className="btn btn-like-form rounded-no-left"
                 type="button"
                 id="dropdown-timetable"
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
                 aria-labelledby="Timetable Dropdown"
-              />
+              >
+                <div className="oi oi-chevron-bottom" />
+              </button>
               <div
                 className="dropdown-menu dropdown-menu-right"
                 id="timetable-list"
@@ -458,9 +449,10 @@ class TimetableManagement extends Component {
             </div>
             <TimetableView
               id="timetable-table"
-              height={20}
+              height={24}
               courses={this.props.timetable.course}
               editable
+              timeline
             />
             <CourseDetail
               id="custom-course-detail"
@@ -520,9 +512,6 @@ TimetableManagement.propTypes = {
   setCourses: PropTypes.func.isRequired,
   onPostCourseTemp: PropTypes.func.isRequired,
   onDeleteCourseTemp: PropTypes.func.isRequired,
-  searched: PropTypes.arrayOf(PropTypes.shape({
-
-  })).isRequired,
   searchable: PropTypes.bool.isRequired,
 };
 
@@ -531,7 +520,6 @@ const mapStateToProps = (state) => ({
   timetables: state.user.timetables,
   courses: state.user.courses,
   timetable: state.user.timetable,
-  course: state.user.timetable.course,
   searched: state.user.searched,
 });
 

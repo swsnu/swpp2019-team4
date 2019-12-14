@@ -2,16 +2,21 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import './RecommendTime.css';
+import * as actionCreators from '../../../store/actions/index';
 
 class RecommendTime extends Component {
   constructor(props) {
     super(props);
-    const colorTable = this.props.color_table.slice();
+    const colorTable = [];
+    for (let i = 0; i < 26; i += 1) {
+      colorTable.push([3, 3, 3, 3, 3, 3]);
+    }
     this.is_mount = false;
     this.state = {
       mouse_down: false,
       color: 0,
-      color_table: colorTable,
+      inColorTable: colorTable,
+      prvTable: colorTable,
     };
     this.mouseUpListener = this.mouseUpListener.bind(this);
     this.mouseDownListener = this.mouseDownListener.bind(this);
@@ -20,7 +25,11 @@ class RecommendTime extends Component {
   componentDidMount() {
     this.is_mount = true;
     this.props.handleValid(true);
-    this.props.handleTimePref(this.props.color_table);
+    this.props.onGetTimePref()
+      .then(() => {
+        const inColorTable = this.props.inColorTable.slice();
+        this.setState({ inColorTable });
+      });
     document.addEventListener('mouseup', this.mouseUpListener, true);
     document.addEventListener('mousedown', this.mouseDownListener, true);
   }
@@ -32,12 +41,32 @@ class RecommendTime extends Component {
   }
 
   mouseDownListener(event) {
-    event.preventDefault();
+    if (event.target.id === 'table-square') {
+      event.preventDefault();
+    }
     if (this.is_mount) this.setState({ mouse_down: true });
   }
 
   mouseUpListener() {
-    if (this.is_mount) this.setState({ mouse_down: false });
+    if (!this.is_mount) return;
+    const curTable = this.state.inColorTable;
+    const { prvTable } = this.state;
+    const newTable = [];
+    let isSame = true;
+    for (let i = 0; i < 26; i += 1) {
+      const tmpTable = [];
+      for (let j = 0; j < 6; j += 1) {
+        tmpTable.push(curTable[i][j]);
+        if (curTable[i][j] !== prvTable[i][j]) {
+          isSame = false;
+        }
+      }
+      newTable.push(tmpTable);
+    }
+    if (!isSame) {
+      this.props.onPutTimePref(curTable);
+    }
+    this.setState({ prvTable: newTable, mouse_down: false });
   }
 
   handleColor(index) {
@@ -47,10 +76,9 @@ class RecommendTime extends Component {
   handleFill(xIndex, yIndex, force) {
     if (this.state.mouse_down || force) {
       this.setState((prevState) => {
-        const colorTable = prevState.color_table;
+        const colorTable = prevState.inColorTable;
         colorTable[xIndex][yIndex] = prevState.color;
-        this.props.handleTimePref(colorTable);
-        return ({ ...prevState, color_table: colorTable });
+        return ({ ...prevState, inColorTable: colorTable });
       });
     }
   }
@@ -80,11 +108,11 @@ class RecommendTime extends Component {
         );
       }
       for (let j = 0; j < 6; j += 1) {
-        const color = colorArray[this.state.color_table[i][j]];
+        const color = colorArray[this.state.inColorTable[i][j]];
         tablehtmlIth.push(
           <td key={1000 * i + j} style={{ backgroundColor: color, cursor: 'crosshair' }}>
             <div
-              style={{ height: '15px' }}
+              style={{ height: '1.1rem' }}
               id="table-square"
               role="button"
               tabIndex="-1"
@@ -100,7 +128,7 @@ class RecommendTime extends Component {
     for (let i = colorArray.length - 1; i >= 0; i -= 1) {
       colorhtml.push(
         <tr key={i}>
-          <td>
+          <td width={52}>
             <div
               className={`my-2 circle ${this.state.color === i ? 'oi oi-check' : ''}`}
               style={{ backgroundColor: colorArray[i] }}
@@ -117,8 +145,8 @@ class RecommendTime extends Component {
       );
     }
     return (
-      <div className="RecommendTime row m-0">
-        <table className="w-100 col-6 offset-2" id="recommend-time-table">
+      <div className="RecommendTime row m-0 align-items-center h-100">
+        <table className="w-100 col-7 offset-1" id="recommend-time-table">
           <colgroup>
             <col span="1" style={{ width: '10%' }} />
             <col span="1" style={{ width: '15%' }} />
@@ -149,10 +177,18 @@ class RecommendTime extends Component {
 
 RecommendTime.propTypes = {
   handleValid: PropTypes.func.isRequired,
+  onGetTimePref: PropTypes.func.isRequired,
+  onPutTimePref: PropTypes.func.isRequired,
+  inColorTable: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number.isRequired).isRequired).isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  color_table: state.user.time_pref_table,
+  inColorTable: state.user.time_pref_table,
 });
 
-export default connect(mapStateToProps, null)(RecommendTime);
+const mapDispatchToProps = (dispatch) => ({
+  onGetTimePref: () => dispatch(actionCreators.getTimePref()),
+  onPutTimePref: (table) => dispatch(actionCreators.putTimePref(table)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RecommendTime);

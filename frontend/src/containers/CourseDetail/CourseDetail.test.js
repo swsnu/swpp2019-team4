@@ -30,8 +30,49 @@ const dbCourse = {
   ],
 };
 
+const stubState = {
+  user: {
+    is_authenticated: true,
+    timetable_main: 1,
+  },
+  timetables: [
+    {
+      id: 1,
+      title: 'my timetable',
+    },
+  ],
+  courses: [{
+    id: 0,
+    title: '자료구조',
+    color: '#2BC366',
+    course_number: 'M1522.000900',
+    lecture_number: '001',
+    time: [{
+      week_day: 0,
+      start_time: 660,
+      end_time: 750,
+    }],
+  }],
+  timetable: {
+    title: '',
+    course: [{
+      id: 0,
+      title: '자료구조',
+      color: '#2BC366',
+      course_number: 'M1522.000900',
+      lecture_number: '001',
+      time: [{
+        week_day: 0,
+        start_time: 660,
+        end_time: 750,
+      }],
+    }],
+  },
+  building_list: [],
+};
+
 function window(course) {
-  const mockStore = getMockStore({});
+  const mockStore = getMockStore(stubState);
   return (
     <Provider store={mockStore}>
       <ConnectedRouter history={createBrowserHistory()}>
