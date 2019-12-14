@@ -79,8 +79,6 @@ class RecommendCourse extends Component {
       unratedCourseCount: 50,
       tabview: 0,
       searching: false,
-      commandMatch: 0,
-      prv_changed: [],
     };
     this.timeToString = (time) => {
       const hour = parseInt(time / 60, 10);
@@ -89,14 +87,12 @@ class RecommendCourse extends Component {
       return `${hourString}${minuteString}`;
     };
     this.is_mount = false;
-    this.mouseUpListener = this.mouseUpListener.bind(this);
   }
 
   componentDidMount() {
     this.props.handleValid(true);
     this.props.setRatedCourse(0, 49, this.state.realValuesrated);
     this.is_mount = true;
-    document.addEventListener('mouseup', this.mouseUpListener, true);
   }
 
   shouldComponentUpdate(nextprops) {
@@ -110,7 +106,6 @@ class RecommendCourse extends Component {
 
   componentWillUnmount() {
     this.is_mount = false;
-    document.removeEventListener('mouseup', this.mouseUpListener, true);
   }
 
   segmentToString(weekDay, startTime) {
@@ -123,30 +118,9 @@ class RecommendCourse extends Component {
     if (this.state.searching) this.setState({ searching: false });
   }
 
-  mouseUpListener() {
-    if (!this.is_mount) return;
-    const curList = this.props.changedCourses;
-    const prvList = this.state.prv_changed;
-    const newList = [];
-    let isSame = true;
-    for (let i = 0; i < curList.length; i += 1) {
-      const curId = curList[i].id;
-      const curScore = curList[i].score;
-      newList.push({ id: curId, score: curScore });
-      if (i >= prvList.length) {
-        isSame = false;
-      } else {
-        const prvId = prvList[i].id;
-        const prvScore = prvList[i].score;
-        if (curId !== prvId || curScore !== prvScore) {
-          isSame = false;
-        }
-      }
-    }
-    if (!isSame) {
-      this.props.onPutCoursePref(curList);
-    }
-    this.setState({ prv_changed: newList });
+  handleDelete(id) {
+    this.props.onDeleteCoursePref(id);
+    this.props.onChangeDelete(id);
   }
 
   scrollHandler(scrollTop) {
@@ -168,7 +142,6 @@ class RecommendCourse extends Component {
   }
 
   changeTab(tab) {
-    this.props.onPutCoursePref(this.props.changedCourses);
     if (tab === 0) {
       this.setState({
         tabview: tab,
@@ -243,11 +216,16 @@ class RecommendCourse extends Component {
                   id={`course-score-form-${course.id}`}
                   value={score}
                   onChange={(event) => this.props.onChangeslider(course.id, event.target.value)}
-                  onMouseDown={(event) => this.props.onChangeslider(course.id, event.target.value)}
+                  onMouseUp={(event) => this.props.onPutCoursePref(course.id, event.target.value)}
                 />
               </div>
             </form>
           </div>
+            {score !== '-' &&
+            <button type="button" className="col-1 btn btn-simple btn-sm" onClick={() => this.handleDelete(course.id)}> 
+              <div className="oi oi-delete"/>
+            </button>
+            }
         </div>
         <hr className="my-2" />
       </div>
@@ -299,41 +277,6 @@ class RecommendCourse extends Component {
   }
 
   enterKey() {
-    const command = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
-    if (window.event.keyCode === command[this.state.commandMatch]) {
-      if (this.state.commandMatch === 9) {
-        const newValue = {
-          title: '소프트웨어 개발의 원리와 실습',
-          classification: '전필',
-          department: '컴퓨터공학부',
-          degree_program: '학사',
-          academic_year: '3학년',
-          course_number: 'M1522.002400',
-          lecture_number: '001',
-          professor: '전병곤',
-          language: '영어',
-          min_credit: '4',
-          max_credit: '4',
-          min_score: '',
-          max_score: '',
-        };
-        this.setState({
-          realValuesrated: newValue,
-          realValuesunrated: newValue,
-          ratedScrollLimit: 1500,
-          unratedScrollLimit: 1500,
-          ratedCourseCount: 50,
-          unratedCourseCount: 50,
-          commandMatch: 0,
-        });
-        if (this.state.tabview === 0) this.props.setRatedCourse(0, 49, newValue);
-        else if (this.state.tabview === 1) this.props.setUnratedCourse(0, 49, newValue);
-      } else {
-        this.setState((prevState) => ({ commandMatch: prevState.commandMatch + 1 }));
-      }
-    } else {
-      this.setState({ commandMatch: 0 });
-    }
     if (window.event.keyCode === 13) {
       this.search();
     }
@@ -430,6 +373,7 @@ RecommendCourse.propTypes = {
   setRatedCourse: PropTypes.func.isRequired,
   setUnratedCourse: PropTypes.func.isRequired,
   onPutCoursePref: PropTypes.func.isRequired,
+  onDeleteCoursePref: PropTypes.func.isRequired,
   getRatedCourse: PropTypes.func.isRequired,
   getUnratedCourse: PropTypes.func.isRequired,
   onChangeslider: PropTypes.func.isRequired,
@@ -455,10 +399,6 @@ RecommendCourse.propTypes = {
       end_time: PropTypes.number.isRequired,
     }),
   })).isRequired,
-  changedCourses: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    score: PropTypes.number.isRequired,
-  })).isRequired,
   searchable: PropTypes.func.isRequired,
 };
 
@@ -467,7 +407,6 @@ const mapStateToProps = (state) => ({
   unratedCourse: state.user.unrated_course,
   searchrated: state.user.ratedSearched,
   searchunrated: state.user.unratedSearched,
-  changedCourses: state.user.changed_courses,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -476,8 +415,10 @@ const mapDispatchToProps = (dispatch) => ({
   setRatedCourse: (start, end, searchValues) => dispatch(actionCreators.setRatedCourse(start, end, searchValues)),
   setUnratedCourse: (start, end, searchValues) => dispatch(actionCreators.setUnratedCourse(start, end, searchValues)),
   onChangeslider: (id, value) => dispatch(actionCreators.putCourseprefTemp(id, value)),
+  onChangeDelete: (id, value) => dispatch(actionCreators.deleteCourseprefTemp(id, value)),
   searchable: () => { dispatch(actionCreators.setRatedSearchable()); dispatch(actionCreators.setUnratedSearchable()); },
-  onPutCoursePref: (changedCourses) => dispatch(actionCreators.putCoursepref(changedCourses)),
+  onPutCoursePref: (id, value) => dispatch(actionCreators.putCoursepref(id, value)),
+  onDeleteCoursePref: (id) => dispatch(actionCreators.deleteCoursepref(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecommendCourse);
