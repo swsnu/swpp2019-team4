@@ -70,14 +70,14 @@ class Account extends Component {
     const passwordValid = (password.length >= 8 && password.length <= 32) || !passwordChange;
     const passwordConfirmValid = (password === passwordConfirm) || !passwordChange;
     const usernameValid = (username.length >= 1 && username.length <= 16);
-    const gradeValid = (grade.length === 2 && grade[0] >= '0' && grade[0] <= '9' && grade[1] >= '0' && grade[1] <= '9');
+    const gradeValid = (grade >= 1946 && grade <= 2020);
     const sendValid = passwordPrevValid && passwordValid && passwordConfirmValid && usernameValid && gradeValid;
 
     const passwordPrevNotice = (passwordPrevValid ? '' : '기존 비밀번호를 입력해야 합니다.');
     const passwordNotice = (passwordValid ? '' : '비밀번호는 8자 이상 32자 이하로 구성되어야 합니다.');
     const passwordConfirmNotice = (passwordConfirmValid ? '' : '비밀번호와 비밀번호 확인은 같은 값을 가져야 합니다.');
     const usernameNotice = (usernameValid ? '' : '이름은 1자 이상 32자 이하로 구성되어야 합니다.');
-    const gradeNotice = (gradeValid ? '' : '학번은 두 자리 숫자여야 합니다.');
+    const gradeNotice = (gradeValid ? '' : '입학년도는 1946이상 2020이하의 정수여야 합니다.');
 
     this.setState((prevState) => ({
       ...prevState,
@@ -173,12 +173,12 @@ class Account extends Component {
                 </tr>
                 <tr>
                   <td className="text-right">
-                    <label htmlFor="grade-input">학번</label>
+                    <label htmlFor="grade-input">입학년도</label>
                   </td>
                   <td>
                     <input
                       className={`form-control ${this.state.grade_valid ? '' : 'is-invalid'}`}
-                      type="text"
+                      type="number"
                       id="grade-input"
                       value={this.state.grade}
                       onChange={(event) => this.setState({ grade: event.target.value })}
