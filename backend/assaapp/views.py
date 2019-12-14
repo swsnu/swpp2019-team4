@@ -374,12 +374,9 @@ def api_timetable_id_custom_course(request, timetable_id):
 def api_course(request):
     if request.method == 'GET':
         course_list = Course.objects.all()
-        cf_view_result = cf_view(request.user)
-        cf_score_result = cf_score(request.user)
         start = int(request.GET.get('start'))
         end = int(request.GET.get('end'))
         course_list = list(filter(lambda course: searcher(course, 0, request.GET), course_list))
-        course_list = sorted(course_list, key=lambda course: -cf_view_result[course.id])
         course_len = len(course_list)
         get_result = []
         if start >= course_len:
@@ -387,9 +384,7 @@ def api_course(request):
         for i in range(start, course_len):
             if i > end:
                 break
-            course_data = course_list[i].data()
-            course_data['expected'] = cf_score_result[course_data['id']]
-            get_result.append(course_data)
+            get_result.append(course_list[i].data())
         return JsonResponse(get_result, safe=False)
     return HttpResponseNotAllowed(['GET'])
 

@@ -23,6 +23,7 @@ class RecommendCourse extends Component {
         max_credit: '',
         min_score: '',
         max_score: '',
+        sort: 1,
       },
       realValuesrated: {
         title: '',
@@ -38,6 +39,7 @@ class RecommendCourse extends Component {
         max_credit: '',
         min_score: '',
         max_score: '',
+        sort: 1,
       },
       searchValuesunrated: {
         title: '',
@@ -53,6 +55,7 @@ class RecommendCourse extends Component {
         max_credit: '',
         min_score: '',
         max_score: '',
+        sort: 0,
       },
       realValuesunrated: {
         title: '',
@@ -68,6 +71,7 @@ class RecommendCourse extends Component {
         max_credit: '',
         min_score: '',
         max_score: '',
+        sort: 0,
       },
       ratedScrollLimit: 1500,
       unratedScrollLimit: 1500,
@@ -250,8 +254,7 @@ class RecommendCourse extends Component {
     );
   }
 
-  searchOnChange(event, type) {
-    const { value } = event.target;
+  searchOnChange(value, type) {
     if (this.state.tabview === 0) {
       this.setState((prevState) => {
         const newValue = prevState.searchValuesrated;
@@ -265,26 +268,33 @@ class RecommendCourse extends Component {
         return { searchValuesunrated: prevState.searchValuesunrated };
       });
     }
+    if (type === "sort") {
+      this.search();
+    }
   }
 
   search() {
     if (this.state.searching) return;
     if (this.state.tabview === 0) {
-      this.setState((prevState) => ({
-        searching: true,
-        realValuesrated: prevState.searchValuesrated,
-        ratedScrollLimit: 1500,
-        ratedCourseCount: 50,
-      }));
-      this.props.setRatedCourse(0, 49, this.state.searchValuesrated);
+      this.setState((prevState) => {
+        this.props.setRatedCourse(0, 49, prevState.searchValuesrated);
+        return {
+          searching: true,
+          realValuesrated: prevState.searchValuesrated,
+          ratedScrollLimit: 1500,
+          ratedCourseCount: 50,
+        }
+      });
     } else if (this.state.tabview === 1) {
-      this.setState((prevState) => ({
-        searching: true,
-        realValuesunrated: prevState.searchValuesunrated,
-        unratedScrollLimit: 1500,
-        unratedCourseCount: 50,
-      }));
-      this.props.setUnratedCourse(0, 49, this.state.searchValuesunrated);
+      this.setState((prevState) => {
+        this.props.setUnratedCourse(0, 49, prevState.searchValuesunrated);
+        return {
+          searching: true,
+          realValuesunrated: prevState.searchValuesunrated,
+          unratedScrollLimit: 1500,
+          unratedCourseCount: 50,
+        }
+      });
     }
   }
 
@@ -330,6 +340,21 @@ class RecommendCourse extends Component {
   }
 
   render() {
+    const ratedSortTitle = ['평점 오름차순', '평점 내림차순', '가나다순'];
+    const unratedSortTitle = ['추천 순', '가나다순'];
+    const ratedSortArray = ratedSortTitle.map((title, index) => {
+      return {
+        title: title,
+        value: this.state.searchValuesrated.sort === index,
+      }
+    });
+    const unratedSortArray = unratedSortTitle.map((title, index) => {
+      return {
+        title: title,
+        value: this.state.searchValuesunrated.sort === index,
+      }
+    });
+
     const ratedview = [];
     const unratedview = [];
     if (this.props.ratedCourse !== undefined) {
@@ -376,12 +401,12 @@ class RecommendCourse extends Component {
         </ul>
         <SearchBar
           value={this.state.tabview === 0 ? this.state.searchValuesrated : this.state.searchValuesunrated}
+          sortValue={this.state.tabview === 0 ? ratedSortArray : unratedSortArray}
           onChange={(event, type) => this.searchOnChange(event, type)}
           onKeyDown={() => this.enterKey()}
           onSearch={() => this.search()}
-          searchScore
-          searching={this.state.searching}
-        />
+          searchScore 
+          searching={this.state.searching} />
         <div
           className="tab-content overflow-y-auto"
           id="myTabContent"

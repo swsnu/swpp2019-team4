@@ -186,7 +186,8 @@ export const getRatedCourse = (start, end, searchValues) => (dispatch) => axios.
   + `&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}`
   + `&professor=${searchValues.professor}&language=${searchValues.language}`
   + `&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}`
-  + `&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`,
+  + `&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`
+  + `&sort=${searchValues.sort}`
 )
   .then((res) => dispatch({ type: actionTypes.GET_RATED_COURSE, course_list: res.data }))
   .catch(() => {});
@@ -197,7 +198,8 @@ export const getUnratedCourse = (start, end, searchValues) => (dispatch) => axio
   + `&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}`
   + `&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}`
   + `&professor=${searchValues.professor}&language=${searchValues.language}`
-  + `&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}`,
+  + `&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}`
+  + `&sort=${searchValues.sort}`
 )
   .then((res) => dispatch({ type: actionTypes.GET_UNRATED_COURSE, course_list: res.data }))
   .catch(() => {});
@@ -211,7 +213,8 @@ export const setRatedCourse = (start, end, searchValues) => (dispatch) => {
   + `&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}`
   + `&professor=${searchValues.professor}&language=${searchValues.language}`
   + `&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}`
-  + `&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`,
+  + `&min_score=${searchValues.min_score}&max_score=${searchValues.max_score}`
+  + `&sort=${searchValues.sort}`
   )
     .then((res) => dispatch({ type: actionTypes.SET_RATED_COURSE, course_list: res.data }))
     .catch(() => {});
@@ -225,7 +228,8 @@ export const setUnratedCourse = (start, end, searchValues) => (dispatch) => {
   + `&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}`
   + `&course_number=${searchValues.course_number}&lecture_number=${searchValues.lecture_number}`
   + `&professor=${searchValues.professor}&language=${searchValues.language}`
-  + `&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}`,
+  + `&min_credit=${searchValues.min_credit}&max_credit=${searchValues.max_credit}`
+  + `&sort=${searchValues.sort}`
   )
     .then((res) => dispatch({ type: actionTypes.SET_UNRATED_COURSE, course_list: res.data }))
     .catch(() => {});
