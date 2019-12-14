@@ -295,8 +295,15 @@ def api_coursepref_rated(request):
         cf_user = list(CoursePref.objects.filter(user=request.user))
         start = int(request.GET.get('start'))
         end = int(request.GET.get('end'))
+        sort_type = int(request.GET.get('sort'))
         position = 0
         course_list = []
+        if sort_type == 0:
+            cf_user = sorted(cf_user, key=lambda score_data: score_data.score)
+        elif sort_type == 1:
+            cf_user = sorted(cf_user, key=lambda score_data: -score_data.score)
+        elif sort_type == 2:
+            cf_user = sorted(cf_user, key=lambda score_data: score_data.course.title)
         for score_data in cf_user:
             if position > end:
                 break
@@ -324,7 +331,10 @@ def api_coursepref_unrated(request):
         rated = {}
         course_list = []
         all_course = list(Course.objects.all())
-        all_course = sorted(all_course, key=lambda course: -cf_view_result[course.id])
+        if sort_type == 0:
+            all_course = sorted(all_course, key=lambda course: -cf_view_result[course.id])
+        elif sort_type == 1:
+            all_course = sorted(all_course, key=lambda course: course.title)
         for course in all_course:
             rated[course.id] = False
         for score_data in cf_user:
