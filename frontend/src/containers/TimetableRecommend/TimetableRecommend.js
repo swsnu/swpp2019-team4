@@ -217,7 +217,6 @@ const mapDispatchToProps = (dispatch) => ({
   onGetLastPage: () => dispatch(actionCreators.getLastPage()),
   onPutLastPage: (lastPage) => dispatch(actionCreators.putLastPage(lastPage)),
   onPutConstraints: (consts) => dispatch(actionCreators.putConstraints(consts)),
-  onPutCoursePref: (changedCourses) => dispatch(actionCreators.putCoursepref(changedCourses)),
   onDeleteRecommend: () => dispatch(actionCreators.deleteRecommend()),
 });
 

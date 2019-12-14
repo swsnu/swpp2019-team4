@@ -47,6 +47,8 @@ export {
   setUnratedCourse,
   putCoursepref,
   putCourseprefTemp,
+  deleteCoursepref,
+  deleteCourseprefTemp,
   setSearchable,
   setRatedSearchable,
   setUnratedSearchable,

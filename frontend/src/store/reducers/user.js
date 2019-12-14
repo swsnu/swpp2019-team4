@@ -179,21 +179,28 @@ const reducer = (state = initialState, action) => {
           } : { id, score, ...item }
         ),
       );
-      const targetCourse = state.changed_courses.filter((item) => item.id === action.coursepref.id);
-      let newChangedCourses = state.changed_courses;
-      if (targetCourse.length > 0) {
-        newChangedCourses = state.changed_courses.map(
-          ({ id, score }) => (id === action.coursepref.id ? { id, score: action.coursepref.score } : { id, score }),
-        );
-      } else {
-        newChangedCourses.push(action.coursepref);
-      }
       return {
-        ...state, rated_course: ratedCourse, unrated_course: unratedCourse, changed_courses: newChangedCourses,
+        ...state, rated_course: ratedCourse, unrated_course: unratedCourse,
       };
     }
-    case actionTypes.PUT_COURSEPREF:
-      return { ...state, changed_courses: [] };
+    case actionTypes.DELETE_COURSEPREF_TEMP:
+      const ratedCourse = state.rated_course.map(
+        ({ id, score, ...item }) => (
+          id === action.coursepref.id ? {
+            id, score: "-", ...item,
+          } : { id, score, ...item }
+        ),
+      );
+      const unratedCourse = state.unrated_course.map(
+        ({ id, score, ...item }) => (
+          id === action.coursepref.id ? {
+            id, score: "-", ...item,
+          } : { id, score, ...item }
+        ),
+      );
+      return {
+        ...state, rated_course: ratedCourse, unrated_course: unratedCourse,
+      };
     case actionTypes.SET_SEARCHABLE:
       return { ...state, searched: false };
     case actionTypes.SET_RATED_SEARCHABLE:

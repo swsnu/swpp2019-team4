@@ -239,11 +239,17 @@ export const putCourseprefTemp = (id, score) => (dispatch) => dispatch(
   { type: actionTypes.PUT_COURSEPREF_TEMP, coursepref: { id, score } },
 );
 
-export const putCoursepref = (changedCourses) => (dispatch) => axios.put(
-  '/api/recommend/coursepref/', { courses: changedCourses },
-)
-  .then(() => dispatch({ type: actionTypes.PUT_COURSEPREF }))
-  .catch(() => {});
+export const putCoursepref = (id, score) => () => axios.put(
+  '/api/recommend/coursepref/' + id + '/', { score: score }
+);
+
+export const deleteCourseprefTemp = (id) => (dispatch) => dispatch(
+  { type: actionTypes.DELETE_COURSEPREF_TEMP, coursepref: { id } },
+);
+
+export const deleteCoursepref = (id) => () => axios.delete(
+  '/api/recommend/coursepref/' + id + '/'
+);
 
 export const setSearchable = () => (dispatch) => dispatch({ type: actionTypes.SET_SEARCHABLE });
 export const setRatedSearchable = () => (dispatch) => dispatch({ type: actionTypes.SET_RATED_SEARCHABLE });
