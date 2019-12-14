@@ -1,0 +1,14 @@
+.Manage .btn-like-form {
+  border: 1px solid #ced4da;
+}
+
+.Manage .rounded-no-right {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  margin-right: -1px;
+}
+
+.Manage .rounded-no-left {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}

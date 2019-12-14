@@ -215,17 +215,16 @@ class Friend extends Component {
                     </div>
                     <TimetableView
                       id="timetable-table"
-                      height={20}
+                      height={24}
                       courses={currentFriend.timetable_main.course}
-                      text
-                      link
+                      timeline
                     />
                   </div>
                 )
                 : (
                   <div>
                     <div style={{ height: '30px' }} />
-                    <TimetableView id="timetable-table" height={20} courses={[]} text link />
+                    <TimetableView id="timetable-table" height={24} courses={[]} timeline />
                   </div>
                 )
             }
@@ -254,10 +253,9 @@ class Friend extends Component {
                 </button>
               </div>
             </div>
-            <div style={{ height: `${2}em` }}>{message}</div>
+            <div style={{ height: `${2}em` }}><small>{message}</small></div>
             <hr className="m-1" />
-            <div className="overflow-auto">
-
+            <div className="overflow-auto" style={{ height: '33em' }}>
               <div
                 className="d-flex justify-content-between align-items-center clickable px-3"
                 data-toggle="collapse"

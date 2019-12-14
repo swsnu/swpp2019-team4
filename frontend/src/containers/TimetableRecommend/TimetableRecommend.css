@@ -1,34 +1,57 @@
 .TimetableRecommend {
-  position: fixed;
+  position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
 }
 
+#recommend-progress {
+  border-right: 1px solid #DDDDDD;
+}
+
 #recommend-progress .bar {
   margin-bottom: -1px;
   width: 3px;
-  height: 80px;
+  height: 4rem;
   margin-left: auto;
   margin-right: auto;
 }
 
-#recommend-progress table {
-  width: 100%;
-  margin-left: 3rem;
+#recommend-progress td:nth-child(1) {
+  width: 4rem;
 }
 
-#recommend-progress td:nth-child(odd) {
-  width: 60px;
-}
-
-#recommend-progress td:nth-child(even) {
+#recommend-progress td:nth-child(2) {
   text-align: left;
   font-weight: 700;
+  width: 6rem;
 }
 
-#recommend-progress .oi {
+#recommend-progress td:nth-child(3) button {
+  width: 30px;
+  height: 30px;
+  font-size: 15px;
+  line-height: 30px;
+  border-radius: 50%;
+  text-align: center;
+  background-color: #C0C0C0;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition-duration: .3s;
+  border: 0px solid transparent;
+}
+
+#recommend-progress td:nth-child(3) button:hover {
+  background-color: #808080;
+}
+
+#recommend-progress td:nth-child(3) button:focus {
+  background-color: #808080;
+}
+
+#recommend-progress td:nth-child(1) .oi {
   width: 40px;
   height: 40px;
   font-size: 20px;

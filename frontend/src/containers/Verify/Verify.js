@@ -62,7 +62,7 @@ Verify.propTypes = {
     replace: PropTypes.func.isRequired,
   }).isRequired,
   storedUser: PropTypes.shape({
-    is_authenticated: PropTypes.bool.isRequired,
+    is_authenticated: PropTypes.bool,
   }).isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({

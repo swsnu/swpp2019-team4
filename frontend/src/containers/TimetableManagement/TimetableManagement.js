@@ -7,8 +7,8 @@ import TimetableView from '../../components/TimetableView/TimetableView';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import TopBar from '../../components/TopBar/TopBar';
 import CourseElement from './CourseElement/CourseElement';
-import CustomCourse from '../CustomCourse/CustomCourse';
-// import './TimetableManagement.css';
+import CourseDetail from '../CourseDetail/CourseDetail';
+import './TimetableManagement.css';
 
 class TimetableManagement extends Component {
   constructor(props) {
@@ -18,7 +18,40 @@ class TimetableManagement extends Component {
       semester: '2019-2',
       title: '',
       showCourses: true,
-      searchStrings: '',
+      scrollLimit: 1500,
+      searchCourseCount: 50,
+      searching: false,
+      searchValues: {
+        title: '',
+        classification: '',
+        department: '',
+        degree_program: '',
+        academic_year: '',
+        course_number: '',
+        lecture_number: '',
+        professor: '',
+        language: '',
+        min_credit: '',
+        max_credit: '',
+        min_score: '',
+        max_score: '',
+      },
+      realValues: {
+        title: '',
+        classification: '',
+        department: '',
+        degree_program: '',
+        academic_year: '',
+        course_number: '',
+        lecture_number: '',
+        professor: '',
+        language: '',
+        min_credit: '',
+        max_credit: '',
+        min_score: '',
+        max_score: '',
+      },
+      commandMatch: 0,
     };
   }
 
@@ -38,35 +71,99 @@ class TimetableManagement extends Component {
       })
       .catch(() => {});
     this.props.onGetTimetables();
+    this.props.setCourses(0, 49, this.state.searchValues);
+  }
+
+  shouldComponentUpdate(nextprops) {
+    if (nextprops.searched) {
+      this.resetSearch();
+    }
+    return true;
   }
 
   componentWillUnmount() {
     this.is_mount = false;
   }
 
-  handleLogout() {
-    this.props.onLogout();
+  showCoursesInSearch() {
+    this.setState({ showCourses: true });
   }
 
-  postCourse(courseId) {
-    this.props.onPostCourse(this.props.timetable.id, courseId);
+  showCoursesInTimetable() {
+    this.setState({ showCourses: false });
   }
 
-  deleteCourse(courseId) {
-    this.props.onDeleteCourse(this.props.timetable.id, courseId);
+  search() {
+    this.setState((prevState) => ({
+      searching: true,
+      realValues: prevState.searchValues,
+      scrollLimit: 1500,
+      searchCourseCount: 50,
+    }));
+    this.props.setCourses(0, 49, this.state.searchValues);
+    this.showCoursesInSearch();
   }
 
-  deleteTimetable(timetableId) {
-    this.props.onDeleteTimetable(timetableId);
+  editTimetableTitle(timetableTitle) {
+    this.setState({ title: timetableTitle });
+    this.props.onEditTimetable(this.props.timetable.id, timetableTitle);
   }
 
-  show(timetableId, timetableTitle) {
-    this.setState({
-      title: timetableTitle,
+  enterKey() {
+    const command = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+    if (window.event.keyCode === command[this.state.commandMatch]) {
+      if (this.state.commandMatch === 9) {
+        const newValue = {
+          title: '소프트웨어 개발의 원리와 실습',
+          classification: '전필',
+          department: '컴퓨터공학부',
+          degree_program: '학사',
+          academic_year: '3학년',
+          course_number: 'M1522.002400',
+          lecture_number: '001',
+          professor: '전병곤',
+          language: '영어',
+          min_credit: '4',
+          max_credit: '4',
+          min_score: '',
+          max_score: '',
+        };
+        this.setState({
+          realValues: newValue,
+          scrollLimit: 1500,
+          searchCourseCount: 50,
+          commandMatch: 0,
+        });
+        this.props.setCourses(0, 49, newValue);
+      } else {
+        this.setState((prevState) => ({ commandMatch: prevState.commandMatch + 1 }));
+      }
+    } else {
+      this.setState({ commandMatch: 0 });
+    }
+    if (window.event.keyCode === 13) {
+      this.search();
+    }
+  }
+
+  handleMouseEnter(course) {
+    const tempCourse = {
+      ...course, temp: true, color: '#d3d3d3', opacity: 0.5,
+    };
+
+    this.props.onPostCourseTemp(tempCourse);
+  }
+
+  handleMouseLeave(course) {
+    this.props.onDeleteCourseTemp(course);
+  }
+
+  searchOnChange(value, type) {
+    this.setState((prevState) => {
+      const newValue = prevState.searchValues;
+      newValue[type] = value;
+      return { searchValues: newValue };
     });
-    this.props.onGetTimetable(timetableId);
-    this.props.onPostMainTimetable(timetableId);
-    this.showCoursesInTimetable();
   }
 
   createEmptyTimetable() {
@@ -94,28 +191,52 @@ class TimetableManagement extends Component {
       .catch(() => {});
   }
 
-  showCoursesInSearch() {
-    this.setState({ showCourses: true });
+  show(timetableId, timetableTitle) {
+    this.setState({
+      title: timetableTitle,
+    });
+    this.props.onGetTimetable(timetableId);
+    this.props.onPostMainTimetable(timetableId);
+    this.showCoursesInTimetable();
   }
 
-  showCoursesInTimetable() {
-    this.setState({ showCourses: false });
+  postCourse(courseId) {
+    this.props.onPostCourse(this.props.timetable.id, courseId);
   }
 
-  search() {
-    this.props.onGetCourses(this.state.searchStrings);
-    this.showCoursesInSearch();
+  resetSearch() {
+    this.props.searchable();
+    if (this.state.searching) this.setState({ searching: false });
   }
 
-  editTimetableTitle(timetableTitle) {
-    this.setState({ title: timetableTitle });
-    this.props.onEditTimetable(this.props.timetable.id, timetableTitle);
+  deleteCourse(courseId) {
+    this.props.onDeleteCourse(courseId);
   }
 
-  enterKey() {
-    if (window.event.keyCode === 13) {
-      this.search();
+  deleteTimetable(timetableId) {
+    this.props.onDeleteTimetable(timetableId);
+  }
+
+  handleLogout() {
+    this.props.onLogout();
+  }
+
+  scrollHandler(scrollTop) {
+    const pageSize = 50;
+    const scrollSize = pageSize * 60;
+    if (this.state.showCourses && this.state.scrollLimit < scrollTop) {
+      this.setState((prevState) => ({ scrollLimit: prevState.scrollLimit + scrollSize }));
+      this.props.onGetCourses(
+        this.state.searchCourseCount,
+        this.state.searchCourseCount + pageSize - 1,
+        this.state.realValues,
+      );
+      this.setState((prevState) => ({ searchCourseCount: prevState.searchCourseCount + pageSize }));
     }
+  }
+
+  openCourseDetail(course) {
+    this.setState((prevState) => ({ ...prevState, selectedCourse: course }));
   }
 
   render() {
@@ -143,7 +264,6 @@ class TimetableManagement extends Component {
           </button>
         </li>
       ));
-
     const searchedCourseList = this.props.courses.map((course) => (
       <CourseElement
         key={course.id}
@@ -153,6 +273,8 @@ class TimetableManagement extends Component {
             key="1"
             type="button"
             className="btn btn-simple btn-sm"
+            onMouseEnter={() => this.handleMouseEnter(course)}
+            onMouseLeave={() => this.handleMouseLeave(course)}
             onClick={() => this.postCourse(course.id)}
           >
             <div className="oi oi-plus small" />
@@ -164,15 +286,31 @@ class TimetableManagement extends Component {
       <CourseElement
         key={course.id}
         course={course}
-        addon={[(
-          <button
-            key="1"
-            type="button"
-            className="btn btn-simple btn-sm"
-            onClick={() => this.deleteCourse(course.id)}
-          >
-            <div className="oi oi-minus small" />
-          </button>)]}
+        addon={[
+          (
+            <button
+              key="2"
+              type="button"
+              data-toggle="modal"
+              data-target="#edit-course-detail"
+              id="edit-course-button"
+              className="btn btn-simple btn-sm"
+              onClick={() => this.openCourseDetail(course)}
+            >
+              <div className="oi oi-pencil small" />
+            </button>
+          ),
+          (
+            <button
+              key="1"
+              type="button"
+              className="btn btn-simple btn-sm"
+              onClick={() => this.deleteCourse(course.id)}
+            >
+              <div className="oi oi-minus small" />
+            </button>
+          ),
+        ]}
       />
     ));
 
@@ -183,35 +321,29 @@ class TimetableManagement extends Component {
           <div className="col-6">
             <div className="dropdown">
               <button
-                className="btn dropdown-toggle"
+                className="btn btn-like-form"
                 type="button"
                 id="semester-select"
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
               >
-                {this.state.semester}
+                <b>{this.state.semester}</b>
+                <div className="oi oi-chevron-bottom pl-2" />
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdown-semester">
-                <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-1' })}>
-                  2019-1
-                </button>
-                <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-S' })}>
-                  2019-S
-                </button>
                 <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-2' })}>
                   2019-2
-                </button>
-                <button type="button" className="dropdown-item" onClick={() => this.setState({ semester: '2019-W' })}>
-                  2019-W
                 </button>
               </div>
             </div>
             <SearchBar
-              value={this.state.searchStrings}
-              onChange={(event) => this.setState({ searchStrings: event.target.value })}
+              value={this.state.searchValues}
+              onChange={(event, type) => this.searchOnChange(event, type)}
               onKeyDown={() => this.enterKey()}
               onSearch={() => this.search()}
+              searchScore={false}
+              searching={this.state.searching}
             />
 
             <ul className="nav nav-tabs nav-justified my-2" id="recommend-course-tab" role="tablist">
@@ -243,7 +375,13 @@ class TimetableManagement extends Component {
               </li>
             </ul>
 
-            <div className="tab-content overflow-y-auto mb-4" style={{ height: '420px' }}>
+            <div
+              className="tab-content overflow-y-auto mb-4"
+              style={{ height: '30rem' }}
+              onScroll={(event) => {
+                this.scrollHandler(event.target.scrollTop);
+              }}
+            >
               <div
                 className={`tab-pane ${this.state.showCourses ? 'active' : ''}`}
                 id="searched-tab"
@@ -263,7 +401,7 @@ class TimetableManagement extends Component {
                   type="button"
                   className="btn btn-simple"
                   data-toggle="modal"
-                  data-target="#custom-course"
+                  data-target="#custom-course-detail"
                   id="custom-course-button"
                 >
                   <div className="oi oi-plus small px-2" />
@@ -276,21 +414,23 @@ class TimetableManagement extends Component {
             <div className="dropdown d-flex justify-content-center">
               <input
                 type="text"
-                className="form-simple text-center w-50"
+                className="form-control text-center w-50 font-weight-bold rounded-no-right"
                 id="timetable-title-input"
                 value={this.state.title}
                 onChange={(event) => this.setState({ title: event.target.value })}
                 onBlur={() => this.props.onEditTimetable(this.props.timetable.id, this.state.title)}
               />
               <button
-                className="btn dropdown-toggle"
+                className="btn btn-like-form rounded-no-left"
                 type="button"
                 id="dropdown-timetable"
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
                 aria-labelledby="Timetable Dropdown"
-              />
+              >
+                <div className="oi oi-chevron-bottom" />
+              </button>
               <div
                 className="dropdown-menu dropdown-menu-right"
                 id="timetable-list"
@@ -309,12 +449,21 @@ class TimetableManagement extends Component {
             </div>
             <TimetableView
               id="timetable-table"
-              height={20}
+              height={24}
               courses={this.props.timetable.course}
+              editable
+              timeline
             />
-            <CustomCourse
-              id="custom-course"
+            <CourseDetail
+              id="custom-course-detail"
+              newCourse
+              editable
               timetableId={this.props.timetable.id}
+            />
+            <CourseDetail
+              id="edit-course-detail"
+              course={this.state.selectedCourse}
+              editable
             />
           </div>
         </div>
@@ -360,6 +509,10 @@ TimetableManagement.propTypes = {
     is_authenticated: PropTypes.bool,
     timetable_main: PropTypes.number,
   }).isRequired,
+  setCourses: PropTypes.func.isRequired,
+  onPostCourseTemp: PropTypes.func.isRequired,
+  onDeleteCourseTemp: PropTypes.func.isRequired,
+  searchable: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -367,20 +520,25 @@ const mapStateToProps = (state) => ({
   timetables: state.user.timetables,
   courses: state.user.courses,
   timetable: state.user.timetable,
+  searched: state.user.searched,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onGetUser: () => dispatch(actionCreators.getUser()),
   onLogout: () => dispatch(actionCreators.getSignout()),
-  onGetCourses: (searchStrings) => dispatch(actionCreators.getCourses(searchStrings)),
+  onGetCourses: (start, end, searchStrings) => dispatch(actionCreators.getCourses(start, end, searchStrings)),
   onGetTimetable: (timetableId) => dispatch(actionCreators.getTimetable(timetableId)),
   onPostTimetable: (timetableName, semester) => dispatch(actionCreators.postTimetable(timetableName, semester)),
   onPostCourse: (title, courseId) => dispatch(actionCreators.postCourse(title, courseId)),
   onGetTimetables: () => dispatch(actionCreators.getTimetables()),
   onPostMainTimetable: (id) => dispatch(actionCreators.postMainTimetable(id)),
-  onDeleteCourse: (timetableId, courseId) => dispatch(actionCreators.deleteCourse(timetableId, courseId)),
+  onDeleteCourse: (courseId) => dispatch(actionCreators.deleteCourse(courseId)),
   onDeleteTimetable: (timetableId) => dispatch(actionCreators.deleteTimetable(timetableId)),
   onEditTimetable: (timetableId, title) => dispatch(actionCreators.editTimetable(timetableId, title)),
+  setCourses: (start, end, searchStrings) => dispatch(actionCreators.setCourses(start, end, searchStrings)),
+  onPostCourseTemp: (tempCourse) => dispatch(actionCreators.postCourseTemp(tempCourse)),
+  onDeleteCourseTemp: (course) => dispatch(actionCreators.deleteCourseTemp(course)),
+  searchable: () => dispatch(actionCreators.setSearchable()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimetableManagement);

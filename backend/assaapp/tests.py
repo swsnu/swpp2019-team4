@@ -3,7 +3,7 @@ from django.test import TestCase, Client
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.forms.models import model_to_dict
-from assaapp.models import User, Timetable, Course, CustomCourse, CourseTime
+from assaapp.models import User, Timetable, Course, CustomCourse, CourseTime, Building
 from assaapp.tokens import ACCOUNT_ACTIVATION_TOKEN
 class AssaTestCase(TestCase):
     def setUp(self):
@@ -33,7 +33,7 @@ class AssaTestCase(TestCase):
             college="공과대학",
             department="컴퓨터공학부",
             degree_program="학사",
-            academic_year=3,
+            academic_year='3학년',
             course_number="M1522.002400",
             lecture_number="001",
             title="swpp",
@@ -66,6 +66,7 @@ class AssaTestCase(TestCase):
             'lecture_credit',
             'lab_credit',
             'lecture_type',
+            'time',
             'location',
             'professor',
             'quota',
@@ -134,7 +135,7 @@ class AssaTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         response = self.post('/api/signup/', json.dumps(content), content_type='application/json')
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(User.objects.get(email='paden@gmail.com').grade, 3)
+        self.assertEqual(User.objects.get(email='paden@gmail.com').grade, '3')
         # test for same email
         response = self.post('/api/signup/', json.dumps(content), content_type='application/json')
         self.assertEqual(response.status_code, 400)
@@ -332,7 +333,7 @@ class AssaTestCase(TestCase):
         response = self.post('/api/timetable/main/1')
         self.assertEqual(response.status_code, 201)
 
-    def test_timetable_main_id_not_allowed(self):
+    def test_maintt_id_not_allowed(self):
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
@@ -358,12 +359,16 @@ class AssaTestCase(TestCase):
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
+        Building(name='SNU', latitude=0, longitude=0).save()
         CourseTime(course=Course.objects.get(id=1),
-                   weekday=0, start_time="17:00", end_time="18:30").save()
+                   weekday=0, start_time="17:00", end_time="18:30",
+                   building=Building.objects.get(id=1), lectureroom="0").save()
         CourseTime(course=Course.objects.get(id=1),
-                   weekday=2, start_time="17:00", end_time="18:30").save()
+                   weekday=2, start_time="17:00", end_time="18:30",
+                   building=Building.objects.get(id=1), lectureroom="0").save()
         CourseTime(course=Course.objects.get(id=1),
-                   weekday=3, start_time="18:30", end_time="20:30").save()
+                   weekday=3, start_time="18:30", end_time="20:30",
+                   building=Building.objects.get(id=1), lectureroom="0").save()
         CustomCourse(timetable=Timetable.objects.get(id=1),
                      course=Course.objects.get(id=1), color="#2468AC").save()
         response = self.get('/api/timetable/')
@@ -399,12 +404,16 @@ class AssaTestCase(TestCase):
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
+        Building(name='SNU', latitude=0, longitude=0).save()
         CourseTime(course=Course.objects.get(id=1),
-                   weekday=0, start_time="17:00", end_time="18:30").save()
+                   weekday=0, start_time="17:00", end_time="18:30",
+                   building=Building.objects.get(id=1), lectureroom="0").save()
         CourseTime(course=Course.objects.get(id=1),
-                   weekday=2, start_time="17:00", end_time="18:30").save()
+                   weekday=2, start_time="17:00", end_time="18:30",
+                   building=Building.objects.get(id=1), lectureroom="0").save()
         CourseTime(course=Course.objects.get(id=1),
-                   weekday=3, start_time="18:30", end_time="20:30").save()
+                   weekday=3, start_time="18:30", end_time="20:30",
+                   building=Building.objects.get(id=1), lectureroom="0").save()
         CustomCourse(timetable=Timetable.objects.get(id=1),
                      course=Course.objects.get(id=1), color="#2468AC").save()
         response = self.get('/api/timetable/1/')
@@ -471,14 +480,14 @@ class AssaTestCase(TestCase):
         response = self.get('/api/timetable/')
         self.assertEqual(2, len(json.loads(response.content.decode())))
 
-    def test_delete_timetable_id_diff_user(self):
+    def test_delete_tid_diff_user(self):
         response = self.post('/api/signin/',
                              json.dumps({'email': 'young@naver.com', 'password': 'young'}),
                              content_type='application/json')
         response = self.delete('/api/timetable/1/')
         self.assertEqual(response.status_code, 403)
 
-    def test_timetable_id_course_not_allowed(self):
+    def test_tid_course_not_allowed(self):
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
@@ -489,7 +498,7 @@ class AssaTestCase(TestCase):
         response = self.get('/api/timetable/1/course/')
         self.assertEqual(response.status_code, 405)
 
-    def test_post_timetable_id_course(self):
+    def test_post_tid_course(self):
         response = self.post('/api/timetable/1/course/')
         self.assertEqual(response.status_code, 401)
         response = self.post('/api/signin/',
@@ -510,7 +519,7 @@ class AssaTestCase(TestCase):
         response = self.get('/api/timetable/')
         self.assertEqual(1, len(json.loads(response.content.decode())[0]['course']))
 
-    def test_post_timetable_id_custom_course(self):
+    def test_post_tid_custom_course(self):
         response = self.post('/api/timetable/1/customCourse/')
         self.assertEqual(response.status_code, 401)
         response = self.post('/api/signin/',
@@ -519,12 +528,15 @@ class AssaTestCase(TestCase):
         response = self.post('/api/timetable/1/customCourse/', json.dumps({}),
                              content_type='application/json')
         self.assertEqual(response.status_code, 400)
+        Building(id=0, name='SNU', latitude=0, longitude=0).save()
         response = self.post('/api/timetable/200/customCourse/',
                              json.dumps({'title':'swpp',
                                          'color':'#FFFFFF',
                                          'time':[{'week_day': 0,
                                                   'start_time': '18:00',
-                                                  'end_time': '21:00'}]}),
+                                                  'end_time': '21:00',
+                                                  'building': {'name':'SNU', 'detail':''},
+                                                  'detail': ''}]}),
                              content_type='application/json')
         self.assertEqual(response.status_code, 404)
         response = self.post('/api/timetable/1/customCourse/',
@@ -532,12 +544,14 @@ class AssaTestCase(TestCase):
                                          'color':'#FFFFFF',
                                          'time':[{'week_day': 0,
                                                   'start_time': '18:00',
-                                                  'end_time': '21:00'}]}),
+                                                  'end_time': '21:00',
+                                                  'building': {'name':'SNU', 'detail':''}}]}),
                              content_type='application/json')
+        self.assertEqual(response.status_code, 200)
         response = self.get('/api/timetable/')
         self.assertEqual(1, len(json.loads(response.content.decode())[0]['course']))
 
-    def test_timetable_id_custom_course_not_allowed(self):
+    def test_tid_custom_not_allowed(self):
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
@@ -548,10 +562,11 @@ class AssaTestCase(TestCase):
         response = self.delete('/api/timetable/1/customCourse/')
         self.assertEqual(response.status_code, 405)
 
-    def test_delete_timetable_id_custom_course_id(self):
+    def test_delete_tid_custom_id(self):
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
+        Building(id=0, name='SNU', latitude=0, longitude=0).save()
         response = self.post('/api/timetable/1/customCourse/',
                              json.dumps({'title':'swpp',
                                          'color':'#FFFFFF',
@@ -567,15 +582,15 @@ class AssaTestCase(TestCase):
         response = self.get('/api/timetable/')
         self.assertEqual(0, len(json.loads(response.content.decode())[0]['course']))
 
-    def test_timetable_id_custom_course_id_not_allowed(self):
+    def test_tid_customid_not_allowed(self):
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
-        response = self.get('/api/timetable/1/customCourse/1')
+        response = self.get('/api/timetable/1/customCourse/')
         self.assertEqual(response.status_code, 405)
-        response = self.post('/api/timetable/1/customCourse/1')
+        response = self.put('/api/timetable/1/customCourse/')
         self.assertEqual(response.status_code, 405)
-        response = self.put('/api/timetable/1/customCourse/1')
+        response = self.delete('/api/timetable/1/customCourse/')
         self.assertEqual(response.status_code, 405)
 
     def test_course_not_allowed(self):
@@ -590,27 +605,41 @@ class AssaTestCase(TestCase):
         self.assertEqual(response.status_code, 405)
 
     def test_get_course(self):
-        response = self.get('/api/course/?title=asdf')
+        response = self.get('/api/course/?start=0&end=49&title=asdf&classification='
+                            +'&department=&degree_program=&academic_year='
+                            +'&course_number=&lecture_number=&professor=&language='
+                            +'&min_credit=&max_credit=&min_score=&max_score=')
         self.assertEqual(response.status_code, 401)
         response = self.post('/api/signin/',
                              json.dumps({'email': 'cubec@gmail.com', 'password': 'cubec'}),
                              content_type='application/json')
-        response = self.get('/api/course/?title=asdf')
+        response = self.get('/api/course/?start=0&end=49&title=asdf&classification='
+                            +'&department=&degree_program=&academic_year=&course_number='
+                            +'&lecture_number=&professor=&language=&min_credit=&max_credit='
+                            +'&min_score=&max_score=')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(0, len(json.loads(response.content.decode())))
-        response = self.get('/api/course/?title=swpp')
+        response = self.get('/api/course/?start=0&end=49&title=swpp&classification='
+                            +'&department=&degree_program=&academic_year=&course_number='
+                            +'&lecture_number=&professor=&language=&min_credit=&max_credit='
+                            +'&min_score=&max_score=')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(1, len(json.loads(response.content.decode())))
-        response = self.get('/api/course/?semester=swp')
-        self.assertEqual(response.status_code, 400)
+        response = self.get('/api/course/?start=1&end=49&title=swpp&classification='
+                            +'&department=&degree_program=&academic_year=&course_number='
+                            +'&lecture_number=&professor=&language=&min_credit=&max_credit='
+                            +'&min_score=&max_score=')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(0, len(json.loads(response.content.decode())))
 
     def test_make_course(self):
         req_data = {
             "id":2, "semester":"2019-2", "classification":"전필", "college":"공과대학",
-            "department":"컴퓨터공학부", "degree_program":"학사", "academic_year":3,
+            "department":"컴퓨터공학부", "degree_program":"학사", "academic_year":'3학년',
             "course_number":"M1522.002400", "lecture_number":"001",
             "title":"swpp", "subtitle":"", "credit":4, "lecture_credit":2,
-            "lab_credit":1, "lecture_type":"", "location":"301동", "professor":"전병곤",
+            "lab_credit":1, "lecture_type":"", 'time': '월(5:00~6:15)',
+            "location":"301동", "professor":"전병곤",
             "quota":"80", "remark":"소개원실 재미있어요", "language":"영어", "status":"설강"
         }
         course = self.make_course(req_data, None)

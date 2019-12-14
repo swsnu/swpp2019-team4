@@ -1,0 +1,28 @@
+.RecommendResult .recommended-timetable-space { 
+  position: relative;
+  cursor: pointer;
+  outline: none !important;
+  box-shadow: none;
+  transition-duration: .3s;
+  color: #21252900;
+  border-radius: 0.25rem;
+}
+
+.RecommendResult .recommended-timetable-space div {
+  cursor: pointer !important;
+  outline: none !important;
+  box-shadow: none;
+}
+
+.RecommendResult .recommended-timetable-space:hover {
+  background-color: #DDDDDD;
+  color: #FFFFFF;
+}
+
+.RecommendResult .timetable-one-index {
+  position: absolute;
+  z-index: 30;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
