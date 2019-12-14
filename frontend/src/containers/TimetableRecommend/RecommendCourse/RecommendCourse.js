@@ -221,11 +221,12 @@ class RecommendCourse extends Component {
               </div>
             </form>
           </div>
-            {score !== '-' &&
-            <button type="button" className="col-1 btn btn-simple btn-sm" onClick={() => this.handleDelete(course.id)}> 
-              <div className="oi oi-delete"/>
+          {score !== '-'
+            && (
+            <button type="button" className="col-1 btn btn-simple btn-sm" onClick={() => this.handleDelete(course.id)}>
+              <div className="oi oi-delete" />
             </button>
-            }
+            )}
         </div>
         <hr className="my-2" />
       </div>
@@ -246,7 +247,7 @@ class RecommendCourse extends Component {
         return { searchValuesunrated: prevState.searchValuesunrated };
       });
     }
-    if (type === "sort") {
+    if (type === 'sort') {
       this.search();
     }
   }
@@ -261,7 +262,7 @@ class RecommendCourse extends Component {
           realValuesrated: prevState.searchValuesrated,
           ratedScrollLimit: 1500,
           ratedCourseCount: 50,
-        }
+        };
       });
     } else if (this.state.tabview === 1) {
       this.setState((prevState) => {
@@ -271,7 +272,7 @@ class RecommendCourse extends Component {
           realValuesunrated: prevState.searchValuesunrated,
           unratedScrollLimit: 1500,
           unratedCourseCount: 50,
-        }
+        };
       });
     }
   }
@@ -285,18 +286,14 @@ class RecommendCourse extends Component {
   render() {
     const ratedSortTitle = ['평점 오름차순', '평점 내림차순', '가나다순'];
     const unratedSortTitle = ['추천 순', '가나다순'];
-    const ratedSortArray = ratedSortTitle.map((title, index) => {
-      return {
-        title: title,
-        value: this.state.searchValuesrated.sort === index,
-      }
-    });
-    const unratedSortArray = unratedSortTitle.map((title, index) => {
-      return {
-        title: title,
-        value: this.state.searchValuesunrated.sort === index,
-      }
-    });
+    const ratedSortArray = ratedSortTitle.map((title, index) => ({
+      title,
+      value: this.state.searchValuesrated.sort === index,
+    }));
+    const unratedSortArray = unratedSortTitle.map((title, index) => ({
+      title,
+      value: this.state.searchValuesunrated.sort === index,
+    }));
 
     const ratedview = [];
     const unratedview = [];
@@ -348,8 +345,9 @@ class RecommendCourse extends Component {
           onChange={(event, type) => this.searchOnChange(event, type)}
           onKeyDown={() => this.enterKey()}
           onSearch={() => this.search()}
-          searchScore 
-          searching={this.state.searching} />
+          searchScore
+          searching={this.state.searching}
+        />
         <div
           className="tab-content overflow-y-auto"
           id="myTabContent"
@@ -377,6 +375,7 @@ RecommendCourse.propTypes = {
   getRatedCourse: PropTypes.func.isRequired,
   getUnratedCourse: PropTypes.func.isRequired,
   onChangeslider: PropTypes.func.isRequired,
+  onChangeDelete: PropTypes.func.isRequired,
   ratedCourse: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number.isRequired,
     professor: PropTypes.string.isRequired,

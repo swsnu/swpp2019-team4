@@ -183,24 +183,25 @@ const reducer = (state = initialState, action) => {
         ...state, rated_course: ratedCourse, unrated_course: unratedCourse,
       };
     }
-    case actionTypes.DELETE_COURSEPREF_TEMP:
+    case actionTypes.DELETE_COURSEPREF_TEMP: {
       const ratedCourse = state.rated_course.map(
         ({ id, score, ...item }) => (
           id === action.coursepref.id ? {
-            id, score: "-", ...item,
+            id, score: '-', ...item,
           } : { id, score, ...item }
         ),
       );
       const unratedCourse = state.unrated_course.map(
         ({ id, score, ...item }) => (
           id === action.coursepref.id ? {
-            id, score: "-", ...item,
+            id, score: '-', ...item,
           } : { id, score, ...item }
         ),
       );
       return {
         ...state, rated_course: ratedCourse, unrated_course: unratedCourse,
       };
+    }
     case actionTypes.SET_SEARCHABLE:
       return { ...state, searched: false };
     case actionTypes.SET_RATED_SEARCHABLE:

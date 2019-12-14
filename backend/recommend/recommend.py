@@ -1,7 +1,7 @@
 from random import sample
-from assaapp.models import Course, CourseTime, Building
-from recommend.models import CoursePref, TimePref, RecommendTimetable, RecommendCourse
 from math import radians, cos, sqrt
+from assaapp.models import Course, CourseTime
+from recommend.models import CoursePref, TimePref, RecommendTimetable, RecommendCourse
 
 # const def begin
 
@@ -57,7 +57,7 @@ class TimesliceSet:
     def get_list(self):
         return self._timeslice_list
 
-    def get_time_list (self):
+    def get_time_list(self):
         return [timeslice['index'] for timeslice in self._timeslice_list]
 
     def overlap(self, otherset):
@@ -86,7 +86,7 @@ class TimesliceSet:
             i += 1
         return TimesliceSet(new_list)
 
-    def valid (self):
+    def valid(self):
         my_list = self.get_list()
 
         # checks if it satisfies weekday limit
@@ -158,7 +158,7 @@ class ConvertedCourseData:
             if (course_time['start_time'] <= cur_start_time <= course_time['end_time'] and
                     course_time['week_day'] == cur_weekday):
                 return {'lat':course_time['building']['lat'],
-                        'lng':course_time['building']['lng']} 
+                        'lng':course_time['building']['lng']}
         return None
 
     def get_timeslice_list(self):
@@ -246,14 +246,14 @@ def backtrack(terminate_cond,
                     if len(candidates) > MAX_CANDIDATES:
                         candidates.pop()
                 backtrack(terminate_cond,
-                        append_cond,
-                        user,
-                        candidates,
-                        my_score,
-                        my_courses,
-                        new_timeslice_set,
-                        all_courses,
-                        index + 1)
+                          append_cond,
+                          user,
+                          candidates,
+                          my_score,
+                          my_courses,
+                          new_timeslice_set,
+                          all_courses,
+                          index + 1)
             my_courses.pop()
             my_score -= cur_score
     backtrack(terminate_cond,
@@ -273,7 +273,9 @@ def run_recommendation(user):
 
     all_course_data = list(map(ConvertedCourseData, get_target_courses(user)))
     all_course_data.sort(key=
-                         lambda x: (x.get_timeslice_set().get_time_list(), user_data.course_score(x)),
+                         lambda x: (
+                             x.get_timeslice_set().get_time_list(),
+                             user_data.course_score(x)),
                          reverse=True)
 
     unique_course_data = []
