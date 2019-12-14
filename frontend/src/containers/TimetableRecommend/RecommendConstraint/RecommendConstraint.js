@@ -157,7 +157,7 @@ class RecommendConstraint extends Component {
           </div>
         </div>
         <div className="form-group row mx-0 my-2">
-          <label className="col-4 text-right col-form-label" htmlFor="credit-min-input"><b>학점 범위</b></label>
+          <label className="col-4 text-right col-form-label" htmlFor="credit-min-input"><b>총 학점 범위</b></label>
           <div className="col-3">
             <input
               type="number"
