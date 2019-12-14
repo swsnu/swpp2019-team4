@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, username, password=None, grade='18', department=''):
+    def create_user(self, email, username, password=None, grade=2018, department=''):
         if email is None or re.compile(r'^[^@\s]+@[^.@\s]+[.][^@\s]+$').match(email) is None:
             raise ValueError('User must have an valid email address')
 
@@ -22,7 +22,7 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
-    def create_superuser(self, email, username, password, grade='18', department=''):
+    def create_superuser(self, email, username, password, grade=2018, department=''):
         user = self.create_user(
             email,
             password=password,
@@ -38,7 +38,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser):
     email = models.EmailField(verbose_name='email', max_length=255, unique=True)
     username = models.CharField(max_length=32)
-    grade = models.CharField(max_length=32)
+    grade = models.IntegerField(default=2018)
     department = models.CharField(max_length=64)
     is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
