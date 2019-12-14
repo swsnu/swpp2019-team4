@@ -24,7 +24,7 @@ class RecommendConstraint extends Component {
     this.props.onGetConstraints()
       .then(() => {
         const consts = this.props.constraints;
-        this.setState({
+        const newState = {
           consts,
           credit_min_valid: (consts.credit_min >= 1
                             && consts.credit_min <= 21),
@@ -39,7 +39,15 @@ class RecommendConstraint extends Component {
                         && consts.major_min <= consts.credit_max),
           days_per_week_valid: (consts.days_per_week >= 1
                                 && consts.days_per_week <= 6),
-        });
+        };
+        this.setState(newState);
+        this.props.handleValid(newState.credit_min_valid
+                         && newState.credit_max_valid
+                         && newState.credit_valid
+                         && newState.major_min_valid
+                         && newState.major_max_valid
+                         && newState.major_valid
+                         && newState.days_per_week_valid);
       });
   }
 
