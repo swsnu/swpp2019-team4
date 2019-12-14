@@ -471,14 +471,14 @@ def api_constraints(request):
             credit_max = body['credit_max']
             major_min = body['major_min']
             major_max = body['major_max']
-        except (KeyError, JSONDecodeError):
+            user.days_per_week = days_per_week
+            user.credit_min = credit_min
+            user.credit_max = credit_max
+            user.major_min = major_min
+            user.major_max = major_max
+            user.save()
+        except (KeyError, ValueError, JSONDecodeError):
             return HttpResponseBadRequest()
-        user.days_per_week = days_per_week
-        user.credit_min = credit_min
-        user.credit_max = credit_max
-        user.major_min = major_min
-        user.major_max = major_max
-        user.save()
         return HttpResponse(status=200)
     return HttpResponseNotAllowed(['GET', 'PUT'])
 
