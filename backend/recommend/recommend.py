@@ -230,21 +230,24 @@ def backtrack(terminate_cond,
         if new_timeslice_set.valid():
             my_courses.append(cur_course)
             my_score += cur_score
-            if not terminate_cond(my_courses):
-                if append_cond(my_courses):
-                    candidates.append((my_score/len(my_courses), my_courses.copy()))
-                    prv_score = 0
-                    cur_score = candidates[-1][0]
-                    for i in reversed(range(len(candidates)-1)):
-                        prv_score = cur_score
-                        cur_score = candidates[i][0]
-                        if(prv_score > cur_score):
-                            candidates[i], candidates[i+1] = candidates[i+1], candidates[i]
-                            cur_score = prv_score
-                        else:
-                            break
-                    if len(candidates) > MAX_CANDIDATES:
-                        candidates.pop()
+
+            is_terminated = terminate_cond(my_courses)
+            is_appended = not is_terminated and append_cond(my_courses)
+            if is_appended:
+                candidates.append((my_score/len(my_courses), my_courses.copy()))
+                prv_score = 0
+                cur_score = candidates[-1][0]
+                for i in reversed(range(len(candidates)-1)):
+                    prv_score = cur_score
+                    cur_score = candidates[i][0]
+                    if(prv_score > cur_score):
+                        candidates[i], candidates[i+1] = candidates[i+1], candidates[i]
+                        cur_score = prv_score
+                    else:
+                        break
+                if len(candidates) > MAX_CANDIDATES:
+                    candidates.pop()
+            if not is_terminated:
                 backtrack(terminate_cond,
                           append_cond,
                           user,

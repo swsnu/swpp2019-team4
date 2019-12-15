@@ -181,8 +181,8 @@ class RecommendTestCase(TestCase):
                  score=2).save()
         response = self.get('/api/recommend/timepref/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(2, len(json.loads(response.content.decode())))
-        self.assertEqual(0, json.loads(response.content.decode())[0]['score'])
+        self.assertEqual(26, len(json.loads(response.content.decode())))
+        self.assertEqual(1, json.loads(response.content.decode())[9][0])
 
     def test_put_timepref(self):
         response = self.put('/api/recommend/timepref/')
@@ -191,7 +191,7 @@ class RecommendTestCase(TestCase):
                              json.dumps({'email': 'koo@snu.ac.kr', 'password': 'koo'}),
                              content_type='application/json')
         response = self.put('/api/recommend/timepref/',
-                            json.dumps({'score':-1, 'weekday':0, 'start_time':"12:00"}),
+                            json.dumps({'score': 3, 'weekday': 0, 'start_time':"12:00"}),
                             content_type='application/json')
         self.assertEqual(response.status_code, 400)
         response = self.put('/api/recommend/timepref/',
@@ -208,8 +208,8 @@ class RecommendTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         response = self.get('/api/recommend/timepref/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(156, len(json.loads(response.content.decode())))
-        self.assertEqual(1, json.loads(response.content.decode())[0]['score'])
+        self.assertEqual(26, len(json.loads(response.content.decode())))
+        self.assertEqual(1, json.loads(response.content.decode())[8][0])
         table = []
         table_row = [2, 2, 2, 2, 2, 2]
         for _ in range(26):
@@ -220,8 +220,8 @@ class RecommendTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         response = self.get('/api/recommend/timepref/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(156, len(json.loads(response.content.decode())))
-        self.assertEqual(2, json.loads(response.content.decode())[0]['score'])
+        self.assertEqual(26, len(json.loads(response.content.decode())))
+        self.assertEqual(2, json.loads(response.content.decode())[8][0])
 
     def test_get_timepref_id(self):
         response = self.get('/api/recommend/timepref/1/')
@@ -292,14 +292,14 @@ class RecommendTestCase(TestCase):
                             '&department=&degree_program=&academic_year='+
                             '&course_number=&lecture_number=&professor='+
                             '&language=&min_credit=&max_credit=&min_score='+
-                            '&max_score=')
+                            '&max_score=&sort=1')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(2, len(json.loads(response.content.decode())))
         response = self.get('/api/recommend/coursepref/rated/?start=0&end=0'+
                             '&title=swpp&classification=&department='+
                             '&degree_program=&academic_year=&course_number='+
                             '&lecture_number=&professor=&language=&min_credit='+
-                            '&max_credit=&min_score=&max_score=')
+                            '&max_credit=&min_score=&max_score=&sort=1')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(1, len(json.loads(response.content.decode())))
 
@@ -327,14 +327,14 @@ class RecommendTestCase(TestCase):
                             '&end=49&title=swpp&classification=&department='+
                             '&degree_program=&academic_year=&course_number='+
                             '&lecture_number=&professor=&language=&min_credit='+
-                            '&max_credit=&min_score=&max_score=')
+                            '&max_credit=&min_score=&max_score=&sort=0')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(8, len(json.loads(response.content.decode())))
         response = self.get('/api/recommend/coursepref/unrated/?start=0'+
                             '&end=0&title=swpp&classification=&department='+
                             '&degree_program=&academic_year=&course_number='+
                             '&lecture_number=&professor=&language=&min_credit='+
-                            '&max_credit=&min_score=&max_score=')
+                            '&max_credit=&min_score=&max_score=&sort=0')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(1, len(json.loads(response.content.decode())))
 
@@ -344,8 +344,6 @@ class RecommendTestCase(TestCase):
         response = self.post('/api/signin/',
                              json.dumps({'email': 'koo@snu.ac.kr', 'password': 'koo'}),
                              content_type='application/json')
-        response = self.get('/api/recommend/constraints/')
-        self.assertEqual(response.status_code, 405)
         response = self.post('/api/recommend/constraints/')
         self.assertEqual(response.status_code, 405)
         response = self.delete('/api/recommend/constraints/')
@@ -371,18 +369,12 @@ class RecommendTestCase(TestCase):
                             content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
-    def test_recommend(self):
+    def test_get_recommend(self):
         response = self.get('/api/recommend/recommend/')
         self.assertEqual(response.status_code, 401)
         response = self.post('/api/signin/',
                              json.dumps({'email': 'koo@snu.ac.kr', 'password': 'koo'}),
                              content_type='application/json')
-        response = self.post('/api/recommend/recommend/')
-        self.assertEqual(response.status_code, 405)
-        response = self.put('/api/recommend/recommend/')
-        self.assertEqual(response.status_code, 405)
-        response = self.delete('/api/recommend/recommend/')
-        self.assertEqual(response.status_code, 405)
         response = self.get('/api/recommend/recommend/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(0, len(json.loads(response.content.decode())))
