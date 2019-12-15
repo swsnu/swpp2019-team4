@@ -142,7 +142,7 @@ class TimetableRecommend extends Component {
     ];
     for (let i = 0; i < progressLength; i += 1) {
       progressList.push(
-        <tr className={progressStatus[i]}>
+        <tr className={progressStatus[i]} key={i * 2}>
           <td><div className={`oi oi-${symbolList[i]}`} /></td>
           <td>{titleList[i]}</td>
           <td>
@@ -161,7 +161,7 @@ class TimetableRecommend extends Component {
       );
       if (i !== progressLength - 1) {
         progressList.push(
-          <tr className={this.props.index > i ? 'progress-past' : 'progress-future'}>
+          <tr className={this.props.index > i ? 'progress-past' : 'progress-future'} key={i * 2 + 1}>
             <td><div className="bar" /></td>
           </tr>,
         );

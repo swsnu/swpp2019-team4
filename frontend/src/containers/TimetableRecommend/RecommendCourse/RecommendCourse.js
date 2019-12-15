@@ -381,22 +381,22 @@ RecommendCourse.propTypes = {
     professor: PropTypes.string.isRequired,
     credit: PropTypes.number.isRequired,
     location: PropTypes.string.isRequired,
-    time: PropTypes.arrayOf({
+    time: PropTypes.arrayOf(PropTypes.shape({
       week_day: PropTypes.number.isRequired,
       start_time: PropTypes.number.isRequired,
       end_time: PropTypes.number.isRequired,
-    }),
+    })),
   })).isRequired,
   unratedCourse: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number.isRequired,
     professor: PropTypes.string.isRequired,
     credit: PropTypes.number.isRequired,
     location: PropTypes.string.isRequired,
-    time: PropTypes.arrayOf({
+    time: PropTypes.arrayOf(PropTypes.shape({
       week_day: PropTypes.number.isRequired,
       start_time: PropTypes.number.isRequired,
       end_time: PropTypes.number.isRequired,
-    }),
+    })),
   })).isRequired,
   searchable: PropTypes.func.isRequired,
 };

@@ -76,7 +76,7 @@ describe('signup test', () => {
     component.find('#password-confirm-input').simulate('change', { target: { value: '54325432' } });
     component.find('#username-input').simulate('change', { target: { value: '소개원실' } });
     component.find('#department-input').simulate('change', { target: { value: '컴퓨터공학부' } });
-    component.find('#grade-input').simulate('change', { target: { value: '1' } });
+    component.find('#grade-input').simulate('change', { target: { value: '2018' } });
     component.find('#confirm-signup-button').simulate('click');
     expect(spyPostSignup).toHaveBeenCalledTimes(1);
   });

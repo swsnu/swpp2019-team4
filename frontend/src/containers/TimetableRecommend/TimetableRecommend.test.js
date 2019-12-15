@@ -12,31 +12,31 @@ import * as actionCreators from '../../store/actions/user';
 const stubStateZero = {
   user: { is_authenticated: true, timetable_main: 0 },
   recommended_timetables: [],
-  last_page: 0,
+  lastPage: 0,
 };
 
 const stubStateOne = {
   user: { is_authenticated: true, timetable_main: 0 },
   recommended_timetables: [],
-  last_page: 1,
+  lastPage: 1,
 };
 
 const stubStateTwo = {
   user: { is_authenticated: true, timetable_main: 0 },
   recommended_timetables: [],
-  last_page: 2,
+  lastPage: 2,
 };
 
 const stubStateThree = {
   user: { is_authenticated: true, timetable_main: 0 },
   recommended_timetables: [],
-  last_page: 3,
+  lastPage: 3,
 };
 
 const stubStateFalse = {
   user: { is_authenticated: false, timetable_main: 0 },
   recommended_timetables: [],
-  last_page: 0,
+  lastPage: 0,
 };
 
 function window(state) {
@@ -52,6 +52,12 @@ function window(state) {
     </Provider>
   );
 }
+
+jest.mock('reactstrap', () => ({
+  UncontrolledPopover: () => (<div />),
+  PopoverHeader: () => (<div />),
+  PopoverBody: () => (<div />),
+}));
 
 jest.mock('../../components/TopBar/TopBar', () => jest.fn((props) => (
   <div className="TopBar">
@@ -101,7 +107,6 @@ describe('<TimetableRecommend />', () => {
     component.find('#valid-button').simulate('click');
     expect(component.find('.Recommend_0').length).toBe(1);
     component.find('#recommend-next-button').at(0).simulate('click');
-    expect(component.find('.small').length).toBe(4);
     expect(component.find('.bar').length).toBe(3);
   });
 
@@ -113,7 +118,6 @@ describe('<TimetableRecommend />', () => {
     expect(component.find('#recommend-next-button').length).toBe(1);
     expect(component.find('.Recommend_1').length).toBe(1);
     component.find('#recommend-next-button').at(0).simulate('click');
-    expect(component.find('.small').length).toBe(4);
     expect(component.find('.bar').length).toBe(3);
   });
 
@@ -126,7 +130,6 @@ describe('<TimetableRecommend />', () => {
     expect(component.find('.Recommend_2').length).toBe(1);
     component.find('#recommend-back-button').at(0).simulate('click');
     component.find('#recommend-next-button').at(0).simulate('click');
-    expect(component.find('.small').length).toBe(4);
     expect(component.find('.bar').length).toBe(3);
   });
 
@@ -138,7 +141,6 @@ describe('<TimetableRecommend />', () => {
     expect(component.find('#recommend-next-button').length).toBe(1);
     expect(component.find('.Recommend_3').length).toBe(1);
     component.find('#recommend-next-button').at(0).simulate('click');
-    expect(component.find('.small').length).toBe(4);
     expect(component.find('.bar').length).toBe(3);
   });
 

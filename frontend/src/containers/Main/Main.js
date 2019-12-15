@@ -65,6 +65,10 @@ class Main extends Component {
   }
 }
 
+Main.defaultProps = {
+  timetables: [],
+};
+
 Main.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func,
@@ -79,7 +83,7 @@ Main.propTypes = {
   storedFriend: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   timetables: PropTypes.arrayOf(PropTypes.shape({
     course: PropTypes.arrayOf(PropTypes.shape({})),
-  })).isRequired,
+  })),
   onGetFriend: PropTypes.func.isRequired,
 };
 
