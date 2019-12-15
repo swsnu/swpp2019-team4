@@ -215,6 +215,7 @@ class RecommendCourse extends Component {
                   max="10"
                   id={`course-score-form-${course.id}`}
                   value={score}
+                  onMouseDown={(event) => this.props.onChangeslider(course.id, event.target.value)}
                   onChange={(event) => this.props.onChangeslider(course.id, event.target.value)}
                   onMouseUp={(event) => this.props.onPutCoursePref(course.id, event.target.value)}
                 />
