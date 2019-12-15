@@ -124,7 +124,8 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'assaapp.User'
 
 EMAIL_USE_TLS = True
-SENDGRID_API_KEY = "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"
+SENDGRID_API_KEY = ""
+# Have to fill in api key when deploy it
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
