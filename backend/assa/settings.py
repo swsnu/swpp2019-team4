@@ -25,7 +25,7 @@ SECRET_KEY = 'cmhcqr&aliulk4md5u52&a8fsi3zt%3%c*#a8-qa^wx*p=zfm_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['www.snu-assa.site', '52.141.20.241', '127.0.0.1']
 
 
 # Application definition
@@ -77,8 +77,12 @@ WSGI_APPLICATION = 'assa.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME' : 'assa_django',
+        'USER' : 'root',
+        'PASSWORD' : 'assaassa1234',
+        'HOST' : 'localhost',
+        'PORT' : '',
     }
 }
 
@@ -120,6 +124,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 AUTH_USER_MODEL = 'assaapp.User'
 
