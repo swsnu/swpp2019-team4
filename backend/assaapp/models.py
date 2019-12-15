@@ -17,7 +17,7 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
 
-        timetable_main = Timetable.objects.create(title='My timetable', user=user)
+        timetable_main = Timetable.objects.create(title='새 시간표', user=user)
         user.timetable_main = timetable_main
         user.save()
         return user

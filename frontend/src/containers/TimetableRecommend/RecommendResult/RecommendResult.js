@@ -10,6 +10,8 @@ class RecommendResult extends Component {
     super(props);
     this.state = {
       index: -1,
+      saving: false,
+      saving_message: '',
       calculating: true,
     };
   }
@@ -26,20 +28,25 @@ class RecommendResult extends Component {
   }
 
   onClickSave() {
+    this.setState({ saving: true, saving_message: '' });
     if (this.state.index >= 0) {
-      this.props.onPostTimetable(`추천 시간표 ${this.state.index + 1}`, '')
+      const now = new Date();
+      const string = now.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+
+      this.props.onPostTimetable(`추천 시간표 ${this.state.index + 1} - ${string}`, '')
         .then((res) => {
           const timetableId = res.timetable.id;
           const courses = this.props.timetable[this.state.index].course;
           for (let i = 0; i < courses.length; i += 1) {
             this.props.onPostCourse(timetableId, courses[i].id);
           }
+          this.setState({ saving: false, saving_message: '저장이 완료되었습니다.' });
         });
     }
   }
 
   changeview(index) {
-    this.setState((prevState) => ({ ...prevState, index }));
+    this.setState((prevState) => ({ ...prevState, index, saving_message: '' }));
   }
 
   render() {
@@ -72,6 +79,10 @@ class RecommendResult extends Component {
         </div>,
       );
     }
+    let numberOfCredits = 0;
+    if (this.state.index >= 0) {
+      this.props.timetable[this.state.index].course.forEach((course) => { numberOfCredits += course.credit; });
+    }
     return (
       <div className="RecommendResult row h-100 overflow-hidden">
         <div className="recommended-result-list col-3 overflow-auto" style={{ height: 'calc(100% - 3rem)' }}>
@@ -80,20 +91,25 @@ class RecommendResult extends Component {
         <div className="timetable-result-space col-9 overflow-auto" style={{ height: 'calc(100% - 3rem)' }}>
           <div className="float-left mt-2 ml-2">
             <b>
-              {this.state.index >= 0 && (`추천 시간표 ${this.state.index + 1}`)}
+              {this.state.index >= 0 && (`추천 시간표 ${this.state.index + 1} (${numberOfCredits}학점)`)}
               {' '}
             </b>
             {' '}
           </div>
-          <button
-            type="button"
-            className="btn btn-outline-dark float-right mb-2"
-            id="save-button"
-            onClick={() => this.onClickSave()}
-            disabled={this.state.index < 0}
-          >
-            시간표 저장
-          </button>
+          <div className="float-right d-flex">
+            <div className="mr-2 mt-2">
+              {this.state.saving_message}
+            </div>
+            <button
+              type="button"
+              className="btn btn-outline-dark mb-2"
+              id="save-button"
+              onClick={() => this.onClickSave()}
+              disabled={this.state.index < 0 || this.state.saving}
+            >
+              시간표 저장
+            </button>
+          </div>
           <div className="timetable-result">
             <TimetableView
               id="timetable-resultview"
