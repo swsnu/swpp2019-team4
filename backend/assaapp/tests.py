@@ -320,7 +320,7 @@ class AssaTestCase(TestCase):
 
     def test_timetable(self):
         timetable = Timetable.objects.get(id=2)
-        self.assertEqual(str(timetable), 'My timetable')
+        self.assertEqual(str(timetable), '새 시간표')
 
     def test_post_timetable_main_id(self):
         response = self.post('/api/signin/',
