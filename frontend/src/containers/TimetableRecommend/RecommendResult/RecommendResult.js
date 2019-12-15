@@ -81,7 +81,7 @@ class RecommendResult extends Component {
     }
     let numberOfCredits = 0;
     if (this.state.index >= 0) {
-      this.props.timetable[this.state.index].course.forEach((course) => {numberOfCredits += course.credit});
+      this.props.timetable[this.state.index].course.forEach((course) => { numberOfCredits += course.credit; });
     }
     return (
       <div className="RecommendResult row h-100 overflow-hidden">
