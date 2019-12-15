@@ -71,7 +71,7 @@ function window(state) {
 }
 jest.mock('../../../components/SearchBar/SearchBar', () => jest.fn((props) => (
   <div className="SearchBar">
-    <button type="button" id="toggle-button" onClick={() => props.onToggle()}>x</button>
+    <button type="button" id="toggle-button">x</button>
     <button
       type="button"
       id="change-button"
@@ -111,15 +111,16 @@ describe('<RecommendCourse />', () => {
       .mockImplementation(() => () => Promise.resolve(null));
     const spyGetUnrated = jest.spyOn(actionCreators, 'getUnratedCourse')
       .mockImplementation(() => () => Promise.resolve(null));
+    /*
     const spyPutCoursepref = jest.spyOn(actionCreators, 'putCoursepref')
       .mockImplementation(() => () => Promise.resolve(null));
+    */
     const component = mount(window(stubState));
     expect(component.find('#rated-tab-clicker').length).toBe(1);
     expect(spySetRated).toBeCalledTimes(1);
     expect(component.find('#unrated-tab-clicker').length).toBe(1);
     component.find('#unrated-tab-clicker').simulate('click');
-    expect(spyPutCoursepref).toBeCalledTimes(1);
-    expect(spySetUnrated).toBeCalledTimes(2);
+    expect(spySetUnrated).toBeCalledTimes(1);
     expect(component.find('.form-control-range').length).toBe(2);
     component.find('.form-control-range').at(1).simulate('change', { target: { value: 7 } });
     expect(component.find('.SearchBar').length).toBe(1);
@@ -144,15 +145,16 @@ describe('<RecommendCourse />', () => {
       .mockImplementation(() => () => Promise.resolve(null));
     const spyGetUnrated = jest.spyOn(actionCreators, 'getUnratedCourse')
       .mockImplementation(() => () => Promise.resolve(null));
+    /*
     const spyPutCoursepref = jest.spyOn(actionCreators, 'putCoursepref')
       .mockImplementation(() => () => Promise.resolve(null));
+    */
     const component = mount(window(stubStateTrue));
     expect(component.find('#rated-tab-clicker').length).toBe(1);
     expect(spySetRated).toBeCalledTimes(1);
     expect(component.find('#unrated-tab-clicker').length).toBe(1);
     component.find('#unrated-tab-clicker').simulate('click');
-    expect(spyPutCoursepref).toBeCalledTimes(1);
-    expect(spySetUnrated).toBeCalledTimes(2);
+    expect(spySetUnrated).toBeCalledTimes(1);
     expect(component.find('.form-control-range').length).toBe(1);
     component.find('.form-control-range').simulate('change', { target: { value: 7 } });
     expect(component.find('.SearchBar').length).toBe(1);

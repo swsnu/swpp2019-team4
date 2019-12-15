@@ -54,7 +54,7 @@ export const getCourses = (start, end, searchValues) => (dispatch) => axios.get(
 
 export const setCourses = (start, end, searchValues) => (dispatch) => {
   dispatch({ type: actionTypes.RESET_COURSES });
-  axios.get(
+  return axios.get(
     `/api/course/?start=${start}&end=${end}&title=${searchValues.title}`
   + `&classification=${searchValues.classification}&department=${searchValues.department}`
   + `&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}`
@@ -206,7 +206,7 @@ export const getUnratedCourse = (start, end, searchValues) => (dispatch) => axio
 
 export const setRatedCourse = (start, end, searchValues) => (dispatch) => {
   dispatch({ type: actionTypes.RESET_RECOMMEND_COURSES });
-  axios.get(
+  return axios.get(
     `/api/recommend/coursepref/rated/?start=${start}&end=${end}&title=${searchValues.title}`
   + `&classification=${searchValues.classification}&department=${searchValues.department}`
   + `&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}`
@@ -222,7 +222,7 @@ export const setRatedCourse = (start, end, searchValues) => (dispatch) => {
 
 export const setUnratedCourse = (start, end, searchValues) => (dispatch) => {
   dispatch({ type: actionTypes.RESET_RECOMMEND_COURSES });
-  axios.get(
+  return axios.get(
     `/api/recommend/coursepref/unrated/?start=${start}&end=${end}&title=${searchValues.title}`
   + `&classification=${searchValues.classification}&department=${searchValues.department}`
   + `&degree_program=${searchValues.degree_program}&academic_year=${searchValues.academic_year}`

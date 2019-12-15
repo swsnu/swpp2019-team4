@@ -140,12 +140,16 @@ pplication
   }
 }
 
+Login.defaultProps = {
+  lastPage: 0,
+};
+
 Login.propTypes = {
   onGetUser: PropTypes.func.isRequired,
   onLogin: PropTypes.func.isRequired,
   onGetLastPage: PropTypes.func.isRequired,
   onPutLastPage: PropTypes.func.isRequired,
-  lastPage: PropTypes.number.isRequired,
+  lastPage: PropTypes.number,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,

@@ -174,6 +174,7 @@ describe('user action test', () => {
         done();
       });
   });
+
   it('should call getTimetableFriend that can be failed', (done) => {
     axios.get = jest.fn(() => new Promise((resolve, reject) => {
       reject(new Error(''));
@@ -184,6 +185,7 @@ describe('user action test', () => {
         done();
       });
   });
+
   it('should call getCourses', (done) => {
     axios.get = jest.fn(() => new Promise((resolve) => {
       resolve({ status: 204, data: null });
@@ -674,6 +676,7 @@ describe('user action test', () => {
       max_credit: 4,
       min_score: 0,
       max_score: 10,
+      sort: 1,
     };
     store.dispatch(actionCreators.setRatedCourse(0, 49, searchValues))
       .then(() => {
@@ -700,6 +703,7 @@ describe('user action test', () => {
       max_credit: 4,
       min_score: 0,
       max_score: 10,
+      sort: 1,
     };
     store.dispatch(actionCreators.setRatedCourse(0, 49, searchValues))
       .then(() => {
@@ -725,6 +729,7 @@ describe('user action test', () => {
       max_credit: 4,
       min_score: 0,
       max_score: 10,
+      sort: 0,
     };
     store.dispatch(actionCreators.setUnratedCourse(0, 49, searchValues))
       .then(() => {
@@ -751,6 +756,7 @@ describe('user action test', () => {
       max_credit: 4,
       min_score: 0,
       max_score: 10,
+      sort: 0,
     };
     store.dispatch(actionCreators.setUnratedCourse(0, 49, searchValues))
       .then(() => {
@@ -775,7 +781,7 @@ describe('user action test', () => {
       reject(new Error(''));
     }));
     store.dispatch(actionCreators.putCoursepref())
-      .then(() => {
+      .catch(() => {
         expect(axios.put).toHaveBeenCalledTimes(1);
         done();
       });
@@ -793,7 +799,7 @@ describe('user action test', () => {
     store.dispatch(actionCreators.searchBuildings('SNU'))
       .then(() => {
         expect(axios.get).toHaveBeenCalledTimes(1);
-        expect(reducer.mock.results[0].value.building_list).toStrictEqual(
+        expect(reducer.mock.results[0].value.buildingList).toStrictEqual(
           [{
             name: 'SNU', lat: 0, lng: 0, detail: '',
           }],
@@ -917,7 +923,7 @@ describe('user action test', () => {
     store.dispatch(actionCreators.putLastPage([]))
       .then(() => {
         expect(axios.put).toHaveBeenCalledTimes(1);
-        expect(reducer.mock.results[0].value.last_page).toStrictEqual([]);
+        expect(reducer.mock.results[0].value.lastPage).toStrictEqual([]);
         done();
       });
   });
@@ -937,10 +943,10 @@ describe('user action test', () => {
     axios.get = jest.fn(() => new Promise((resolve) => {
       resolve({ status: 201, data: [] });
     }));
-    store.dispatch(actionCreators.getLastPage([]))
+    store.dispatch(actionCreators.getLastPage())
       .then(() => {
         expect(axios.get).toHaveBeenCalledTimes(1);
-        expect(reducer.mock.results[0].value.last_page).toStrictEqual([]);
+        expect(reducer.mock.results[0].value.lastPage).toStrictEqual([]);
         done();
       });
   });
@@ -949,7 +955,7 @@ describe('user action test', () => {
     axios.get = jest.fn(() => new Promise((resolve, reject) => {
       reject(new Error(''));
     }));
-    store.dispatch(actionCreators.getLastPage([]))
+    store.dispatch(actionCreators.getLastPage())
       .then(() => {
         expect(axios.get).toHaveBeenCalledTimes(1);
         done();
@@ -1096,7 +1102,7 @@ describe('user action test', () => {
     }))
       .then(() => {
         expect(axios.get).toHaveBeenCalledTimes(1);
-        expect(reducer.mock.results[0].value.course_list).toStrictEqual([]);
+        expect(reducer.mock.results[1].value.course_list).toStrictEqual([]);
         done();
       });
   });

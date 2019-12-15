@@ -16,16 +16,28 @@ const dbCourse = {
     week_day: 0,
     start_time: 660,
     end_time: 750,
+    building: {
+      name: '302',
+      detail: '208',
+    },
   },
   {
     week_day: 2,
     start_time: 660,
     end_time: 750,
+    building: {
+      name: '302',
+      detail: '208',
+    },
   },
   {
     week_day: 4,
     start_time: 840,
     end_time: 960,
+    building: {
+      name: '302',
+      detail: '208',
+    },
   },
   ],
 };
@@ -68,7 +80,7 @@ const stubState = {
       }],
     }],
   },
-  building_list: [],
+  buildingList: [],
 };
 
 function window(course) {
@@ -83,6 +95,10 @@ function window(course) {
     </Provider>
   );
 }
+
+jest.mock('./CourseMap/CourseMap', () => jest.fn(() => (
+  <div className="CourseMap" />
+)));
 
 describe('<CourseDetail />', () => {
   it('CourseDetail render test', () => {
