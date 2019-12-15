@@ -215,8 +215,8 @@ class RecommendCourse extends Component {
                   max="10"
                   id={`course-score-form-${course.id}`}
                   value={score}
-                  onMouseDown={(event) => this.props.onChangeslider(course.id, event.target.value)}
-                  onChange={(event) => this.props.onChangeslider(course.id, event.target.value)}
+                  onMouseDown={(event) => this.props.onChangeSlider(course.id, event.target.value)}
+                  onChange={(event) => this.props.onChangeSlider(course.id, event.target.value)}
                   onMouseUp={(event) => this.props.onPutCoursePref(course.id, event.target.value)}
                 />
               </div>
@@ -224,7 +224,12 @@ class RecommendCourse extends Component {
           </div>
           {score !== '-'
             && (
-            <button type="button" className="col-1 btn btn-simple btn-sm" onClick={() => this.handleDelete(course.id)}>
+            <button
+              type="button"
+              className="col-1 btn btn-simple btn-sm"
+              id={`course-delete-form-${course.id}`}
+              onClick={() => this.handleDelete(course.id)}
+            >
               <div className="oi oi-delete" />
             </button>
             )}
@@ -278,8 +283,8 @@ class RecommendCourse extends Component {
     }
   }
 
-  enterKey() {
-    if (window.event.keyCode === 13) {
+  enterKey(event) {
+    if (event.keyCode === 13) {
       this.search();
     }
   }
@@ -344,7 +349,7 @@ class RecommendCourse extends Component {
           value={this.state.tabview === 0 ? this.state.searchValuesrated : this.state.searchValuesunrated}
           sortValue={this.state.tabview === 0 ? ratedSortArray : unratedSortArray}
           onChange={(event, type) => this.searchOnChange(event, type)}
-          onKeyDown={() => this.enterKey()}
+          onKeyDown={(event) => this.enterKey(event)}
           onSearch={() => this.search()}
           searchScore
           searching={this.state.searching}
@@ -375,7 +380,7 @@ RecommendCourse.propTypes = {
   onDeleteCoursePref: PropTypes.func.isRequired,
   getRatedCourse: PropTypes.func.isRequired,
   getUnratedCourse: PropTypes.func.isRequired,
-  onChangeslider: PropTypes.func.isRequired,
+  onChangeSlider: PropTypes.func.isRequired,
   onChangeDelete: PropTypes.func.isRequired,
   ratedCourse: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number.isRequired,
@@ -414,7 +419,7 @@ const mapDispatchToProps = (dispatch) => ({
   getUnratedCourse: (start, end, searchValues) => dispatch(actionCreators.getUnratedCourse(start, end, searchValues)),
   setRatedCourse: (start, end, searchValues) => dispatch(actionCreators.setRatedCourse(start, end, searchValues)),
   setUnratedCourse: (start, end, searchValues) => dispatch(actionCreators.setUnratedCourse(start, end, searchValues)),
-  onChangeslider: (id, value) => dispatch(actionCreators.putCourseprefTemp(id, value)),
+  onChangeSlider: (id, value) => dispatch(actionCreators.putCourseprefTemp(id, value)),
   onChangeDelete: (id, value) => dispatch(actionCreators.deleteCourseprefTemp(id, value)),
   searchable: () => { dispatch(actionCreators.setRatedSearchable()); dispatch(actionCreators.setUnratedSearchable()); },
   onPutCoursePref: (id, value) => dispatch(actionCreators.putCoursepref(id, value)),
