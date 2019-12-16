@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'assa.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME' : 'assa_django',
+        'NAME' : 'django_test',
         'USER' : 'root',
         'PASSWORD' : 'assaassa1234',
         'HOST' : 'localhost',
