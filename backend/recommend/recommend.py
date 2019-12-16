@@ -31,7 +31,7 @@ class Buildings:
         dlng = radians(pos_1['lng'] - pos_2['lng'])
         dlng *= cos(radians(pos_1['lat']) + dlat / 2)
         return 6378.1 * sqrt(dlat * dlat + dlng * dlng)
-        
+
 class Timeslice:
     def __init__(self, buildings):
         self.timeslice = []
@@ -274,7 +274,7 @@ class TabuSearch:
         return sorted(new_solution)
     
     def get_results(self):
-        print(self.results)
+        # print(self.results)
         results_iid = [result['solution'] for result in self.results]
         results_course_id = [[self.iid_to_course_id[iid] for iid in result_iid] for result_iid in results_iid]
         return results_course_id
