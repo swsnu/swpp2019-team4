@@ -388,3 +388,10 @@ class RecommendTestCase(TestCase):
                    course=Course.objects.get(id=4), score=10).save()
         response = self.get('/api/recommend/recommend/')
         self.assertEqual(response.status_code, 200)
+
+    def test_post_recommend(self):
+        response = self.post('/api/signin/',
+                             json.dumps({'email': 'koo@snu.ac.kr', 'password': 'koo'}),
+                             content_type='application/json')
+        response = self.post('/api/recommend/recommend/')
+        self.assertEqual(1, len(json.loads(response.content.decode())))

@@ -18,13 +18,13 @@ class RecommendResult extends Component {
 
   componentDidMount() {
     if (this.props.timetable.length === 0) {
-      this.props.onGetRecommend()
-        .then((res) => {
-          if (res.timetables.length === 0) {
-            this.props.onPostRecommend();
-          }
-        });
+      this.props.onGetRecommend();
     }
+    this.intervalId = setInterval(() => this.loadTimetables(), 3000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalId);
   }
 
   onClickSave() {
@@ -42,6 +42,12 @@ class RecommendResult extends Component {
           }
           this.setState({ saving: false, saving_message: '저장이 완료되었습니다.' });
         });
+    }
+  }
+
+  loadTimetables() {
+    if (this.props.timetable.length === 0) {
+      this.props.onGetRecommend();
     }
   }
 
@@ -124,14 +130,17 @@ class RecommendResult extends Component {
   }
 }
 
+RecommendResult.defaultProps = {
+  timetable: [],
+};
+
 RecommendResult.propTypes = {
   timetable: PropTypes.arrayOf(PropTypes.shape({
     course: PropTypes.arrayOf(PropTypes.shape({})),
-  })).isRequired,
+  })),
   onGetRecommend: PropTypes.func.isRequired,
   onPostCourse: PropTypes.func.isRequired,
   onPostTimetable: PropTypes.func.isRequired,
-  onPostRecommend: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -140,7 +149,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   onGetRecommend: () => dispatch(actionCreators.getRecommend()),
-  onPostRecommend: () => dispatch(actionCreators.postRecommend()),
   onPostTimetable: (title, semester) => dispatch(actionCreators.postTimetable(title, semester)),
   onPostCourse: (tid, cid) => dispatch(actionCreators.postCourse(tid, cid)),
 });
