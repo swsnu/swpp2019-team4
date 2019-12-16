@@ -1,5 +1,4 @@
 import random
-from queue import Queue
 from math import radians, cos, sqrt
 from assaapp.models import Course, CourseTime, Building
 from recommend.models import CoursePref, TimePref, RecommendTimetable, RecommendCourse
@@ -249,6 +248,10 @@ class TabuSearch:
         return (-penalty, score)
     
     def get_neighbor(self, solution):
+        # edge case
+        if self.iid_length is 0:
+            return []
+
         increment = False
         if len(solution) is 0:
             increment = True
