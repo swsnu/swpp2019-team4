@@ -33,6 +33,9 @@ class TimetableRecommend extends Component {
   }
 
   movePage(offset) {
+    if (this.props.index + offset === 3) {
+      this.props.onPostRecommend();
+    }
     this.props.onPutLastPage(this.props.index + offset);
   }
 
@@ -242,6 +245,7 @@ TimetableRecommend.propTypes = {
   onGetUser: PropTypes.func.isRequired,
   onGetLastPage: PropTypes.func.isRequired,
   onPutLastPage: PropTypes.func.isRequired,
+  onPostRecommend: PropTypes.func.isRequired,
   onDeleteRecommend: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
   storedUser: PropTypes.shape({
@@ -274,6 +278,7 @@ const mapDispatchToProps = (dispatch) => ({
   onGetLastPage: () => dispatch(actionCreators.getLastPage()),
   onPutLastPage: (lastPage) => dispatch(actionCreators.putLastPage(lastPage)),
   onPutConstraints: (consts) => dispatch(actionCreators.putConstraints(consts)),
+  onPostRecommend: () => dispatch(actionCreators.postRecommend()),
   onDeleteRecommend: () => dispatch(actionCreators.deleteRecommend()),
 });
 
