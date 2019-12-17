@@ -88,6 +88,7 @@ class CourseMap extends Component {
             <input
               className="form-control form-control-sm flex-grow-1"
               style={{ width: '0' }}
+              id="coursemap-building-input"
               placeholder="건물"
               value={this.props.building ? this.props.building.name : ''}
               onKeyDown={(event) => this.enterKey(event)}
@@ -102,6 +103,7 @@ class CourseMap extends Component {
             <button
               type="button"
               className="btn btn-dark btn-sm"
+              id="building-search-button"
               style={{ minWidth: '4rem' }}
               onClick={() => { this.searchBuilding(); }}
             >
@@ -111,6 +113,7 @@ class CourseMap extends Component {
           <div className="col-5 px-1">
             <input
               className="form-control form-control-sm"
+              id="detail-position-input"
               placeholder="세부 장소"
               value={this.props.building ? this.props.building.detail : ''}
               onChange={(event) => {

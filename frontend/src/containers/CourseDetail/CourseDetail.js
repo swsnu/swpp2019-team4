@@ -424,6 +424,7 @@ class CourseDetail extends Component {
                     <button
                       type="button"
                       className="btn btn-outline-dark"
+                      id="coursedetail-close-button"
                       onClick={() => setTimeout(() => this.setToProps(this.props), 500)}
                       data-dismiss="modal"
                     >
@@ -437,6 +438,7 @@ class CourseDetail extends Component {
                     <button
                       type="button"
                       className="btn btn-outline-dark"
+                      id="coursedetail-close-button"
                       onClick={() => setTimeout(() => this.setToProps(this.props), 500)}
                       data-dismiss="modal"
                     >
