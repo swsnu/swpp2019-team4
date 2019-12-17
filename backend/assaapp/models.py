@@ -154,7 +154,7 @@ class Timetable(models.Model):
 
 class Building(models.Model):
     name = models.CharField(max_length=64, default='default')
-    repre_name = models.CharField(max_length=16, default='default')
+    repre_name = models.CharField(max_length=32, default='default')
     latitude = models.DecimalField(max_digits=16, decimal_places=8)
     longitude = models.DecimalField(max_digits=16, decimal_places=8)
 

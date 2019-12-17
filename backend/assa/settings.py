@@ -129,8 +129,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 AUTH_USER_MODEL = 'assaapp.User'
 
 EMAIL_USE_TLS = True
-SENDGRID_API_KEY = ""
 # Have to fill in api key when deploy it
+SENDGRID_API_KEY = "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"
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'apikey'
 EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
