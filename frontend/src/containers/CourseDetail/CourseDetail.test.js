@@ -6,7 +6,6 @@ import { ConnectedRouter } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
 import { getMockStore } from '../../test-utils/mocks';
 import CourseDetail from './CourseDetail';
-import { checkPropTypes } from 'prop-types';
 
 const dbCourse = {
   title: '자료구조',
@@ -90,7 +89,7 @@ function window(course, editable) {
     <Provider store={mockStore}>
       <ConnectedRouter history={createBrowserHistory()}>
         <Switch>
-          <Route path="/" exact render={() => <CourseDetail id="" course={course} editable={editable}/>} />
+          <Route path="/" exact render={() => <CourseDetail id="" course={course} editable={editable} />} />
         </Switch>
       </ConnectedRouter>
     </Provider>
@@ -98,16 +97,24 @@ function window(course, editable) {
 }
 
 jest.mock('./CourseMap/CourseMap', () => jest.fn((props) => (
-  <div className="CourseMap" >
-    <button type="button" id="coursemap-button" onClick={()=>{props.onChange({lat:1,lng:1,name:'hello',detail:'world'})}}>
+  <div className="CourseMap">
+    <button
+      type="button"
+      id="coursemap-button"
+      onClick={() => {
+        props.onChange({
+          lat: 1, lng: 1, name: 'hello', detail: 'world',
+        });
+      }}
+    >
       x
     </button>
   </div>
 )));
 
 jest.mock('./Datetime/Datetime', () => jest.fn((props) => (
-  <div className="Datetime" >
-    <button type="button" id="datetime-button" onClick={()=>{props.onChange("21:23")}}>
+  <div className="Datetime">
+    <button type="button" id="datetime-button" onClick={() => { props.onChange('21:23'); }}>
       x
     </button>
   </div>

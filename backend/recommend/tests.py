@@ -386,13 +386,33 @@ class RecommendTestCase(TestCase):
                    course=Course.objects.get(id=3), score=9).save()
         CoursePref(user=User.objects.get(id=1),
                    course=Course.objects.get(id=4), score=10).save()
-        Building(name='A',repre_name='A',latitude=37,longitude=127).save()
-        Building(name='B',repre_name='B',latitude=37.0000001,longitude=127.0000001).save()
-        Building(name='C',repre_name='C',latitude=37.01,longitude=127.01).save()
-        CourseTime(course=Course.objects.get(id=1),building=Building.objects.get(id=1),lectureroom='home',weekday=0,start_time="12:00",end_time="13:00").save()
-        CourseTime(course=Course.objects.get(id=2),building=Building.objects.get(id=2),lectureroom='home',weekday=0,start_time="13:00",end_time="14:00").save()
-        CourseTime(course=Course.objects.get(id=3),building=Building.objects.get(id=3),lectureroom='home',weekday=0,start_time="14:00",end_time="15:00").save()
-        CourseTime(course=Course.objects.get(id=4),building=Building.objects.get(id=3),lectureroom='home',weekday=0,start_time="14:00",end_time="15:00").save()
+        Building(name='A', repre_name='A', latitude=37, longitude=127).save()
+        Building(name='B', repre_name='B', latitude=37.0000001, longitude=127.0000001).save()
+        Building(name='C', repre_name='C', latitude=37.01, longitude=127.01).save()
+        CourseTime(course=Course.objects.get(id=1),
+                   building=Building.objects.get(id=1),
+                   lectureroom='home',
+                   weekday=0,
+                   start_time="12:00",
+                   end_time="13:00").save()
+        CourseTime(course=Course.objects.get(id=2),
+                   building=Building.objects.get(id=2),
+                   lectureroom='home',
+                   weekday=0,
+                   start_time="13:00",
+                   end_time="14:00").save()
+        CourseTime(course=Course.objects.get(id=3),
+                   building=Building.objects.get(id=3),
+                   lectureroom='home',
+                   weekday=0,
+                   start_time="14:00",
+                   end_time="15:00").save()
+        CourseTime(course=Course.objects.get(id=4),
+                   building=Building.objects.get(id=3),
+                   lectureroom='home',
+                   weekday=0,
+                   start_time="14:00",
+                   end_time="15:00").save()
         response = self.get('/api/recommend/recommend/')
         self.assertEqual(response.status_code, 200)
 
@@ -410,13 +430,33 @@ class RecommendTestCase(TestCase):
                    course=Course.objects.get(id=3), score=9).save()
         CoursePref(user=User.objects.get(id=1),
                    course=Course.objects.get(id=4), score=10).save()
-        Building(name='A',repre_name='A',latitude=37,longitude=127).save()
-        Building(name='B',repre_name='B',latitude=37.0000001,longitude=127.0000001).save()
-        Building(name='C',repre_name='C',latitude=37.01,longitude=127.01).save()
-        CourseTime(course=Course.objects.get(id=1),building=Building.objects.get(id=1),lectureroom='home',weekday=0,start_time="12:00",end_time="13:00").save()
-        CourseTime(course=Course.objects.get(id=2),building=Building.objects.get(id=2),lectureroom='home',weekday=0,start_time="13:00",end_time="14:00").save()
-        CourseTime(course=Course.objects.get(id=3),building=Building.objects.get(id=3),lectureroom='home',weekday=0,start_time="14:00",end_time="15:00").save()
-        CourseTime(course=Course.objects.get(id=4),building=Building.objects.get(id=3),lectureroom='home',weekday=0,start_time="14:00",end_time="15:00").save()
+        Building(name='A', repre_name='A', latitude=37, longitude=127).save()
+        Building(name='B', repre_name='B', latitude=37.0000001, longitude=127.0000001).save()
+        Building(name='C', repre_name='C', latitude=37.01, longitude=127.01).save()
+        CourseTime(course=Course.objects.get(id=1),
+                   building=Building.objects.get(id=1),
+                   lectureroom='home',
+                   weekday=0,
+                   start_time="12:00",
+                   end_time="13:00").save()
+        CourseTime(course=Course.objects.get(id=2),
+                   building=Building.objects.get(id=2),
+                   lectureroom='home',
+                   weekday=0,
+                   start_time="13:00",
+                   end_time="14:00").save()
+        CourseTime(course=Course.objects.get(id=3),
+                   building=Building.objects.get(id=3),
+                   lectureroom='home',
+                   weekday=0,
+                   start_time="14:00",
+                   end_time="15:00").save()
+        CourseTime(course=Course.objects.get(id=4),
+                   building=Building.objects.get(id=3),
+                   lectureroom='home',
+                   weekday=0,
+                   start_time="14:00",
+                   end_time="15:00").save()
         response = self.post('/api/recommend/recommend/')
         response = self.get('/api/recommend/recommend/')
         self.assertEqual(response.status_code, 200)
