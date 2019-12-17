@@ -260,36 +260,6 @@ def auth_func(func):
     return wrapper_function
 
 @auth_func
-def api_coursepref(request):
-    if request.method == 'GET':
-        all_pref = [model_to_dict(score_data)
-                    for score_data in CoursePref.objects.filter(user=request.user)]
-        return JsonResponse(all_pref, safe=False)
-    if request.method == 'PUT':
-        try:
-            body = request.body.decode()
-            courses = json.loads(body)['courses']
-            for course in courses:
-                course_id = course['id']
-                score = course['score']
-                target_course = Course.objects.get(id=course_id)
-                try:
-                    score_data = CoursePref.objects.get(user=request.user, course=target_course)
-                    score_data.score = score
-                    score_data.save()
-                except CoursePref.DoesNotExist:
-                    new_score = CoursePref(user=request.user, course=target_course, score=score)
-                    new_score.save()
-            return HttpResponse(status=200)
-        except (KeyError, JSONDecodeError):
-            return HttpResponseBadRequest()
-        except Course.DoesNotExist:
-            return HttpResponseBadRequest()
-        except CoursePref.DoesNotExist:
-            new_score = CoursePref(user=request.user, course=course, score=score)
-    return HttpResponseNotAllowed(['GET', 'PUT'])
-
-@auth_func
 def api_coursepref_rated(request):
     if request.method == 'GET':
         cf_score_result = cf_score(request.user)
@@ -425,23 +395,6 @@ def api_timepref(request):
                 new_score.save()
         return HttpResponse(status=200)
     return HttpResponseNotAllowed(['GET', 'PUT'])
-
-@auth_func
-def api_timepref_id(request, timepref_id):
-    if request.method == 'GET':
-        try:
-            time_data = TimePref.objects.get(id=timepref_id, user=request.user)
-        except TimePref.DoesNotExist:
-            return JsonResponse({}, status=404, safe=False)
-        return JsonResponse(model_to_dict(time_data), safe=False)
-    if request.method == 'DELETE':
-        try:
-            time_data = TimePref.objects.get(user=request.user, id=timepref_id)
-        except TimePref.DoesNotExist:
-            return HttpResponseNotFound()
-        time_data.delete()
-        return HttpResponse(status=200)
-    return HttpResponseNotAllowed(['GET', 'POST', 'DELETE'])
 
 @auth_func
 def api_recommend(request):

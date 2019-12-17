@@ -42,35 +42,6 @@ class RecommendTestCase(TestCase):
         csrftoken = response.cookies['csrftoken'].value
         return self.client.put(*args, **kwargs, HTTP_X_CSRFTOKEN=csrftoken)
 
-    def test_get_cf(self):
-        response = self.get('/api/recommend/coursepref/')
-        self.assertEqual(response.status_code, 401)
-        response = self.post('/api/signin/',
-                             json.dumps({'email': 'koo@snu.ac.kr', 'password': 'koo'}),
-                             content_type='application/json')
-        response = self.post('/api/recommend/coursepref/')
-        self.assertEqual(response.status_code, 405)
-        CoursePref(user=User.objects.get(id=4),
-                   course=Course.objects.get(id=2), score=0).save()
-        CoursePref(user=User.objects.get(id=3),
-                   course=Course.objects.get(id=2), score=0).save()
-        CoursePref(user=User.objects.get(id=2),
-                   course=Course.objects.get(id=1), score=10).save()
-        CoursePref(user=User.objects.get(id=2),
-                   course=Course.objects.get(id=2), score=10).save()
-        CoursePref(user=User.objects.get(id=2),
-                   course=Course.objects.get(id=3), score=0).save()
-        CoursePref(user=User.objects.get(id=2),
-                   course=Course.objects.get(id=4), score=0).save()
-        CoursePref(user=User.objects.get(id=1),
-                   course=Course.objects.get(id=2), score=10).save()
-        CoursePref(user=User.objects.get(id=1),
-                   course=Course.objects.get(id=5), score=0).save()
-        response = self.get('/api/recommend/coursepref/')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(2, len(json.loads(response.content.decode())))
-        self.assertEqual(10, json.loads(response.content.decode())[0]['score'])
-
     def test_get_coursepref(self):
         response = self.get('/api/recommend/coursepref/1/')
         self.assertEqual(response.status_code, 401)
@@ -86,27 +57,6 @@ class RecommendTestCase(TestCase):
         self.assertEqual(5, json.loads(response.content.decode())['score'])
         response = self.get('/api/recommend/coursepref/2/')
         self.assertEqual(response.status_code, 404)
-
-    def test_put_coursepref(self):
-        response = self.put('/api/recommend/coursepref/')
-        self.assertEqual(response.status_code, 401)
-        response = self.post('/api/signin/',
-                             json.dumps({'email': 'koo@snu.ac.kr', 'password': 'koo'}),
-                             content_type='application/json')
-        response = self.put('/api/recommend/coursepref/', json.dumps({}),
-                            content_type='application/json')
-        self.assertEqual(response.status_code, 400)
-        response = self.put('/api/recommend/coursepref/',
-                            json.dumps({'courses':[{'id':1, 'score':5}, {'id':2, 'score':7}]}),
-                            content_type='application/json')
-        self.assertEqual(response.status_code, 200)
-        response = self.put('/api/recommend/coursepref/',
-                            json.dumps({'courses':[{'id':1, 'score':7}, {'id':2, 'score':7}]}),
-                            content_type='application/json')
-        self.assertEqual(response.status_code, 200)
-        response = self.get('/api/recommend/coursepref/1/')
-        expected = {'id':1, 'user':1, 'course':1, 'score':7}
-        self.assertEqual(expected, json.loads(response.content.decode()))
 
     def test_put_coursepref_id(self):
         response = self.put('/api/recommend/coursepref/1/')
@@ -222,50 +172,6 @@ class RecommendTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(26, len(json.loads(response.content.decode())))
         self.assertEqual(2, json.loads(response.content.decode())[8][0])
-
-    def test_get_timepref_id(self):
-        response = self.get('/api/recommend/timepref/1/')
-        self.assertEqual(response.status_code, 401)
-        response = self.post('/api/signin/',
-                             json.dumps({'email': 'koo@snu.ac.kr', 'password': 'koo'}),
-                             content_type='application/json')
-        response = self.post('/api/recommend/timepref/1/')
-        self.assertEqual(response.status_code, 405)
-        TimePref(user=User.objects.get(id=1),
-                 weekday=1,
-                 start_time="13:00",
-                 score=3).save()
-        TimePref(user=User.objects.get(id=2),
-                 weekday=0,
-                 start_time="12:00",
-                 score=0).save()
-        response = self.get('/api/recommend/timepref/2/')
-        self.assertEqual(response.status_code, 404)
-        response = self.get('/api/recommend/timepref/1/')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(3, json.loads(response.content.decode())['score'])
-
-    def test_delete_timepref(self):
-        response = self.delete('/api/recommend/timepref/1/')
-        self.assertEqual(response.status_code, 401)
-        response = self.post('/api/signin/',
-                             json.dumps({'email': 'koo@snu.ac.kr', 'password': 'koo'}),
-                             content_type='application/json')
-        response = self.delete('/api/recommend/timepref/1/', json.dumps({}),
-                               content_type='application/json')
-        self.assertEqual(response.status_code, 404)
-        TimePref(user=User.objects.get(id=1),
-                 weekday=5,
-                 start_time="12:00",
-                 score=2).save()
-        response = self.delete('/api/recommend/timepref/99/',
-                               content_type='application/json')
-        self.assertEqual(response.status_code, 404)
-        response = self.delete('/api/recommend/timepref/1/',
-                               content_type='application/json')
-        self.assertEqual(response.status_code, 200)
-        response = self.get('/api/recommend/timepref/1/')
-        self.assertEqual(response.status_code, 404)
 
     def test_get_coursepref_rated(self):
         response = self.get('/api/recommend/coursepref/rated/')
