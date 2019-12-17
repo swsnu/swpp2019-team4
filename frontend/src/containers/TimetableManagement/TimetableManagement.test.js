@@ -9,7 +9,6 @@ import TimetableManagement from './TimetableManagement';
 
 import * as actionCreators from '../../store/actions/user';
 
-jest.mock('../TimetableRecommend/TimetableRecommend');
 const stubState = {
   user: {
     is_authenticated: true,
@@ -48,7 +47,7 @@ const stubState = {
       }],
     }],
   },
-  building_list: [],
+  buildingList: [],
 };
 const stubStateFalse = {
   user: {
@@ -92,6 +91,10 @@ jest.mock('../../components/SearchBar/SearchBar', () => jest.fn((props) => (
     />
     <button type="button" onClick={props.onSearch}> Search </button>
   </div>
+)));
+
+jest.mock('../CourseDetail/CourseDetail', () => jest.fn(() => (
+  <div className="CourseDetail" />
 )));
 
 describe('TimetableManagement test', () => {

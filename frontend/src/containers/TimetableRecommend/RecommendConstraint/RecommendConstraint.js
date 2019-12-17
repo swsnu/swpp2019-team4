@@ -35,7 +35,7 @@ class RecommendConstraint extends Component {
                             && consts.major_min <= 21),
           major_max_valid: (consts.major_max >= 0
                             && consts.major_max <= 21),
-          major_valid: (consts.major_min <= consts.major_max 
+          major_valid: (consts.major_min <= consts.major_max
                         && consts.major_min <= consts.credit_max),
           days_per_week_valid: (consts.days_per_week >= 1
                                 && consts.days_per_week <= 6),
@@ -99,7 +99,9 @@ class RecommendConstraint extends Component {
                              && prevState.major_min_valid
                              && prevState.major_max_valid);
       this.props.onPutConstraints(newConsts);
-      return { consts: newConsts, credit_valid: valid, credit_max_valid: maxValid, major_valid: majorValid };
+      return {
+        consts: newConsts, credit_valid: valid, credit_max_valid: maxValid, major_valid: majorValid,
+      };
     });
   }
 

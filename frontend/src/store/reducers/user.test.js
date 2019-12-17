@@ -337,18 +337,18 @@ describe('Reducer', () => {
   it('should call search buildings and toggle auto when buildings length is 1', () => {
     const newState = reducer(stubState, {
       type: actionTypes.SEARCH_BUILDINGS,
-      building_list: [{}],
+      buildingList: [{}],
     });
-    expect(newState.building_list).toStrictEqual([{}]);
+    expect(newState.buildingList).toStrictEqual([{}]);
     expect(newState.search_auto_complete).toBe(true);
   });
 
   it('should call search buildings and not toggle auto when buildings length is not 1', () => {
     const newState = reducer(stubState, {
       type: actionTypes.SEARCH_BUILDINGS,
-      building_list: [{}, {}],
+      buildingList: [{}, {}],
     });
-    expect(newState.building_list).toStrictEqual([{}, {}]);
+    expect(newState.buildingList).toStrictEqual([{}, {}]);
     expect(newState.search_auto_complete).toBe(false);
   });
 
@@ -373,20 +373,7 @@ describe('Reducer', () => {
     expect(newState.unratedSearched).toBe(false);
   });
 
-  it('should call put coursepref temp and if courespref is not exists then extend changed courses', () => {
-    const stubState2 = {
-      ...stubState, rated_course: [{ id: 0, score: 3 }], unrated_course: [{ id: 0, score: 7 }], changed_courses: [],
-    };
-    const newState = reducer(stubState2, {
-      type: actionTypes.PUT_COURSEPREF_TEMP,
-      coursepref: { id: 0, score: 5 },
-    });
-    expect(newState.rated_course).toStrictEqual([{ id: 0, score: 5 }]);
-    expect(newState.unrated_course).toStrictEqual([{ id: 0, score: 5 }]);
-    expect(newState.changed_courses).toStrictEqual([{ id: 0, score: 5 }]);
-  });
-
-  it('should call put coursepref temp and if courespref is exists then modify changed courses', () => {
+  it('should call put coursepref temp and if coursepref exists then modify changed courses', () => {
     const stubState2 = {
       ...stubState,
       rated_course: [
@@ -397,10 +384,6 @@ describe('Reducer', () => {
         { id: 0, score: 7 },
         { id: 3, score: 3 },
       ],
-      changed_courses: [
-        { id: 0, score: 7 },
-        { id: 1, score: 3 },
-      ],
     };
     const newState = reducer(stubState2, {
       type: actionTypes.PUT_COURSEPREF_TEMP,
@@ -408,14 +391,6 @@ describe('Reducer', () => {
     });
     expect(newState.rated_course).toStrictEqual([{ id: 0, score: 5 }, { id: 2, score: 7 }]);
     expect(newState.unrated_course).toStrictEqual([{ id: 0, score: 5 }, { id: 3, score: 3 }]);
-    expect(newState.changed_courses).toStrictEqual([{ id: 0, score: 5 }, { id: 1, score: 3 }]);
-  });
-
-  it('should call put coursepref', () => {
-    const newState = reducer(stubState, {
-      type: actionTypes.PUT_COURSEPREF,
-    });
-    expect(newState.changed_courses).toStrictEqual([]);
   });
 
   it('should call set rated courses', () => {
@@ -473,9 +448,9 @@ describe('Reducer', () => {
   it('should call get last page', () => {
     const newState = reducer(stubState, {
       type: actionTypes.GET_LAST_PAGE,
-      last_page: 2,
+      lastPage: 2,
     });
-    expect(newState.last_page).toBe(2);
+    expect(newState.lastPage).toBe(2);
   });
 
   it('should call get recommend', () => {

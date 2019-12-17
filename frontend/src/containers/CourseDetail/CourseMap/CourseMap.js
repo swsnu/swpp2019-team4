@@ -156,6 +156,8 @@ class CourseMap extends Component {
 }
 
 CourseMap.defaultProps = {
+  list: [],
+  auto: false,
   building: {
     name: '', detail: '', lat: '0', lng: '0',
   },
@@ -174,9 +176,9 @@ CourseMap.propTypes = {
   }),
   list: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string,
-  })).isRequired,
+  })),
   onSearchBuildings: PropTypes.func.isRequired,
-  auto: PropTypes.bool.isRequired,
+  auto: PropTypes.bool,
   autoComplete: PropTypes.func.isRequired,
   onChange: PropTypes.func,
   editable: PropTypes.bool,

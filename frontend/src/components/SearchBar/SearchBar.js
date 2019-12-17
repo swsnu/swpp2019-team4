@@ -16,15 +16,19 @@ const SearchBar = (props) => {
   );
 
   const radioList = props.sortValue.map((value, index) => {
-    const inputId = "radio " + index;
+    const inputId = `radio ${index}`;
     return (
-        <div className="form-check">
-        <input className="form-check-input" type="radio" name="sortRadio" id={inputId}
+      <div className="form-check" key={index}>
+        <input
+          className="form-check-input"
+          type="radio"
+          name="sortRadio"
+          id={inputId}
           onChange={() => props.onChange(index, 'sort')}
-          checked={value['value']}
+          checked={value.value}
         />
-        <label className="form-check-label" for={inputId}>
-          {value['title']}
+        <label className="form-check-label" htmlFor={inputId}>
+          {value.title}
         </label>
       </div>
     );
@@ -247,11 +251,11 @@ const SearchBar = (props) => {
           data-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded="false"
-          style={{borderRadius: "0"}}
+          style={{ borderRadius: '0' }}
         >
-          <div className="oi oi-sort-ascending"/>
+          <div className="oi oi-sort-ascending" />
         </button>
-        <div className="dropdown-menu p-4 my-1" style={{width: "12rem"}}>
+        <div className="dropdown-menu p-4 my-1" style={{ width: '12rem' }}>
           {radioList}
         </div>
       </div>
@@ -296,7 +300,6 @@ SearchBar.defaultProps = {
 SearchBar.propTypes = {
   searchScore: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
-  onChangeSortValue: PropTypes.func.isRequired,
   onSearch: PropTypes.func.isRequired,
   onKeyDown: PropTypes.func.isRequired,
   value: PropTypes.shape({
@@ -314,7 +317,7 @@ SearchBar.propTypes = {
     academic_year: PropTypes.string,
     title: PropTypes.string,
   }).isRequired,
-  sortValue : PropTypes.arrayOf(PropTypes.shape({
+  sortValue: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string,
     title: PropTypes.string,
     value: PropTypes.bool,

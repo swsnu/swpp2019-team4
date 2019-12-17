@@ -135,7 +135,7 @@ class AssaTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         response = self.post('/api/signup/', json.dumps(content), content_type='application/json')
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(User.objects.get(email='paden@gmail.com').grade, '3')
+        self.assertEqual(User.objects.get(email='paden@gmail.com').grade, 3)
         # test for same email
         response = self.post('/api/signup/', json.dumps(content), content_type='application/json')
         self.assertEqual(response.status_code, 400)
@@ -320,7 +320,7 @@ class AssaTestCase(TestCase):
 
     def test_timetable(self):
         timetable = Timetable.objects.get(id=2)
-        self.assertEqual(str(timetable), 'My timetable')
+        self.assertEqual(str(timetable), '새 시간표')
 
     def test_post_timetable_main_id(self):
         response = self.post('/api/signin/',

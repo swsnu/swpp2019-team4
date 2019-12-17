@@ -29,7 +29,8 @@ class RecommendTime extends Component {
       .then(() => {
         const inColorTable = this.props.inColorTable.slice();
         this.setState({ inColorTable });
-      });
+      })
+      .catch(() => {});
     document.addEventListener('mouseup', this.mouseUpListener, true);
     document.addEventListener('mousedown', this.mouseDownListener, true);
   }

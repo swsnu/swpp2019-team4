@@ -71,7 +71,6 @@ function window(state) {
 }
 jest.mock('../../../components/SearchBar/SearchBar', () => jest.fn((props) => (
   <div className="SearchBar">
-    <button type="button" id="toggle-button" onClick={() => props.onToggle()}>x</button>
     <button
       type="button"
       id="change-button"
@@ -90,82 +89,105 @@ jest.mock('../../../components/SearchBar/SearchBar', () => jest.fn((props) => (
         props.onChange({ target: { value: 0 } }, 'min_score');
         props.onChange({ target: { value: 10 } }, 'max_score');
       }}
+      onKeyDown={props.onKeyDown}
     >
 x
     </button>
-    <button type="button" id="search-button" onClick={() => props.onSearch()}>x</button>
+    <button type="button" id="search-button" onClick={props.onSearch}>x</button>
   </div>
 )));
 describe('<RecommendCourse />', () => {
+  let spySetRated; let spySetUnrated; let spyGetRated; let spyGetUnrated; let
+    spyPutCoursepref; let spyDeleteCourseprefTemp; let spyDeleteCoursepref;
   beforeEach(() => {
+    spySetRated = jest.spyOn(actionCreators, 'setRatedCourse')
+      .mockImplementation(() => () => Promise.resolve(null));
+    spySetUnrated = jest.spyOn(actionCreators, 'setUnratedCourse')
+      .mockImplementation(() => () => Promise.resolve(null));
+    spyGetRated = jest.spyOn(actionCreators, 'getRatedCourse')
+      .mockImplementation(() => () => Promise.resolve(null));
+    spyGetUnrated = jest.spyOn(actionCreators, 'getUnratedCourse')
+      .mockImplementation(() => () => Promise.resolve(null));
+    spyPutCoursepref = jest.spyOn(actionCreators, 'putCoursepref')
+      .mockImplementation(() => () => Promise.resolve(null));
+    spyDeleteCourseprefTemp = jest.spyOn(actionCreators, 'deleteCourseprefTemp')
+      .mockImplementation(() => () => Promise.resolve(null));
+    spyDeleteCoursepref = jest.spyOn(actionCreators, 'deleteCoursepref')
+      .mockImplementation(() => () => Promise.resolve(null));
   });
 
   afterEach(() => { jest.clearAllMocks(); });
 
   it('RecommendCourse render test', () => {
-    const spySetRated = jest.spyOn(actionCreators, 'setRatedCourse')
-      .mockImplementation(() => () => Promise.resolve(null));
-    const spySetUnrated = jest.spyOn(actionCreators, 'setUnratedCourse')
-      .mockImplementation(() => () => Promise.resolve(null));
-    const spyGetRated = jest.spyOn(actionCreators, 'getRatedCourse')
-      .mockImplementation(() => () => Promise.resolve(null));
-    const spyGetUnrated = jest.spyOn(actionCreators, 'getUnratedCourse')
-      .mockImplementation(() => () => Promise.resolve(null));
-    const spyPutCoursepref = jest.spyOn(actionCreators, 'putCoursepref')
-      .mockImplementation(() => () => Promise.resolve(null));
     const component = mount(window(stubState));
     expect(component.find('#rated-tab-clicker').length).toBe(1);
     expect(spySetRated).toBeCalledTimes(1);
     expect(component.find('#unrated-tab-clicker').length).toBe(1);
     component.find('#unrated-tab-clicker').simulate('click');
-    expect(spyPutCoursepref).toBeCalledTimes(1);
-    expect(spySetUnrated).toBeCalledTimes(2);
+    expect(spySetUnrated).toBeCalledTimes(1);
     expect(component.find('.form-control-range').length).toBe(2);
     component.find('.form-control-range').at(1).simulate('change', { target: { value: 7 } });
     expect(component.find('.SearchBar').length).toBe(1);
-    expect(component.find('#toggle-button').length).toBe(1);
-    component.find('#toggle-button').simulate('click');
-    expect(component.find('#change-button').length).toBe(1);
-    component.find('#change-button').simulate('click');
-    expect(component.find('#search-button').length).toBe(1);
-    component.find('#search-button').simulate('click');
     component.find('#myTabContent').simulate('scroll', { target: { scrollTop: 3000 } });
     expect(spyGetUnrated).toBeCalledTimes(1);
     component.find('#rated-tab-clicker').simulate('click');
     component.find('#myTabContent').simulate('scroll', { target: { scrollTop: 3000 } });
     expect(spyGetRated).toBeCalledTimes(1);
   });
-  it('RecommendCourse-true render test', () => {
-    const spySetRated = jest.spyOn(actionCreators, 'setRatedCourse')
-      .mockImplementation(() => () => Promise.resolve(null));
-    const spySetUnrated = jest.spyOn(actionCreators, 'setUnratedCourse')
-      .mockImplementation(() => () => Promise.resolve(null));
-    const spyGetRated = jest.spyOn(actionCreators, 'getRatedCourse')
-      .mockImplementation(() => () => Promise.resolve(null));
-    const spyGetUnrated = jest.spyOn(actionCreators, 'getUnratedCourse')
-      .mockImplementation(() => () => Promise.resolve(null));
-    const spyPutCoursepref = jest.spyOn(actionCreators, 'putCoursepref')
-      .mockImplementation(() => () => Promise.resolve(null));
+
+  it('RecommendCourse (searching) render test', () => {
     const component = mount(window(stubStateTrue));
     expect(component.find('#rated-tab-clicker').length).toBe(1);
     expect(spySetRated).toBeCalledTimes(1);
     expect(component.find('#unrated-tab-clicker').length).toBe(1);
     component.find('#unrated-tab-clicker').simulate('click');
-    expect(spyPutCoursepref).toBeCalledTimes(1);
-    expect(spySetUnrated).toBeCalledTimes(2);
+    expect(spySetUnrated).toBeCalledTimes(1);
     expect(component.find('.form-control-range').length).toBe(1);
     component.find('.form-control-range').simulate('change', { target: { value: 7 } });
     expect(component.find('.SearchBar').length).toBe(1);
-    expect(component.find('#toggle-button').length).toBe(1);
-    component.find('#toggle-button').simulate('click');
-    expect(component.find('#change-button').length).toBe(1);
-    component.find('#change-button').simulate('click');
-    expect(component.find('#search-button').length).toBe(1);
-    component.find('#search-button').simulate('click');
     component.find('#myTabContent').simulate('scroll', { target: { scrollTop: 3000 } });
     expect(spyGetUnrated).toBeCalledTimes(1);
     component.find('#rated-tab-clicker').simulate('click');
     component.find('#myTabContent').simulate('scroll', { target: { scrollTop: 3000 } });
     expect(spyGetRated).toBeCalledTimes(1);
+  });
+
+  it('should call spyPutCoursepref when mouseup event happened in slider', () => {
+    const component = mount(window(stubState));
+    component.find('.form-control-range').at(0).simulate('mouseup', { target: { value: 5 } });
+    expect(spyPutCoursepref).toBeCalledTimes(1);
+  });
+
+  it('should call spyPutCoursepref when mouseup event happened in slider', () => {
+    const component = mount(window(stubState));
+    component.find('.form-control-range').at(0).simulate('mouseup', { target: { value: 5 } });
+    expect(spyPutCoursepref).toBeCalledTimes(1);
+  });
+
+  it('should call spyDeleteCoursepref when click delete button', () => {
+    const component = mount(window(stubState));
+    component.find('#course-delete-form-0').simulate('click');
+    expect(spyDeleteCoursepref).toBeCalledTimes(1);
+    expect(spyDeleteCourseprefTemp).toBeCalledTimes(1);
+  });
+
+  it('should search when clicked search button in rated tab', () => {
+    const component = mount(window(stubState));
+    component.find('#search-button').simulate('click');
+    expect(spySetRated).toBeCalledTimes(2);
+    component.find('#unrated-tab-clicker').simulate('click');
+  });
+
+  it('should search when clicked search button in unrated tab', () => {
+    const component = mount(window(stubState));
+    component.find('#unrated-tab-clicker').simulate('click');
+    component.find('#search-button').simulate('click');
+    expect(spySetUnrated).toBeCalledTimes(2);
+  });
+
+  it('should search when entered in search bar', () => {
+    const component = mount(window(stubState));
+    component.find('#change-button').simulate('keyDown', { keyCode: 13 });
+    expect(spySetRated).toBeCalledTimes(2);
   });
 });
