@@ -81,10 +81,16 @@ describe('RecommendResult test', () => {
   afterEach(() => jest.clearAllMocks());
 
   it('should render timetableRecommend', () => {
-    mount(timetableRecommend(stubState));
+    const component=mount(timetableRecommend(stubState));
+    expect(component.find('.recommended-timetable-space').length).toBe(1);
+    component.find('.recommended-timetable-space').at(0).simulate('click');
+    component.find('.recommended-timetable-space').at(0).simulate('keydown',13);
+    expect(component.find('#save-button').length).toBe(1);
+    component.find('#save-button').at(0).simulate('click');
   });
 
   it('should render timetableRecommend Empty', () => {
-    mount(timetableRecommend(stubStateEmpty));
+    const component=mount(timetableRecommend(stubStateEmpty));
+    expect(component.find('.recommended-timetable-space').length).toBe(0);
   });
 });

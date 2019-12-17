@@ -62,11 +62,11 @@ describe('<RecommendTime />', () => {
     const component = mount(window(stubState));
     expect(component.find('#recommend-time-table').length).toBe(1);
     expect(component.find('#table-square').length).toBe(156);
-    component.find('#table-square').at(0).simulate('mousedown');
-    component.find('#table-square').at(0).simulate('mouseup');
-    component.find('#table-square').at(0).simulate('mouseenter');
+    component.find('#table-square').at(0).simulate('mouseDown', { preventDefault: () => true });
+    component.find('#table-square').at(0).simulate('mouseUp', { preventDefault: () => true });
+    component.find('#table-square').at(0).simulate('mouseEnter', { preventDefault: () => true });
     expect(component.find('#color-circle').length).toBe(4);
     component.find('#color-circle').at(0).simulate('click');
-    component.find('#color-circle').at(0).simulate('keydown');
+    component.find('#color-circle').at(0).simulate('keyDown', {keyCode:13});
   });
 });
