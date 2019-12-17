@@ -5,7 +5,7 @@ import { getMockStore } from '../../../test-utils/mocks';
 import CourseMap from './CourseMap';
 
 const stubState = {
-  buildingList: [{ name: '301', lat: 1, lng: 1 }],
+  buildingList: [{ name: '301', lat: '1', lng: '1' }],
 };
 
 function window(editable, building) {
@@ -20,7 +20,7 @@ function window(editable, building) {
 describe('<CourseMap />', () => {
   it('CourseMap render test', () => {
     const component = mount(window(true, {
-      name: '', detail: '', lat: 1, lng: 1,
+      name: '', detail: '', lat: '1', lng: '1',
     }));
     const courseMap = component.find('.CourseMap');
     expect(courseMap.length).toBe(1);
@@ -34,7 +34,7 @@ describe('<CourseMap />', () => {
   });
   it('CourseMap render test', () => {
     const component = mount(window(false, {
-      name: '', detail: '', lat: 1, lng: 1,
+      name: '', detail: '', lat: '1', lng: '1',
     }));
     const courseMap = component.find('.CourseMap');
     expect(courseMap.length).toBe(1);
