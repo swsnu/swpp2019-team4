@@ -105,5 +105,7 @@ describe('<CourseDetail />', () => {
     const component = mount(window(dbCourse));
     const courseDetail = component.find('.CourseDetail');
     expect(courseDetail.length).toBe(1);
+    expect(component.find('#show-position-button').length).toBe(3);
+    component.find('#show-position-button').at(0).simulate('click');
   });
 });
